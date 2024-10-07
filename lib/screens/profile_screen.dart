@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  ProfileScreenState createState() => ProfileScreenState();
+}
+
+class ProfileScreenState extends State<ProfileScreen> {
+  String _name = 'Manuel Meier';
+  String _location = 'Brugg';
+  String _expertIn = 'SwaGI, Uuidc, Epmc';
+  String _availability = '12:00 - 12:30, Every Wednesday';
+  String _language = 'German';
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -12,74 +25,109 @@ class ProfileScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () {
+
           },
         ),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: AssetImage('assets/images/profile.png'),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Manuel Meier',
-                enabled: false,
-                border: OutlineInputBorder(),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+
+              const CircleAvatar(
+                radius: 50,
+                backgroundImage: AssetImage('assets/images/profile.png'),
               ),
-            ),
-
-            SizedBox(height: 16),
-
-            // Location
-            Text("Location"),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Brugg',
-                enabled: false,
-                border: OutlineInputBorder(),
+              const SizedBox(height: 16),
+              TextFormField(
+                initialValue: _name,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _name = value;
+                  });
+                },
               ),
-            ),
 
-            SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // Expertise
-            Text("Expert in"),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'SwaGl, Uuidc, Epmc',
-                enabled: false,
-                border: OutlineInputBorder(),
+              TextFormField(
+                initialValue: _location,
+                decoration: const InputDecoration(
+                  labelText: 'Location',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _location = value;
+                  });
+                },
               ),
-            ),
 
-            SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // Availability
-            Text("Availability"),
-            TextField(
-              decoration: InputDecoration(
-                labelText: '12:00 - 12:30, Every Wednesday',
-                enabled: false,
-                border: OutlineInputBorder(),
+              TextFormField(
+                initialValue: _expertIn,
+                decoration: const InputDecoration(
+                  labelText: 'Expert in',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _expertIn = value;
+                  });
+                },
               ),
-            ),
 
-            SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // Language
-            Text("Language"),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'German',
-                enabled: false,
-                border: OutlineInputBorder(),
+              TextFormField(
+                initialValue: _availability,
+                decoration: const InputDecoration(
+                  labelText: 'Availability',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _availability = value;
+                  });
+                },
               ),
-            ),
-          ],
+
+              const SizedBox(height: 16),
+
+              TextFormField(
+                initialValue: _language,
+                decoration: const InputDecoration(
+                  labelText: 'Language',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _language = value;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 16),
+
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Profile updated!')),
+                    );
+                  }
+                },
+                child: const Text('Save Changes'),
+              ),
+            ],
+          ),
         ),
       ),
     );
