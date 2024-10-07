@@ -1,23 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/screens/swipe_screen.dart';
+import 'package:knowledgematch/screens/profile_screen.dart';
+import 'package:knowledgematch/screens/search_helpers_screen.dart';
 
-class MainScreen extends StatelessWidget {
+import 'chat_screen.dart';
+
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  MainScreenState createState() => MainScreenState();
+}
+
+class MainScreenState extends State<MainScreen> {
+  int _currentIndex = 1;
+
+  final List<Widget> _screens = [
+    ProfileScreen(),
+    FindMatchesScreen(),
+    ChatScreen(),
+  ];
+
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Main Screen'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SwipeScreen()),
-            );
-          },
-          child: Text('Search for Matches'),
-        ),
+      body: _screens[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: onTabTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Chat',
+          ),
+        ],
+        selectedItemColor: Colors.deepPurple,
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.black87,
       ),
     );
   }
