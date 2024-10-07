@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import '../model/user.dart';
@@ -12,16 +11,14 @@ class SwipeScreen extends StatefulWidget {
 class _ProfileSwipeScreenState extends State<SwipeScreen> {
   List<SwipeItem> _swipeItems = [];
   MatchEngine? _matchEngine;
-  final PageController _pageController = PageController();
+
   final List<User> profiles = [
     User(name: 'Alice', age: 25, description: 'Loves hiking and photography.'),
     User(name: 'Bob', age: 30, description: 'Enjoys cooking and traveling.'),
-    User(
-        name: 'Charlie',
+    User(name: 'Charlie',
         age: 28,
         description: 'Passionate about technology and music.'),
-    User(
-        name: 'Diana',
+    User(name: 'Diana',
         age: 22,
         description: 'Avid reader and coffee enthusiast.'),
   ];
@@ -33,21 +30,20 @@ class _ProfileSwipeScreenState extends State<SwipeScreen> {
   }
 
   void _initializeSwipeItems() {
-    for (int i = 0; i < profiles.length; i++) {
-      _swipeItems.add(SwipeItem(
-        content: profiles[i],
+    _swipeItems = profiles.map((profile) {
+      return SwipeItem(
+        content: profile,
         likeAction: () {
-          print("Liked " + profiles[i].name);
+          profiles.remove(profile);
         },
         nopeAction: () {
-          print("Disliked " + profiles[i].name);
         },
-      ));
-    }
+      );
+    }).toList();
+
     _matchEngine = MatchEngine(swipeItems: _swipeItems);
   }
 
-  int _getRealIndex(int index) => index % profiles.length;
 
   @override
   Widget build(BuildContext context) {
@@ -57,22 +53,37 @@ class _ProfileSwipeScreenState extends State<SwipeScreen> {
         centerTitle: true,
       ),
       body: Center(
-        child: SizedBox(
+        child: profiles.isNotEmpty
+            ? SizedBox(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: SwipeCards(
             matchEngine: _matchEngine!,
-            itemBuilder: (BuildContext context, int index) =>
-                ProfileCard(profile: profiles[index]),
+            itemBuilder: (BuildContext context, int index) {
+              return ProfileCard(
+                profile: _swipeItems[index % _swipeItems.length].content,
+              );
+            },
             onStackFinished: () {
               print("Stack Finished");
+              if(profiles.isNotEmpty){
+                setState(() {
+                  _initializeSwipeItems();
+                });
+              }else{
+                setState(() {});
+              }
             },
             itemChanged: (SwipeItem item, int index) {
-              print("Item changed: ${item.content}");
+              print("Currently swiping: ${item.content.name}");
             },
             upSwipeAllowed: false,
             fillSpace: false,
           ),
+        )
+            : const Text(
+          "No more profiles to show!",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
     );
