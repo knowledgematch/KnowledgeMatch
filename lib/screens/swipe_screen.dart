@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/swipe_cards.dart';
+import '../model/search_criteria.dart';
 import '../model/user.dart';
 import '../widgets/profile_card.dart';
 
 class SwipeScreen extends StatefulWidget {
   @override
-  _ProfileSwipeScreenState createState() => _ProfileSwipeScreenState();
+  ProfileSwipeScreenState createState() => ProfileSwipeScreenState();
+  final SearchCriteria searchCriteria;
+
+  const SwipeScreen({super.key, required this.searchCriteria});
 }
 
-class _ProfileSwipeScreenState extends State<SwipeScreen> {
+class ProfileSwipeScreenState extends State<SwipeScreen> {
   List<SwipeItem> _swipeItems = [];
   MatchEngine? _matchEngine;
 
