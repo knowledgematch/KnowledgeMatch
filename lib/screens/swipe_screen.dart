@@ -65,17 +65,17 @@ class _ProfileSwipeScreenState extends State<SwipeScreen> {
               );
             },
             onStackFinished: () {
-              print("Stack Finished");
-              if(profiles.isNotEmpty){
+              //with only one profile swipe_cards will crash when repeatedly swiping left
+              if(profiles.length > 1){
                 setState(() {
                   _initializeSwipeItems();
                 });
               }else{
+                profiles.clear();
                 setState(() {});
               }
             },
             itemChanged: (SwipeItem item, int index) {
-              print("Currently swiping: ${item.content.name}");
             },
             upSwipeAllowed: false,
             fillSpace: false,
