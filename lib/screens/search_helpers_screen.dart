@@ -118,7 +118,6 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
               const Text("Find students and experts near you"),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'Country',
                   hintText: 'for e.g., Brugg (optional)',
                   border: OutlineInputBorder(),
                 ),
@@ -140,7 +139,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                           ? selectedTimeFrame!.toIso8601String()
                           : '',
                       description: description!,
-                      country: country,
+                      location: country,
                     );
 
                     Navigator.push(
