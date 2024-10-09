@@ -104,11 +104,11 @@ class ProfileCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,  // Display the label (e.g., "Location")
+          label,
           style: TextStyle(
             fontSize: 16,
-            color: Colors.blueGrey, // Set the color as needed (adjust this to match your image)
-            fontWeight: FontWeight.bold, // Optional: make the label bold
+            color: Colors.blueGrey,
+            fontWeight: FontWeight.bold,
           ),
         ),
         SizedBox(height: 5), // Space between label and value
@@ -120,7 +120,7 @@ class ProfileCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
-            value, // Display the value (e.g., "Brugg")
+            value,
             style: TextStyle(fontSize: 16),
           ),
         ),
