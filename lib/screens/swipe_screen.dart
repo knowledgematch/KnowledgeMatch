@@ -76,8 +76,9 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text("Swipeable Cards Example"),
+        title: const Text("Helpers"),
         centerTitle: true,
       ),
       body: Center(

@@ -21,6 +21,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Knowledge Match'),
         centerTitle: true,
@@ -130,9 +131,9 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
 
               ElevatedButton(
                 onPressed: () {
+                  FocusScope.of(context).unfocus();
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-
                     SearchCriteria searchCriteria = SearchCriteria(
                       topic: topic!,
                       timeFrame: selectedTimeFrame != null
