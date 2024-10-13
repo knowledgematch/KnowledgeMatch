@@ -28,7 +28,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  mysql1: ^0.20.0
+  mysql_client: ^0.0.27
+  http: ^1.2.0
   flutter:
     sdk: flutter
   swipe_cards: ^2.0.0+1
