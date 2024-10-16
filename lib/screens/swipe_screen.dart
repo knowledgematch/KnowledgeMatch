@@ -93,6 +93,26 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                 profile: _swipeItems[index % _swipeItems.length].content,
               );
             },
+            likeTag: const Center(
+              child: Text(
+                "REQUEST",
+                style: TextStyle(
+                  color: Colors.green,
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            nopeTag: const Center(
+              child: Text(
+                "DECLINE",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             onStackFinished: () {
               //with only one profile swipe_cards will crash when repeatedly swiping left
               if(profiles.length > 1){
