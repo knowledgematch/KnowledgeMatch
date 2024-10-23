@@ -82,8 +82,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
         centerTitle: true,
       ),
       body: Center(
-        child: profiles.isNotEmpty
-            ? SizedBox(
+        child: profiles.isNotEmpty ? SizedBox(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: SwipeCards(
@@ -129,8 +128,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
             upSwipeAllowed: false,
             fillSpace: false,
           ),
-        )
-            : const Text(
+      )
+        : const Text(
           "No more profiles to show!",
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
