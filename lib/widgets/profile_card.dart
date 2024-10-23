@@ -60,14 +60,14 @@ class ProfileCard extends StatelessWidget {
                   // Availability Field
                   _ProfileInfoField(
                       label: 'Availability',
-                      value: '18:30 - 19:30, Every Friday',
+                      value: profile.availability,
                   ),
                   SizedBox(height: 10),
 
                   // Language Field
                   _ProfileInfoField(
                       label: 'Languages',
-                      value: 'German, English',
+                      value: profile.languages.join(', '),
                   ),
                   SizedBox(height: 10),
 
