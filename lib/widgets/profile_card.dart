@@ -71,6 +71,13 @@ class ProfileCard extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
 
+                  // Reachability Field
+                  _ProfileInfoField(
+                    label: 'Reachability',
+                    value: _getReachability(profile.reachability),
+                  ),
+                  SizedBox(height: 10),
+
                   _ProfileInfoField(
                       label: 'Description',
                       value: profile.description,
@@ -127,5 +134,18 @@ class ProfileCard extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _getReachability(int? reachability) {
+    switch (reachability) {
+      case 0:
+        return 'Online';
+      case 1:
+        return 'In Person';
+      case 2:
+        return 'Online, In Person';
+      default:
+        return 'Online';
+    }
   }
 }

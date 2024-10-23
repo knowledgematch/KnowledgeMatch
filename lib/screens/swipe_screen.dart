@@ -23,6 +23,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
         expertString: 'Oop1 Dnet1 Sysad',
         availability: '18:30 - 19:30, every Friday',
         langString:   'German English',
+        reachability: 3,
         description:  'Loves hiking and photography.',
     ),
     Userprofile(
@@ -31,6 +32,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
         expertString: 'algd1 eana Oop1',
         availability: '08:15 - 11:00, Every Sunday',
         langString:   'German English French',
+        reachability: 2,
         description:  'Enjoys cooking and traveling.',
     ),
     Userprofile(
@@ -39,6 +41,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
         expertString: 'vana Oop2 infsec',
         availability: '17:30 - 19:00, Every Sunday',
         langString:   'German English',
+        reachability: 1,
         description:  'Passionate about technology and music.',
     ),
     Userprofile(
