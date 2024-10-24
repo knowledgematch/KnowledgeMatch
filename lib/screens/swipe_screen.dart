@@ -5,11 +5,12 @@ import '../model/search_criteria.dart';
 import '../widgets/profile_card.dart';
 
 class SwipeScreen extends StatefulWidget {
-  @override
-  ProfileSwipeScreenState createState() => ProfileSwipeScreenState();
   final SearchCriteria searchCriteria;
 
   const SwipeScreen({super.key, required this.searchCriteria});
+
+  @override
+  ProfileSwipeScreenState createState() => ProfileSwipeScreenState();
 }
 
 class ProfileSwipeScreenState extends State<SwipeScreen> {
@@ -73,20 +74,37 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
               setState(() {
                 if (direction == SwipeDirection.right) {
                   profiles.removeAt(_controller.currentIndex);
-                  //ensures that the index stays the same
                   _controller.currentIndex--;
                 } else if (direction == SwipeDirection.left) {
 
                 }
-                if(_controller.currentIndex == profiles.length-1){
-                  //ensures that the index is set to 0
+                if (_controller.currentIndex == profiles.length - 1) {
                   _controller.currentIndex = -1;
                 }
               });
             },
             builder: (context, properties) {
-              return ProfileCard(
-                profile: profiles[properties.index % profiles.length],
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: properties.direction == SwipeDirection.right
+                          ? Colors.green.withOpacity(0.5)
+                          : properties.direction == SwipeDirection.left
+                          ? Colors.red.withOpacity(0.5)
+                          : Colors.transparent,
+                      blurRadius: 20,
+                      spreadRadius: 5,
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: ProfileCard(
+                    profile: profiles[properties.index % profiles.length],
+                  ),
+                ),
               );
             },
             overlayBuilder: (context, properties) {
