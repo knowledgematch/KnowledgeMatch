@@ -16,7 +16,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
   String? description;
   String? country;
 
-  final List<String> topics = ['OOP', 'Data Structures', 'Algorithms', 'Networking', 'Databases'];
+  final List<String> topics = ['OOP', 'SYSAD', 'MADA'];
 
   @override
   Widget build(BuildContext context) {
