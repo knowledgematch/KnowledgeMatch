@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'swipe_screen.dart';
 import '../model/search_criteria.dart';
+import '../services/matching_algorithm.dart';
 
 class FindMatchesScreen extends StatefulWidget {
   const FindMatchesScreen({super.key});
@@ -146,7 +147,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SwipeScreen(searchCriteria: searchCriteria),
+                        builder: (context) => SwipeScreen(searchCriteria: searchCriteria, profiles: MatchingAlgorithm().matchingAlgorithm(searchCriteria)),
                       ),
                     );
                   }
