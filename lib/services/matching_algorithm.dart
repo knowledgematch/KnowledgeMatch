@@ -1,9 +1,10 @@
 import '../model/userprofile.dart';
 import '../model/search_criteria.dart';
 import 'db_connection.dart';
+import 'package:mysql_client/mysql_client.dart';
 
 class MatchingAlgorithm{
-  List<Userprofile> matchingAlgorithm(SearchCriteria searchCriteria) {
+  Future<List<Userprofile>> matchingAlgorithm(SearchCriteria searchCriteria) async {
     String query = 'SELECT * FROM Users';
     List<String> queryBuilder = [];
     // List<Userprofile> profiles = [];
@@ -48,19 +49,35 @@ class MatchingAlgorithm{
 
 
     if (searchCriteria.topic.isNotEmpty) {
-      queryBuilder.add("topic = '${searchCriteria.topic}'");
+      queryBuilder.add("Keyword = '${searchCriteria.topic}'");
     }
 
     if (searchCriteria.reachability != null) {
-      queryBuilder.add("reachability = ${searchCriteria.reachability}");
+      queryBuilder.add("Reachability = ${searchCriteria.reachability}");
     }
 
     if(queryBuilder.isNotEmpty) {
       query += ' WHERE ${queryBuilder.join(' AND ')}';
     }
 
-    var result = DBConnection().getSQLResponse(query);
-    print('Result: ${result.asStream().toList()}');
+    // var result = DBConnection().getSQLResponse(query);
+    // print('Result: ${result.asStream().toList().asStream()}');
+
+    var result = await DBConnection().getSQLResponse(query);
+    print(query);
+    if (result != null) {
+      // Option 1: Using rows (if synchronous access to data rows is preferred)
+      for (var row in result.rows) {
+        print('Row data: ${row.toString()}');
+      }
+
+      // Option 2: Using rowsStream (for asynchronous row-by-row processing)
+      await for (var row in result.rowsStream) {
+        print('Row data: ${row.toString()}');
+      }
+    } else {
+      print('No result was returned or an error occurred.');
+    }
 
     return profiles;
   }
