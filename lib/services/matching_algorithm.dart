@@ -34,7 +34,8 @@ class MatchingAlgorithm{
         var data = row.assoc();
 
         profiles.add(
-            Userprofile(name: data['FullName'].toString(),
+            Userprofile(
+              name: data['FullName'].toString(),
               location: 'Brugg',
               expertString: data['Keywords'].toString(),
               availability: 'Placeholder here',
