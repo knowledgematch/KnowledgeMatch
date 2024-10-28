@@ -1,52 +1,19 @@
 import '../model/userprofile.dart';
 import '../model/search_criteria.dart';
 import 'db_connection.dart';
-import 'package:mysql_client/mysql_client.dart';
 
 class MatchingAlgorithm{
   Future<List<Userprofile>> matchingAlgorithm(SearchCriteria searchCriteria) async {
-    String query = 'SELECT * FROM Users';
+    String query =  'SELECT CONCAT(u.Name, \' \', u.Surname) AS FullName, '
+                    'u.Reachability, GROUP_CONCAT(DISTINCT k.Keyword ORDER BY '
+                    'k.Keyword SEPARATOR \', \') AS Keywords FROM Users u '
+                    'JOIN User2Keyword uk ON u.U_ID = uk.U_ID '
+                    'JOIN Keyword k ON uk.K_ID = k.K_ID '
+                    'JOIN Keyword2Topic kt ON k.K_ID = kt.K_ID '
+                    'JOIN Topic t ON kt.T_ID = t.T_ID';
     List<String> queryBuilder = [];
-    // List<Userprofile> profiles = [];
 
-    List<Userprofile> profiles = [
-      Userprofile(
-        name: 'Alice',
-        location: 'Brugg',
-        expertString: 'Oop1 Dnet1 Sysad',
-        availability: '18:30 - 19:30, every Friday',
-        langString: 'German English',
-        reachability: 3,
-        description: 'Loves hiking and photography.',
-      ),
-      Userprofile(
-        name: 'Bob',
-        location: 'Brugg',
-        expertString: 'algd1 eana Oop1',
-        availability: '08:15 - 11:00, Every Sunday',
-        langString: 'German English French',
-        reachability: 2,
-        description: 'Enjoys cooking and traveling.',
-      ),
-      Userprofile(
-        name: 'Charlie',
-        location: 'Brugg',
-        expertString: 'vana Oop2 infsec',
-        availability: '17:30 - 19:00, Every Sunday',
-        langString: 'German English',
-        reachability: 1,
-        description: 'Passionate about technology and music.',
-      ),
-      Userprofile(
-        name: 'Diana',
-        location: 'Brugg',
-        expertString: 'swagl uuidc pmc Oop1',
-        availability: '11:00 - 12:00, Every Day',
-        langString: 'English French',
-        description: 'Avid reader and coffee enthusiast.',
-      ),
-    ];
-
+    List<Userprofile> profiles = [];
 
     if (searchCriteria.topic.isNotEmpty) {
       queryBuilder.add("Keyword = '${searchCriteria.topic}'");
@@ -59,26 +26,25 @@ class MatchingAlgorithm{
     if(queryBuilder.isNotEmpty) {
       query += ' WHERE ${queryBuilder.join(' AND ')}';
     }
-
-    // var result = DBConnection().getSQLResponse(query);
-    // print('Result: ${result.asStream().toList().asStream()}');
+    query += ' GROUP BY u.U_ID, u.Name, u.Surname, u.Reachability';
 
     var result = await DBConnection().getSQLResponse(query);
-    print(query);
-    if (result != null) {
-      // Option 1: Using rows (if synchronous access to data rows is preferred)
+    if(result != null) {
       for (var row in result.rows) {
-        print('Row data: ${row.toString()}');
-      }
+        var data = row.assoc();
 
-      // Option 2: Using rowsStream (for asynchronous row-by-row processing)
-      await for (var row in result.rowsStream) {
-        print('Row data: ${row.toString()}');
+        profiles.add(
+            Userprofile(name: data['FullName'].toString(),
+              location: 'Brugg',
+              expertString: data['Keywords'].toString(),
+              availability: 'Placeholder here',
+              langString: 'Placeholder here',
+              reachability: int.parse(data['Reachability'].toString()),
+              description: 'Placeholder here',
+            )
+        );
       }
-    } else {
-      print('No result was returned or an error occurred.');
     }
-
     return profiles;
   }
 }
