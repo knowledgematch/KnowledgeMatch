@@ -45,8 +45,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
               ),
             );
           } else {
-            // Data loaded successfully
-            var profiles = snapshot.data!; // Get the loaded list of profiles
+
+            var profiles = snapshot.data!;
 
             return SizedBox(
               height: MediaQuery.of(context).size.height,
@@ -60,7 +60,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                       profiles.removeAt(_controller.currentIndex);
                       _controller.currentIndex--;
                     } else if (direction == SwipeDirection.left) {
-                      // Optionally handle decline
+
                     }
                     if (_controller.currentIndex == profiles.length - 1) {
                       _controller.currentIndex = -1;
@@ -126,7 +126,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                   return const SizedBox.shrink();
                 },
                 swipeAssistDuration: const Duration(milliseconds: 200),
-                stackClipBehaviour: Clip.none,
+                stackClipBehaviour: Clip.hardEdge,
                 allowVerticalSwipe: false,
               ),
             );
