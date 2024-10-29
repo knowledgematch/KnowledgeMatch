@@ -8,9 +8,10 @@ import '../widgets/profile_card.dart';
 
 class SwipeScreen extends StatefulWidget {
   final SearchCriteria searchCriteria;
-  final Future<List<Userprofile>> profiles; // Changed to Future
+  final Future<List<Userprofile>> profiles;
 
-  const SwipeScreen({super.key, required this.searchCriteria, required this.profiles});
+  const SwipeScreen(
+      {super.key, required this.searchCriteria, required this.profiles});
 
   @override
   ProfileSwipeScreenState createState() => ProfileSwipeScreenState();
@@ -18,6 +19,15 @@ class SwipeScreen extends StatefulWidget {
 
 class ProfileSwipeScreenState extends State<SwipeScreen> {
   final SwipableStackController _controller = SwipableStackController();
+  bool shouldShowGlow = false;
+
+  void checkSwipeDirection(double swipeDistance) {
+    if (swipeDistance > 0.8) {
+     shouldShowGlow = true;
+    } else {
+      shouldShowGlow = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +41,10 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
         future: widget.profiles,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // Show a loading indicator while waiting for the data
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            // Handle any errors that occurred
             return Center(child: Text("Error: ${snapshot.error}"));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            // Show a message if there are no profiles
             return const Center(
               child: Text(
                 "No more profiles to show!",
@@ -45,7 +52,6 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
               ),
             );
           } else {
-
             var profiles = snapshot.data!;
 
             return SizedBox(
@@ -54,33 +60,34 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
               child: SwipableStack(
                 controller: _controller,
                 itemCount: profiles.length,
+                horizontalSwipeThreshold: 0.8,
                 onSwipeCompleted: (index, direction) {
                   setState(() {
                     if (direction == SwipeDirection.right) {
                       profiles.removeAt(_controller.currentIndex);
                       _controller.currentIndex--;
-                    } else if (direction == SwipeDirection.left) {
-
-                    }
+                    } else if (direction == SwipeDirection.left) {}
                     if (_controller.currentIndex == profiles.length - 1) {
                       _controller.currentIndex = -1;
                     }
                   });
                 },
                 builder: (context, properties) {
+                  checkSwipeDirection(properties.swipeProgress);
                   return Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
-                        BoxShadow(
-                          color: properties.direction == SwipeDirection.right
-                              ? Colors.green.withOpacity(0.5)
-                              : properties.direction == SwipeDirection.left
-                              ? Colors.red.withOpacity(0.5)
-                              : Colors.transparent,
-                          blurRadius: 20,
-                          spreadRadius: 5,
-                        ),
+                        if (shouldShowGlow)
+                          BoxShadow(
+                            color: properties.direction == SwipeDirection.right
+                                ? Colors.green.withOpacity(0.5)
+                                : properties.direction == SwipeDirection.left
+                                    ? Colors.red.withOpacity(0.5)
+                                    : Colors.transparent,
+                            blurRadius: 20,
+                            spreadRadius: 5,
+                          ),
                       ],
                     ),
                     child: ClipRRect(
@@ -92,7 +99,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                   );
                 },
                 overlayBuilder: (context, properties) {
-                  if (properties.direction == SwipeDirection.right) {
+                  if (properties.direction == SwipeDirection.right && shouldShowGlow) {
                     return const Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
@@ -107,7 +114,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                         ),
                       ),
                     );
-                  } else if (properties.direction == SwipeDirection.left) {
+                  } else if (properties.direction == SwipeDirection.left && shouldShowGlow) {
                     return const Align(
                       alignment: Alignment.topRight,
                       child: Padding(
