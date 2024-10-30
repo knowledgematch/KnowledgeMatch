@@ -34,8 +34,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
   Future<void> _sendSwipeRightNotification() async {
     await NotificationService().showNotification(
       id: 0,
-      title: 'Swipe Right',
-      body: 'You swiped right!',
+      title: 'Your knowledge has been requested!',
+      body: widget.searchCriteria.description,
       payload: 'Swipe Right Payload',
     );
   }
