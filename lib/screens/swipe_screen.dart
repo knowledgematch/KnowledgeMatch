@@ -1,77 +1,33 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:swipe_cards/swipe_cards.dart';
-import '../model/userprofile.dart';
+import 'package:swipable_stack/swipable_stack.dart';
+
 import '../model/search_criteria.dart';
+import '../model/userprofile.dart';
 import '../widgets/profile_card.dart';
 
 class SwipeScreen extends StatefulWidget {
+  final SearchCriteria searchCriteria;
+  final Future<List<Userprofile>> profiles;
+
+  const SwipeScreen(
+      {super.key, required this.searchCriteria, required this.profiles});
+
   @override
   ProfileSwipeScreenState createState() => ProfileSwipeScreenState();
-  final SearchCriteria searchCriteria;
-
-  const SwipeScreen({super.key, required this.searchCriteria});
 }
 
 class ProfileSwipeScreenState extends State<SwipeScreen> {
-  List<SwipeItem> _swipeItems = [];
-  MatchEngine? _matchEngine;
+  final SwipableStackController _controller = SwipableStackController();
+  bool shouldShowGlow = false;
 
-  final List<Userprofile> profiles = [
-    Userprofile(
-        name:         'Alice',
-        location:     'Brugg',
-        expertString: 'Oop1 Dnet1 Sysad',
-        availability: '18:30 - 19:30, every Friday',
-        langString:   'German English',
-        description:  'Loves hiking and photography.',
-    ),
-    Userprofile(
-        name:         'Bob',
-        location:     'Brugg',
-        expertString: 'algd1 eana Oop1',
-        availability: '08:15 - 11:00, Every Sunday',
-        langString:   'German English French',
-        description:  'Enjoys cooking and traveling.',
-    ),
-    Userprofile(
-        name:         'Charlie',
-        location:     'Brugg',
-        expertString: 'vana Oop2 infsec',
-        availability: '17:30 - 19:00, Every Sunday',
-        langString:   'German English',
-        description:  'Passionate about technology and music.',
-    ),
-    Userprofile(
-        name:         'Diana',
-        location:     'Brugg',
-        expertString: 'swagl uuidc pmc Oop1',
-        availability: '11:00 - 12:00, Every Day',
-        langString:   'English French',
-        description:  'Avid reader and coffee enthusiast.',
-    ),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeSwipeItems();
+  void checkSwipeDirection(double swipeDistance) {
+    if (swipeDistance > 0.8) {
+     shouldShowGlow = true;
+    } else {
+      shouldShowGlow = false;
+    }
   }
-
-  void _initializeSwipeItems() {
-    _swipeItems = profiles.map((profile) {
-      return SwipeItem(
-        content: profile,
-        likeAction: () {
-          profiles.remove(profile);
-        },
-        nopeAction: () {
-        },
-      );
-    }).toList();
-
-    _matchEngine = MatchEngine(swipeItems: _swipeItems);
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -81,59 +37,108 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
         title: const Text("Helpers"),
         centerTitle: true,
       ),
-      body: Center(
-        child: profiles.isNotEmpty
-            ? SizedBox(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: SwipeCards(
-            matchEngine: _matchEngine!,
-            itemBuilder: (BuildContext context, int index) {
-              return ProfileCard(
-                profile: _swipeItems[index % _swipeItems.length].content,
-              );
-            },
-            likeTag: const Center(
+      body: FutureBuilder<List<Userprofile>>(
+        future: widget.profiles,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
               child: Text(
-                "REQUEST",
-                style: TextStyle(
-                  color: Colors.green,
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
-                ),
+                "No more profiles to show!",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-            ),
-            nopeTag: const Center(
-              child: Text(
-                "DECLINE",
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
-                ),
+            );
+          } else {
+            var profiles = snapshot.data!;
+
+            return SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: SwipableStack(
+                controller: _controller,
+                itemCount: profiles.length,
+                horizontalSwipeThreshold: 0.8,
+                onSwipeCompleted: (index, direction) {
+                  setState(() {
+                    if (direction == SwipeDirection.right) {
+                      profiles.removeAt(_controller.currentIndex);
+                      _controller.currentIndex--;
+                    } else if (direction == SwipeDirection.left) {}
+                    if (_controller.currentIndex == profiles.length - 1) {
+                      _controller.currentIndex = -1;
+                    }
+                  });
+                },
+                builder: (context, properties) {
+                  checkSwipeDirection(properties.swipeProgress);
+                  return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        if (shouldShowGlow)
+                          BoxShadow(
+                            color: properties.direction == SwipeDirection.right
+                                ? Colors.green.withOpacity(0.5)
+                                : properties.direction == SwipeDirection.left
+                                    ? Colors.red.withOpacity(0.5)
+                                    : Colors.transparent,
+                            blurRadius: 20,
+                            spreadRadius: 5,
+                          ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: ProfileCard(
+                        profile: profiles[properties.index % profiles.length],
+                      ),
+                    ),
+                  );
+                },
+                overlayBuilder: (context, properties) {
+                  if (properties.direction == SwipeDirection.right && shouldShowGlow) {
+                    return const Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Text(
+                          'REQUEST',
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 50,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    );
+                  } else if (properties.direction == SwipeDirection.left && shouldShowGlow) {
+                    return const Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Text(
+                          'DECLINE',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 50,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+                swipeAssistDuration: const Duration(milliseconds: 200),
+                stackClipBehaviour: Clip.hardEdge,
+                allowVerticalSwipe: false,
               ),
-            ),
-            onStackFinished: () {
-              //with only one profile swipe_cards will crash when repeatedly swiping left
-              if(profiles.length > 1){
-                setState(() {
-                  _initializeSwipeItems();
-                });
-              }else{
-                profiles.clear();
-                setState(() {});
-              }
-            },
-            itemChanged: (SwipeItem item, int index) {
-            },
-            upSwipeAllowed: false,
-            fillSpace: false,
-          ),
-        )
-            : const Text(
-          "No more profiles to show!",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
+            );
+          }
+        },
       ),
     );
   }
