@@ -1,12 +1,10 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/services/notification_service.dart';
 import 'screens/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
-//Globally accesible: Instance of Local Notifications Plugin
-final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +16,10 @@ Future<void> main() async {
 	} catch (e) {
 		print('Firebase initialization error: $e');
 	}
+
+  //Initialize NotificationService
+  await NotificationService().init();
+
   runApp(MyApp());
 }
 
@@ -46,43 +48,9 @@ class _MyAppState extends State<MyApp> {
     // Retrieve the device token (optional)
     _getToken();
 
-    //initialize local notifications
-    _initializeLocalNotifications();
   }
 
-  void _initializeLocalNotifications() {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
 
-
-    //TODO when adding IOS
-    final InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: null,
-    );
-
-    //TODO: Add logic for when message gets selected!
-    _flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: null,
-    );
-
-    // Create notification channel (Android 8.0 and above)
-    _createNotificationChannel();
-  }
-
-  void _createNotificationChannel() async {
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'high_importance_channel', // ID
-      'High Importance Notifications', // Name
-      description: 'This channel is used for important notifications.', // Description
-      importance: Importance.max,
-    );
-
-    await _flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
-  }
 
 
   // Request notification permissions (especially for iOS)
@@ -147,35 +115,5 @@ class _MyAppState extends State<MyApp> {
       home: MainScreen(),
     );
   }
-
-  Future<void> _sendTestNotification() async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
-      'test_channel', // Channel ID
-      'Test Notifications', // Channel Name
-      channelDescription: 'This channel is used for test notifications.', // Description
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
-
-    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
-    DarwinNotificationDetails();
-
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iOSPlatformChannelSpecifics,
-    );
-
-    await _flutterLocalNotificationsPlugin.show(
-      0, // Notification ID
-      'Test Notification', // Notification Title
-      'This is a test notification generated locally.', // Notification Body
-      platformChannelSpecifics,
-      payload: 'Test Payload', // Optional payload
-    );
-  }
-
-
 
 }

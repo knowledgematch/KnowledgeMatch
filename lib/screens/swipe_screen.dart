@@ -4,6 +4,7 @@ import 'package:swipable_stack/swipable_stack.dart';
 
 import '../model/search_criteria.dart';
 import '../model/userprofile.dart';
+import '../services/notification_service.dart';
 import '../widgets/profile_card.dart';
 
 class SwipeScreen extends StatefulWidget {
@@ -27,6 +28,16 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
     } else {
       shouldShowGlow = false;
     }
+  }
+
+  // Use the NotificationService to send a notification
+  Future<void> _sendSwipeRightNotification() async {
+    await NotificationService().showNotification(
+      id: 0,
+      title: 'Swipe Right',
+      body: 'You swiped right!',
+      payload: 'Swipe Right Payload',
+    );
   }
 
   @override
@@ -65,7 +76,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                   setState(() {
                     if (direction == SwipeDirection.right) {
                       //send notification
-                      //_sendSwipeRightNotification();
+                      _sendSwipeRightNotification();
                       profiles.removeAt(_controller.currentIndex);
                       _controller.currentIndex--;
                     } else if (direction == SwipeDirection.left) {}
