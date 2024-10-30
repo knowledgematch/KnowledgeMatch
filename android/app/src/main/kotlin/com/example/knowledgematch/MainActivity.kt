@@ -1,4 +1,4 @@
-package com.example.knowledgematch
+package ch.fhnw.knowledgematch
 
 import io.flutter.embedding.android.FlutterActivity
 

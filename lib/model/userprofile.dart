@@ -4,6 +4,7 @@ class Userprofile {
   final List<String> expertise;
   final String availability;
   final List<String> languages;
+  final int? reachability;
   final String description;
 
   Userprofile({
@@ -12,6 +13,7 @@ class Userprofile {
     required String expertString,
     required this.availability,
     required String langString,
+    this.reachability,
     required this.description,
   }) :  expertise = expertString.split(" "),
         languages = langString.split(" ");
