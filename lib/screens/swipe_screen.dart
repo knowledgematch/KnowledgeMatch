@@ -64,6 +64,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                 onSwipeCompleted: (index, direction) {
                   setState(() {
                     if (direction == SwipeDirection.right) {
+                      //send notification
+                      //_sendSwipeRightNotification();
                       profiles.removeAt(_controller.currentIndex);
                       _controller.currentIndex--;
                     } else if (direction == SwipeDirection.left) {}
