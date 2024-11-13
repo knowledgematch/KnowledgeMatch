@@ -54,12 +54,9 @@ class NotificationService {
         ?.createNotificationChannel(channel);
   }
 
-  // Handle notification tapped logic here
   Future<void> onSelectNotification(NotificationResponse notificationResponse) async {
-    // You can navigate the user to a specific screen or perform other actions
     if (notificationResponse.payload != null) {
       print('Notification payload: ${notificationResponse.payload}');
-      // Implement your logic here
     }
   }
 

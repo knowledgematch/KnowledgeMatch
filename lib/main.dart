@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/model/local_user.dart';
 import 'package:knowledgematch/services/notification_service.dart';
 import 'screens/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,13 +33,13 @@ class _MyAppState extends State<MyApp> {
 
   // Instance of Firebase Messaging
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-
+  LocalUser? localUser;
 
 
   @override
   void initState() {
     super.initState();
-
+    _setLocalUser();
     // Request permission on iOS (optional for Android)
     _requestPermissions();
 
@@ -50,7 +51,9 @@ class _MyAppState extends State<MyApp> {
 
   }
 
-
+void _setLocalUser(){
+    localUser =  LocalUser(name: "Alice", location: "Location", expertString: "expertString", availability: "availability", langString: "langString", description: "description");
+}
 
 
   // Request notification permissions (especially for iOS)
@@ -102,7 +105,8 @@ class _MyAppState extends State<MyApp> {
   void _getToken() async {
     String? token = await _messaging.getToken();
     print('FCM Token: $token');
-    // You can send the token to your server or save it locally
+    localUser?.getTokensList()?.add(token!);
+    print('FCM Token: ${localUser?.getTokensList()?.single}');
   }
 
   @override
