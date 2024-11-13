@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
@@ -95,5 +96,24 @@ class NotificationService {
       platformChannelSpecifics,
       payload: payload,
     );
+  }
+
+  Future<void> sendMessageToDevice(String targetToken, String title, String body) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('sendToDevice');
+
+    try {
+      final response = await callable.call({
+        'targetToken': targetToken,
+        'title': title,
+        'body': body,
+      });
+      if (response.data['success']) {
+        print('Message sent successfully');
+      } else {
+        print('Failed to send message: ${response.data['error']}');
+      }
+    } catch (e) {
+      print('Error calling function: $e');
+    }
   }
 }
