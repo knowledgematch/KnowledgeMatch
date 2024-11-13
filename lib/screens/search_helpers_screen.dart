@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'swipe_screen.dart';
 import '../model/search_criteria.dart';
 import '../services/matching_algorithm.dart';
+import '../model/reachability.dart';
 
 class FindMatchesScreen extends StatefulWidget {
   const FindMatchesScreen({super.key});
@@ -15,9 +16,11 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
   String? topic;
   DateTime? selectedTimeFrame;
   String? description;
+  int? reachability;
   String? country;
 
   final List<String> topics = ['OOP', 'SYSAD', 'MADA'];
+  final List<int> reachabilities = [0, 1, 2];
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +41,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
+              // Topics dropdown
               const Text("What is the topic you are having problems with?"),
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
@@ -64,6 +68,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
 
               const SizedBox(height: 16),
 
+              // Calender Picker
               const Text("What is your desired time frame to discuss the matter?"),
               InkWell(
                 onTap: () async {
@@ -114,9 +119,36 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                   description = value;
                 },
               ),
+              const SizedBox(height: 16),
+
+              // Connection dropdown
+              const Text("How do you want to connect?"),
+              DropdownButtonFormField<int>(
+                decoration: const InputDecoration(
+                  hintText: 'Select an option',
+                ),
+                items: reachabilities.map((reachability) {
+                  return DropdownMenuItem<int>(
+                    value: reachability,
+                    child: Text(ReachabilityValue.fromValue(reachability).description),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    reachability = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a connection type';
+                  }
+                  return null;
+                },
+              ),
 
               const SizedBox(height: 24),
 
+              // Search button
               const Text("Find students and experts near you"),
               TextFormField(
                 decoration: const InputDecoration(
@@ -141,6 +173,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                           ? selectedTimeFrame!.toIso8601String()
                           : '',
                       description: description!,
+                      reachability: reachability,
                       location: country,
                     );
 

@@ -13,14 +13,14 @@ class MatchingAlgorithm{
                     'JOIN Topic t ON kt.T_ID = t.T_ID';
     List<String> queryBuilder = [];
 
-    List<Userprofile> profiles = [];
-
     if (searchCriteria.topic.isNotEmpty) {
       queryBuilder.add("Keyword = '${searchCriteria.topic}'");
     }
 
     if (searchCriteria.reachability != null) {
-      queryBuilder.add("Reachability = ${searchCriteria.reachability}");
+      if(searchCriteria.reachability != 2) {
+        queryBuilder.add("Reachability IN (${searchCriteria.reachability}, 2)");
+      }
     }
 
     if(queryBuilder.isNotEmpty) {
@@ -29,6 +29,8 @@ class MatchingAlgorithm{
     query += ' GROUP BY u.U_ID, u.Name, u.Surname, u.Reachability';
 
     var result = await DBConnection().getSQLResponse(query);
+
+    List<Userprofile> profiles = [];
     if(result != null) {
       for (var row in result.rows) {
         var data = row.assoc();
@@ -36,7 +38,7 @@ class MatchingAlgorithm{
         profiles.add(
             Userprofile(
               name: data['FullName'].toString(),
-              location: 'Brugg',
+              location: 'Placeholder here',
               expertString: data['Keywords'].toString(),
               availability: 'Placeholder here',
               langString: 'Placeholder here',
