@@ -19,8 +19,21 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
   int? reachability;
   String? country;
 
-  final List<String> topics = ['OOP', 'SYSAD', 'MADA'];
-  final List<int> reachabilities = [0, 1, 2];
+  late List<String> topics = [];
+  late List<int> reachabilities = [];
+
+  @override
+  void initState(){
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    topics = await MatchingAlgorithm().getTopics();
+    reachabilities = (await MatchingAlgorithm().getReachabilities())!;
+    setState(() {
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
