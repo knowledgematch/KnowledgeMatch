@@ -102,8 +102,8 @@ class NotificationService {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('sendToDevice');
 
     try {
-      final response = await callable.call({
-        'targetToken': targetToken,
+      final response = await callable.call(<String, dynamic>{
+        'token': targetToken,
         'title': title,
         'body': body,
       });
@@ -112,6 +112,7 @@ class NotificationService {
       } else {
         print('Failed to send message: ${response.data['error']}');
       }
+      print(response.data);
     } catch (e) {
       print('Error calling function: $e');
     }
