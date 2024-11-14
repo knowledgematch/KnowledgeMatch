@@ -4,7 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class NotificationService {
   // Singleton pattern
   static final NotificationService _notificationService =
-  NotificationService._internal();
+      NotificationService._internal();
 
   factory NotificationService() {
     return _notificationService;
@@ -14,18 +14,19 @@ class NotificationService {
 
   // Instance of FlutterLocalNotificationsPlugin
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   // Initialization settings for Android
   final AndroidInitializationSettings initializationSettingsAndroid =
-  const AndroidInitializationSettings('@mipmap/ic_launcher');
+      const AndroidInitializationSettings('@mipmap/ic_launcher');
 
   // Initialization settings for iOS
   final DarwinInitializationSettings initializationSettingsIOS =
-  const DarwinInitializationSettings();
+      const DarwinInitializationSettings();
 
   // Initialization settings for both platforms
-  late final InitializationSettings initializationSettings = InitializationSettings(
+  late final InitializationSettings initializationSettings =
+      InitializationSettings(
     android: initializationSettingsAndroid,
     iOS: initializationSettingsIOS,
   );
@@ -45,17 +46,19 @@ class NotificationService {
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'default_channel', // Channel ID
       'Default Notifications', // Channel Name
-      description: 'This channel is used for default notifications.', // Description
+      description: 'This channel is used for default notifications.',
+      // Description
       importance: Importance.max,
     );
 
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
   }
 
-  Future<void> onSelectNotification(NotificationResponse notificationResponse) async {
+  Future<void> onSelectNotification(
+      NotificationResponse notificationResponse) async {
     if (notificationResponse.payload != null) {
       print('Notification payload: ${notificationResponse.payload}');
     }
@@ -69,10 +72,11 @@ class NotificationService {
     String? payload,
     String channelId = 'default_channel',
     String channelName = 'Default Notifications',
-    String channelDescription = 'This channel is used for default notifications.',
+    String channelDescription =
+        'This channel is used for default notifications.',
   }) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'default_channel', // Channel ID
       'Default Notifications', // Channel Name
       channelDescription: 'This channel is used for default notifications.',
@@ -82,7 +86,7 @@ class NotificationService {
     );
 
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
-    DarwinNotificationDetails();
+        DarwinNotificationDetails();
 
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
@@ -98,23 +102,20 @@ class NotificationService {
     );
   }
 
-  Future<void> sendMessageToDevice(String targetToken, String title, String body) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('sendToDevice');
-
-    try {
-      final response = await callable.call(<String, dynamic>{
+  Future<void> sendMessageToDevice(
+      String targetToken, String title, String body) async {
+    final result =
+        await FirebaseFunctions.instance.httpsCallable('sendToDevice').call(
+      {
         'token': targetToken,
         'title': title,
         'body': body,
-      });
-      if (response.data['success']) {
-        print('Message sent successfully');
-      } else {
-        print('Failed to send message: ${response.data['error']}');
-      }
-      print(response.data);
-    } catch (e) {
-      print('Error calling function: $e');
+      },
+    );
+    if (result.data['success']) {
+      print('Message sent successfully');
+    } else {
+      print('Failed to send message: ${result.data['error']}');
     }
   }
 }

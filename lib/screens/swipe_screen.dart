@@ -32,10 +32,11 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
 
   // Use the NotificationService to send a notification
   Future<void> _sendSwipeRightNotification() async {
-    NotificationService().sendMessageToDevice(
+    await NotificationService().sendMessageToDevice(
         "eA5YhA32RJWALJsDphXdfG:APA91bEh6s3D7vlrk0RkL4FlicsBqDi4o63HxNnnSIYiEyaw6XspZ9JO7H7mZ2bDBHTE_zenOzVucVhfbsMlttO-2YO-B8JgK9RCcZrFzWTRArxuiNMsd4U",
         "Your knowledge has been requested!",
         widget.searchCriteria.description);
+    //TODO add actual target token of selected userprofile
   }
 
   @override

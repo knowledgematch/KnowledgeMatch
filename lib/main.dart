@@ -40,13 +40,10 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _setLocalUser();
-    // Request permission on iOS (optional for Android)
     _requestPermissions();
 
     // Initialize FCM
     _initializeFCM();
-
-    // Retrieve the device token (optional)
     _getToken();
 
   }
@@ -79,8 +76,14 @@ void _setLocalUser(){
       print('Message data: ${message.data}');
 
       if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
+        print('Message also contained a notification: ${message.notification?.body}');
         // You can show a local notification here using flutter_local_notifications
+
+        NotificationService().showNotification(
+          id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          title: message.notification?.title ?? 'New Notification',
+          body: message.notification?.body ?? '',
+        );
       }
     });
 
@@ -108,7 +111,6 @@ void _setLocalUser(){
     localUser?.getTokensList()?.add(token!);
     print('FCM Token: ${localUser?.getTokensList()?.single}');
   }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
