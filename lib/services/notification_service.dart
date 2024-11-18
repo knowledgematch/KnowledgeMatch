@@ -1,15 +1,22 @@
+import 'dart:convert';
+
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../screens/request_screen.dart';
+
+late BuildContext appContext;
+
 class NotificationService {
+  GlobalKey<NavigatorState>? navigatorKey;
   // Singleton pattern
   static final NotificationService _notificationService =
       NotificationService._internal();
-
   factory NotificationService() {
     return _notificationService;
   }
-
   NotificationService._internal();
 
   // Instance of FlutterLocalNotificationsPlugin
@@ -31,7 +38,8 @@ class NotificationService {
     iOS: initializationSettingsIOS,
   );
 
-  Future<void> init() async {
+  Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
+    this.navigatorKey = navigatorKey;
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: onSelectNotification,
@@ -61,10 +69,24 @@ class NotificationService {
       NotificationResponse notificationResponse) async {
     if (notificationResponse.payload != null) {
       print('Notification payload: ${notificationResponse.payload}');
+
+      final Map<String, dynamic> data = Map<String, dynamic>.from(
+        jsonDecode(notificationResponse.payload!),
+      );
+
+      navigatorKey?.currentState?.push(
+        MaterialPageRoute(
+          builder: (context) => RequestScreen(
+            requesterName: "Alice Anderson",
+            requesterTitle: data['title'] ?? 'No Title',
+            requesterLocation: "Brugg",
+            issueDescription: data['body'] ?? 'No Description',
+          ),
+        ),
+      );
     }
   }
 
-  // Method to display a notification
   Future<void> showNotification({
     required int id,
     required String title,
@@ -73,10 +95,10 @@ class NotificationService {
     String channelId = 'default_channel',
     String channelName = 'Default Notifications',
     String channelDescription =
-        'This channel is used for default notifications.',
+    'This channel is used for default notifications.',
   }) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
+    AndroidNotificationDetails(
       'default_channel', // Channel ID
       'Default Notifications', // Channel Name
       channelDescription: 'This channel is used for default notifications.',
@@ -86,21 +108,28 @@ class NotificationService {
     );
 
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
-        DarwinNotificationDetails();
+    DarwinNotificationDetails();
 
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
 
+    // Prepare payload as a JSON string
+    final String notificationPayload = jsonEncode({
+      'title': title,
+      'body': body,
+    });
+
     await flutterLocalNotificationsPlugin.show(
       id,
       title,
       body,
       platformChannelSpecifics,
-      payload: payload,
+      payload: notificationPayload, // Pass the payload
     );
   }
+
 
   Future<void> sendMessageToDevice(
       String targetToken, String title, String body) async {
