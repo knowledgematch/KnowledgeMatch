@@ -24,7 +24,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
 
   void checkSwipeDirection(double swipeDistance) {
     if (swipeDistance > 0.8) {
-     shouldShowGlow = true;
+      shouldShowGlow = true;
     } else {
       shouldShowGlow = false;
     }
@@ -32,12 +32,11 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
 
   // Use the NotificationService to send a notification
   Future<void> _sendSwipeRightNotification() async {
-    await NotificationService().showNotification(
-      id: 0,
-      title: 'Your knowledge has been requested!',
-      body: widget.searchCriteria.description,
-      payload: 'Swipe Right Payload',
-    );
+    await NotificationService().sendMessageToDevice(
+        "eA5YhA32RJWALJsDphXdfG:APA91bEh6s3D7vlrk0RkL4FlicsBqDi4o63HxNnnSIYiEyaw6XspZ9JO7H7mZ2bDBHTE_zenOzVucVhfbsMlttO-2YO-B8JgK9RCcZrFzWTRArxuiNMsd4U",
+        "Your knowledge has been requested!",
+        widget.searchCriteria.description);
+    //TODO add actual target token of selected userprofile
   }
 
   @override
@@ -112,7 +111,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                   );
                 },
                 overlayBuilder: (context, properties) {
-                  if (properties.direction == SwipeDirection.right && shouldShowGlow) {
+                  if (properties.direction == SwipeDirection.right &&
+                      shouldShowGlow) {
                     return const Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
@@ -127,7 +127,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                         ),
                       ),
                     );
-                  } else if (properties.direction == SwipeDirection.left && shouldShowGlow) {
+                  } else if (properties.direction == SwipeDirection.left &&
+                      shouldShowGlow) {
                     return const Align(
                       alignment: Alignment.topRight,
                       child: Padding(

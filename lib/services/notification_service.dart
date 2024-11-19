@@ -1,35 +1,45 @@
+import 'dart:convert';
+
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../screens/request_screen.dart';
+
+late BuildContext appContext;
+
 class NotificationService {
+  GlobalKey<NavigatorState>? navigatorKey;
   // Singleton pattern
   static final NotificationService _notificationService =
-  NotificationService._internal();
-
+      NotificationService._internal();
   factory NotificationService() {
     return _notificationService;
   }
-
   NotificationService._internal();
 
   // Instance of FlutterLocalNotificationsPlugin
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   // Initialization settings for Android
   final AndroidInitializationSettings initializationSettingsAndroid =
-  const AndroidInitializationSettings('@mipmap/ic_launcher');
+      const AndroidInitializationSettings('@mipmap/ic_launcher');
 
   // Initialization settings for iOS
   final DarwinInitializationSettings initializationSettingsIOS =
-  const DarwinInitializationSettings();
+      const DarwinInitializationSettings();
 
   // Initialization settings for both platforms
-  late final InitializationSettings initializationSettings = InitializationSettings(
+  late final InitializationSettings initializationSettings =
+      InitializationSettings(
     android: initializationSettingsAndroid,
     iOS: initializationSettingsIOS,
   );
 
-  Future<void> init() async {
+  Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
+    this.navigatorKey = navigatorKey;
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: onSelectNotification,
@@ -42,28 +52,40 @@ class NotificationService {
   // Create a notification channel for Android (8.0+)
   Future<void> _createNotificationChannel() async {
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'default_channel', // Channel ID
-      'Default Notifications', // Channel Name
-      description: 'This channel is used for default notifications.', // Description
+      'default_channel',
+      'Default Notifications',
+      description: 'This channel is used for default notifications.',
       importance: Importance.max,
     );
 
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
   }
 
-  // Handle notification tapped logic here
-  Future<void> onSelectNotification(NotificationResponse notificationResponse) async {
-    // You can navigate the user to a specific screen or perform other actions
+  Future<void> onSelectNotification(
+      NotificationResponse notificationResponse) async {
     if (notificationResponse.payload != null) {
       print('Notification payload: ${notificationResponse.payload}');
-      // Implement your logic here
+
+      final Map<String, dynamic> data = Map<String, dynamic>.from(
+        jsonDecode(notificationResponse.payload!),
+      );
+
+      navigatorKey?.currentState?.push(
+        MaterialPageRoute(
+          builder: (context) => RequestScreen(
+            requesterName: "Alice Anderson",
+            requesterTitle: data['title'] ?? 'No Title',
+            requesterLocation: "Brugg",
+            issueDescription: data['body'] ?? 'No Description',
+          ),
+        ),
+      );
     }
   }
 
-  // Method to display a notification
   Future<void> showNotification({
     required int id,
     required String title,
@@ -71,12 +93,13 @@ class NotificationService {
     String? payload,
     String channelId = 'default_channel',
     String channelName = 'Default Notifications',
-    String channelDescription = 'This channel is used for default notifications.',
+    String channelDescription =
+    'This channel is used for default notifications.',
   }) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(
-      'default_channel', // Channel ID
-      'Default Notifications', // Channel Name
+      'default_channel',
+      'Default Notifications',
       channelDescription: 'This channel is used for default notifications.',
       importance: Importance.max,
       priority: Priority.high,
@@ -91,12 +114,35 @@ class NotificationService {
       iOS: iOSPlatformChannelSpecifics,
     );
 
+    final String notificationPayload = jsonEncode({
+      'title': title,
+      'body': body,
+    });
+
     await flutterLocalNotificationsPlugin.show(
       id,
       title,
       body,
       platformChannelSpecifics,
-      payload: payload,
+      payload: notificationPayload,
     );
+  }
+
+
+  Future<void> sendMessageToDevice(
+      String targetToken, String title, String body) async {
+    final result =
+        await FirebaseFunctions.instance.httpsCallable('sendToDevice').call(
+      {
+        'token': targetToken,
+        'title': title,
+        'body': body,
+      },
+    );
+    if (result.data['success']) {
+      print('Message sent successfully');
+    } else {
+      print('Failed to send message: ${result.data['error']}');
+    }
   }
 }

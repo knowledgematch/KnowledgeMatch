@@ -1,4 +1,4 @@
-class Userprofile {
+class LocalUser {
   final String name;
   final String location;
   final List<String> expertise;
@@ -8,7 +8,7 @@ class Userprofile {
   final String description;
   List<String>? tokens = [];
 
-  Userprofile({
+  LocalUser({
     required this.name,
     required this.location,
     required String expertString,
