@@ -52,10 +52,9 @@ class NotificationService {
   // Create a notification channel for Android (8.0+)
   Future<void> _createNotificationChannel() async {
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'default_channel', // Channel ID
-      'Default Notifications', // Channel Name
+      'default_channel',
+      'Default Notifications',
       description: 'This channel is used for default notifications.',
-      // Description
       importance: Importance.max,
     );
 
@@ -99,8 +98,8 @@ class NotificationService {
   }) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(
-      'default_channel', // Channel ID
-      'Default Notifications', // Channel Name
+      'default_channel',
+      'Default Notifications',
       channelDescription: 'This channel is used for default notifications.',
       importance: Importance.max,
       priority: Priority.high,
@@ -115,7 +114,6 @@ class NotificationService {
       iOS: iOSPlatformChannelSpecifics,
     );
 
-    // Prepare payload as a JSON string
     final String notificationPayload = jsonEncode({
       'title': title,
       'body': body,
@@ -126,7 +124,7 @@ class NotificationService {
       title,
       body,
       platformChannelSpecifics,
-      payload: notificationPayload, // Pass the payload
+      payload: notificationPayload,
     );
   }
 

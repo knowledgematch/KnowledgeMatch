@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/screens/main_screen.dart';
 
+import '../services/notification_service.dart';
+
 class RequestScreen extends StatelessWidget {
   final String requesterName;
   final String requesterTitle;
   final String requesterLocation;
   final String issueDescription;
-
+  final String requesterToken = "eA5YhA32RJWALJsDphXdfG:APA91bEh6s3D7vlrk0RkL4FlicsBqDi4o63HxNnnSIYiEyaw6XspZ9JO7H7mZ2bDBHTE_zenOzVucVhfbsMlttO-2YO-B8JgK9RCcZrFzWTRArxuiNMsd4U";
+  //TODO add actual token
   RequestScreen({
     required this.requesterName,
     required this.requesterTitle,
@@ -34,7 +37,6 @@ class RequestScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile Section
             Card(
               elevation: 2,
               child: Padding(
@@ -45,11 +47,10 @@ class RequestScreen extends StatelessWidget {
                     CircleAvatar(
                       radius: 30,
                       backgroundImage: NetworkImage(
-                        'https://via.placeholder.com/150', // Replace with actual image URL or asset
+                        'https://via.placeholder.com/150',
                       ),
                     ),
                     SizedBox(width: 16),
-                    // Requester Info
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +87,6 @@ class RequestScreen extends StatelessWidget {
             ),
             SizedBox(height: 24),
 
-            // Issue Section
             Text(
               'The issue',
               style: TextStyle(
@@ -108,19 +108,20 @@ class RequestScreen extends StatelessWidget {
               ),
             ),
             Spacer(),
-
-            // Action Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Accept Button
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.of(context).push(
                         MaterialPageRoute(
                             builder: (context) => MainScreen()
                         )
                     );
+                    await NotificationService().sendMessageToDevice(
+                        requesterToken,
+                        "Your request has been accepted",
+                        "$requesterName has accepted your request");
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -134,14 +135,17 @@ class RequestScreen extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-                // Deny Button
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.of(context).push(
                         MaterialPageRoute(
                             builder: (context) => MainScreen()
                         )
                     );
+                    await NotificationService().sendMessageToDevice(
+                       requesterToken,
+                        "Your request has been declined",
+                        "$requesterName has declined your request");
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -151,7 +155,7 @@ class RequestScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: Text(
-                    'Deny',
+                    'Decline',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
