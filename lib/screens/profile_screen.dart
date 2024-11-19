@@ -145,8 +145,8 @@ class ProfileScreenState extends State<ProfileScreen> {
             MaterialPageRoute(builder: (context) => const CreateProfileScreen()),
           );
         },
-        child: const Icon(Icons.add),
         tooltip: 'Add Account',
+        child: const Icon(Icons.add),
       ),
     );
   }
