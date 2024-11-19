@@ -46,9 +46,6 @@ class RequestScreen extends StatelessWidget {
                     // Profile Picture
                     CircleAvatar(
                       radius: 30,
-                      backgroundImage: NetworkImage(
-                        'https://via.placeholder.com/150',
-                      ),
                     ),
                     SizedBox(width: 16),
                     Expanded(

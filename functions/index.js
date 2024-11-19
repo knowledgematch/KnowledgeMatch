@@ -7,7 +7,6 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
   const title = request.data.title;
   const body = request.data.body;
 
-  // Example of sending a push notification using Firebase Cloud Messaging (FCM)
   try {
     const message = {
       notification: {
