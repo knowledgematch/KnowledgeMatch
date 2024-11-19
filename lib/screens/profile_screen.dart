@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'create_profile_screen.dart'; // Import the CreateProfileScreen file
+import 'package:knowledgematch/services/db_connection.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -15,6 +17,31 @@ class ProfileScreenState extends State<ProfileScreen> {
   String _language = 'German';
 
   final _formKey = GlobalKey<FormState>();
+  final dbConnection = DBConnection();
+
+  Future<void> _saveProfile() async {
+    final query = """
+      INSERT INTO profiles (name, location, expert_in, availability, language)
+      VALUES ('$_name', '$_location', '$_expertIn', '$_availability', '$_language')
+      ON DUPLICATE KEY UPDATE
+        location = '$_location', 
+        expert_in = '$_expertIn', 
+        availability = '$_availability', 
+        language = '$_language';
+    """;
+
+    final result = await dbConnection.getSQLResponse(query);
+
+    if (result != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile saved successfully!')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to save profile.')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +49,6 @@ class ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: const Text('Profile'),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-
-          },
-        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -35,7 +56,6 @@ class ProfileScreenState extends State<ProfileScreen> {
           key: _formKey,
           child: Column(
             children: [
-
               const CircleAvatar(
                 radius: 50,
                 backgroundImage: AssetImage('assets/images/profile.png'),
@@ -53,9 +73,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   });
                 },
               ),
-
               const SizedBox(height: 16),
-
               TextFormField(
                 initialValue: _location,
                 decoration: const InputDecoration(
@@ -68,9 +86,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   });
                 },
               ),
-
               const SizedBox(height: 16),
-
               TextFormField(
                 initialValue: _expertIn,
                 decoration: const InputDecoration(
@@ -83,9 +99,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   });
                 },
               ),
-
               const SizedBox(height: 16),
-
               TextFormField(
                 initialValue: _availability,
                 decoration: const InputDecoration(
@@ -98,9 +112,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   });
                 },
               ),
-
               const SizedBox(height: 16),
-
               TextFormField(
                 initialValue: _language,
                 decoration: const InputDecoration(
@@ -113,15 +125,11 @@ class ProfileScreenState extends State<ProfileScreen> {
                   });
                 },
               ),
-
               const SizedBox(height: 16),
-
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Profile updated!')),
-                    );
+                    _saveProfile();
                   }
                 },
                 child: const Text('Save Changes'),
@@ -129,6 +137,16 @@ class ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreateProfileScreen()),
+          );
+        },
+        child: const Icon(Icons.add),
+        tooltip: 'Add Account',
       ),
     );
   }
