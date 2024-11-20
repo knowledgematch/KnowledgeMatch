@@ -1,3 +1,5 @@
+image: ghcr.io/cirruslabs/flutter
+
 stages:          # List of stages for jobs, and their order of execution
   - build
   - test
