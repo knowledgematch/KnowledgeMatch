@@ -4,16 +4,6 @@ stages:          # List of stages for jobs, and their order of execution
   - quality-check
   - deploy
 
-variables:
-  FLUTTER_VERSION: "3.0.0"
-
-before_script:
-  - echo "Setting up Flutter environment..."
-  - git clone https://github.com/flutter/flutter.git -b stable --depth 1
-  - export PATH="$PATH:`pwd`/flutter/bin"
-  - flutter --version
-  - flutter pub get
-
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
