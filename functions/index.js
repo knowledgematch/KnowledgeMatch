@@ -19,7 +19,7 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
       },
       tokens: tokens,
     };
-    const response = await admin.messaging().sendMulticast(message);
+    const response = await admin.messaging().sendEachForMulticast(message);
     console.log("Successfully sent messages:", response);
 
     return {success: true, response: response.successCount};
