@@ -107,19 +107,23 @@ class NotificationService {
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
+    final String notificationPayload = jsonEncode({
+    'requesterName': message.data['requesterName'] ?? '',
+    'requesterTitle': message.data['requesterTitle'] ?? '',
+    'userId': message.data['userId'] ?? '',
+    'notificationType': message.data['notificationType'] ?? '',
+    'requesterLocation': message.data['requesterLocation'] ?? '',
+    'issueDescription': message.data['issueDescription'] ?? '',
+    'requesterToken': message.data['requesterToken'] ?? ''
+  });
 
- //  final String notificationPayload = jsonEncode({
- //    'title': message.notification?.title,
- //    'body': message.notification?.body
- //    'requesterName': message.data['requersterName'] ?? ''.
- //  });
 
     await flutterLocalNotificationsPlugin.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
       message.notification?.title,
       message.notification?.body,
       platformChannelSpecifics,
-      payload: jsonEncode(message.data),
+      payload: notificationPayload,
     );
   }
 
