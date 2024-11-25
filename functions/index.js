@@ -14,8 +14,8 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
         body: body,
       },
       data: {
-      user_id: request.data.user_id,
-      notification_type: request.data.notification_type
+        user_id: request.data.user_id,
+        notification_type: request.data.notification_type,
       },
       token: targetToken,
     };
