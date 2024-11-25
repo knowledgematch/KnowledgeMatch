@@ -11,14 +11,14 @@ class MatchingAlgorithm{
 
   Future<List<int>?> getReachabilities() async {
     var result = await DBConnection().getSQLResponse(
-        'SELECT DISTINCT Reachability from Users');
+        'SELECT DISTINCT Reachability from User');
     return result?.rows.map((row) => int.parse(row.assoc()['Reachability']!)).toList() ?? [];
   }
 
   Future<List<Userprofile>> matchingAlgorithm(SearchCriteria searchCriteria) async {
     String query =  'SELECT CONCAT(u.Name, \' \', u.Surname) AS FullName, '
                     'u.Reachability, GROUP_CONCAT(DISTINCT k.Keyword ORDER BY '
-                    'k.Keyword SEPARATOR \', \') AS Keywords FROM Users u '
+                    'k.Keyword SEPARATOR \', \') AS Keywords FROM User u '
                     'JOIN User2Keyword uk ON u.U_ID = uk.U_ID '
                     'JOIN Keyword k ON uk.K_ID = k.K_ID '
                     'JOIN Keyword2Topic kt ON k.K_ID = kt.K_ID '
