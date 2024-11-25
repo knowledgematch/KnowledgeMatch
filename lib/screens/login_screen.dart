@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import 'create_profile_screen.dart';
 import 'main_screen.dart'; // Import the MainScreen
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -19,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      // Show error if fields are empty
       return;
     }
 
@@ -36,24 +36,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final token = data['token']; // Store this token for authenticated routes
+        final token = data['token'];
+        final user = data['user'];
 
-        // Store token (for example, using shared_preferences or other secure methods)
+        // Save the logged-in user persistently
+        await storeLoggedInUser(token, user);
 
-        // Navigate to the MainScreen after a successful login
+        // Navigate to the main screen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MainScreen()),
         );
       } else {
-        // Show error if login fails
         final data = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(data['message']),
         ));
       }
     } catch (e) {
-      // Handle network or other errors
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Error: $e'),
       ));
@@ -62,6 +62,13 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = false;
       });
     }
+  }
+
+  // Method to store logged-in user persistently
+  Future<void> storeLoggedInUser(String token, Map<String, dynamic> user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+    await prefs.setString('userData', jsonEncode(user));
   }
 
   @override

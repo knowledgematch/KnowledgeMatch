@@ -1,148 +1,62 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/model/local_user.dart';
-import 'package:knowledgematch/screens/request_screen.dart';
-import 'package:knowledgematch/services/notification_service.dart';
-import 'screens/main_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import 'screens/login_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'screens/main_screen.dart';
 
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    print('Firebase is working');
-  } catch (e) {
-    print('Firebase initialization error: $e');
-  }
-
+void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
-  State<MyApp> createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'KnowledgeMatch',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: SplashScreen(), // Start with a splash screen for initialization
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
 
-  // Instance of Firebase Messaging
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  LocalUser? localUser;
-
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    NotificationService().init(navigatorKey);
-    _setLocalUser();
-    _requestPermissions();
-
-    // Initialize FCM
-    _initializeFCM();
-    _getToken();
+    _checkLoggedInStatus();
   }
 
-  void _setLocalUser() {
-    localUser = LocalUser(
-        name: "Alice",
-        location: "Location",
-        expertString: "expertString",
-        availability: "availability",
-        langString: "langString",
-        description: "description");
-  }
+  Future<void> _checkLoggedInStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final userDataString = prefs.getString('userData');
 
-  // Request notification permissions (especially for iOS)
-  void _requestPermissions() async {
-    NotificationSettings settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-    } else if (settings.authorizationStatus == AuthorizationStatus.denied) {
-      print('User denied permission');
-    }
-  }
-
-  // Initialize Firebase Messaging
-  void _initializeFCM() {
-    // Handle foreground messages
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        NotificationService().showNotification(
-          id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-          title: message.notification?.title ?? 'New Notification',
-          body: message.notification?.body ?? '',
-        );
-      }
-    });
-
-    _handleInitialMessage();
-
-    //  Handle messages when the app is brought to foreground from background
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print(
-          'App opened from terminated state by a message: ${message.notification}');
-      navigatorKey.currentState?.push(
-        MaterialPageRoute(
-          builder: (context) => RequestScreen(
-            requesterName: "Alice",
-            requesterTitle: message.notification?.title ?? 'no title',
-            requesterLocation: "Brugg",
-            issueDescription: message.notification?.body ?? 'no description',
-          ),
-        ),
+    if (token != null && userDataString != null) {
+      // User is logged in, navigate to MainScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
       );
-    });
-  }
-
-  void _handleInitialMessage() async {
-    RemoteMessage? message =
-        await FirebaseMessaging.instance.getInitialMessage();
-    if (message != null) {
-      print(
-          'App opened from terminated state by a message: ${message.notification}');
-      navigatorKey.currentState?.push(
-        MaterialPageRoute(
-          builder: (context) => RequestScreen(
-            requesterName: "Alice",
-            requesterTitle: message.notification?.title ?? 'no title',
-            requesterLocation: "Brugg",
-            issueDescription: message.notification?.body ?? 'no description',
-          ),
-        ),
+    } else {
+      // User is not logged in, navigate to LoginScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     }
-  }
-
-  // Retrieve and print the device's FCM token
-  void _getToken() async {
-    String? token = await _messaging.getToken();
-    print('FCM Token: $token');
-    localUser?.getTokensList()?.add(token!);
-    print('FCM Token: ${localUser?.getTokensList()?.single}');
   }
 
   @override
   Widget build(BuildContext context) {
-    appContext = context;
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      title: 'Knowledge Match',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(), // Loading indicator while checking login status
       ),
-      home: LoginScreen(),
     );
   }
 }
