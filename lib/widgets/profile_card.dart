@@ -72,14 +72,20 @@ class ProfileCard extends StatelessWidget {
                   label: 'Reachability',
                   value: _getReachability(profile.reachability),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                SizedBox(height: 10),
 
                 // Description Field
                 _ProfileInfoField(
                   label: 'Description',
                   value: profile.description,
+                ),
+
+                SizedBox(height: 10),
+
+                // Seniority Field
+                _ProfileInfoField(
+                  label: 'Seniority',
+                  value: profile.seniority.toString(),
                 ),
 
                 SizedBox(height: 20),
