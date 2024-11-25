@@ -87,7 +87,7 @@ class _MyAppState extends State<MyApp> {
 
     _handleInitialMessage();
 
-    // Handle messages when the app is brought to foreground from background
+    //  Handle messages when the app is brought to foreground from background
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print(
           'App opened from terminated state by a message: ${message.notification}');
