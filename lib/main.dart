@@ -4,8 +4,10 @@ import 'package:knowledgematch/model/local_user.dart';
 import 'package:knowledgematch/screens/request_screen.dart';
 import 'package:knowledgematch/services/notification_service.dart';
 import 'screens/main_screen.dart';
+import 'screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -140,7 +142,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MainScreen(),
+      home: LoginScreen(),
     );
   }
 }

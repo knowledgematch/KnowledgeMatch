@@ -138,16 +138,6 @@ class ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateProfileScreen()),
-          );
-        },
-        tooltip: 'Add Account',
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }
