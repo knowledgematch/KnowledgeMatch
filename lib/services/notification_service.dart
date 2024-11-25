@@ -143,7 +143,7 @@ class NotificationService {
     final result =
         await FirebaseFunctions.instance.httpsCallable('sendToDevice').call(
       {
-        'token': targetToken,
+        'tokens': tokens,
         'title': title,
         'body': body,
         'user_id': "UserID",

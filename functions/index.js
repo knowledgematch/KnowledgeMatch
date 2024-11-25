@@ -3,7 +3,7 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 
 exports.sendToDevice = functions.https.onCall(async (request) => {
-  const targetToken = request.data.token;
+  const tokens = request.data.tokens;
   const title = request.data.title;
   const body = request.data.body;
 
@@ -17,7 +17,7 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
         user_id: request.data.user_id,
         notification_type: request.data.notification_type,
       },
-      token: targetToken,
+      tokens: tokens,
     };
     await admin.messaging().send(message);
     return {success: true};
