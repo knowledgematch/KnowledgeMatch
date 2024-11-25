@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/screens/main_screen.dart';
 
@@ -6,20 +7,48 @@ import '../services/notification_service.dart';
 class RequestScreen extends StatelessWidget {
   final String requesterName;
   final String requesterTitle;
-  final String userid;
+  final String userId;
   final String notificationType;
   final String requesterLocation;
   final String issueDescription;
-  final String requesterToken = "eA5YhA32RJWALJsDphXdfG:APA91bEh6s3D7vlrk0RkL4FlicsBqDi4o63HxNnnSIYiEyaw6XspZ9JO7H7mZ2bDBHTE_zenOzVucVhfbsMlttO-2YO-B8JgK9RCcZrFzWTRArxuiNMsd4U";
-  //TODO add actual token
-  const RequestScreen({super.key, 
+  final String requesterToken;
+
+  const RequestScreen({
+    super.key,
     required this.requesterName,
-    required this.userid,
-    required this.notificationType,
     required this.requesterTitle,
+    required this.userId,
+    required this.notificationType,
     required this.requesterLocation,
     required this.issueDescription,
+    required this.requesterToken,
   });
+
+  factory RequestScreen.fromMessage(
+      {Key? key, required RemoteMessage message}) {
+    return RequestScreen(
+      key: key,
+      requesterName: message.data['requesterName'] ?? '',
+      requesterTitle: message.data['requesterTitle'] ?? '',
+      userId: message.data['userId'] ?? '',
+      notificationType: message.data['notificationType'] ?? '',
+      requesterLocation: message.data['requesterLocation'] ?? '',
+      issueDescription: message.data['issueDescription'] ?? '',
+      requesterToken: message.data['requesterToken'] ?? '',
+    );
+  }
+
+  factory RequestScreen.fromData(Map<String, dynamic> data) {
+    return RequestScreen(
+      requesterName: data['requesterName'] ?? '',
+      requesterTitle: data['requesterTitle'] ?? '',
+      userId: data['userId'] ?? '',
+      notificationType: data['notificationType'] ?? '',
+      requesterLocation: data['requesterLocation'] ?? '',
+      issueDescription: data['issueDescription'] ?? '',
+      requesterToken: data['requesterToken'] ?? '',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +116,6 @@ class RequestScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 24),
-
             Text(
               'The issue',
               style: TextStyle(
@@ -115,10 +143,7 @@ class RequestScreen extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () async {
                     Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => MainScreen()
-                        )
-                    );
+                        MaterialPageRoute(builder: (context) => MainScreen()));
                     await NotificationService().sendMessageToDevice(
                         requesterToken,
                         "Your request has been accepted",
@@ -139,12 +164,9 @@ class RequestScreen extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () async {
                     Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => MainScreen()
-                        )
-                    );
+                        MaterialPageRoute(builder: (context) => MainScreen()));
                     await NotificationService().sendMessageToDevice(
-                       requesterToken,
+                        requesterToken,
                         "Your request has been declined",
                         "$requesterName has declined your request");
                   },

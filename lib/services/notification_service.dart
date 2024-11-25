@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../screens/request_screen.dart';
+
+import 'dart:convert';
 
 late BuildContext appContext;
 
@@ -74,23 +77,14 @@ class NotificationService {
 
       navigatorKey?.currentState?.push(
         MaterialPageRoute(
-          builder: (context) => RequestScreen(
-            requesterName: "Alice Anderson",
-            requesterTitle: data['title'] ?? 'No Title',
-            requesterLocation: "Brugg",
-            issueDescription: data['body'] ?? 'No Description',
-            notificationType: "RequestType",
-            userid: "123456788900",
-          ),
+              builder: (context) => RequestScreen.fromData(data)
         ),
       );
     }
   }
 
   Future<void> showNotification({
-    required int id,
-    required String title,
-    required String body,
+    required RemoteMessage message,
     String? payload,
     String channelId = 'default_channel',
     String channelName = 'Default Notifications',
@@ -115,17 +109,18 @@ class NotificationService {
       iOS: iOSPlatformChannelSpecifics,
     );
 
-    final String notificationPayload = jsonEncode({
-      'title': title,
-      'body': body,
-    });
+ //  final String notificationPayload = jsonEncode({
+ //    'title': message.notification?.title,
+ //    'body': message.notification?.body
+ //    'requesterName': message.data['requersterName'] ?? ''.
+ //  });
 
     await flutterLocalNotificationsPlugin.show(
-      id,
-      title,
-      body,
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      message.notification?.title,
+      message.notification?.body,
       platformChannelSpecifics,
-      payload: notificationPayload,
+      payload: jsonEncode(message.data),
     );
   }
 

@@ -78,9 +78,7 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
         NotificationService().showNotification(
-          id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-          title: message.notification?.title ?? 'New Notification',
-          body: message.notification?.body ?? '',
+          message: message
         );
       }
     });
@@ -93,14 +91,7 @@ class _MyAppState extends State<MyApp> {
           'App opened from terminated state by a message: ${message.notification}');
       navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder: (context) => RequestScreen(
-            requesterName: "Alice",
-            userid: "1234123",
-            notificationType: "UserTest",
-            requesterTitle: message.notification?.title ?? 'no title',
-            requesterLocation: "Brugg",
-            issueDescription: message.notification?.body ?? 'no description',
-          ),
+          builder: (context) => RequestScreen.fromMessage(message:message)
         ),
       );
     });
@@ -114,14 +105,7 @@ class _MyAppState extends State<MyApp> {
           'App opened from terminated state by a message: ${message.notification}');
       navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder: (context) => RequestScreen(
-            requesterName: "Alice",
-            requesterTitle: message.notification?.title ?? 'no title',
-            userid: "123344667",
-            notificationType: "TestType",
-            requesterLocation: "Brugg",
-            issueDescription: message.notification?.body ?? 'no description',
-          ),
+            builder: (context) => RequestScreen.fromMessage(message:message)
         ),
       );
     }
