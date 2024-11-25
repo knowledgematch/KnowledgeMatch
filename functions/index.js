@@ -19,9 +19,12 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
       },
       tokens: tokens,
     };
-    await admin.messaging().send(message);
-    return {success: true};
+    const response = await admin.messaging().sendMulticast(message);
+    console.log("Successfully sent messages:", response);
+
+    return {success: true, response: response.successCount};
   } catch (error) {
+    console.error("Error sending message:", error);
     return {success: false, error: error.toString()};
   }
 });
