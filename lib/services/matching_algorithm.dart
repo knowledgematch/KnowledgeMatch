@@ -25,8 +25,8 @@ class MatchingAlgorithm{
                     'JOIN Topic t ON kt.T_ID = t.T_ID';
     List<String> queryBuilder = [];
 
-    if (searchCriteria.topic.isNotEmpty) {
-      queryBuilder.add("Keyword = '${searchCriteria.topic}'");
+    if (searchCriteria.keyword.isNotEmpty) {
+      queryBuilder.add("Keyword = '${searchCriteria.keyword}'");
     }
 
     if (searchCriteria.reachability != null) {

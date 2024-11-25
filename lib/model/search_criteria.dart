@@ -1,14 +1,14 @@
 class SearchCriteria {
-  final String topic;
+  final String keyword;
   final String timeFrame;
-  final String description;
+  final String issue;
   final int? reachability;
   final String? location;
 
   SearchCriteria({
-    required this.topic,
+    required this.keyword,
     required this.timeFrame,
-    required this.description,
+    required this.issue,
     this.reachability,
     this.location,
   });

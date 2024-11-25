@@ -114,7 +114,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
 
               const SizedBox(height: 16),
 
-              // Description field
+              // Issue field
               const Text("Please describe your issue:"),
               TextFormField(
                 maxLines: 3,
@@ -181,11 +181,11 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     SearchCriteria searchCriteria = SearchCriteria(
-                      topic: topic!,
+                      keyword: topic!,
                       timeFrame: selectedTimeFrame != null
                           ? selectedTimeFrame!.toIso8601String()
                           : '',
-                      description: description!,
+                      issue: description!,
                       reachability: reachability,
                       location: country,
                     );
