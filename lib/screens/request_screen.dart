@@ -6,12 +6,16 @@ import '../services/notification_service.dart';
 class RequestScreen extends StatelessWidget {
   final String requesterName;
   final String requesterTitle;
+  final String userid;
+  final String notificationType;
   final String requesterLocation;
   final String issueDescription;
   final String requesterToken = "eA5YhA32RJWALJsDphXdfG:APA91bEh6s3D7vlrk0RkL4FlicsBqDi4o63HxNnnSIYiEyaw6XspZ9JO7H7mZ2bDBHTE_zenOzVucVhfbsMlttO-2YO-B8JgK9RCcZrFzWTRArxuiNMsd4U";
   //TODO add actual token
   const RequestScreen({super.key, 
     required this.requesterName,
+    required this.userid,
+    required this.notificationType,
     required this.requesterTitle,
     required this.requesterLocation,
     required this.issueDescription,

@@ -79,6 +79,8 @@ class NotificationService {
             requesterTitle: data['title'] ?? 'No Title',
             requesterLocation: "Brugg",
             issueDescription: data['body'] ?? 'No Description',
+            notificationType: "RequestType",
+            userid: "123456788900",
           ),
         ),
       );
@@ -130,12 +132,22 @@ class NotificationService {
 
   Future<void> sendMessageToDevice(
       String targetToken, String title, String body) async {
+    List<String> tokens = [];
+    tokens.add(
+      "eA5YhA32RJWALJsDphXdfG:APA91bEh6s3D7vlrk0RkL4FlicsBqDi4o63HxNnnSIYiEyaw6XspZ9JO7H7mZ2bDBHTE_zenOzVucVhfbsMlttO-2YO-B8JgK9RCcZrFzWTRArxuiNMsd4U"
+    );
+    tokens.add(
+        "d8wMnn4NR7S41Sc7dAjppd:APA91bEoCbXE2X-sCf9iXqo7CDQGEjvtRCI2KU2YQXoiJnMYeD7i2Rfs3XYQWUzbKXbMUSPENK0cyWQ_V-3X_pzSb-_PQHeVX5LLhh6n6kC98Ed9GfBbvVw"
+    );
+
     final result =
         await FirebaseFunctions.instance.httpsCallable('sendToDevice').call(
       {
         'token': targetToken,
         'title': title,
         'body': body,
+        'user_id': "UserID",
+        'notification_type': "" //enum
       },
     );
     if (result.data['success']) {

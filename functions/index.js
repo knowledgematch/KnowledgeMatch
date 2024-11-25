@@ -13,6 +13,10 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
         title: title,
         body: body,
       },
+      data: {
+      user_id: request.data.user_id,
+      notification_type: request.data.notification_type
+      },
       token: targetToken,
     };
     await admin.messaging().send(message);

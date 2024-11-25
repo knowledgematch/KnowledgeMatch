@@ -95,6 +95,8 @@ class _MyAppState extends State<MyApp> {
         MaterialPageRoute(
           builder: (context) => RequestScreen(
             requesterName: "Alice",
+            userid: "1234123",
+            notificationType: "UserTest",
             requesterTitle: message.notification?.title ?? 'no title',
             requesterLocation: "Brugg",
             issueDescription: message.notification?.body ?? 'no description',
@@ -115,6 +117,8 @@ class _MyAppState extends State<MyApp> {
           builder: (context) => RequestScreen(
             requesterName: "Alice",
             requesterTitle: message.notification?.title ?? 'no title',
+            userid: "123344667",
+            notificationType: "TestType",
             requesterLocation: "Brugg",
             issueDescription: message.notification?.body ?? 'no description',
           ),
