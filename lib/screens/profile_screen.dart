@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'create_profile_screen.dart'; // Import the CreateProfileScreen file
-import 'package:knowledgematch/services/db_connection.dart';
+import 'login_screen.dart'; // Import the CreateProfileScreen file
+import 'package:http/http.dart' as http; // Import the http package
+import 'dart:convert'; // To work with JSON
+import 'package:shared_preferences/shared_preferences.dart'; // Import for shared preferences
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,37 +12,106 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
-  String _name = 'Manuel Meier';
-  String _location = 'Brugg';
-  String _expertIn = 'SwaGI, Uuidc, Epmc';
-  String _availability = '12:00 - 12:30, Every Wednesday';
-  String _language = 'German';
+  String _name = '';
+  String _surname = '';
+  String _reachability = '1'; // Default value, assuming reachable
+  String _email = '';
+  String _password = ''; // Password should be securely handled
+  String? _picture = null; // Optional field for picture
+  String _seniority = '0'; // Default to 0 if not specified
+  String _description = ''; // Optional description
+  String _uId = ''; // Will hold the U_ID of the logged-in user
 
   final _formKey = GlobalKey<FormState>();
-  final dbConnection = DBConnection();
 
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  // Load user data from shared preferences or another source
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Load user-specific data
+    String? name = prefs.getString('Name');
+    print('Name + $name');
+    String? surname = prefs.getString('surname');
+    String? reachability = prefs.getString('reachability');
+    String? email = prefs.getString('email');
+    String? password = prefs.getString('password');
+    String? picture = prefs.getString('picture');
+    String? seniority = prefs.getString('seniority');
+    String? description = prefs.getString('description');
+
+    // Load the current user's ID (U_ID)
+    String? userId = prefs.getString('u_id');
+
+    if (userId != null) {
+      setState(() {
+        _uId = userId; // Set the user ID
+      });
+    }
+
+    if (name != null && surname != null && reachability != null && email != null) {
+      setState(() {
+        _name = name;
+        _surname = surname;
+        _reachability = reachability;
+        _email = email;
+        _password = password ?? ''; // Default empty string if null
+        _picture = picture;
+        _seniority = seniority ?? '0';
+        _description = description ?? '';
+      });
+    }
+  }
+
+  // Save profile information to the API
   Future<void> _saveProfile() async {
-    final query = """
-      INSERT INTO profiles (name, location, expert_in, availability, language)
-      VALUES ('$_name', '$_location', '$_expertIn', '$_availability', '$_language')
-      ON DUPLICATE KEY UPDATE
-        location = '$_location', 
-        expert_in = '$_expertIn', 
-        availability = '$_availability', 
-        language = '$_language';
-    """;
+    final url = Uri.parse('http://your-api-url/users/$_uId'); // Use the correct URL for your API endpoint
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'Name': _name,
+      'Surname': _surname,
+      'Reachability': _reachability,
+      'Email': _email,
+      'Password': _password,
+      'Picture': _picture, // This can be handled differently for images (base64 or URL)
+      'Seniority': _seniority,
+      'Description': _description,
+    });
 
-    final result = await dbConnection.getSQLResponse(query);
+    try {
+      final response = await http.put(url, headers: headers, body: body);
 
-    if (result != null) {
+      if (response.statusCode == 204) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile saved successfully!')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save profile: ${response.body}')),
+        );
+      }
+    } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile saved successfully!')),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to save profile.')),
+        SnackBar(content: Text('Error: $error')),
       );
     }
+  }
+
+  // Handle user logout
+  Future<void> _logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // Clear saved user data
+
+    // Navigate to login screen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()), // Redirect to login screen
+    );
   }
 
   @override
@@ -49,6 +120,12 @@ class ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: const Text('Profile'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _logout, // Call logout when pressed
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -75,53 +152,67 @@ class ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                initialValue: _location,
+                initialValue: _surname,
                 decoration: const InputDecoration(
-                  labelText: 'Location',
+                  labelText: 'Surname',
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _location = value;
+                    _surname = value;
                   });
                 },
               ),
               const SizedBox(height: 16),
               TextFormField(
-                initialValue: _expertIn,
+                initialValue: _reachability,
                 decoration: const InputDecoration(
-                  labelText: 'Expert in',
+                  labelText: 'Reachability',
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _expertIn = value;
+                    _reachability = value;
                   });
                 },
               ),
               const SizedBox(height: 16),
               TextFormField(
-                initialValue: _availability,
+                initialValue: _email,
                 decoration: const InputDecoration(
-                  labelText: 'Availability',
+                  labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _availability = value;
+                    _email = value;
                   });
                 },
               ),
               const SizedBox(height: 16),
               TextFormField(
-                initialValue: _language,
+                initialValue: _password,
                 decoration: const InputDecoration(
-                  labelText: 'Language',
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
+                obscureText: true, // Password should be hidden
+                onChanged: (value) {
+                  setState(() {
+                    _password = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                initialValue: _description,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _language = value;
+                    _description = value;
                   });
                 },
               ),
