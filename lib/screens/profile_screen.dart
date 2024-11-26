@@ -12,17 +12,20 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
-  String _name = '';
-  String _surname = '';
   String _reachability = '1'; // Default value, assuming reachable
-  String _email = '';
   String _password = ''; // Password should be securely handled
   String? _picture = null; // Optional field for picture
   String _seniority = '0'; // Default to 0 if not specified
-  String _description = ''; // Optional description
   String _uId = ''; // Will hold the U_ID of the logged-in user
 
   final _formKey = GlobalKey<FormState>();
+
+  // TextEditingControllers for fields
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _surnameController = TextEditingController();
+  final TextEditingController _reachabilityController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   @override
   void initState() {
@@ -32,64 +35,69 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   // Load user data from shared preferences or another source
   Future<void> _loadUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
+    final userDataString = prefs.getString('userData');
 
-    // Load user-specific data
-    String? name = prefs.getString('Name');
-    print('Name + $name');
-    String? surname = prefs.getString('surname');
-    String? reachability = prefs.getString('reachability');
-    String? email = prefs.getString('email');
-    String? password = prefs.getString('password');
-    String? picture = prefs.getString('picture');
-    String? seniority = prefs.getString('seniority');
-    String? description = prefs.getString('description');
+    if (userDataString != null) {
+      final userData = jsonDecode(userDataString);
+      print("__________");
+      print(userData['U_ID']);
+      print("__________");
+      //set User ID
+      _uId = userData['U_ID'].toString() ?? '';
+      _password = userData['Password'].toString() ?? '';
 
-    // Load the current user's ID (U_ID)
-    String? userId = prefs.getString('u_id');
-
-    if (userId != null) {
       setState(() {
-        _uId = userId; // Set the user ID
+        _nameController.text = userData['Name']?.toString() ?? '';
+        _surnameController.text = userData['Surname']?.toString() ?? '';
+        _reachabilityController.text = userData['Reachability']?.toString() ?? '1';
+        _emailController.text = userData['Email']?.toString() ?? '';
+        _descriptionController.text = userData['Description']?.toString() ?? '';
       });
-    }
-
-    if (name != null && surname != null && reachability != null && email != null) {
-      setState(() {
-        _name = name;
-        _surname = surname;
-        _reachability = reachability;
-        _email = email;
-        _password = password ?? ''; // Default empty string if null
-        _picture = picture;
-        _seniority = seniority ?? '0';
-        _description = description ?? '';
-      });
+    } else {
+      print('No user data found in SharedPreferences.');
     }
   }
 
-  // Save profile information to the API
+  // Save profile information to the API and SharedPreferences
   Future<void> _saveProfile() async {
-    final url = Uri.parse('http://your-api-url/users/$_uId'); // Use the correct URL for your API endpoint
+    final url = Uri.parse('http://86.119.45.62/users/$_uId');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
-      'Name': _name,
-      'Surname': _surname,
-      'Reachability': _reachability,
-      'Email': _email,
+      'Name': _nameController.text,
+      'Surname': _surnameController.text,
+      'Reachability': _reachabilityController.text,
+      'Email': _emailController.text,
       'Password': _password,
       'Picture': _picture, // This can be handled differently for images (base64 or URL)
       'Seniority': _seniority,
-      'Description': _description,
+      'Description': _descriptionController.text,
     });
 
     try {
       final response = await http.put(url, headers: headers, body: body);
 
       if (response.statusCode == 204) {
+        // Successfully saved to the API
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile saved successfully!')),
         );
+
+        // Update the local shared preferences with the new data
+        final prefs = await SharedPreferences.getInstance();
+        final updatedUserData = {
+          'U_ID': _uId,
+          'Name': _nameController.text,
+          'Surname': _surnameController.text,
+          'Reachability': _reachabilityController.text,
+          'Email': _emailController.text,
+          'Password': _password,
+          'Picture': _picture,
+          'Seniority': _seniority,
+          'Description': _descriptionController.text,
+        };
+        prefs.setString('userData', jsonEncode(updatedUserData));
+
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to save profile: ${response.body}')),
@@ -127,108 +135,72 @@ class ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              const CircleAvatar(
-                radius: 50,
-                backgroundImage: AssetImage('assets/images/profile.png'),
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _name,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
+      body: SingleChildScrollView(  // Wrap the body in SingleChildScrollView
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundImage: AssetImage('assets/images/profile.png'),
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    _name = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _surname,
-                decoration: const InputDecoration(
-                  labelText: 'Surname',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Name',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    _surname = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _reachability,
-                decoration: const InputDecoration(
-                  labelText: 'Reachability',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _surnameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Surname',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    _reachability = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _email,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _reachabilityController,
+                  decoration: const InputDecoration(
+                    labelText: 'Reachability',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    _email = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _password,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-                obscureText: true, // Password should be hidden
-                onChanged: (value) {
-                  setState(() {
-                    _password = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _description,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    _description = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _saveProfile();
-                  }
-                },
-                child: const Text('Save Changes'),
-              ),
-            ],
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _saveProfile();
+                    }
+                  },
+                  child: const Text('Save Changes'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
 }
