@@ -17,46 +17,19 @@ class MatchingAlgorithm{
   }
 
   Future<List<Userprofile>> matchingAlgorithm(SearchCriteria searchCriteria) async {
-    String query =  'SELECT CONCAT(u.Name, \' \', u.Surname) AS FullName, '
-                    'u.Reachability, GROUP_CONCAT(DISTINCT k.Keyword ORDER BY '
-                    'k.Keyword SEPARATOR \', \') AS Keywords FROM User u '
-                    'JOIN User2Keyword uk ON u.U_ID = uk.U_ID '
-                    'JOIN Keyword k ON uk.K_ID = k.K_ID '
-                    'JOIN Keyword2Topic kt ON k.K_ID = kt.K_ID '
-                    'JOIN Topic t ON kt.T_ID = t.T_ID';
-    List<String> queryBuilder = [];
-
-    if (searchCriteria.keyword.isNotEmpty) {
-      queryBuilder.add("Keyword = '${searchCriteria.keyword}'");
-    }
-
-    if (searchCriteria.reachability != null) {
-      if(searchCriteria.reachability != 2) {
-        queryBuilder.add("Reachability IN (${searchCriteria.reachability}, 2)");
-      }
-    }
-
-    if(queryBuilder.isNotEmpty) {
-      query += ' WHERE ${queryBuilder.join(' AND ')}';
-    }
-    query += ' GROUP BY u.U_ID, u.Name, u.Surname, u.Reachability';
-    ApiDbConnection().getUsers(searchCriteria);
-    var result = await DBConnection().getSQLResponse(query);
-
     List<Userprofile> profiles = [];
-    if(result != null) {
-      for (var row in result.rows) {
-        var data = row.assoc();
-
+    var data = await ApiDbConnection().fetchUsers(searchCriteria);
+    if(data != []) {
+      for (var user in data) {
         profiles.add(
             Userprofile(
-              name: data['FullName'].toString(),
-              location: 'Placeholder here',
-              expertString: data['Keywords'].toString(),
-              availability: 'Placeholder here',
-              langString: 'Placeholder here',
-              reachability: int.parse(data['Reachability'].toString()),
-              description: 'Placeholder here',
+              name: user['FullName'].toString(),
+              location: 'Placeholder',
+              expertString: user['Keywords'].toString(),
+              availability: 'Placeholder',
+              langString: 'Placeholder',
+              reachability: int.parse(user['Reachability'].toString()),
+              description: user['Description'].toString(),
             )
         );
       }

@@ -1,20 +1,20 @@
 enum Reachability {
-  Offline,
+  Online,
   InPerson,
   Both
 }
 
 extension ReachabilityValue on Reachability {
   static const Map<Reachability, int> _valueMap = {
-    Reachability.Offline: 0,
+    Reachability.Online: 0,
     Reachability.InPerson: 1,
     Reachability.Both: 2,
   };
 
   static const Map<Reachability, String> _descriptionMap = {
-    Reachability.Offline: "Offline",
+    Reachability.Online: "Online",
     Reachability.InPerson: "In Person",
-    Reachability.Both: "Offline, In Person",
+    Reachability.Both: "Online, In Person",
   };
 
   int get value => _valueMap[this]!;
