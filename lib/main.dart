@@ -2,7 +2,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/local_user.dart';
 import 'package:knowledgematch/screens/request_screen.dart';
+import 'package:knowledgematch/services/matching_algorithm.dart';
 import 'package:knowledgematch/services/notification_service.dart';
+import 'model/notification_data.dart';
+import 'model/userprofile.dart';
 import 'screens/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -92,7 +95,34 @@ class _MyAppState extends State<MyApp> {
           'App opened from terminated state by a message: ${message.notification}');
       navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder: (context) => RequestScreen.fromMessage(message:message)
+          builder: (context) => FutureBuilder<Userprofile>(
+            future: MatchingAlgorithm().getUserProfile(
+              int.tryParse(message.data['user_id']) ?? 0,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Scaffold(
+                  appBar: AppBar(title: Text('Loading...')),
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              } else if (snapshot.hasError) {
+                return Scaffold(
+                  appBar: AppBar(title: Text('Error')),
+                  body: Center(child: Text('Error: ${snapshot.error}')),
+                );
+              } else {
+                return RequestScreen(
+                  userprofile: snapshot.data!,
+                  notificationData: NotificationData(
+                    title: message.notification?.title ?? '',
+                    body: message.notification?.body ?? '',
+                    userId: int.tryParse(message.data['user_id']) ?? 0,
+                    type: NotificationType.fromString(message.data['notification_type']),
+                  ),
+                );
+              }
+            },
+          ),
         ),
       );
     });
@@ -106,9 +136,37 @@ class _MyAppState extends State<MyApp> {
           'App opened from terminated state by a message: ${message.notification}');
       navigatorKey.currentState?.push(
         MaterialPageRoute(
-            builder: (context) => RequestScreen.fromMessage(message:message)
+          builder: (context) => FutureBuilder<Userprofile>(
+            future: MatchingAlgorithm().getUserProfile(
+              int.tryParse(message.data['user_id']) ?? 0,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Scaffold(
+                  appBar: AppBar(title: Text('Loading...')),
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              } else if (snapshot.hasError) {
+                return Scaffold(
+                  appBar: AppBar(title: Text('Error')),
+                  body: Center(child: Text('Error: ${snapshot.error}')),
+                );
+              } else {
+                return RequestScreen(
+                  userprofile: snapshot.data!,
+                  notificationData: NotificationData(
+                    title: message.notification?.title ?? '',
+                    body: message.notification?.body ?? '',
+                    userId: int.tryParse(message.data['user_id']) ?? 0,
+                    type: NotificationType.fromString(message.data['notification_type']),
+                  ),
+                );
+              }
+            },
+          ),
         ),
       );
+
     }
   }
 

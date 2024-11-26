@@ -62,4 +62,19 @@ class MatchingAlgorithm{
     }
     return profiles;
   }
+
+  Future<Userprofile> getUserProfile(int id) async {
+    var result = await DBConnection().getSQLResponse(
+        'SELECT * from User WHERE U_ID = $id');
+    var data = result?.rows.first.assoc();
+    return Userprofile(
+      name: "${data!['Name']} ${data['Surname']}",
+      location: 'Placeholder here',
+      expertString: data['Keywords'].toString(),
+      availability: 'Placeholder here',
+      langString: 'Placeholder here',
+      reachability: int.parse(data['Reachability'].toString()),
+      description: 'Placeholder here',
+    );
+  }
 }

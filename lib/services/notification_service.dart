@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../model/notification_data.dart';
+import '../model/userprofile.dart';
 import '../screens/request_screen.dart';
+import 'matching_algorithm.dart';
 
 
 late BuildContext appContext;
@@ -74,10 +76,37 @@ class NotificationService {
       final Map<String, dynamic> data = Map<String, dynamic>.from(
         jsonDecode(notificationResponse.payload!),
       );
-
+      print(int.tryParse(data['user_id']) ?? 0);
       navigatorKey?.currentState?.push(
         MaterialPageRoute(
-              builder: (context) => RequestScreen.fromData(data)
+          builder: (context) => FutureBuilder<Userprofile>(
+            future: MatchingAlgorithm().getUserProfile(
+              int.tryParse(data['user_id']) ?? 0,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Scaffold(
+                  appBar: AppBar(title: Text('Loading...')),
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              } else if (snapshot.hasError) {
+                return Scaffold(
+                  appBar: AppBar(title: Text('Error')),
+                  body: Center(child: Text('Error: ${snapshot.error}')),
+                );
+              } else {
+                return RequestScreen(
+                  userprofile: snapshot.data!,
+                  notificationData: NotificationData(
+                    title: data['title'],
+                    body: data['body'],
+                    userId: int.tryParse(data['user_id']) ?? 0,
+                    type: NotificationType.fromString(data['notification_type']),
+                  ),
+                );
+              }
+            },
+          ),
         ),
       );
     }
@@ -109,15 +138,11 @@ class NotificationService {
       iOS: iOSPlatformChannelSpecifics,
     );
     final String notificationPayload = jsonEncode({
-    'requesterName': message.data['requesterName'] ?? '',
-    'requesterTitle': message.data['requesterTitle'] ?? '',
-    'userId': message.data['userId'] ?? '',
-    'notificationType': message.data['notificationType'] ?? '',
-    'requesterLocation': message.data['requesterLocation'] ?? '',
-    'issueDescription': message.data['issueDescription'] ?? '',
-    'requesterToken': message.data['requesterToken'] ?? ''
-  });
-
+      ...message.data,
+      'title': message.notification?.title ?? '',
+      'body': message.notification?.body ?? '',
+    });
+    print(notificationPayload);
 
     await flutterLocalNotificationsPlugin.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -146,7 +171,7 @@ class NotificationService {
         'title': notificationData.title,
         'body': notificationData.body,
         'user_id': notificationData.userId.toString(),
-        'notification_type': notificationData.type.toString()
+        'notification_type': notificationData.type.toShortString()
       },
     );
     if (result.data['success']) {
