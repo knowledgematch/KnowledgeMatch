@@ -56,7 +56,6 @@ class MatchingAlgorithm{
               langString: 'Placeholder here',
               reachability: int.parse(data['Reachability'].toString()),
               description: 'Placeholder here',
-              seniority: 1,
             )
         );
       }

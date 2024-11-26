@@ -6,7 +6,6 @@ class Userprofile {
   final List<String> languages;
   final int? reachability;
   final String description;
-  final int seniority;
   List<String>? tokens = [];
 
   Userprofile({
@@ -17,7 +16,6 @@ class Userprofile {
     required String langString,
     this.reachability,
     required this.description,
-    required this.seniority,
   }) :  expertise = expertString.split(" "),
         languages = langString.split(" ");
 
