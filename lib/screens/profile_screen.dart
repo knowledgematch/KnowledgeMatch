@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../model/userprofile.dart';
 import 'create_profile_screen.dart'; // Import the CreateProfileScreen file
 import 'package:knowledgematch/services/db_connection.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,133 +12,41 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
-  String _name = 'Manuel Meier';
-  String _location = 'Brugg';
-  String _expertIn = 'SwaGI, Uuidc, Epmc';
-  String _availability = '12:00 - 12:30, Every Wednesday';
-  String _language = 'German';
-
-  final _formKey = GlobalKey<FormState>();
-  final dbConnection = DBConnection();
-
-  Future<void> _saveProfile() async {
-    final query = """
-      INSERT INTO profiles (name, location, expert_in, availability, language)
-      VALUES ('$_name', '$_location', '$_expertIn', '$_availability', '$_language')
-      ON DUPLICATE KEY UPDATE
-        location = '$_location', 
-        expert_in = '$_expertIn', 
-        availability = '$_availability', 
-        language = '$_language';
-    """;
-
-    final result = await dbConnection.getSQLResponse(query);
-
-    if (result != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile saved successfully!')),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to save profile.')),
-      );
-    }
-  }
+  // Beispiel-Liste von Experten
+  final List<Userprofile> experts = [
+    Userprofile(
+      name: 'Dr. Max Mustermann',
+      location: 'Zurich',
+      expertString: 'AI Robotics',
+      availability: 'Mon-Fri, 9:00 - 17:00',
+      langString: 'English German',
+      description: 'Expert in Artificial Intelligence and Robotics',
+      seniority: 10,
+    ),
+    Userprofile(
+      name: 'Prof. Jane Doe',
+      location: 'Basel',
+      expertString: 'Physics Chemistry',
+      availability: 'Tue-Thu, 10:00 - 15:00',
+      langString: 'English French',
+      description: 'Specialist in Quantum Physics',
+      seniority: 8,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('Experts'),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              const CircleAvatar(
-                radius: 50,
-                backgroundImage: AssetImage('assets/images/profile.png'),
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _name,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _name = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _location,
-                decoration: const InputDecoration(
-                  labelText: 'Location',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _location = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _expertIn,
-                decoration: const InputDecoration(
-                  labelText: 'Expert in',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _expertIn = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _availability,
-                decoration: const InputDecoration(
-                  labelText: 'Availability',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _availability = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _language,
-                decoration: const InputDecoration(
-                  labelText: 'Language',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _language = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _saveProfile();
-                  }
-                },
-                child: const Text('Save Changes'),
-              ),
-            ],
-          ),
-        ),
+      body: ListView.builder(
+        itemCount: experts.length, // Anzahl der Experten in der Liste
+        itemBuilder: (context, index) {
+          final expert = experts[index];
+          return ExpertCard(profile: expert); // Nutze das ExpertCard-Widget
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -147,6 +57,62 @@ class ProfileScreenState extends State<ProfileScreen> {
         },
         tooltip: 'Add Account',
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+// Neues Widget für die Expertenkarte
+class ExpertCard extends StatelessWidget {
+  final Userprofile profile;
+
+  ExpertCard({required this.profile});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 8, // Schatteneffekt
+      margin: const EdgeInsets.all(16), // Außenabstand
+      child: Padding(
+        padding: const EdgeInsets.all(16), // Innenabstand
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start, // Elemente links ausrichten
+          children: [
+            // Profilbild hinzufügen (Platzhalter, falls keins verfügbar ist)
+            CircleAvatar(
+              radius: 40,
+              backgroundImage: AssetImage('assets/images/profile.png'), // Statisches Bild
+              child: Text(
+                profile.name[0], // Initialen des Experten anzeigen
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 10),
+            // Name des Experten
+            Text(
+              profile.name,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 5),
+            // Beschreibung / Qualifikationen des Experten
+            Text(
+              profile.description,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 5),
+            // Verfügbarkeiten
+            Text(
+              'Availability: ${profile.availability}',
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            const SizedBox(height: 5),
+            // Sprachen
+            Text(
+              'Languages: ${profile.languages.join(", ")}',
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+          ],
+        ),
       ),
     );
   }
