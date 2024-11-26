@@ -77,12 +77,12 @@ class NotificationService {
       final Map<String, dynamic> data = Map<String, dynamic>.from(
         jsonDecode(notificationResponse.payload!),
       );
-      print(int.tryParse(data['user_id']) ?? 0);
+      print(int.tryParse(data['target_user_id']) ?? 0);
       navigatorKey?.currentState?.push(
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
             future: MatchingAlgorithm().getUserProfile(
-              int.tryParse(data['user_id']) ?? 0,
+              int.tryParse(data['target_user_id']) ?? 0,
             ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -101,7 +101,7 @@ class NotificationService {
                   notificationData: NotificationData(
                     title: data['title'],
                     body: data['body'],
-                    userId: int.tryParse(data['user_id']) ?? 0,
+                    userId: int.tryParse(data['target_user_id']) ?? 0,
                     type: NotificationType.fromString(data['notification_type']),
                   ),
                 );

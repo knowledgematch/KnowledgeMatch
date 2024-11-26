@@ -97,7 +97,7 @@ class _MyAppState extends State<MyApp> {
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
             future: MatchingAlgorithm().getUserProfile(
-              int.tryParse(message.data['user_id']) ?? 0,
+              int.tryParse(message.data['target_user_id']) ?? 0,
             ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -116,7 +116,7 @@ class _MyAppState extends State<MyApp> {
                   notificationData: NotificationData(
                     title: message.notification?.title ?? '',
                     body: message.notification?.body ?? '',
-                    userId: int.tryParse(message.data['user_id']) ?? 0,
+                    userId: int.tryParse(message.data['target_user_id']) ?? 0,
                     type: NotificationType.fromString(message.data['notification_type']),
                   ),
                 );
@@ -138,7 +138,7 @@ class _MyAppState extends State<MyApp> {
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
             future: MatchingAlgorithm().getUserProfile(
-              int.tryParse(message.data['user_id']) ?? 0,
+              int.tryParse(message.data['target_user_id']) ?? 0,
             ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -157,7 +157,7 @@ class _MyAppState extends State<MyApp> {
                   notificationData: NotificationData(
                     title: message.notification?.title ?? '',
                     body: message.notification?.body ?? '',
-                    userId: int.tryParse(message.data['user_id']) ?? 0,
+                    userId: int.tryParse(message.data['target_user_id']) ?? 0,
                     type: NotificationType.fromString(message.data['notification_type']),
                   ),
                 );
