@@ -147,16 +147,54 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                         );
                       },
                       child: isBackSide
-                          ? BackSideCard(
-                              profile:
-                                  profiles[properties.index % profiles.length],
-                              key: ValueKey(true),
-                            )
-                          : ProfileCard(
-                              profile:
-                                  profiles[properties.index % profiles.length],
-                              key: ValueKey(false),
-                            ),
+                          ? Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            if (shouldShowGlow)
+                              BoxShadow(
+                                color: properties.direction == SwipeDirection.right
+                                    ? Colors.green.withOpacity(0.5)
+                                    : properties.direction == SwipeDirection.left
+                                    ? Colors.red.withOpacity(0.5)
+                                    : Colors.transparent,
+                                blurRadius: 20,
+                                spreadRadius: 5,
+                              ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: BackSideCard(
+                            profile: profiles[properties.index % profiles.length],
+                          ),
+                        ),
+                      )
+
+                          : Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            if (shouldShowGlow)
+                              BoxShadow(
+                                color: properties.direction == SwipeDirection.right
+                                    ? Colors.green.withOpacity(0.5)
+                                    : properties.direction == SwipeDirection.left
+                                    ? Colors.red.withOpacity(0.5)
+                                    : Colors.transparent,
+                                blurRadius: 20,
+                                spreadRadius: 5,
+                              ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: ProfileCard(
+                            profile: profiles[properties.index % profiles.length],
+                          ),
+                        ),
+                      )
+
                     ),
                   );
                 },
