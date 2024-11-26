@@ -56,82 +56,10 @@ class MatchingAlgorithm{
               langString: 'Placeholder here',
               reachability: int.parse(data['Reachability'].toString()),
               description: 'Placeholder here',
-              seniority: int.parse(data['Seniority'].toString()),
+              seniority: int.parse(data['Seniority']!),
             )
         );
       }
-
-    // profiles.add(
-    // Userprofile(
-    // name: 'David',
-    // location: 'Placeholder here',
-    // expertString: 'Placeholder here',
-    // availability: 'Placeholder here',
-    // langString: 'Placeholder here',
-    // reachability: 1,
-    // description: 'Number0Profile',
-    // seniority: 0,
-    // )
-    // );
-    //   profiles.add(
-    //             Userprofile(
-    //               name: 'Ali',
-    //               location: 'Placeholder here',
-    //               expertString: 'Placeholder here',
-    //               availability: 'Placeholder here',
-    //               langString: 'Placeholder here',
-    //               reachability: 1,
-    //               description: 'Number1Profile',
-    //               seniority: 2,
-    //             )
-    //   );
-    //   profiles.add(
-    //             Userprofile(
-    //               name: 'Baris',
-    //               location: 'Placeholder here',
-    //               expertString: 'Placeholder here',
-    //               availability: 'Placeholder here',
-    //               langString: 'Placeholder here',
-    //               reachability: 1,
-    //               description: 'Number2Profile',
-    //               seniority: 4,
-    //             )
-    //   );
-    //   profiles.add(
-    //             Userprofile(
-    //               name: 'Ceyhan',
-    //               location: 'Placeholder here',
-    //               expertString: 'Placeholder here',
-    //               availability: 'Placeholder here',
-    //               langString: 'Placeholder here',
-    //               reachability: 1,
-    //               description: 'Number3Profile',
-    //               seniority: 1,
-    //             )
-    //   );profiles.add(
-    //             Userprofile(
-    //               name: 'Durhan',
-    //               location: 'Placeholder here',
-    //               expertString: 'Placeholder here',
-    //               availability: 'Placeholder here',
-    //               langString: 'Placeholder here',
-    //               reachability: 1,
-    //               description: 'Number4Profile',
-    //               seniority: 0,
-    //               )
-    //    );
-    //    profiles.add(
-    //               Userprofile(
-    //               name: 'Sandro',
-    //               location: 'Placeholder here',
-    //               expertString: 'Placeholder here',
-    //               availability: 'Placeholder here',
-    //               langString: 'Placeholder here',
-    //               reachability: 1,
-    //               description: 'Number5Profile',
-    //               seniority: 0,
-    //               )
-    //    );
     }
     return profiles;
   }
