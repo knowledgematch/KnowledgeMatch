@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/search_criteria.dart';
 import 'package:knowledgematch/model/userprofile.dart';
 import 'package:knowledgematch/screens/swipe_screen.dart';
+import 'package:knowledgematch/services/matching_algorithm.dart';
 
 void main() {
   runApp(SwipeScreenTestApp());
@@ -11,81 +12,19 @@ void main() {
 class SwipeScreenTestApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SearchCriteria searchCriteria = SearchCriteria(topic: 'OOP', timeFrame: '', description: '', reachability: 2, location: '');
     return MaterialApp(
       home: SwipeScreen(
-        searchCriteria: SearchCriteria(topic: '', timeFrame: '', description: "Test Criteria", reachability: 0, location: ''),
-        profiles: _getMatchingUserProfiles(_mockProfiles()),
+        searchCriteria: searchCriteria,
+        profiles: _getMatchingUserProfiles(searchCriteria),
       ),
     );
   }
 
-  Future<List<Userprofile>> _mockProfiles() async {
-    // Erstelle Dummy-Daten für das Testing
-    return [
-        Userprofile(
-          name: 'A-person',
-          location: 'Placeholder here',
-          expertString: 'Placeholder here',
-          availability: 'Placeholder here',
-          langString: 'Placeholder here',
-          reachability: 1,
-          description: 'Number1Profile',
-          seniority: 0,
-        ),
-        Userprofile(
-          name: 'B-person',
-          location: 'Placeholder here',
-          expertString: 'Placeholder here',
-          availability: 'Placeholder here',
-          langString: 'Placeholder here',
-          reachability: 1,
-          description: 'Number2Profile',
-          seniority: 4,
-        ),
-        Userprofile(
-          name: 'C-person',
-          location: 'Placeholder here',
-          expertString: 'Placeholder here',
-          availability: 'Placeholder here',
-          langString: 'Placeholder here',
-          reachability: 1,
-          description: 'Number3Profile',
-          seniority: 1,
-        ),
-        Userprofile(
-          name: 'D-person',
-          location: 'Placeholder here',
-          expertString: 'Placeholder here',
-          availability: 'Placeholder here',
-          langString: 'Placeholder here',
-          reachability: 1,
-          description: 'Number4Profile',
-          seniority: 0,
-        ),
-        Userprofile(
-          name: 'E-person',
-          location: 'Placeholder here',
-          expertString: 'Placeholder here',
-          availability: 'Placeholder here',
-          langString: 'Placeholder here',
-          reachability: 1,
-          description: 'Number5Profile',
-          seniority: 1,
-        ),
-        Userprofile(
-          name: 'F-person',
-          location: 'Placeholder here',
-          expertString: 'Placeholder here',
-          availability: 'Placeholder here',
-          langString: 'Placeholder here',
-          reachability: 1,
-          description: 'Number6Profile',
-          seniority: 2,
-        )
-    ];
-  }
-  Future<List<Userprofile>> _getMatchingUserProfiles(Future<List<Userprofile>> arg) async {
-    List<Userprofile> profiles = await arg;
+
+  Future<List<Userprofile>> _getMatchingUserProfiles(SearchCriteria searchCriteria) async {
+    Future<List<Userprofile>> matchingProfiles = MatchingAlgorithm().matchingAlgorithm(searchCriteria);
+    List<Userprofile> profiles = await matchingProfiles;
     profiles.sort((a, b) {
       if (a.seniority == 0) return 1;
       if (b.seniority == 0) return -1;
