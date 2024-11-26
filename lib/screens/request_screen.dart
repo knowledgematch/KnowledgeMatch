@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/screens/main_screen.dart';
 
+import '../model/notification_data.dart';
 import '../services/notification_service.dart';
 
 class RequestScreen extends StatelessWidget {
@@ -144,10 +145,13 @@ class RequestScreen extends StatelessWidget {
                   onPressed: () async {
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => MainScreen()));
-                    await NotificationService().sendMessageToDevice(
-                        requesterToken,
-                        "Your request has been accepted",
-                        "$requesterName has accepted your request");
+                    var notification = NotificationData(
+                        type: NotificationType.knowledgeResponse,
+                        title: "Your request has been accepted",
+                        body: "$requesterName has accepted your request",
+                        userId: 1233415);
+                    await NotificationService()
+                        .sendMessageToDevice(notification);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -165,10 +169,13 @@ class RequestScreen extends StatelessWidget {
                   onPressed: () async {
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => MainScreen()));
-                    await NotificationService().sendMessageToDevice(
-                        requesterToken,
-                        "Your request has been declined",
-                        "$requesterName has declined your request");
+                    var notificationData = NotificationData(
+                        type: NotificationType.knowledgeResponse,
+                        title: 'Your request has been declined',
+                        body: '',
+                        userId: 14123123);
+                    await NotificationService()
+                        .sendMessageToDevice(notificationData);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
