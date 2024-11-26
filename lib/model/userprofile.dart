@@ -16,6 +16,7 @@ class Userprofile {
     required String langString,
     this.reachability,
     required this.description,
+    this.tokens,
   }) :  expertise = expertString.split(" "),
         languages = langString.split(" ");
 

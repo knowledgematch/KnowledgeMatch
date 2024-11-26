@@ -13,13 +13,13 @@ class FindMatchesScreen extends StatefulWidget {
 
 class FindMatchesScreenState extends State<FindMatchesScreen> {
   final _formKey = GlobalKey<FormState>();
-  String? topic;
+  String? keyword;
   DateTime? selectedTimeFrame;
   String? description;
   int? reachability;
   String? country;
 
-  late List<String> topics = [];
+  late List<String> keywords = [];
   late List<int> reachabilities = [];
 
   @override
@@ -29,7 +29,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
   }
 
   Future<void> _loadData() async {
-    topics = await MatchingAlgorithm().getTopics();
+    keywords = await MatchingAlgorithm().getKeywords();
     reachabilities = (await MatchingAlgorithm().getReachabilities())!;
     setState(() {
     });
@@ -60,7 +60,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                 decoration: const InputDecoration(
                   hintText: 'Select a topic',
                 ),
-                items: topics.map((topic) {
+                items: keywords.map((topic) {
                   return DropdownMenuItem<String>(
                     value: topic,
                     child: Text(topic),
@@ -68,7 +68,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    topic = value;
+                    keyword = value;
                   });
                 },
                 validator: (value) {
@@ -181,7 +181,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     SearchCriteria searchCriteria = SearchCriteria(
-                      keyword: topic!,
+                      keyword: keyword!,
                       timeFrame: selectedTimeFrame != null
                           ? selectedTimeFrame!.toIso8601String()
                           : '',
