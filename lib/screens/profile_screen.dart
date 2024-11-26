@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart'; // Import the CreateProfileScreen file
-import 'package:http/http.dart' as http; // Import the http package
-import 'dart:convert'; // To work with JSON
-import 'package:shared_preferences/shared_preferences.dart'; // Import for shared preferences
+import 'login_screen.dart';
+import 'change_pw_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -12,15 +13,12 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
-  String _reachability = '1'; // Default value, assuming reachable
-  String _password = ''; // Password should be securely handled
-  String? _picture = null; // Optional field for picture
-  String _seniority = '0'; // Default to 0 if not specified
-  String _uId = ''; // Will hold the U_ID of the logged-in user
+  String? _picture = null;
+  String _seniority = '0';
+  String _uId = '';
 
   final _formKey = GlobalKey<FormState>();
 
-  // TextEditingControllers for fields
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _reachabilityController = TextEditingController();
@@ -33,25 +31,22 @@ class ProfileScreenState extends State<ProfileScreen> {
     _loadUserData();
   }
 
-  // Load user data from shared preferences or another source
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final userDataString = prefs.getString('userData');
 
     if (userDataString != null) {
       final userData = jsonDecode(userDataString);
-      print("__________");
-      print(userData['U_ID']);
-      print("__________");
-      //set User ID
       _uId = userData['U_ID'].toString() ?? '';
-      _password = userData['Password'].toString() ?? '';
 
       setState(() {
         _nameController.text = userData['Name']?.toString() ?? '';
         _surnameController.text = userData['Surname']?.toString() ?? '';
         _reachabilityController.text = userData['Reachability']?.toString() ?? '1';
         _emailController.text = userData['Email']?.toString() ?? '';
+        print(userData['Description']);
+        print(userData['Name']);
+        print(userData);
         _descriptionController.text = userData['Description']?.toString() ?? '';
       });
     } else {
@@ -59,7 +54,6 @@ class ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Save profile information to the API and SharedPreferences
   Future<void> _saveProfile() async {
     final url = Uri.parse('http://86.119.45.62/users/$_uId');
     final headers = {'Content-Type': 'application/json'};
@@ -68,8 +62,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       'Surname': _surnameController.text,
       'Reachability': _reachabilityController.text,
       'Email': _emailController.text,
-      'Password': _password,
-      'Picture': _picture, // This can be handled differently for images (base64 or URL)
+      'Picture': _picture,
       'Seniority': _seniority,
       'Description': _descriptionController.text,
     });
@@ -78,26 +71,25 @@ class ProfileScreenState extends State<ProfileScreen> {
       final response = await http.put(url, headers: headers, body: body);
 
       if (response.statusCode == 204) {
-        // Successfully saved to the API
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile saved successfully!')),
-        );
-
-        // Update the local shared preferences with the new data
-        final prefs = await SharedPreferences.getInstance();
-        final updatedUserData = {
+        // After the successful update, store the updated user data in SharedPreferences
+        final updatedUser = {
           'U_ID': _uId,
           'Name': _nameController.text,
           'Surname': _surnameController.text,
           'Reachability': _reachabilityController.text,
           'Email': _emailController.text,
-          'Password': _password,
           'Picture': _picture,
           'Seniority': _seniority,
           'Description': _descriptionController.text,
         };
-        prefs.setString('userData', jsonEncode(updatedUserData));
 
+        // Save the updated data in SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('userData', jsonEncode(updatedUser));
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile saved successfully!')),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to save profile: ${response.body}')),
@@ -110,15 +102,13 @@ class ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Handle user logout
   Future<void> _logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear(); // Clear saved user data
+    await prefs.clear();
 
-    // Navigate to login screen
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => LoginScreen()), // Redirect to login screen
+      MaterialPageRoute(builder: (context) => LoginScreen()),
     );
   }
 
@@ -131,11 +121,11 @@ class ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: _logout, // Call logout when pressed
+            onPressed: _logout,
           ),
         ],
       ),
-      body: SingleChildScrollView(  // Wrap the body in SingleChildScrollView
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
@@ -179,11 +169,15 @@ class ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
+                SizedBox(
+                  height: 100, // Set height for description box
+                  child: TextFormField(
+                    controller: _descriptionController,
+                    maxLines: null, // Allow text to wrap within the box
+                    decoration: const InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -195,6 +189,16 @@ class ProfileScreenState extends State<ProfileScreen> {
                   },
                   child: const Text('Save Changes'),
                 ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ChangePasswordScreen()),
+                    );
+                  },
+                  child: const Text('Change Password'),
+                ),
               ],
             ),
           ),
@@ -202,5 +206,4 @@ class ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
 }
