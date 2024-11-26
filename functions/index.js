@@ -7,7 +7,8 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
   const tokens = request.data.tokens;
   const title = request.data.title;
   const body = request.data.body;
-  const userId = request.data.user_id;
+  const targetUserId = request.data.target_user_id;
+  const sourceUserId = request.data.source_user_id;
   const notificationType = request.data.notification_type;
 
   try {
@@ -18,7 +19,8 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
         body: body,
       },
       data: {
-        user_id: userId,
+        target_user_id: targetUserId,
+        source_user_id: sourceUserId,
         notification_type: notificationType,
       },
       tokens: tokens,
@@ -37,7 +39,8 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
       const error = result.error ? result.error.message : null;
 
       return notificationsRef.add({
-        userId: userId,
+        sourceUserId: sourceUserId,
+        targetUserId: targetUserId,
         token: token,
         title: title,
         body: body,

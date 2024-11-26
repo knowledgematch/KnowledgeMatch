@@ -42,6 +42,7 @@ class NotificationService {
     iOS: initializationSettingsIOS,
   );
 
+
   Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
     this.navigatorKey = navigatorKey;
     await flutterLocalNotificationsPlugin.initialize(
@@ -170,7 +171,8 @@ class NotificationService {
         'tokens': tokens,
         'title': notificationData.title,
         'body': notificationData.body,
-        'user_id': notificationData.userId.toString(),
+        'target_user_id': notificationData.userId.toString(),
+        'source_user_id': "1234",
         'notification_type': notificationData.type.toShortString()
       },
     );
