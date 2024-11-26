@@ -1,4 +1,5 @@
 class Userprofile {
+  final int id;
   final String name;
   final String location;
   final List<String> expertise;
@@ -9,6 +10,7 @@ class Userprofile {
   List<String>? tokens = [];
 
   Userprofile({
+    required this.id,
     required this.name,
     required this.location,
     required String expertString,

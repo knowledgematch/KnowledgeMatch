@@ -17,7 +17,7 @@ class MatchingAlgorithm{
 
   Future<List<Userprofile>> matchingAlgorithm(SearchCriteria searchCriteria) async {
     String query =  'SELECT CONCAT(u.Name, \' \', u.Surname) AS FullName, '
-                    'u.Reachability, GROUP_CONCAT(DISTINCT k.Keyword ORDER BY '
+                    'u.Reachability, u.U_ID, GROUP_CONCAT(DISTINCT k.Keyword ORDER BY '
                     'k.Keyword SEPARATOR \', \') AS Keywords FROM User u '
                     'JOIN User2Keyword uk ON u.U_ID = uk.U_ID '
                     'JOIN Keyword k ON uk.K_ID = k.K_ID '
@@ -46,9 +46,9 @@ class MatchingAlgorithm{
     if(result != null) {
       for (var row in result.rows) {
         var data = row.assoc();
-
         profiles.add(
             Userprofile(
+              id: int.tryParse(data['U_ID'] ?? '0') ?? 0,
               name: data['FullName'].toString(),
               location: 'Placeholder here',
               expertString: data['Keywords'].toString(),
@@ -68,6 +68,7 @@ class MatchingAlgorithm{
         'SELECT * from User WHERE U_ID = $id');
     var data = result?.rows.first.assoc();
     return Userprofile(
+      id: int.tryParse(data?['U_ID'] ?? '0') ?? 0,
       name: "${data!['Name']} ${data['Surname']}",
       location: 'Placeholder here',
       expertString: data['Keywords'].toString(),
