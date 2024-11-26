@@ -23,7 +23,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
   late List<int> reachabilities = [];
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _loadData();
   }
@@ -31,8 +31,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
   Future<void> _loadData() async {
     topics = await MatchingAlgorithm().getTopics();
     reachabilities = (await MatchingAlgorithm().getReachabilities())!;
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
@@ -44,8 +43,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.menu),
-          onPressed: () {
-          },
+          onPressed: () {},
         ),
       ),
       body: Padding(
@@ -82,7 +80,8 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
               const SizedBox(height: 16),
 
               // Calender Picker
-              const Text("What is your desired time frame to discuss the matter?"),
+              const Text(
+                  "What is your desired time frame to discuss the matter?"),
               InkWell(
                 onTap: () async {
                   final DateTime? picked = await showDatePicker(
@@ -119,7 +118,8 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
               TextFormField(
                 maxLines: 3,
                 decoration: const InputDecoration(
-                  hintText: 'For example: How does one proceed in a curve discussion?',
+                  hintText:
+                      'For example: How does one proceed in a curve discussion?',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
@@ -143,7 +143,8 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                 items: reachabilities.map((reachability) {
                   return DropdownMenuItem<int>(
                     value: reachability,
-                    child: Text(ReachabilityValue.fromValue(reachability).description),
+                    child: Text(
+                        ReachabilityValue.fromValue(reachability).description),
                   );
                 }).toList(),
                 onChanged: (value) {
@@ -193,7 +194,10 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SwipeScreen(searchCriteria: searchCriteria, profiles: MatchingAlgorithm().matchingAlgorithm(searchCriteria)),
+                        builder: (context) => SwipeScreen(
+                            searchCriteria: searchCriteria,
+                            profiles: MatchingAlgorithm()
+                                .matchingAlgorithm(searchCriteria)),
                       ),
                     );
                   }

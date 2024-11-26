@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../model/notification_data.dart';
 import '../screens/request_screen.dart';
 
 
@@ -129,7 +130,7 @@ class NotificationService {
 
 
   Future<void> sendMessageToDevice(
-      String targetToken, String title, String body) async {
+      NotificationData notificationData) async {
     List<String> tokens = [];
     tokens.add(
       "eA5YhA32RJWALJsDphXdfG:APA91bEh6s3D7vlrk0RkL4FlicsBqDi4o63HxNnnSIYiEyaw6XspZ9JO7H7mZ2bDBHTE_zenOzVucVhfbsMlttO-2YO-B8JgK9RCcZrFzWTRArxuiNMsd4U"
@@ -142,10 +143,10 @@ class NotificationService {
         await FirebaseFunctions.instance.httpsCallable('sendToDevice').call(
       {
         'tokens': tokens,
-        'title': title,
-        'body': body,
-        'user_id': "UserID",
-        'notification_type': "" //enum
+        'title': notificationData.title,
+        'body': notificationData.body,
+        'user_id': notificationData.userId.toString(),
+        'notification_type': notificationData.type.toString()
       },
     );
     if (result.data['success']) {

@@ -77,6 +77,7 @@ class _MyAppState extends State<MyApp> {
     // Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
+        print(message);
         NotificationService().showNotification(
           message: message
         );
