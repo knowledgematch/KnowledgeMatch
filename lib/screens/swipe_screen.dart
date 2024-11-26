@@ -21,6 +21,11 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
   final SwipableStackController _controller = SwipableStackController();
   bool shouldShowGlow = false;
 
+  // Map zur Speicherung des Zustands (Vorder- oder Rückseite) jeder Karte
+  final Map<int, bool> cardStates = {};
+  bool isAnimating = false; // Kontrollvariable
+
+
   void checkSwipeDirection(double swipeDistance) {
     if (swipeDistance > 0.8) {
       shouldShowGlow = true;
@@ -29,13 +34,26 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
     }
   }
 
-  // Use the NotificationService to send a notification
-  Future<void> _sendSwipeRightNotification() async {
-    await NotificationService().sendMessageToDevice(
-        "eA5YhA32RJWALJsDphXdfG:APA91bEh6s3D7vlrk0RkL4FlicsBqDi4o63HxNnnSIYiEyaw6XspZ9JO7H7mZ2bDBHTE_zenOzVucVhfbsMlttO-2YO-B8JgK9RCcZrFzWTRArxuiNMsd4U",
-        "Your knowledge has been requested!",
-        widget.searchCriteria.description);
-    //TODO add actual target token of selected userprofile
+  void toggleCardSide(int index) {
+    if (isAnimating) return;
+    setState(() {
+      isAnimating = true;
+      cardStates[index] = !(cardStates[index] ?? false);
+    });
+
+    // Freigeben nach der Animationsdauer
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        isAnimating = false;
+      });
+    });
+  }
+
+  void resetCardStates() {
+    setState(() {
+      cardStates.clear(); // Lösche alle gespeicherten Zustände
+    });
+    _controller.currentIndex = -1;
   }
 
   @override
@@ -73,39 +91,72 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                 onSwipeCompleted: (index, direction) {
                   setState(() {
                     if (direction == SwipeDirection.right) {
-                      //send notification
-                      _sendSwipeRightNotification();
                       profiles.removeAt(_controller.currentIndex);
                       _controller.currentIndex--;
                     } else if (direction == SwipeDirection.left) {}
                     if (_controller.currentIndex == profiles.length - 1) {
-                      _controller.currentIndex = -1;
+                      resetCardStates();
                     }
                   });
                 },
                 builder: (context, properties) {
                   checkSwipeDirection(properties.swipeProgress);
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        if (shouldShowGlow)
-                          BoxShadow(
-                            color: properties.direction == SwipeDirection.right
-                                ? Colors.green.withOpacity(0.5)
-                                : properties.direction == SwipeDirection.left
-                                    ? Colors.red.withOpacity(0.5)
-                                    : Colors.transparent,
-                            blurRadius: 20,
-                            spreadRadius: 5,
-                          ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: ProfileCard(
-                        profile: profiles[properties.index % profiles.length],
-                      ),
+
+                  // Zustand der Karte (Vorderseite oder Rückseite)
+                  final isBackSide = cardStates[properties.index] ?? false;
+
+                  return GestureDetector(
+                    onTap: () => toggleCardSide(properties.index),
+                    // Klick-Event
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 500),
+                      // Animationsdauer
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
+                        final rotate =
+                            Tween(begin: 0.0, end: 1.0).animate(animation);
+
+                        return AnimatedBuilder(
+                          animation: rotate,
+                          child: child,
+                          builder: (BuildContext context, Widget? child) {
+                            // Prüfen, ob die Rückseite angezeigt wird
+                            final isUnder =
+                                (ValueKey(isBackSide) != child?.key);
+                            final rotationAngle =
+                                rotate.value * 3.14159; // Pi für 180°
+
+                            return Transform(
+                              alignment: Alignment.center,
+                              transform: isUnder
+                                  ? (Matrix4.rotationY(rotationAngle)
+                                    ..setEntry(3, 2, 0.001))
+                                  : (Matrix4.rotationY(rotationAngle + 3.14159)
+                                    ..setEntry(3, 2, 0.001)),
+                              // Rückseite korrigiert
+                              child: isUnder
+                                  ? Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.rotationY(3.14159),
+                                      // Rückseite wieder ausrichten
+                                      child: child,
+                                    )
+                                  : child,
+                            );
+                          },
+                        );
+                      },
+                      child: isBackSide
+                          ? BackSideCard(
+                              profile:
+                                  profiles[properties.index % profiles.length],
+                              key: ValueKey(true),
+                            )
+                          : ProfileCard(
+                              profile:
+                                  profiles[properties.index % profiles.length],
+                              key: ValueKey(false),
+                            ),
                     ),
                   );
                 },
@@ -152,6 +203,54 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
             );
           }
         },
+      ),
+    );
+  }
+}
+
+// Widget für die Rückseite der Karte
+class BackSideCard extends StatelessWidget {
+  final Userprofile profile;
+
+  const BackSideCard({required this.profile, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      // Horizontaler Rand leicht reduziert für breitere Rückseite
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      child: Card(
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0), // Innenabstand bleibt gleich
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                profile.name,
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Location: ${profile.location}',
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Expertise: ${profile.expertise.join(", ")}',
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Languages: ${profile.languages.join(", ")}',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
