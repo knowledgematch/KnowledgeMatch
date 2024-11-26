@@ -17,7 +17,8 @@ class MatchingAlgorithm{
 
   Future<List<Userprofile>> matchingAlgorithm(SearchCriteria searchCriteria) async {
     String query =  'SELECT CONCAT(u.Name, \' \', u.Surname) AS FullName, '
-                    'u.Reachability, GROUP_CONCAT(DISTINCT k.Keyword ORDER BY '
+                    'u.Reachability, u.Seniority AS Seniority, '
+                    'GROUP_CONCAT(DISTINCT k.Keyword ORDER BY '
                     'k.Keyword SEPARATOR \', \') AS Keyword FROM User u '
                     'JOIN User2Keyword uk ON u.U_ID = uk.U_ID '
                     'JOIN Keyword k ON uk.K_ID = k.K_ID '
@@ -56,7 +57,7 @@ class MatchingAlgorithm{
               langString: 'Placeholder here',
               reachability: int.parse(data['Reachability'].toString()),
               description: 'Placeholder here',
-              seniority: int.parse(data['Seniority']!),
+              seniority: int.parse(data['Seniority'].toString()),
             )
         );
       }
