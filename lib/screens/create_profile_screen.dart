@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // for json encoding
+import 'login_screen.dart'; // Import the Login Screen
 
 class CreateProfileScreen extends StatefulWidget {
   @override
@@ -93,6 +94,14 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     }
   }
 
+  // Function to go back to login screen
+  void _goToLoginScreen() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()), // Navigate to LoginScreen
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -171,6 +180,11 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               ElevatedButton(
                 onPressed: _createAccount,
                 child: Text('Create Account'),
+              ),
+              SizedBox(height: 20),
+              TextButton(
+                onPressed: _goToLoginScreen, // Button to go back to login screen
+                child: Text('Already have an account? Log in'),
               ),
             ],
           ),
