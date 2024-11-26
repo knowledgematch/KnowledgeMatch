@@ -36,9 +36,14 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
     });
   }
 
-  Future<List<Userprofile>> _sortProfilesBySeniority(Future<List<Userprofile>> arg) async {
-    List<Userprofile> profiles = await arg;
-    profiles.sort((a, b) => a.seniority.compareTo(b.seniority));
+  Future<List<Userprofile>> _getMatchingUserProfiles(SearchCriteria searchCriteria) async {
+    Future<List<Userprofile>> matchingProfiles = MatchingAlgorithm().matchingAlgorithm(searchCriteria);
+    List<Userprofile> profiles = await matchingProfiles;
+    profiles.sort((a, b) {
+      if (a.seniority == 0) return 1;
+      if (b.seniority == 0) return -1;
+      else return a.seniority.compareTo(b.seniority);
+    });  // Sort matching profiles by seniority  (0-seniority is prioritized the least)
     return profiles;
   }
 
@@ -200,7 +205,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SwipeScreen(searchCriteria: searchCriteria, profiles: _sortProfilesBySeniority(MatchingAlgorithm().matchingAlgorithm(searchCriteria))),
+                        builder: (context) => SwipeScreen(searchCriteria: searchCriteria, profiles: _getMatchingUserProfiles(searchCriteria)),
                       ),
                     );
                   }
