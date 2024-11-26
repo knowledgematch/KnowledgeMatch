@@ -17,12 +17,13 @@ class MatchingAlgorithm{
 
   Future<List<Userprofile>> matchingAlgorithm(SearchCriteria searchCriteria) async {
     String query =  'SELECT CONCAT(u.Name, \' \', u.Surname) AS FullName, '
-                    'u.Reachability, GROUP_CONCAT(DISTINCT k.Keyword ORDER BY '
-                    'k.Keyword SEPARATOR \', \') AS Keywords FROM Users u '
-                    'JOIN User2Keyword uk ON u.U_ID = uk.U_ID '
-                    'JOIN Keyword k ON uk.K_ID = k.K_ID '
-                    'JOIN Keyword2Topic kt ON k.K_ID = kt.K_ID '
-                    'JOIN Topic t ON kt.T_ID = t.T_ID';
+        'u.Reachability, u.Seniority AS Seniority, '
+        'GROUP_CONCAT(DISTINCT k.Keyword ORDER BY '
+        'k.Keyword SEPARATOR \', \') AS Keyword FROM User u '
+        'JOIN User2Keyword uk ON u.U_ID = uk.U_ID '
+        'JOIN Keyword k ON uk.K_ID = k.K_ID '
+        'JOIN Keyword2Topic kt ON k.K_ID = kt.K_ID '
+        'JOIN Topic t ON kt.T_ID = t.T_ID';
     List<String> queryBuilder = [];
 
     if (searchCriteria.topic.isNotEmpty) {
@@ -51,11 +52,12 @@ class MatchingAlgorithm{
             Userprofile(
               name: data['FullName'].toString(),
               location: 'Placeholder here',
-              expertString: data['Keywords'].toString(),
+              expertString: data['Keyword'].toString(),
               availability: 'Placeholder here',
               langString: 'Placeholder here',
               reachability: int.parse(data['Reachability'].toString()),
               description: 'Placeholder here',
+              seniority: int.parse(data['Seniority'].toString()),
             )
         );
       }
