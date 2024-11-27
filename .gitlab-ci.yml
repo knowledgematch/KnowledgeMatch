@@ -13,6 +13,7 @@ build-job:
   before_script:
     - echo "Setting up dynamic Gradle properties..."
     - echo "org.gradle.java.home=$JAVA_HOME" > android/gradle.properties
+    - cat android/gradle.properties
   script:
     - echo "Building Flutter application..."
     - flutter build apk --release
