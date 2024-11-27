@@ -1,7 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 import 'screens/login_screen.dart';
 import 'package:knowledgematch/model/local_user.dart';
 import 'package:knowledgematch/screens/request_screen.dart';
@@ -29,25 +28,31 @@ Future<void> main() async {
 
 
 class MyApp extends StatelessWidget {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  MyApp({super.key});
   @override
   Widget build(BuildContext context) {
+    appContext = context;
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'KnowledgeMatch',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: SplashScreen(), // Start with a splash screen for initialization
+      home: SplashScreen(navigatorKey: navigatorKey),
     );
   }
 }
 
 class SplashScreen extends StatefulWidget {
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  const SplashScreen({super.key, required this.navigatorKey});
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  SplashScreenState createState() => SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class SplashScreenState extends State<SplashScreen> {
 
-
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   // Instance of Firebase Messaging
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
@@ -56,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    NotificationService().init(navigatorKey);
+    NotificationService().init(widget.navigatorKey);
     _checkLoggedInStatus();
     _setLocalUser();
     _requestPermissions();
@@ -81,7 +86,6 @@ class _SplashScreenState extends State<SplashScreen> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     final userDataString = prefs.getString('userData');
-
     if (token != null && userDataString != null) {
       // User is logged in, navigate to MainScreen
       Navigator.pushReplacement(
@@ -128,7 +132,7 @@ class _SplashScreenState extends State<SplashScreen> {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print(
           'App opened from terminated state by a message: ${message.notification}');
-      navigatorKey.currentState?.push(
+      widget.navigatorKey.currentState?.push(
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
             future: MatchingAlgorithm().getUserProfileById(
@@ -169,7 +173,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (message != null) {
       print(
           'App opened from terminated state by a message: ${message.notification}');
-      navigatorKey.currentState?.push(
+      widget.navigatorKey.currentState?.push(
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
             future: MatchingAlgorithm().getUserProfileById(
@@ -217,7 +221,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: CircularProgressIndicator(), // Loading indicator while checking login status
+        child: CircularProgressIndicator(),
       ),
     );
   }
