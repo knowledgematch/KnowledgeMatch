@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/model/notification_data.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
 import '../model/search_criteria.dart';
@@ -30,12 +31,15 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
   }
 
   // Use the NotificationService to send a notification
-  Future<void> _sendSwipeRightNotification() async {
-    await NotificationService().sendMessageToDevice(
-        "eA5YhA32RJWALJsDphXdfG:APA91bEh6s3D7vlrk0RkL4FlicsBqDi4o63HxNnnSIYiEyaw6XspZ9JO7H7mZ2bDBHTE_zenOzVucVhfbsMlttO-2YO-B8JgK9RCcZrFzWTRArxuiNMsd4U",
-        "Your knowledge has been requested!",
-        widget.searchCriteria.issue);
+  Future<void> _sendSwipeRightNotification(Userprofile profile) async {
+    var notificationData = NotificationData(
+        type: NotificationType.knowledgeRequest,
+        title: "Your knowledge has been requested!",
+        body: widget.searchCriteria.issue,
+        userId: profile.id );
+    await NotificationService().sendMessageToDevice(notificationData);
     //TODO add actual target token of selected userprofile
+    //TODO get actual User ID for the tokens
   }
 
   @override
@@ -74,7 +78,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                   setState(() {
                     if (direction == SwipeDirection.right) {
                       //send notification
-                      _sendSwipeRightNotification();
+                      _sendSwipeRightNotification(profiles[_controller.currentIndex]);
                       profiles.removeAt(_controller.currentIndex);
                       _controller.currentIndex--;
                     } else if (direction == SwipeDirection.left) {}

@@ -1,20 +1,22 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/model/notification_data.dart';
 import 'package:knowledgematch/screens/main_screen.dart';
+import 'package:knowledgematch/services/matching_algorithm.dart';
 
+import '../model/userprofile.dart';
+import '../model/notification_data.dart';
 import '../services/notification_service.dart';
 
 class RequestScreen extends StatelessWidget {
-  final String requesterName;
-  final String requesterTitle;
-  final String requesterLocation;
-  final String issueDescription;
-  final String requesterToken = "eA5YhA32RJWALJsDphXdfG:APA91bEh6s3D7vlrk0RkL4FlicsBqDi4o63HxNnnSIYiEyaw6XspZ9JO7H7mZ2bDBHTE_zenOzVucVhfbsMlttO-2YO-B8JgK9RCcZrFzWTRArxuiNMsd4U";
-  //TODO add actual token
-  const RequestScreen({super.key, 
-    required this.requesterName,
-    required this.requesterTitle,
-    required this.requesterLocation,
-    required this.issueDescription,
+  final NotificationData notificationData;
+  final Userprofile userprofile;
+
+  const RequestScreen({
+    super.key,
+    required this.userprofile,
+    required this.notificationData,
+
   });
 
   @override
@@ -53,7 +55,7 @@ class RequestScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            requesterName,
+                            userprofile.name,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -61,7 +63,7 @@ class RequestScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 4),
                           Text(
-                            requesterTitle,
+                            "requesterTitle",
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey[700],
@@ -69,7 +71,7 @@ class RequestScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 4),
                           Text(
-                            'Location: $requesterLocation',
+                            'Location: ${userprofile.location}',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey[700],
@@ -83,7 +85,6 @@ class RequestScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 24),
-
             Text(
               'The issue',
               style: TextStyle(
@@ -97,7 +98,7 @@ class RequestScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  issueDescription,
+                  notificationData.body,
                   style: TextStyle(
                     fontSize: 16,
                   ),
@@ -111,14 +112,14 @@ class RequestScreen extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () async {
                     Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => MainScreen()
-                        )
-                    );
-                    await NotificationService().sendMessageToDevice(
-                        requesterToken,
-                        "Your request has been accepted",
-                        "$requesterName has accepted your request");
+                        MaterialPageRoute(builder: (context) => MainScreen()));
+                    var notification = NotificationData(
+                        type: NotificationType.knowledgeResponse,
+                        title: "Your request has been accepted",
+                        body: "${userprofile.name} has accepted your request",
+                        userId: notificationData.userId);
+                    await NotificationService()
+                        .sendMessageToDevice(notification);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -135,14 +136,14 @@ class RequestScreen extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () async {
                     Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => MainScreen()
-                        )
-                    );
-                    await NotificationService().sendMessageToDevice(
-                       requesterToken,
-                        "Your request has been declined",
-                        "$requesterName has declined your request");
+                        MaterialPageRoute(builder: (context) => MainScreen()));
+                    var notification = NotificationData(
+                        type: NotificationType.knowledgeResponse,
+                        title: 'Your request has been declined',
+                        body: '',
+                        userId: notificationData.userId);
+                    await NotificationService()
+                        .sendMessageToDevice(notification);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
