@@ -1,86 +1,163 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/services/firestore_service.dart';
-import '../model/notification_data.dart';
-import 'chat_room_screen.dart';
+import 'package:knowledgematch/model/notification_data.dart';
+import 'package:knowledgematch/screens/main_screen.dart';
 
-class ChatScreen extends StatelessWidget {
-  final firestoreService = FirestoreService();
+import '../model/userprofile.dart';
+import '../services/notification_service.dart';
+
+class RequestScreen extends StatelessWidget {
+  final NotificationData notificationData;
+  final Userprofile userprofile;
+
+  const RequestScreen({
+    super.key,
+    required this.userprofile,
+    required this.notificationData,
+
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Requests'),
+        title: Text('Request from'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
-      body: Column(
-        children: [
-          // Search Bar
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              // Optional search functionality
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                prefixIcon: Icon(Icons.search),
-              ),
-            ),
-          ),
-
-          // List of Matches
-          Expanded(
-            child: FutureBuilder<List<NotificationData>>(
-              future: firestoreService.fetchNotifications(
-                userID: 1234,
-                type: NotificationType.knowledgeRequest,
-              ),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  // While the data is loading, show a loading indicator
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  // If there's an error, display it
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  // If the data is empty, show a message
-                  return Center(child: Text('No requests found.'));
-                } else {
-                  // When data is available, display it
-                  final notifications = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: notifications.length,
-                    itemBuilder: (context, index) {
-                      final notification = notifications[index];
-                      return GestureDetector(
-                        onTap: () {
-                          // Navigate to chat room
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChatRoomScreen(
-                                matchName: "Title" //title ?? 'No Title',
-                              ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    // Profile Picture
+                    CircleAvatar(
+                      radius: 30,
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            userprofile.name,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
-                          );
-                        },
-                        child: Card(
-                          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              // Optionally display an avatar
-                            ),
-                            title: Text(notification.title),
-                            subtitle: Text(notification.body),
-                            trailing: Icon(Icons.chat),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                }
-              },
+                          SizedBox(height: 4),
+                          Text(
+                            "requesterTitle",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Location: ${userprofile.location}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: 24),
+            Text(
+              'The issue',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Card(
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  notificationData.body,
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => MainScreen()));
+                    var notification = NotificationData(
+                        type: NotificationType.requestAccepted,
+                        title: "Your request has been accepted",
+                        body: "${userprofile.name} has accepted your request",
+                        userId: notificationData.userId);
+                    await NotificationService()
+                        .sendMessageToDevice(notification);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ),
+                  child: Text(
+                    'Accept',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => MainScreen()));
+                    var notification = NotificationData(
+                        type: NotificationType.requestDeclined,
+                        title: 'Your request has been declined',
+                        body: '',
+                        userId: notificationData.userId);
+                    await NotificationService()
+                        .sendMessageToDevice(notification);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ),
+                  child: Text(
+                    'Decline',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
