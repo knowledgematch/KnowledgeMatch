@@ -1,16 +1,20 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/login_screen.dart';
-import 'package:knowledgematch/model/local_user.dart';
-import 'package:knowledgematch/screens/request_screen.dart';
-import 'package:knowledgematch/services/matching_algorithm.dart';
-import 'package:knowledgematch/services/notification_service.dart';
+import '/model/local_user.dart';
+import '/screens/request_screen.dart';
+import '/services/matching_algorithm.dart';
+import '/services/notification_service.dart';
+import '/services/user_service.dart';
 import 'model/notification_data.dart';
 import 'model/userprofile.dart';
 import 'screens/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -87,7 +91,13 @@ class SplashScreenState extends State<SplashScreen> {
     final token = prefs.getString('token');
     final userDataString = prefs.getString('userData');
     if (token != null && userDataString != null) {
-      // User is logged in, navigate to MainScreen
+      // User is logged in, create User-Instance, navigate to MainScreen
+      //User instance
+      final userData = jsonDecode(userDataString);
+      int uId = int.tryParse(userData['U_ID'].toString()) ?? 0;
+      await initializeUser(uId);
+
+      //navigate to MainScreen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MainScreen()),

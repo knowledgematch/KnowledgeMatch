@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../services/user_service.dart';
 import 'create_profile_screen.dart';
 import 'main_screen.dart'; // Import the MainScreen
 import 'package:http/http.dart' as http;
@@ -69,6 +70,14 @@ class _LoginScreenState extends State<LoginScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
     await prefs.setString('userData', jsonEncode(user));
+
+    // Retrieve and decode the saved user data
+    final userDataString = prefs.getString('userData');
+    if (userDataString != null) {
+      final userData = jsonDecode(userDataString);
+      int uId = int.tryParse(userData['U_ID'].toString()) ?? 0;
+      await initializeUser(uId);
+    }
   }
 
   @override

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../model/user.dart';
+import '../services/user_service.dart';
 import 'login_screen.dart';
 import 'change_pw_screen.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +15,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
+  final user = User.instance;
   String? _picture = null;
   String _seniority = '0';
   String _uId = '';
@@ -40,14 +43,11 @@ class ProfileScreenState extends State<ProfileScreen> {
       _uId = userData['U_ID'].toString() ?? '';
 
       setState(() {
-        _nameController.text = userData['Name']?.toString() ?? '';
-        _surnameController.text = userData['Surname']?.toString() ?? '';
-        _reachabilityController.text = userData['Reachability']?.toString() ?? '1';
-        _emailController.text = userData['Email']?.toString() ?? '';
-        print(userData['Description']);
-        print(userData['Name']);
-        print(userData);
-        _descriptionController.text = userData['Description']?.toString() ?? '';
+        _nameController.text = user.name!;
+        _surnameController.text = user.surname!;
+        _reachabilityController.text = user.reachability!.toString();
+        _emailController.text = user.email!;
+        _descriptionController.text = user.description!;
       });
     } else {
       print('No user data found in SharedPreferences.');
@@ -83,9 +83,10 @@ class ProfileScreenState extends State<ProfileScreen> {
           'Description': _descriptionController.text,
         };
 
-        // Save the updated data in SharedPreferences
+        // Save the updated data in SharedPreferences and User Singleton
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('userData', jsonEncode(updatedUser));
+        await initializeUser(int.parse(_uId));
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile saved successfully!')),
@@ -105,6 +106,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   Future<void> _logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+    User.instance.reset();
 
     Navigator.pushReplacement(
       context,
