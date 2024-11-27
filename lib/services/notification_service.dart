@@ -81,7 +81,7 @@ class NotificationService {
       navigatorKey?.currentState?.push(
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
-            future: MatchingAlgorithm().getUserProfile(
+            future: MatchingAlgorithm().getUserProfileById(
               int.tryParse(data['target_user_id']) ?? 0,
             ),
             builder: (context, snapshot) {

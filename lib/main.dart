@@ -13,9 +13,20 @@ import 'screens/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('Firebase is working');
+  } catch (e) {
+    print('Firebase initialization error: $e');
+  }
+
   runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -34,11 +45,37 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
+
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  // Instance of Firebase Messaging
+  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  LocalUser? localUser;
+
   @override
   void initState() {
     super.initState();
+    NotificationService().init(navigatorKey);
     _checkLoggedInStatus();
+    _setLocalUser();
+    _requestPermissions();
+
+    // Initialize FCM
+    _initializeFCM();
+    _getToken();
   }
+
+  void _setLocalUser() {
+    localUser = LocalUser(
+        name: "Alice",
+        location: "Location",
+        expertString: "expertString",
+        availability: "availability",
+        langString: "langString",
+        description: "description");
+  }
+
 
   Future<void> _checkLoggedInStatus() async {
     final prefs = await SharedPreferences.getInstance();
@@ -55,7 +92,9 @@ class _SplashScreenState extends State<SplashScreen> {
       // User is not logged in, navigate to LoginScreen
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => LoginScreen()));
+          }
+  }
   // Request notification permissions (especially for iOS)
   void _requestPermissions() async {
     NotificationSettings settings = await _messaging.requestPermission(
@@ -92,7 +131,7 @@ class _SplashScreenState extends State<SplashScreen> {
       navigatorKey.currentState?.push(
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
-            future: MatchingAlgorithm().getUserProfile(
+            future: MatchingAlgorithm().getUserProfileById(
               int.tryParse(message.data['target_user_id']) ?? 0,
             ),
             builder: (context, snapshot) {
@@ -133,7 +172,7 @@ class _SplashScreenState extends State<SplashScreen> {
       navigatorKey.currentState?.push(
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
-            future: MatchingAlgorithm().getUserProfile(
+            future: MatchingAlgorithm().getUserProfileById(
               int.tryParse(message.data['target_user_id']) ?? 0,
             ),
             builder: (context, snapshot) {
@@ -180,7 +219,6 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: CircularProgressIndicator(), // Loading indicator while checking login status
       ),
-      home: MainScreen(),
     );
   }
 }

@@ -47,7 +47,7 @@ class MatchingAlgorithm{
           .toList();
     }
     return Userprofile(
-      id: int.tryParse(user['U_ID'] ?? '0') ?? 0,
+      id: int.parse(user['U_ID'].toString()),
       name: user['FullName'].toString(),
       location: 'Placeholder',
       expertString: user['Keywords'].toString(),
