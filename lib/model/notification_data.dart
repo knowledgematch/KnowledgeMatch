@@ -1,6 +1,8 @@
+
 enum NotificationType {
   knowledgeRequest,
-  knowledgeResponse,
+  requestDeclined,
+  requestAccepted,
   meetupRequest,
   meetupResponse;
 
@@ -8,8 +10,10 @@ enum NotificationType {
     switch (type) {
       case 'knowledgeRequest':
         return NotificationType.knowledgeRequest;
-      case 'knowledgeResponse':
-        return NotificationType.knowledgeResponse;
+      case 'requestAccepted':
+        return NotificationType.requestAccepted;
+      case 'requestDeclined' :
+        return NotificationType.requestDeclined;
       case 'meetupRequest':
         return NotificationType.meetupRequest;
       case 'meetupResponse':
@@ -34,4 +38,22 @@ class NotificationData {
         required this.body,
         required this.userId
   });
+
+  factory NotificationData.fromFirestoreRequest(Map<String, dynamic> map){
+      final String combinedBody = [
+        map['body'] ?? '',
+        map['sourceUserId'] ?? '',
+        map['success'] ?? '',
+        map['targetUserId'] ?? '',
+        map['timestamp'] ?? '',
+      ].join(', ');
+
+      return NotificationData(
+        type: NotificationType.fromString(map['notificationType'] ?? ''),
+        title: map['title'] ?? '',
+        body: combinedBody,
+        userId: int.parse(map['targetUserId'] ?? ''),
+      );
+
+  }
 }
