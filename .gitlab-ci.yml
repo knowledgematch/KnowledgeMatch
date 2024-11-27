@@ -6,7 +6,7 @@ stages:
   - deploy
 
 variables:
-  JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64" # TODO find out correct path in docker image
+  JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64" # Should be correct
 
 build-job:
   stage: build
