@@ -114,7 +114,9 @@ class RequestScreen extends StatelessWidget {
                         type: NotificationType.requestAccepted,
                         title: "Your request has been accepted",
                         body: "${userprofile.name} has accepted your request",
-                        userId: notificationData.userId);
+                        targetUserId: notificationData.targetUserId,
+                        sourceUserId: notificationData.sourceUserId,
+                    );
                     await NotificationService()
                         .sendMessageToDevice(notification);
                   },
@@ -136,9 +138,11 @@ class RequestScreen extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => MainScreen()));
                     var notification = NotificationData(
                         type: NotificationType.requestDeclined,
-                        title: 'Your request has been declined',
-                        body: '',
-                        userId: notificationData.userId);
+                        title: "Your request has been declined",
+                        body: "${userprofile.name} has declined your request",
+                        targetUserId: notificationData.targetUserId,
+                        sourceUserId: notificationData.sourceUserId,
+                    );
                     await NotificationService()
                         .sendMessageToDevice(notification);
                   },

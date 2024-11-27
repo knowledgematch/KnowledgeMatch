@@ -36,7 +36,9 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
         type: NotificationType.knowledgeRequest,
         title: "Your knowledge has been requested!",
         body: widget.searchCriteria.issue,
-        userId: profile.id );
+        targetUserId: profile.id,
+        sourceUserId: 1234,
+    );
     await NotificationService().sendMessageToDevice(notificationData);
     //TODO add actual target token of selected userprofile
     //TODO get actual User ID for the tokens
@@ -78,7 +80,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                   setState(() {
                     if (direction == SwipeDirection.right) {
                       //send notification
-                      _sendSwipeRightNotification(profiles[_controller.currentIndex]);
+                      _sendSwipeRightNotification(
+                          profiles[_controller.currentIndex]);
                       profiles.removeAt(_controller.currentIndex);
                       _controller.currentIndex--;
                     } else if (direction == SwipeDirection.left) {}

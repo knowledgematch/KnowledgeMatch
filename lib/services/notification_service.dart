@@ -98,12 +98,14 @@ class NotificationService {
               } else {
                 return RequestScreen(
                   userprofile: snapshot.data!,
-                  notificationData: NotificationData(
-                    title: data['title'],
-                    body: data['body'],
-                    userId: int.tryParse(data['target_user_id']) ?? 0,
-                    type: NotificationType.fromString(data['notification_type']),
-                  ),
+                  notificationData: NotificationData.fromFirestoreData(data)
+                   //title: data['title'],
+                   //body: data['body'],
+                   //targetUserId: int.tryParse(data['target_user_id']) ?? 0,
+                   //type: NotificationType.fromString(data['notification_type']),
+                   //sourceUserId: int.tryParse(data['source_user_id']) ?? 0,
+                   //success: bool,
+                  //),
                 );
               }
             },
@@ -169,11 +171,12 @@ class NotificationService {
         await FirebaseFunctions.instance.httpsCallable('sendToDevice').call(
       {
         'tokens': tokens,
+        'notification_type': notificationData.type.toShortString(),
         'title': notificationData.title,
         'body': notificationData.body,
-        'target_user_id': notificationData.userId.toString(),
-        'source_user_id': "1234",
-        'notification_type': notificationData.type.toShortString()
+        'target_user_id': notificationData.targetUserId.toString(),
+        'source_user_id': notificationData.sourceUserId,
+        'timestamp': notificationData.timestamp.toString()
       },
     );
     if (result.data['success']) {

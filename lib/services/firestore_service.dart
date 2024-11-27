@@ -27,7 +27,7 @@ class FirestoreService {
       }).toList();
 
       List<NotificationData> notifications = firestoreData.map((map) {
-        return NotificationData.fromFirestoreRequest(map);
+        return NotificationData.fromFirestoreData(map);
       }).toList();
 
       return notifications;

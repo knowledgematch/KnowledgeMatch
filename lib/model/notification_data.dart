@@ -1,4 +1,7 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 enum NotificationType {
   knowledgeRequest,
   requestDeclined,
@@ -30,30 +33,39 @@ class NotificationData {
   final NotificationType type;
   final String title;
   final String body;
-  final int userId;
+  final int targetUserId;
+  final int sourceUserId;
+  final DateTime? timestamp;
 
   NotificationData({
         required this.type,
         required this.title,
         required this.body,
-        required this.userId
+        required this.targetUserId,
+        required this.sourceUserId,
+        this.timestamp
   });
 
-  factory NotificationData.fromFirestoreRequest(Map<String, dynamic> map){
-      final String combinedBody = [
-        map['body'] ?? '',
-        map['sourceUserId'] ?? '',
-        map['success'] ?? '',
-        map['targetUserId'] ?? '',
-        map['timestamp'] ?? '',
-      ].join(', ');
-
+  factory NotificationData.fromFirestoreData(Map<String, dynamic> map){
+      Timestamp fireStoreTimestamp = map['timestamp'];
       return NotificationData(
         type: NotificationType.fromString(map['notificationType'] ?? ''),
         title: map['title'] ?? '',
-        body: combinedBody,
-        userId: int.parse(map['targetUserId'] ?? ''),
+        body: map['body'] ?? '',
+        targetUserId: int.parse(map['targetUserId'] ?? ''),
+        sourceUserId: int.parse(map['sourceUserId'] ?? ''),
+        timestamp: fireStoreTimestamp.toDate()
       );
-
+  }
+  factory NotificationData.fromMessage(RemoteMessage message){
+    Timestamp fireStoreTimestamp = message.data['timestamp'];
+    return NotificationData(
+        title: message.notification?.title ?? '',
+        body: message.notification?.body ?? '',
+        targetUserId: int.tryParse(message.data['target_user_id']) ?? 0,
+        sourceUserId: int.tryParse(message.data['source_user_id']) ?? 0,
+        type: NotificationType.fromString(message.data['notification_type']),
+        timestamp: fireStoreTimestamp.toDate()
+    );
   }
 }

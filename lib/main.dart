@@ -152,12 +152,7 @@ class SplashScreenState extends State<SplashScreen> {
               } else {
                 return RequestScreen(
                   userprofile: snapshot.data!,
-                  notificationData: NotificationData(
-                    title: message.notification?.title ?? '',
-                    body: message.notification?.body ?? '',
-                    userId: int.tryParse(message.data['target_user_id']) ?? 0,
-                    type: NotificationType.fromString(message.data['notification_type']),
-                  ),
+                  notificationData: NotificationData.fromMessage(message)
                 );
               }
             },
@@ -193,12 +188,8 @@ class SplashScreenState extends State<SplashScreen> {
               } else {
                 return RequestScreen(
                   userprofile: snapshot.data!,
-                  notificationData: NotificationData(
-                    title: message.notification?.title ?? '',
-                    body: message.notification?.body ?? '',
-                    userId: int.tryParse(message.data['target_user_id']) ?? 0,
-                    type: NotificationType.fromString(message.data['notification_type']),
-                  ),
+                  notificationData:
+                    NotificationData.fromMessage(message)
                 );
               }
             },
