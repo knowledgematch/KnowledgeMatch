@@ -11,7 +11,7 @@ class MatchingAlgorithm{
 
   Future<List<int>?> getReachabilities() async {
     var result = await DBConnection().getSQLResponse(
-        'SELECT DISTINCT Reachability from Users');
+        'SELECT DISTINCT Reachability from User');
     return result?.rows.map((row) => int.parse(row.assoc()['Reachability']!)).toList() ?? [];
   }
 
