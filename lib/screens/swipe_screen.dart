@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/notification_data.dart';
 import 'package:swipable_stack/swipable_stack.dart';
-
 import '../model/search_criteria.dart';
 import '../model/userprofile.dart';
 import '../services/notification_service.dart';
@@ -11,8 +10,11 @@ class SwipeScreen extends StatefulWidget {
   final SearchCriteria searchCriteria;
   final Future<List<Userprofile>> profiles;
 
-  const SwipeScreen(
-      {super.key, required this.searchCriteria, required this.profiles});
+  const SwipeScreen({
+    super.key,
+    required this.searchCriteria,
+    required this.profiles,
+  });
 
   @override
   ProfileSwipeScreenState createState() => ProfileSwipeScreenState();
@@ -66,7 +68,6 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
             );
           } else {
             var profiles = snapshot.data!;
-
             return SizedBox(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
@@ -98,8 +99,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                             color: properties.direction == SwipeDirection.right
                                 ? Colors.green.withOpacity(0.5)
                                 : properties.direction == SwipeDirection.left
-                                    ? Colors.red.withOpacity(0.5)
-                                    : Colors.transparent,
+                                ? Colors.red.withOpacity(0.5)
+                                : Colors.transparent,
                             blurRadius: 20,
                             spreadRadius: 5,
                           ),
@@ -107,7 +108,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: ProfileCard(
+                      child: FlipCard(
                         profile: profiles[properties.index % profiles.length],
                       ),
                     ),
@@ -160,3 +161,190 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
     );
   }
 }
+
+class FrontCard extends StatelessWidget {
+  final Userprofile profile;
+
+  const FrontCard({super.key, required this.profile});
+
+  @override
+  Widget build(BuildContext context) {
+    return ProfileCard(profile: profile); // Originaldesign der Vorderseite
+  }
+}
+
+class FlipCard extends StatefulWidget {
+  final Userprofile profile;
+
+  const FlipCard({super.key, required this.profile});
+
+  @override
+  _FlipCardState createState() => _FlipCardState();
+}
+
+class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  bool _isBackVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _animation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant FlipCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_isBackVisible) {
+      _controller.reverse();
+      _isBackVisible = false;
+    }
+  }
+
+  void _toggleCard() {
+    if (_controller.isAnimating) return;
+    if (_isBackVisible) {
+      _controller.reverse();
+    } else {
+      _controller.forward();
+    }
+    _isBackVisible = !_isBackVisible;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _toggleCard,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Ermitteln der Breite und Höhe aus den Layout-Constraints
+          final cardWidth = constraints.maxWidth;
+          final cardHeight = constraints.maxHeight;
+
+          return AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              final isFront = _animation.value <= 0.5;
+              final rotationAngle = _animation.value * 3.1416;
+              return Transform(
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.001)
+                  ..rotateY(rotationAngle),
+                alignment: Alignment.center,
+                child: isFront
+                    ? FrontCard(
+                  key: const ValueKey(true),
+                  profile: widget.profile,
+                )
+                    : Transform(
+                  transform: Matrix4.rotationY(3.1416),
+                  alignment: Alignment.center,
+                  child: BackCard(
+                    key: const ValueKey(false),
+                    profile: widget.profile,
+                    width: cardWidth,
+                    height: cardHeight,
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class BackCard extends StatelessWidget {
+  final Userprofile profile;
+  final double width;
+  final double height;
+
+  const BackCard({
+    super.key,
+    required this.profile,
+    required this.width,
+    required this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const CircleAvatar(
+            radius: 50,
+            backgroundColor: Colors.grey,
+            child: Icon(Icons.person, size: 50, color: Colors.white),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            profile.name,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            "Placeholder for Credentials",
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+class RotationYTransition extends AnimatedWidget {
+  final Widget child;
+
+  const RotationYTransition({Key? key, required Animation<double> turns, required this.child})
+      : super(key: key, listenable: turns);
+
+  @override
+  Widget build(BuildContext context) {
+    final animation = listenable as Animation<double>;
+    return Transform(
+      transform: Matrix4.rotationY(animation.value * 3.1416),
+      alignment: Alignment.center,
+      child: animation.value < 0.5
+          ? child
+          : Transform(
+        transform: Matrix4.rotationY(3.1416),
+        alignment: Alignment.center,
+        child: child,
+      ),
+    );
+  }
+}
+
