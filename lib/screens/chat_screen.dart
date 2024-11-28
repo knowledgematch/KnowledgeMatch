@@ -7,6 +7,8 @@ import 'chat_room_screen.dart';
 class ChatScreen extends StatelessWidget {
   final firestoreService = FirestoreService();
 
+  ChatScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +44,8 @@ class ChatScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => RequestDetailScreen(notification: notification
+                              builder: (context) =>
+                                  RequestDetailScreen(notification: notification
                               ),
                             ),
                           );
