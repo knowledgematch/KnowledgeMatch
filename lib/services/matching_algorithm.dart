@@ -48,6 +48,7 @@ class MatchingAlgorithm{
     }
     return Userprofile(
       id: int.parse(user['U_ID'].toString()),
+      seniority: int.parse(user['Seniority'].toString()),
       name: user['FullName'].toString(),
       location: 'Placeholder',
       expertString: user['Keywords'].toString(),

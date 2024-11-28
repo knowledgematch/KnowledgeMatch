@@ -13,7 +13,7 @@ class SwipeScreenTestApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: SwipeScreen(
-        searchCriteria: SearchCriteria(topic: '', timeFrame: '', description: "Test Criteria", reachability: 0, location: ''),
+        searchCriteria: SearchCriteria(keyword: '', timeFrame: '', issue: "Test Criteria", reachability: 0, location: ''),
         profiles: _getMatchingUserProfiles(_mockProfiles()),
       ),
     );
@@ -23,6 +23,7 @@ class SwipeScreenTestApp extends StatelessWidget {
     // Erstelle Dummy-Daten für das Testing
     return [
       Userprofile(
+        id: 1,
         name: 'A-person',
         location: 'Placeholder here',
         expertString: 'Placeholder here',
@@ -33,6 +34,7 @@ class SwipeScreenTestApp extends StatelessWidget {
         seniority: 0,
       ),
       Userprofile(
+        id: 2,
         name: 'B-person',
         location: 'Placeholder here',
         expertString: 'Placeholder here',
@@ -43,6 +45,7 @@ class SwipeScreenTestApp extends StatelessWidget {
         seniority: 4,
       ),
       Userprofile(
+        id: 3,
         name: 'C-person',
         location: 'Placeholder here',
         expertString: 'Placeholder here',
@@ -53,6 +56,7 @@ class SwipeScreenTestApp extends StatelessWidget {
         seniority: 1,
       ),
       Userprofile(
+        id: 4,
         name: 'D-person',
         location: 'Placeholder here',
         expertString: 'Placeholder here',
@@ -63,6 +67,7 @@ class SwipeScreenTestApp extends StatelessWidget {
         seniority: 0,
       ),
       Userprofile(
+        id: 5,
         name: 'E-person',
         location: 'Placeholder here',
         expertString: 'Placeholder here',
@@ -73,6 +78,7 @@ class SwipeScreenTestApp extends StatelessWidget {
         seniority: 1,
       ),
       Userprofile(
+        id: 6,
         name: 'F-person',
         location: 'Placeholder here',
         expertString: 'Placeholder here',

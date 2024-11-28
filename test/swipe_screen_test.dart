@@ -12,7 +12,7 @@ void main() {
 class SwipeScreenTestApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SearchCriteria searchCriteria = SearchCriteria(topic: 'OOP', timeFrame: '', description: '', reachability: 2, location: '');
+    SearchCriteria searchCriteria = SearchCriteria(keyword: 'OOP', timeFrame: '', issue: '', reachability: 2, location: '');
     return MaterialApp(
       home: SwipeScreen(
         searchCriteria: searchCriteria,
