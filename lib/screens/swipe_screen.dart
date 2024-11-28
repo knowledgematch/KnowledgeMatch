@@ -347,4 +347,3 @@ class RotationYTransition extends AnimatedWidget {
     );
   }
 }
-
