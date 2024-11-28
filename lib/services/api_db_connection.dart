@@ -21,6 +21,46 @@ class ApiDbConnection {
     return await _fetcher(finalUri);
   }
 
+  Future<List<Map<String, dynamic>>> fetchKeywordsByUser(int uid) async {
+    var finalUri = Uri.parse('$baseUri/keywords/$uid');
+    return await _fetcher(finalUri);
+  }
+
+  Future<bool> addUser2KeywordEntry(int uid, int kid) async {
+    var finalUri = Uri.parse('$baseUri/keywords/$uid/$kid');
+    try {
+      final response = await http.post(finalUri);
+
+      if (response.statusCode == 201) {
+        // Successfully created
+        return true;
+      } else {
+        print('Failed to add User2Keyword entry. Status: ${response.statusCode}, Body: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('Error during POST request: $e');
+      return false;
+    }
+  }
+
+  Future<bool> removeUser2KeywordEntry(int uid, int kid) async {
+    var finalUri = Uri.parse('$baseUri/keywords/$uid/$kid');
+    try {
+      final response = await http.delete(finalUri);
+
+      if (response.statusCode == 204) {
+        return true;
+      } else {
+        print('Failed to delete User2Keyword entry: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('Error during DELETE request: $e');
+      return false;
+    }
+  }
+
   Future<List<Map<String, dynamic>>> fetchUserByInput({
     String? uId,
     String? name,
