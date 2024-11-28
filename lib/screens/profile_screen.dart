@@ -49,7 +49,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         _reachabilityController.text = user.reachability!.toString();
         _emailController.text = user.email!;
         _descriptionController.text = user.description ?? '';
-        _pictureData = userData['Picture'] != null ? base64Decode(userData['Picture']['data'].toString()) : null; // Decode image data
+        _pictureData = user.getDecodedPicture();
       });
     } else {
       print('No user data found.');
@@ -64,7 +64,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       'Surname': _surnameController.text,
       'Reachability': _reachabilityController.text,
       'Email': _emailController.text,
-      'Picture': _pictureData != null ? {'type': 'Buffer', 'data': _pictureData} : null,
+      'Picture': null,
       'Seniority': _seniority,
       'Description': _descriptionController.text,
     });
@@ -80,7 +80,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           'Surname': _surnameController.text,
           'Reachability': _reachabilityController.text,
           'Email': _emailController.text,
-          'Picture': _pictureData != null ? {'type': 'Buffer', 'data': _pictureData} : null,
+          'Picture': null,
           'Seniority': _seniority,
           'Description': _descriptionController.text,
         };

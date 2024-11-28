@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert'; // for json encoding
-import 'login_screen.dart'; // Import the Login Screen
+import 'dart:convert';
+
+import 'login_screen.dart';
 
 class CreateProfileScreen extends StatefulWidget {
   @override
@@ -15,29 +18,55 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   String _surname = '';
   String _email = '';
   String _password = '';
-  String _reachability = '1'; // Default to some reachability (you can change this)
+  String _reachability = '1'; // Default to reachable
+  File? _selectedImage; // To store the selected profile picture
+
+  final ImagePicker _picker = ImagePicker();
+
+  // Function to handle image picking
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    } else {
+      print('No image selected.');
+    }
+  }
 
   // Function to handle account creation
   Future<void> _createAccount() async {
     if (_formKey.currentState!.validate()) {
-      // If the form is valid, try to create the account
       try {
-        final response = await http.post(
-          Uri.parse('http://86.119.45.62/users'), // Replace with your actual API URL
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode({
-            'Name': _name,
-            'Surname': _surname,
-            'Email': _email,
-            'Password': _password,
-            'Reachability': _reachability,
-          }),
-        );
+        final uri = Uri.parse('http://86.119.45.62/users');
+        final request = http.MultipartRequest('POST', uri);
+
+        // Add text fields to the request
+        request.fields['Name'] = _name;
+        request.fields['Surname'] = _surname;
+        request.fields['Email'] = _email;
+        request.fields['Password'] = _password;
+        request.fields['Reachability'] = _reachability;
+
+        // Add the image file to the request if selected
+        if (_selectedImage != null) {
+          request.files.add(await http.MultipartFile.fromPath(
+            'Picture', // This key should match your backend field
+            _selectedImage!.path,
+          ));
+
+        }
+
+        final response = await request.send();
 
         if (response.statusCode == 200) {
           // Account created successfully
-          final responseData = json.decode(response.body);
-          // You can display a success message or navigate to another screen
+          final responseBody = await response.stream.bytesToString();
+          final responseData = jsonDecode(responseBody);
+
           showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
@@ -56,7 +85,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
           );
         } else {
           // Error in account creation
-          final errorResponse = json.decode(response.body);
+          final responseBody = await response.stream.bytesToString();
+          final errorResponse = jsonDecode(responseBody);
           showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
@@ -94,11 +124,11 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     }
   }
 
-  // Function to go back to login screen
+  // Function to go back to the login screen
   void _goToLoginScreen() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => LoginScreen()), // Navigate to LoginScreen
+      MaterialPageRoute(builder: (context) => LoginScreen()),
     );
   }
 
@@ -112,81 +142,97 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Name'),
-                onChanged: (value) {
-                  _name = value;
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Surname'),
-                onChanged: (value) {
-                  _surname = value;
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your surname';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Email'),
-                onChanged: (value) {
-                  _email = value;
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Password'),
-                obscureText: true,
-                onChanged: (value) {
-                  _password = value;
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  return null;
-                },
-              ),
-              DropdownButtonFormField<String>(
-                value: _reachability,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _reachability = newValue!;
-                  });
-                },
-                items: [
-                  DropdownMenuItem(value: '1', child: Text('Reachable')),
-                  DropdownMenuItem(value: '0', child: Text('Not Reachable')),
-                ],
-                decoration: InputDecoration(labelText: 'Reachability'),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _createAccount,
-                child: Text('Create Account'),
-              ),
-              SizedBox(height: 20),
-              TextButton(
-                onPressed: _goToLoginScreen, // Button to go back to login screen
-                child: Text('Already have an account? Log in'),
-              ),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: _selectedImage != null
+                        ? FileImage(_selectedImage!)
+                        : AssetImage('assets/images/profile.png')
+                    as ImageProvider,
+                    child: _selectedImage == null
+                        ? Icon(Icons.camera_alt, size: 50, color: Colors.grey)
+                        : null,
+                  ),
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Name'),
+                  onChanged: (value) {
+                    _name = value;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Surname'),
+                  onChanged: (value) {
+                    _surname = value;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your surname';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Email'),
+                  onChanged: (value) {
+                    _email = value;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                  onChanged: (value) {
+                    _password = value;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                ),
+                DropdownButtonFormField<String>(
+                  value: _reachability,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _reachability = newValue!;
+                    });
+                  },
+                  items: [
+                    DropdownMenuItem(value: '1', child: Text('Reachable')),
+                    DropdownMenuItem(value: '0', child: Text('Not Reachable')),
+                  ],
+                  decoration: InputDecoration(labelText: 'Reachability'),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _createAccount,
+                  child: Text('Create Account'),
+                ),
+                SizedBox(height: 20),
+                TextButton(
+                  onPressed: _goToLoginScreen,
+                  child: Text('Already have an account? Log in'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:typed_data'; // Import for Uint8List
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
@@ -18,7 +18,7 @@ class User {
   String? surname;
   int? reachability;
   String? email;
-  String? picture;
+  String? picture; // This will hold the base64 string of the image
   int? seniority;
   String? description;
 
@@ -29,11 +29,22 @@ class User {
     surname = json['Surname'] as String?;
     reachability = json['Reachability'] as int?;
     email = json['Email'] as String?;
+
+    // Store picture as a base64 string
     picture = json['Picture'] != null
-        ? String.fromCharCodes((json['Picture']['data'] as List<dynamic>).cast<int>())
+        ? base64Encode((json['Picture']['data'] as List<dynamic>).cast<int>())
         : null;
+
     seniority = json['Seniority'] as int?;
     description = json['Description'] as String?;
+  }
+
+  // Method to decode the base64 string to Uint8List
+  Uint8List? getDecodedPicture() {
+    if (picture != null) {
+      return base64Decode(picture!);
+    }
+    return null;
   }
 
   void reset() {
