@@ -156,14 +156,8 @@ class NotificationService {
 
 
   Future<void> sendMessageToDevice(
-      NotificationData notificationData) async {
-    List<String> tokens = [];
-    tokens.add(
-      "deLyOh3ESay7zlvssGnJI1:APA91bEgA8ycS_0p3VVSnOrGbi2BIJPsJ7kuRyDxyZmyGdcOCFCUXOIdIzbXh0fWgzLUawxyNMwAZ-NYf-UoR-C2V10R-jZSGI7fDYYfh8yl08TFClKQIxw"
-    );
-    tokens.add(
-        "d8wMnn4NR7S41Sc7dAjppd:APA91bEoCbXE2X-sCf9iXqo7CDQGEjvtRCI2KU2YQXoiJnMYeD7i2Rfs3XYQWUzbKXbMUSPENK0cyWQ_V-3X_pzSb-_PQHeVX5LLhh6n6kC98Ed9GfBbvVw"
-    );
+      NotificationData notificationData,
+      List<String> tokens) async {
 
     final result =
         await FirebaseFunctions.instance.httpsCallable('sendToDevice').call(

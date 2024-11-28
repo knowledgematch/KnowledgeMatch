@@ -116,7 +116,7 @@ class RequestScreen extends StatelessWidget {
                         body: "${userprofile.name} has accepted your request",
                         userId: notificationData.userId);
                     await NotificationService()
-                        .sendMessageToDevice(notification);
+                        .sendMessageToDevice(notification, userprofile.tokens ?? []);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -140,7 +140,7 @@ class RequestScreen extends StatelessWidget {
                         body: '',
                         userId: notificationData.userId);
                     await NotificationService()
-                        .sendMessageToDevice(notification);
+                        .sendMessageToDevice(notification, userprofile.tokens ?? []);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,

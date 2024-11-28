@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/services/api_db_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../model/user.dart';
 import '../services/user_service.dart';
 import 'create_profile_screen.dart';
 import 'main_screen.dart'; // Import the MainScreen
@@ -27,7 +29,6 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoading = true;
     });
-
     try {
       final response = await http.post(
         Uri.parse('http://86.119.45.62/login'),
@@ -42,6 +43,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // Save the logged-in user persistently
         await storeLoggedInUser(token, user);
+        //update fcmToken
+        ApiDbConnection().updateFcmToken(User.instance.id.toString());
 
         // Navigate to the main screen
         Navigator.pushReplacement(

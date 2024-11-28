@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -54,4 +55,31 @@ class ApiDbConnection {
       return [];
     }
   }
+  Future<void> updateFcmToken(String userId) async {
+    final token = await FirebaseMessaging.instance.getToken();
+    if (token == null) {
+      print('FCM token is null.');
+      return;
+    }
+    var finalUri = Uri.parse('$baseUri/updateToken');
+    final Map<String, String> payload = {'token': token, 'uId': userId};
+
+    try {
+      final response = await http.post(
+        finalUri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(payload),
+      );
+
+      if (response.statusCode == 200) {
+        print('FCM token updated successfully.');
+      } else {
+        print('Failed to update FCM token: ${response.body}');
+      }
+    } catch (e) {
+      print('Error updating FCM token: $e');
+    }
+  }
+
+
 }

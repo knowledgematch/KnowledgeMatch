@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/services/api_db_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'model/user.dart';
 import 'screens/login_screen.dart';
 import '/model/local_user.dart';
 import '/screens/request_screen.dart';
@@ -96,7 +98,8 @@ class SplashScreenState extends State<SplashScreen> {
       final userData = jsonDecode(userDataString);
       int uId = int.tryParse(userData['U_ID'].toString()) ?? 0;
       await initializeUser(uId);
-
+      //update fcmToken
+      ApiDbConnection().updateFcmToken(User.instance.id.toString());
       //navigate to MainScreen
       Navigator.pushReplacement(
         context,
@@ -226,6 +229,7 @@ class SplashScreenState extends State<SplashScreen> {
     localUser?.getTokensList()?.add(token!);
     print('FCM Token: ${localUser?.getTokensList()?.single}');
   }
+
 
   @override
   Widget build(BuildContext context) {
