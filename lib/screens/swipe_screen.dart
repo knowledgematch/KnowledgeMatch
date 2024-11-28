@@ -270,7 +270,7 @@ class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin
 }
 
 class BackCard extends StatelessWidget {
-  final Userprofile profile;
+  final Userprofile profile; // Dynamische Daten des Profils
   final double width;
   final double height;
 
@@ -289,7 +289,7 @@ class BackCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.3),
@@ -299,33 +299,101 @@ class BackCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 75),
-          const CircleAvatar(
-            radius: 85,
-            backgroundColor: Colors.grey,
-            child: Icon(Icons.person, size: 120, color: Colors.white),
+          // Avatar mit Rand
+          SizedBox(height: 50),
+          CircleAvatar(
+            radius: 60,
+            backgroundColor: const Color(0xFF722334).withOpacity(0.2),
+            child: CircleAvatar(
+              radius: 55,
+              backgroundColor: Colors.grey[300],
+              child: Icon(Icons.person, size: 70, color: Colors.grey[700]),
+            ),
           ),
           const SizedBox(height: 16),
+
+          // Name
           Text(
             profile.name,
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            "Placeholder for Credentials",
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+
+          // Dynamische Credentials
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: const Color(0xFF722334).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              "No qualifications are provided about this expert yet",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Color(0xFF722334),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
-          Text(
-            profile.description == null || profile.description == "null"
-                ? "Hier kommt in Zukunft mehr Information"
-                : profile.description!,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[500],
+          const SizedBox(height: 16),
+
+          // Beschreibung
+          Expanded(
+            child: Text(
+              profile.description == "null"
+                  ? "More information about this person will be available soon."
+                  : profile.description,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+
+          // Button für mehr Informationen
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                // Zugriff auf die _toggleCard-Methode durch die übergeordnete FlipCard-Instanz
+                final flipCardState = context.findAncestorStateOfType<_FlipCardState>();
+                if (flipCardState != null) {
+                  flipCardState._toggleCard(); // Karte drehen
+                }
+              },
+              icon: const Icon(Icons.touch_app),
+              label: const Text(
+                "Learn more",
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF722334),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+
+          // Zusätzlicher Hinweis für Benutzer
+          const Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Text(
+              "Or simply click anywhere on the page!",
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
         ],
