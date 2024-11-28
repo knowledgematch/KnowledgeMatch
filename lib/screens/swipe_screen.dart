@@ -97,11 +97,11 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                         if (shouldShowGlow)
                           BoxShadow(
                             color: properties.direction == SwipeDirection.right
-                                ? Colors.green.withOpacity(0.5)
+                                ? Colors.green.withOpacity(0.9)
                                 : properties.direction == SwipeDirection.left
-                                ? Colors.red.withOpacity(0.5)
+                                ? Colors.red.withOpacity(0.9)
                                 : Colors.transparent,
-                            blurRadius: 20,
+                            blurRadius: 40,
                             spreadRadius: 5,
                           ),
                       ],
@@ -185,7 +185,7 @@ class FlipCard extends StatefulWidget {
 class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  bool _isBackVisible = false;
+  bool _isBackVisible = true; // Rückseite wird zuerst angezeigt.
 
   @override
   void initState() {
@@ -238,26 +238,26 @@ class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin
           return AnimatedBuilder(
             animation: _animation,
             builder: (context, child) {
-              final isFront = _animation.value <= 0.5;
+              final isBack = _animation.value <= 0.5; // Rückseite zuerst
               final rotationAngle = _animation.value * 3.1416;
               return Transform(
                 transform: Matrix4.identity()
                   ..setEntry(3, 2, 0.001)
                   ..rotateY(rotationAngle),
                 alignment: Alignment.center,
-                child: isFront
-                    ? FrontCard(
+                child: isBack
+                    ? BackCard(
                   key: const ValueKey(true),
                   profile: widget.profile,
+                  width: cardWidth,
+                  height: cardHeight,
                 )
                     : Transform(
                   transform: Matrix4.rotationY(3.1416),
                   alignment: Alignment.center,
-                  child: BackCard(
+                  child: FrontCard(
                     key: const ValueKey(false),
                     profile: widget.profile,
-                    width: cardWidth,
-                    height: cardHeight,
                   ),
                 ),
               );
@@ -299,13 +299,14 @@ class BackCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          SizedBox(height: 75),
           const CircleAvatar(
-            radius: 50,
+            radius: 85,
             backgroundColor: Colors.grey,
-            child: Icon(Icons.person, size: 50, color: Colors.white),
+            child: Icon(Icons.person, size: 120, color: Colors.white),
           ),
           const SizedBox(height: 16),
           Text(
@@ -317,13 +318,21 @@ class BackCard extends StatelessWidget {
             "Placeholder for Credentials",
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
+          Text(
+            profile.description == null || profile.description == "null"
+                ? "Hier kommt in Zukunft mehr Information"
+                : profile.description!,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[500],
+            ),
+          ),
         ],
       ),
     );
   }
 }
-
-
 
 class RotationYTransition extends AnimatedWidget {
   final Widget child;
