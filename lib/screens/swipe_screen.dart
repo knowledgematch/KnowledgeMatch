@@ -117,11 +117,11 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                         if (shouldShowGlow)
                           BoxShadow(
                             color: properties.direction == SwipeDirection.right
-                                ? Colors.green.withOpacity(0.5)
+                                ? Colors.green.withOpacity(0.9)
                                 : properties.direction == SwipeDirection.left
-                                ? Colors.red.withOpacity(0.5)
+                                ? Colors.red.withOpacity(0.9)
                                 : Colors.transparent,
-                            blurRadius: 20,
+                            blurRadius: 40,
                             spreadRadius: 5,
                           ),
                       ],
@@ -205,7 +205,7 @@ class FlipCard extends StatefulWidget {
 class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  bool _isBackVisible = false;
+  bool _isBackVisible = true; // Rückseite wird zuerst angezeigt.
 
   @override
   void initState() {
@@ -258,26 +258,26 @@ class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin
           return AnimatedBuilder(
             animation: _animation,
             builder: (context, child) {
-              final isFront = _animation.value <= 0.5;
+              final isBack = _animation.value <= 0.5; // Rückseite zuerst
               final rotationAngle = _animation.value * 3.1416;
               return Transform(
                 transform: Matrix4.identity()
                   ..setEntry(3, 2, 0.001)
                   ..rotateY(rotationAngle),
                 alignment: Alignment.center,
-                child: isFront
-                    ? FrontCard(
+                child: isBack
+                    ? BackCard(
                   key: const ValueKey(true),
                   profile: widget.profile,
+                  width: cardWidth,
+                  height: cardHeight,
                 )
                     : Transform(
                   transform: Matrix4.rotationY(3.1416),
                   alignment: Alignment.center,
-                  child: BackCard(
+                  child: FrontCard(
                     key: const ValueKey(false),
                     profile: widget.profile,
-                    width: cardWidth,
-                    height: cardHeight,
                   ),
                 ),
               );
@@ -290,7 +290,7 @@ class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin
 }
 
 class BackCard extends StatelessWidget {
-  final Userprofile profile;
+  final Userprofile profile; // Dynamische Daten des Profils
   final double width;
   final double height;
 
@@ -309,7 +309,7 @@ class BackCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.3),
@@ -319,31 +319,108 @@ class BackCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.grey,
-            child: Icon(Icons.person, size: 50, color: Colors.white),
+          // Avatar mit Rand
+          SizedBox(height: 50),
+          CircleAvatar(
+            radius: 60,
+            backgroundColor: const Color(0xFF722334).withOpacity(0.2),
+            child: CircleAvatar(
+              radius: 55,
+              backgroundColor: Colors.grey[300],
+              child: Icon(Icons.person, size: 70, color: Colors.grey[700]),
+            ),
           ),
           const SizedBox(height: 16),
+
+          // Name
           Text(
             profile.name,
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            "Placeholder for Credentials",
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+
+          // Dynamische Credentials
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: const Color(0xFF722334).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              "No qualifications are provided about this expert yet",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Color(0xFF722334),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Beschreibung
+          Expanded(
+            child: Text(
+              profile.description == "null"
+                  ? "More information about this person will be available soon."
+                  : profile.description,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+
+          // Button für mehr Informationen
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                // Zugriff auf die _toggleCard-Methode durch die übergeordnete FlipCard-Instanz
+                final flipCardState = context.findAncestorStateOfType<_FlipCardState>();
+                if (flipCardState != null) {
+                  flipCardState._toggleCard(); // Karte drehen
+                }
+              },
+              icon: const Icon(Icons.touch_app),
+              label: const Text(
+                "Learn more",
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF722334),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+
+          // Zusätzlicher Hinweis für Benutzer
+          const Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Text(
+              "Or simply click anywhere on the page!",
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       ),
     );
   }
 }
-
-
 
 class RotationYTransition extends AnimatedWidget {
   final Widget child;
@@ -367,4 +444,3 @@ class RotationYTransition extends AnimatedWidget {
     );
   }
 }
-

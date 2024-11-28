@@ -67,6 +67,7 @@ class ProfileCard extends StatelessWidget {
                   value: profile.languages.join(', '),
                 ),
                 SizedBox(height: 10),
+
                 // Reachability Field
                 _ProfileInfoField(
                   label: 'Reachability',
@@ -103,23 +104,23 @@ class ProfileCard extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
-            color: Colors.blueGrey,
+            color: Color(0xFF722334), // Titel-Farbe angepasst
             fontWeight: FontWeight.bold,
           ),
         ),
         SizedBox(height: 5), // Space between label and value
         Container(
           width: double.infinity,
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: Colors.grey[300], // Background color of the box
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
             value,
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
         ),
       ],
