@@ -25,7 +25,8 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
 
     if (pickedDate != null && mounted) {
       final TimeOfDay? pickedTime = await showTimePicker(
-        initialTime: TimeOfDay.now(), context: context,
+        context: context,
+        initialTime: TimeOfDay.now(),
       );
 
       if (pickedTime != null && mounted) {
@@ -35,6 +36,7 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
             'time': '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}',
           });
         });
+        widget.onDatesSelected(selectedTimeFrames);
       }
     }
   }
@@ -43,9 +45,6 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
     setState(() {
       selectedTimeFrames.removeAt(index);
     });
-  }
-
-  void _submitDates() {
     widget.onDatesSelected(selectedTimeFrames);
   }
 
@@ -77,11 +76,11 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
             },
           ),
         ),
-        if (selectedTimeFrames.isNotEmpty)
-          ElevatedButton(
-            onPressed: _submitDates,
-            child: Text('Submit'),
-          ),
+        // if (selectedTimeFrames.isNotEmpty)
+        //   ElevatedButton(
+        //     onPressed: _submitDates,
+        //     child: Text('Submit Dates'),
+        //   ),
       ],
     );
   }

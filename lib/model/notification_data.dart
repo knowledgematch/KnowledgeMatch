@@ -1,5 +1,4 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 enum NotificationType {
@@ -7,7 +6,7 @@ enum NotificationType {
   requestDeclined,
   requestAccepted,
   meetupRequest,
-  meetupResponse;
+  meetupConfirmation;
 
   factory NotificationType.fromString(String type) {
     switch (type) {
@@ -19,8 +18,8 @@ enum NotificationType {
         return NotificationType.requestDeclined;
       case 'meetupRequest':
         return NotificationType.meetupRequest;
-      case 'meetupResponse':
-        return NotificationType.meetupResponse;
+      case 'meetupConfirmation':
+        return NotificationType.meetupConfirmation;
       default:
         throw ArgumentError('Invalid NotificationType: $type');
     }

@@ -43,7 +43,7 @@ class NotificationCard extends StatelessWidget {
         return Text("Accepted Request", style: TextStyle(color: Colors.green));
       case NotificationType.meetupRequest:
         return Text("New Meetup Request", style: TextStyle(fontStyle: FontStyle.italic));
-      case NotificationType.meetupResponse:
+      case NotificationType.meetupConfirmation:
         return Text("Meetup Response", style: TextStyle(decoration: TextDecoration.underline));
       }
   }
@@ -58,7 +58,7 @@ class NotificationCard extends StatelessWidget {
         return Text("Your request was accepted");
       case NotificationType.meetupRequest:
         return Text(notification.body);
-      case NotificationType.meetupResponse:
+      case NotificationType.meetupConfirmation:
         return Text(notification.body);
       }
   }
@@ -73,7 +73,7 @@ class NotificationCard extends StatelessWidget {
         return Icon(Icons.check_circle, color: Colors.green);
       case NotificationType.meetupRequest:
         return Icon(Icons.people, color: Colors.orange);
-      case NotificationType.meetupResponse:
+      case NotificationType.meetupConfirmation:
         return Icon(Icons.reply, color: Colors.purple);
     }
   }

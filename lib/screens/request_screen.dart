@@ -51,10 +51,9 @@ class RequestScreen extends StatelessWidget {
       case NotificationType.requestAccepted:
         return Text("Accepted request");
       case NotificationType.meetupRequest:
-        return Text("Meetup requeset");
-      case NotificationType.meetupResponse:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return Text("Meetup request");
+      case NotificationType.meetupConfirmation:
+        return Text("Meetup confirmation");
     }
   }
 
