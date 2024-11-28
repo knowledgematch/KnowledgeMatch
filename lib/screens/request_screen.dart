@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/notification_data.dart';
 import 'package:knowledgematch/screens/main_screen.dart';
+import 'package:knowledgematch/services/api_db_connection.dart';
+import 'package:knowledgematch/services/matching_algorithm.dart';
 
 import '../model/userprofile.dart';
 import '../services/notification_service.dart';
@@ -116,7 +118,7 @@ class RequestScreen extends StatelessWidget {
                         body: "${userprofile.name} has accepted your request",
                         userId: notificationData.userId);
                     await NotificationService()
-                        .sendMessageToDevice(notification, userprofile.tokens ?? []);
+                        .sendMessageToDevice(notification, (await MatchingAlgorithm().getUserProfileById(notification.userId)).tokens ?? []);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -140,7 +142,7 @@ class RequestScreen extends StatelessWidget {
                         body: '',
                         userId: notificationData.userId);
                     await NotificationService()
-                        .sendMessageToDevice(notification, userprofile.tokens ?? []);
+                        .sendMessageToDevice(notification, (await MatchingAlgorithm().getUserProfileById(notification.userId)).tokens ?? []);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,

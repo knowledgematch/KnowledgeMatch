@@ -41,8 +41,8 @@ class MatchingAlgorithm{
 
   Userprofile _createUserFromJson(Map<String, dynamic> user) {
     List<String> tokenList = [];
-    if (user['Token'] != null && user['Token'].toString().trim().isNotEmpty) {
-      tokenList = user['Token'].toString().split(',')
+    if (user['Tokens'] != null && user['Tokens'].toString().trim().isNotEmpty) {
+      tokenList = user['Tokens'].toString().split(',')
           .map<String>((token) => token.trim())
           .toList();
     }

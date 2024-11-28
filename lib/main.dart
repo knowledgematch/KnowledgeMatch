@@ -168,7 +168,7 @@ class SplashScreenState extends State<SplashScreen> {
                   notificationData: NotificationData(
                     title: message.notification?.title ?? '',
                     body: message.notification?.body ?? '',
-                    userId: int.tryParse(message.data['target_user_id']) ?? 0,
+                    userId: int.tryParse(message.data['source_user_id']) ?? 0,
                     type: NotificationType.fromString(message.data['notification_type']),
                   ),
                 );
@@ -209,7 +209,7 @@ class SplashScreenState extends State<SplashScreen> {
                   notificationData: NotificationData(
                     title: message.notification?.title ?? '',
                     body: message.notification?.body ?? '',
-                    userId: int.tryParse(message.data['target_user_id']) ?? 0,
+                    userId: int.tryParse(message.data['source_user_id']) ?? 0,
                     type: NotificationType.fromString(message.data['notification_type']),
                   ),
                 );
