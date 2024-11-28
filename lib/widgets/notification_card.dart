@@ -44,7 +44,7 @@ class NotificationCard extends StatelessWidget {
       case NotificationType.meetupRequest:
         return Text("New Meetup Request", style: TextStyle(fontStyle: FontStyle.italic));
       case NotificationType.meetupConfirmation:
-        return Text("Meetup Response", style: TextStyle(decoration: TextDecoration.underline));
+        return Text("Meetup Confirmation", style: TextStyle(decoration: TextDecoration.underline));
       }
   }
 
@@ -72,9 +72,9 @@ class NotificationCard extends StatelessWidget {
       case NotificationType.requestAccepted:
         return Icon(Icons.check_circle, color: Colors.green);
       case NotificationType.meetupRequest:
-        return Icon(Icons.people, color: Colors.orange);
+        return Icon(Icons.date_range, color: Colors.orange);
       case NotificationType.meetupConfirmation:
-        return Icon(Icons.reply, color: Colors.purple);
+        return Icon(Icons.fact_check_outlined, color: Colors.green);
     }
   }
 }

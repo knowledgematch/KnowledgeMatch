@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import '../model/notification_data.dart';
@@ -320,23 +319,27 @@ class NotificationBodyState extends State<NotificationBody> {
                   onPressed: selectedDate == null
                       ? null
                       : () async {
-                    // Confirm the selected date
-                    var notification = NotificationData(
-                      type: NotificationType.meetupConfirmation,
-                      title: "Meetup Confirmation",
-                      body: "Confirmed Date: ${selectedDate!['date']}, Time: ${selectedDate!['time']}",
-                      targetUserId: widget.notificationData.targetUserId,
-                      sourceUserId: widget.notificationData.sourceUserId,
-                    );
-                    await NotificationService().sendMessageToDevice(notification);
+                          // Confirm the selected date
+                          var notification = NotificationData(
+                            type: NotificationType.meetupConfirmation,
+                            title: "Meetup Confirmation",
+                            body:
+                                "Confirmed Date: ${selectedDate!['date']}, Time: ${selectedDate!['time']}",
+                            targetUserId: widget.notificationData.targetUserId,
+                            sourceUserId: widget.notificationData.sourceUserId,
+                          );
+                          await NotificationService()
+                              .sendMessageToDevice(notification);
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Date confirmed successfully!")),
-                    );
-                    Navigator.pop(context);
-                  },
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text("Date confirmed successfully!")),
+                          );
+                          Navigator.pop(context);
+                        },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: selectedDate == null ? Colors.grey : Colors.black,
+                    backgroundColor:
+                        selectedDate == null ? Colors.grey : Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -350,27 +353,62 @@ class NotificationBodyState extends State<NotificationBody> {
                 ElevatedButton(
                   onPressed: () {
                     // Request different dates
+                    List<Map<String, dynamic>> selectedNewDates =
+                        []; // Track new dates locally
                     showDialog(
                       context: context,
-                      builder: (context) => Dialog(
-                        child: MultiDateTimePicker(
-                          onDatesSelected: (newDates) async {
-                            final jsonString = jsonEncode(newDates);
-                            var notification = NotificationData(
-                              type: NotificationType.meetupRequest,
-                              title: "Request for New Dates",
-                              body: "Proposed new dates: $jsonString",
-                              targetUserId: widget.notificationData.targetUserId,
-                              sourceUserId: widget.notificationData.sourceUserId,
-                            );
-                            await NotificationService().sendMessageToDevice(notification);
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("New dates proposed successfully!")),
-                            );
-                            Navigator.pop(context); // Close the dialog
-                          },
-                        ),
+                      builder: (context) => StatefulBuilder(
+                        builder: (context, setState) {
+                          return Dialog(
+                            child: Column(
+                              children: [
+                                MultiDateTimePicker(
+                                  onDatesSelected: (newDates) {
+                                    setState(() {
+                                      selectedNewDates =
+                                          newDates; // Update the local list
+                                    });
+                                  },
+                                ),
+                                Spacer(),
+                                // Confirm Button for Sending the Notification
+                                ElevatedButton(
+                                  onPressed: selectedNewDates.isEmpty
+                                      ? null
+                                      : () async {
+                                          final dates = buildRequestString(
+                                              selectedNewDates);
+                                          var notification = NotificationData(
+                                            type:
+                                                NotificationType.meetupRequest,
+                                            title: "Request for New Dates",
+                                            body:
+                                                dates,
+                                            targetUserId: widget
+                                                .notificationData.targetUserId,
+                                            sourceUserId: widget
+                                                .notificationData.sourceUserId,
+                                          );
+                                          await NotificationService()
+                                              .sendMessageToDevice(
+                                                  notification);
+                                          if (mounted) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                  content: Text(
+                                                      "New dates proposed successfully!")),
+                                            );
+                                          }
+                                          Navigator.pop(
+                                              context); // Close the dialog
+                                        },
+                                  child: Text('Send New Dates'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     );
                   },
@@ -412,14 +450,16 @@ class NotificationBodyState extends State<NotificationBody> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListTile(
-              title:Text(
-              'Your confirmed meetup details:',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Text(widget.notificationData.body), trailing: Icon(Icons.date_range, color: Colors.green, size: 40)),
+                title: Text(
+                  'Your confirmed meetup details:',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: Text(widget.notificationData.body),
+                trailing:
+                    Icon(Icons.date_range, color: Colors.green, size: 40)),
           ),
         ),
 
@@ -452,7 +492,6 @@ class NotificationBodyState extends State<NotificationBody> {
     );
   }
 
-
   String buildRequestString(List<Map<String, dynamic>> selectedDates) {
     StringBuffer requestString = StringBuffer();
     requestString.writeln('Meetups requested on: ');
@@ -465,5 +504,4 @@ class NotificationBodyState extends State<NotificationBody> {
 
     return requestString.toString();
   }
-
 }
