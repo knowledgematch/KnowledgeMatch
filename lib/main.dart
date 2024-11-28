@@ -148,7 +148,7 @@ class SplashScreenState extends State<SplashScreen> {
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
             future: MatchingAlgorithm().getUserProfileById(
-              int.tryParse(message.data['target_user_id']) ?? 0,
+              int.tryParse(message.data['source_user_id']) ?? 0,
             ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -184,7 +184,7 @@ class SplashScreenState extends State<SplashScreen> {
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
             future: MatchingAlgorithm().getUserProfileById(
-              int.tryParse(message.data['target_user_id']) ?? 0,
+              int.tryParse(message.data['source_user_id']) ?? 0,
             ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {

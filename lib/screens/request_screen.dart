@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/notification_data.dart';
 import 'package:knowledgematch/widgets/notification_body.dart';
-import 'package:knowledgematch/screens/main_screen.dart';
-import 'package:knowledgematch/services/api_db_connection.dart';
-import 'package:knowledgematch/services/matching_algorithm.dart';
 
 import '../model/userprofile.dart';
-import '../services/notification_service.dart';
 
 class RequestScreen extends StatelessWidget {
   final NotificationData notificationData;
@@ -20,6 +16,7 @@ class RequestScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('UserProfile ID: ${userprofile.name}');
     return Scaffold(
         appBar: AppBar(
           title: _buildTitle(notificationData),
@@ -36,7 +33,7 @@ class RequestScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _userProfileCard(notificationData),
+            _userProfileCard(userprofile),
             Expanded (
               child:
             NotificationBody(
@@ -61,7 +58,7 @@ class RequestScreen extends StatelessWidget {
     }
   }
 
-  Widget _userProfileCard(NotificationData notification) {
+  Widget _userProfileCard(Userprofile userprofile) {
     return Card(
       elevation: 2,
       child: Padding(

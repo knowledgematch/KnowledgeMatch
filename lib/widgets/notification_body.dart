@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/services/matching_algorithm.dart';
 import '../model/notification_data.dart';
 import '../model/userprofile.dart';
 import '../services/notification_service.dart';
@@ -69,12 +70,13 @@ class NotificationBodyState extends State<NotificationBody> {
                 Navigator.pop(context);
                 var notification = NotificationData(
                   type: NotificationType.requestAccepted,
-                  title: " ${widget.userprofile.name} accepted your request",
-                  body: "${widget.userprofile.name} accepted!",
+                  title: "Accepted request",
+                  body: "Your request was accepted!",
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
                 );
-                await NotificationService().sendMessageToDevice(notification);
+                //Userprofile targetUser = await MatchingAlgorithm().getUserProfileById(widget.notificationData.targetUserId);
+                await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
@@ -93,12 +95,13 @@ class NotificationBodyState extends State<NotificationBody> {
                 Navigator.pop(context);
                 var notification = NotificationData(
                   type: NotificationType.requestDeclined,
-                  title: "${widget.userprofile.name} declined your request",
-                  body: "${widget.userprofile.name} declined.",
+                  title: "Declined request",
+                  body: "Your request was declined.",
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
                 );
-                await NotificationService().sendMessageToDevice(notification);
+                //Userprofile targetUser = await MatchingAlgorithm().getUserProfileById(widget.notificationData.targetUserId);
+                await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
@@ -171,14 +174,14 @@ class NotificationBodyState extends State<NotificationBody> {
 
                 var notification = NotificationData(
                   type: NotificationType.meetupRequest,
-                  title: "Meetup Request from ${widget.userprofile.name}",
+                  title: "Meetup has been requested",
                   body: dates,
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
                 );
 
                 // Call the notification service
-                await NotificationService().sendMessageToDevice(notification);
+                await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
 
                 // Show success message and close
                 if (mounted) {
@@ -271,12 +274,18 @@ class NotificationBodyState extends State<NotificationBody> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 24),
-            Text(
-              'Meetup Request:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            Card(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: ListTile(
+                  title: Text(
+                    'Meetup Request:',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  trailing:
+                  Icon(Icons.date_range, color: Colors.orange, size: 40)),
             ),
             SizedBox(height: 8),
             if (incomingDates.isNotEmpty)
@@ -328,8 +337,7 @@ class NotificationBodyState extends State<NotificationBody> {
                             targetUserId: widget.notificationData.targetUserId,
                             sourceUserId: widget.notificationData.sourceUserId,
                           );
-                          await NotificationService()
-                              .sendMessageToDevice(notification);
+                          await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -389,9 +397,8 @@ class NotificationBodyState extends State<NotificationBody> {
                                             sourceUserId: widget
                                                 .notificationData.sourceUserId,
                                           );
-                                          await NotificationService()
-                                              .sendMessageToDevice(
-                                                  notification);
+                                          //Userprofile targetUser = await MatchingAlgorithm().getUserProfileById(widget.notificationData.targetUserId);
+                                          await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
                                           if (mounted) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
