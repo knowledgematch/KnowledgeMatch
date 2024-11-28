@@ -41,7 +41,7 @@ class ProfileScreenState extends State<ProfileScreen> {
 
     if (userDataString != null) {
       final userData = jsonDecode(userDataString);
-      _uId = userData['U_ID'].toString() ?? '';
+      _uId = userData['U_ID'].toString();
 
       setState(() {
         _nameController.text = user.name!;
@@ -90,16 +90,19 @@ class ProfileScreenState extends State<ProfileScreen> {
         await initializeUser(int.parse(_uId));
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile saved successfully!')),
+          const SnackBar( content: Text('Profile saved successfully!'),
+                          duration: Duration(milliseconds: 500), ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save profile: ${response.body}')),
+          SnackBar( content: Text('Failed to save profile: ${response.body}'),
+                    duration: Duration(milliseconds: 500), ),
         );
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $error')),
+        SnackBar( content: Text('Error: $error'),
+                  duration: Duration(milliseconds: 500), ),
       );
     }
   }
@@ -125,7 +128,15 @@ class ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: _logout,
+            onPressed: () {
+              _logout();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Logged out successfully'),
+                  duration: Duration(milliseconds: 500),
+                ),
+              );
+            }
           ),
         ],
       ),

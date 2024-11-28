@@ -49,7 +49,22 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text("Helpers"),
+        title: FutureBuilder<List<Userprofile>>(
+          future: widget.profiles, // The Future that holds the list
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Text("Matches Loading...");
+            } else if (snapshot.hasError) {
+              return const Text("Error loading matches");
+            } else if (snapshot.hasData) {
+              // Access the list from snapshot.data and display its length
+              final profiles = snapshot.data!;
+              return Text("Matches (${profiles.length})");
+            } else {
+              return const Text("No Matches");
+            }
+          },
+        ),
         centerTitle: true,
       ),
       body: FutureBuilder<List<Userprofile>>(
@@ -79,6 +94,11 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                   setState(() {
                     if (direction == SwipeDirection.right) {
                       //send notification
+                      final snackBar = SnackBar(
+                          content: const Text('Request sent'),
+                          duration: Duration(milliseconds: 500),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       _sendSwipeRightNotification(profiles[_controller.currentIndex]);
                       profiles.removeAt(_controller.currentIndex);
                       _controller.currentIndex--;
