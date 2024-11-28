@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../model/reachability.dart';
 import 'login_screen.dart';
 
 class CreateProfileScreen extends StatefulWidget {
@@ -18,7 +19,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   String _surname = '';
   String _email = '';
   String _password = '';
-  String _reachability = '1'; // Default to reachable
+  String _reachability = Reachability.InPerson.value.toString();
   File? _selectedImage; // To store the selected profile picture
 
   final ImagePicker _picker = ImagePicker();
@@ -208,17 +209,19 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     return null;
                   },
                 ),
-                DropdownButtonFormField<String>(
-                  value: _reachability,
-                  onChanged: (String? newValue) {
+                DropdownButtonFormField<Reachability>(
+                  value: ReachabilityValue.fromValue(int.parse(_reachability)),
+                  onChanged: (Reachability? newValue) {
                     setState(() {
-                      _reachability = newValue!;
+                      _reachability = newValue!.value.toString();
                     });
                   },
-                  items: [
-                    DropdownMenuItem(value: '1', child: Text('Reachable')),
-                    DropdownMenuItem(value: '0', child: Text('Not Reachable')),
-                  ],
+                  items: Reachability.values.map((Reachability reachability) {
+                    return DropdownMenuItem<Reachability>(
+                      value: reachability,
+                      child: Text(reachability.description),
+                    );
+                  }).toList(),
                   decoration: InputDecoration(labelText: 'Reachability'),
                 ),
                 SizedBox(height: 20),
