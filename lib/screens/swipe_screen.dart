@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/notification_data.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 import '../model/search_criteria.dart';
+import '../model/user.dart';
 import '../model/userprofile.dart';
 import '../services/notification_service.dart';
 import '../widgets/profile_card.dart';
@@ -38,7 +39,9 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
         type: NotificationType.knowledgeRequest,
         title: "Your knowledge has been requested!",
         body: widget.searchCriteria.issue,
-        userId: profile.id );
+        targetUserId: profile.id,
+        sourceUserId: User().instance.id,
+    );
     await NotificationService().sendMessageToDevice(notificationData, profile.tokens ?? []);
     //TODO add actual target token of selected userprofile
     //TODO get actual User ID for the tokens

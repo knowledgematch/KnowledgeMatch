@@ -99,12 +99,14 @@ class NotificationService {
               } else {
                 return RequestScreen(
                   userprofile: snapshot.data!,
-                  notificationData: NotificationData(
-                    title: data['title'],
-                    body: data['body'],
-                    userId: int.tryParse(data['source_user_id']) ?? 0,
-                    type: NotificationType.fromString(data['notification_type']),
-                  ),
+                  notificationData: NotificationData.fromFirestoreData(data)
+                   //title: data['title'],
+                   //body: data['body'],
+                   //targetUserId: int.tryParse(data['target_user_id']) ?? 0,
+                   //type: NotificationType.fromString(data['notification_type']),
+                   //sourceUserId: int.tryParse(data['source_user_id']) ?? 0,
+                   //success: bool,
+                  //),
                 );
               }
             },
@@ -170,6 +172,7 @@ class NotificationService {
         'target_user_id': notificationData.userId.toString(),
         'source_user_id': User.instance.id,
         'notification_type': notificationData.type.toShortString()
+        'timestamp': notificationData.timestamp.toString()
       },
     );
     if (result.data['success']) {

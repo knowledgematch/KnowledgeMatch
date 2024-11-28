@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/notification_data.dart';
+import 'package:knowledgematch/widgets/notification_body.dart';
 import 'package:knowledgematch/screens/main_screen.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
 import 'package:knowledgematch/services/matching_algorithm.dart';
@@ -15,148 +16,91 @@ class RequestScreen extends StatelessWidget {
     super.key,
     required this.userprofile,
     required this.notificationData,
-
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Request from'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+        appBar: AppBar(
+          title: _buildTitle(notificationData),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
         ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
+        body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Card(
-              elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    // Profile Picture
-                    CircleAvatar(
-                      radius: 30,
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            userprofile.name,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            "requesterTitle",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Location: ${userprofile.location}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            _userProfileCard(notificationData),
+            Expanded (
+              child:
+            NotificationBody(
+                userprofile: userprofile, notificationData: notificationData)
+          ,) ]
+        ));
+  }
+
+  Widget _buildTitle(NotificationData notification) {
+    var type = notification.type;
+    switch (type) {
+      case NotificationType.knowledgeRequest:
+        return Text("New request:");
+      case NotificationType.requestDeclined:
+        return Text("Declined request:");
+      case NotificationType.requestAccepted:
+        return Text("Accepted request");
+      case NotificationType.meetupRequest:
+        return Text("Meetup request");
+      case NotificationType.meetupConfirmation:
+        return Text("Meetup confirmation");
+    }
+  }
+
+  Widget _userProfileCard(NotificationData notification) {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 30,
             ),
-            SizedBox(height: 24),
-            Text(
-              'The issue',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8),
-            Card(
-              elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  notificationData.body,
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => MainScreen()));
-                    var notification = NotificationData(
-                        type: NotificationType.requestAccepted,
-                        title: "Your request has been accepted",
-                        body: "${userprofile.name} has accepted your request",
-                        userId: notificationData.userId);
-                    await NotificationService()
-                        .sendMessageToDevice(notification, (await MatchingAlgorithm().getUserProfileById(notification.userId)).tokens ?? []);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    userprofile.name,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
-                  child: Text(
-                    'Accept',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => MainScreen()));
-                    var notification = NotificationData(
-                        type: NotificationType.requestDeclined,
-                        title: 'Your request has been declined',
-                        body: '',
-                        userId: notificationData.userId);
-                    await NotificationService()
-                        .sendMessageToDevice(notification, (await MatchingAlgorithm().getUserProfileById(notification.userId)).tokens ?? []);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                  SizedBox(height: 4),
+                  Text(
+                    userprofile.description,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[700],
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
-                  child: Text(
-                    'Decline',
-                    style: TextStyle(color: Colors.white),
+                  SizedBox(height: 4),
+                  Text(
+                    'Location: ${userprofile.reachability}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[700],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

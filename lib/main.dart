@@ -17,7 +17,6 @@ import 'screens/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
@@ -165,12 +164,7 @@ class SplashScreenState extends State<SplashScreen> {
               } else {
                 return RequestScreen(
                   userprofile: snapshot.data!,
-                  notificationData: NotificationData(
-                    title: message.notification?.title ?? '',
-                    body: message.notification?.body ?? '',
-                    userId: int.tryParse(message.data['source_user_id']) ?? 0,
-                    type: NotificationType.fromString(message.data['notification_type']),
-                  ),
+                  notificationData: NotificationData.fromMessage(message)
                 );
               }
             },
@@ -206,12 +200,8 @@ class SplashScreenState extends State<SplashScreen> {
               } else {
                 return RequestScreen(
                   userprofile: snapshot.data!,
-                  notificationData: NotificationData(
-                    title: message.notification?.title ?? '',
-                    body: message.notification?.body ?? '',
-                    userId: int.tryParse(message.data['source_user_id']) ?? 0,
-                    type: NotificationType.fromString(message.data['notification_type']),
-                  ),
+                  notificationData:
+                    NotificationData.fromMessage(message)
                 );
               }
             },
@@ -229,7 +219,6 @@ class SplashScreenState extends State<SplashScreen> {
     localUser?.getTokensList()?.add(token!);
     print('FCM Token: ${localUser?.getTokensList()?.single}');
   }
-
 
   @override
   Widget build(BuildContext context) {

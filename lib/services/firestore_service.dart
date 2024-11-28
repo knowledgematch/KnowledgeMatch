@@ -9,12 +9,12 @@ class FirestoreService {
     try {
       QuerySnapshot sourceSnapshot = await FirebaseFirestore.instance
           .collection('notifications')
-          .where('sourceUserId', isEqualTo: userID.toString())
+          .where('source_user_id', isEqualTo: userID.toString())
           .get();
 
       QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
           .collection('notifications')
-          .where('targetUserId', isEqualTo: userID.toString())
+          .where('target_user_id', isEqualTo: userID.toString())
           .get();
 
       List<QueryDocumentSnapshot> allDocs = [...sourceSnapshot.docs, ...targetSnapshot.docs];
@@ -27,7 +27,7 @@ class FirestoreService {
       }).toList();
 
       List<NotificationData> notifications = firestoreData.map((map) {
-        return NotificationData.fromFirestoreRequest(map);
+        return NotificationData.fromFirestoreData(map);
       }).toList();
 
       return notifications;
