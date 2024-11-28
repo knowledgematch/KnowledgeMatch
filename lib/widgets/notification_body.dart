@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import '../model/notification_data.dart';
 import '../model/userprofile.dart';
 import '../services/notification_service.dart';
+import 'multi_date_time_picker.dart';
 
 class NotificationBody extends StatelessWidget {
   final NotificationData notificationData;
@@ -137,6 +140,20 @@ class NotificationBody extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8),
+        MultiDateTimePicker(
+          onDatesSelected: (selectedDates) async {
+            final jsonString = jsonEncode(selectedDates);
+            Navigator.pop(context);
+            var notification = NotificationData(
+              type: NotificationType.meetupResponse,
+              title: "Meetup Request",
+              body: "Dates selected: $jsonString",
+              targetUserId: notificationData.targetUserId,
+              sourceUserId: notificationData.sourceUserId,
+            );
+            await NotificationService().sendMessageToDevice(notification);
+          },
+        ),
         Card(
           elevation: 2,
           child: Padding(
@@ -228,6 +245,52 @@ class NotificationBody extends StatelessWidget {
         ),
         SizedBox(height: 8),
     ]);
+  }
+
+  Widget _onMeetupRequestBody(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 24),
+        Text(
+          'Meetup Request:',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 8),
+        Card(
+          elevation: 2,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              notificationData.body,
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 16),
+
+        // Use MultiDateTimePicker here
+        MultiDateTimePicker(
+          onDatesSelected: (selectedDates) async {
+            final jsonString = jsonEncode(selectedDates);
+            Navigator.pop(context);
+            var notification = NotificationData(
+              type: NotificationType.meetupResponse,
+              title: "Meetup Request",
+              body: "Dates selected: $jsonString",
+              targetUserId: notificationData.targetUserId,
+              sourceUserId: notificationData.sourceUserId,
+            );
+            await NotificationService().sendMessageToDevice(notification);
+          },
+        ),
+      ],
+    );
   }
   
 }
