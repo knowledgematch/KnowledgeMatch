@@ -137,8 +137,8 @@ class ProfileScreenState extends State<ProfileScreen> {
         // Read and log the response body for debugging
         final responseBody = await response.stream.bytesToString();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save profile: ${response.reasonPhrase}, Body: $responseBody')),
-          SnackBar( content: Text('Failed to save profile: ${response.body}'),
+          //SnackBar(content: Text('Failed to save profile: ${response.reasonPhrase}, Body: $responseBody')),
+          SnackBar( content: Text('Failed to save profile: ${response.reasonPhrase}, Body: $responseBody'),
                     duration: Duration(milliseconds: 500), ),
         );
       }
