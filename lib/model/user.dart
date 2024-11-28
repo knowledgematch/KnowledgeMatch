@@ -47,6 +47,14 @@ class User {
     return null;
   }
 
+  void setPicture(Uint8List? imageData) {
+    if (imageData != null) {
+      picture = base64Encode(imageData); // Encode Uint8List to Base64 string
+    } else {
+      picture = null; // Handle null case
+    }
+  }
+
   void reset() {
     id = null;
     name = null;

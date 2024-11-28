@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../model/user.dart';
 import '../services/user_service.dart';
 import 'login_screen.dart';
@@ -7,6 +9,8 @@ import 'change_pw_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http_parser/http_parser.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -28,11 +32,27 @@ class ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _reachabilityController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
+  }
+
+  // Function to handle image picking
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    if (pickedFile != null) {
+      final fileBytes = await pickedFile.readAsBytes();
+      setState(() {
+        _pictureData = fileBytes; // Update picture data for display
+      });
+    } else {
+      print('No image selected.');
+    }
   }
 
   Future<void> _loadUserData() async {
@@ -57,53 +77,75 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _saveProfile() async {
-    final url = Uri.parse('http://86.119.45.62/users/$_uId');
-    final headers = {'Content-Type': 'application/json'};
-    final body = jsonEncode({
-      'Name': _nameController.text,
-      'Surname': _surnameController.text,
-      'Reachability': _reachabilityController.text,
-      'Email': _emailController.text,
-      'Picture': null,
-      'Seniority': _seniority,
-      'Description': _descriptionController.text,
-    });
+    print(_uId);
+    final uri = Uri.parse('http://86.119.45.62/users/$_uId');
+    final request = http.MultipartRequest('PUT', uri);
+
+    // Ensure required fields are added to the request
+    request.fields['Name'] = _nameController.text;
+    request.fields['Surname'] = _surnameController.text;
+    request.fields['Reachability'] = _reachabilityController.text;
+    request.fields['Email'] = _emailController.text;
+    request.fields['Seniority'] = _seniority;
+    request.fields['Description'] = _descriptionController.text;
+
+    // Add the image file to the request if it exists
+    if (_pictureData != null) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'Picture', // This key should match your backend field
+        _pictureData!,
+        filename: 'profile_picture.jpg', // Providing a filename
+        contentType: MediaType('image', 'jpeg'), // Specify the correct content type
+      ));
+    }
+
+    // Debugging: Log the fields being sent
+    print('Sending request with fields: ${request.fields}');
 
     try {
-      final response = await http.put(url, headers: headers, body: body);
+      final response = await request.send();
 
       if (response.statusCode == 204) {
-        // After the successful update, store the updated user data in SharedPreferences
-        final updatedUser = {
-          'U_ID': _uId,
-          'Name': _nameController.text,
-          'Surname': _surnameController.text,
-          'Reachability': _reachabilityController.text,
-          'Email': _emailController.text,
-          'Picture': null,
-          'Seniority': _seniority,
-          'Description': _descriptionController.text,
-        };
-
-        // Save the updated data in SharedPreferences and User Singleton
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('userData', jsonEncode(updatedUser));
-        await initializeUser(int.parse(_uId));
-
+        // Profile updated successfully
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile saved successfully!')),
         );
+
+        // Optionally update SharedPreferences or local user state here
+        // Update the user instance with new values
+        user.name = _nameController.text;
+        user.surname = _surnameController.text;
+        user.reachability = int.tryParse(_reachabilityController.text);
+        user.email = _emailController.text;
+        user.description = _descriptionController.text;
+        user.setPicture(_pictureData);
+
+        // Encode user data to JSON and save it in SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('userData', jsonEncode({
+          'U_ID': _uId,
+          'Name': user.name,
+          'Surname': user.surname,
+          'Reachability': user.reachability,
+          'Email': user.email,
+          'Description': user.description,
+          // Assuming you might want to save the picture data as well
+        }));
       } else {
+        // Read and log the response body for debugging
+        final responseBody = await response.stream.bytesToString();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save profile: ${response.body}')),
+          SnackBar(content: Text('Failed to save profile: ${response.reasonPhrase}, Body: $responseBody')),
         );
       }
     } catch (error) {
+      // Handle network or other errors
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $error')),
       );
     }
   }
+
 
   Future<void> _logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -136,11 +178,14 @@ class ProfileScreenState extends State<ProfileScreen> {
             key: _formKey,
             child: Column(
               children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: _pictureData != null
-                      ? MemoryImage(_pictureData!) // Use MemoryImage to display Uint8List
-                      : const AssetImage('assets/images/profile.png') as ImageProvider,
+                GestureDetector(
+                  onTap: _pickImage, // Trigger image picker when tapped
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: _pictureData != null
+                        ? MemoryImage(_pictureData!) // Use MemoryImage to display Uint8List
+                        : const AssetImage('assets/images/profile.png') as ImageProvider,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
