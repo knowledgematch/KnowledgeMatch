@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/model/userprofile.dart';
 import 'swipe_screen.dart';
 import '../model/search_criteria.dart';
 import '../services/matching_algorithm.dart';
@@ -32,6 +33,17 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
     keywords = await MatchingAlgorithm().getKeywords();
     reachabilities = (await MatchingAlgorithm().getReachabilities())!;
     setState(() {});
+  }
+
+  Future<List<Userprofile>> _getMatchingUserProfiles(SearchCriteria searchCriteria) async {
+    Future<List<Userprofile>> matchingProfiles = MatchingAlgorithm().matchingAlgorithm(searchCriteria);
+    List<Userprofile> profiles = await matchingProfiles;
+    profiles.sort((a, b) {
+      if (a.seniority == 0) return 1;
+      if (b.seniority == 0) return -1;
+      else return a.seniority.compareTo(b.seniority);
+    });  // Sort matching profiles by seniority  (0-seniority is prioritized the least)
+    return profiles;
   }
 
   @override
@@ -196,8 +208,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                       MaterialPageRoute(
                         builder: (context) => SwipeScreen(
                             searchCriteria: searchCriteria,
-                            profiles: MatchingAlgorithm()
-                                .matchingAlgorithm(searchCriteria)),
+                            profiles: _getMatchingUserProfiles(searchCriteria)),
                       ),
                     );
                   }
