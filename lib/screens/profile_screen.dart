@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../model/user.dart';
 import '../services/user_service.dart';
@@ -16,7 +17,7 @@ class ProfileScreen extends StatefulWidget {
 
 class ProfileScreenState extends State<ProfileScreen> {
   final user = User.instance;
-  String? _picture = null;
+  Uint8List? _pictureData; // Store the picture as Uint8List
   String _seniority = '0';
   String _uId = '';
 
@@ -47,10 +48,11 @@ class ProfileScreenState extends State<ProfileScreen> {
         _surnameController.text = user.surname!;
         _reachabilityController.text = user.reachability!.toString();
         _emailController.text = user.email!;
-        _descriptionController.text = user.description!;
+        _descriptionController.text = user.description ?? '';
+        _pictureData = userData['Picture'] != null ? base64Decode(userData['Picture']['data'].toString()) : null; // Decode image data
       });
     } else {
-      print('No user data found in SharedPreferences.');
+      print('No user data found.');
     }
   }
 
@@ -62,7 +64,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       'Surname': _surnameController.text,
       'Reachability': _reachabilityController.text,
       'Email': _emailController.text,
-      'Picture': _picture,
+      'Picture': _pictureData != null ? {'type': 'Buffer', 'data': _pictureData} : null,
       'Seniority': _seniority,
       'Description': _descriptionController.text,
     });
@@ -78,7 +80,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           'Surname': _surnameController.text,
           'Reachability': _reachabilityController.text,
           'Email': _emailController.text,
-          'Picture': _picture,
+          'Picture': _pictureData != null ? {'type': 'Buffer', 'data': _pictureData} : null,
           'Seniority': _seniority,
           'Description': _descriptionController.text,
         };
@@ -134,9 +136,11 @@ class ProfileScreenState extends State<ProfileScreen> {
             key: _formKey,
             child: Column(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 50,
-                  backgroundImage: AssetImage('assets/images/profile.png'),
+                  backgroundImage: _pictureData != null
+                      ? MemoryImage(_pictureData!) // Use MemoryImage to display Uint8List
+                      : const AssetImage('assets/images/profile.png') as ImageProvider,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
