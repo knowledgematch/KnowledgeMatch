@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/services/api_db_connection.dart';
 import '../model/user.dart';
 import '../services/user_service.dart';
 import 'login_screen.dart';
@@ -104,6 +105,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _logout() async {
+    ApiDbConnection().deleteFcmToken(User.instance.id ?? 0);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     User.instance.reset();

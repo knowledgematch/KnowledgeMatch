@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../model/notification_data.dart';
+import '../model/user.dart';
 import '../model/userprofile.dart';
 import '../screens/request_screen.dart';
 import 'matching_algorithm.dart';
@@ -101,7 +102,7 @@ class NotificationService {
                   notificationData: NotificationData(
                     title: data['title'],
                     body: data['body'],
-                    userId: int.tryParse(data['target_user_id']) ?? 0,
+                    userId: int.tryParse(data['source_user_id']) ?? 0,
                     type: NotificationType.fromString(data['notification_type']),
                   ),
                 );
@@ -156,14 +157,9 @@ class NotificationService {
 
 
   Future<void> sendMessageToDevice(
-      NotificationData notificationData) async {
-    List<String> tokens = [];
-    tokens.add(
-      "deLyOh3ESay7zlvssGnJI1:APA91bEgA8ycS_0p3VVSnOrGbi2BIJPsJ7kuRyDxyZmyGdcOCFCUXOIdIzbXh0fWgzLUawxyNMwAZ-NYf-UoR-C2V10R-jZSGI7fDYYfh8yl08TFClKQIxw"
-    );
-    tokens.add(
-        "d8wMnn4NR7S41Sc7dAjppd:APA91bEoCbXE2X-sCf9iXqo7CDQGEjvtRCI2KU2YQXoiJnMYeD7i2Rfs3XYQWUzbKXbMUSPENK0cyWQ_V-3X_pzSb-_PQHeVX5LLhh6n6kC98Ed9GfBbvVw"
-    );
+      NotificationData notificationData,
+      List<String> tokens) async {
+    print(tokens);
 
     final result =
         await FirebaseFunctions.instance.httpsCallable('sendToDevice').call(
@@ -172,7 +168,7 @@ class NotificationService {
         'title': notificationData.title,
         'body': notificationData.body,
         'target_user_id': notificationData.userId.toString(),
-        'source_user_id': "1234",
+        'source_user_id': User.instance.id,
         'notification_type': notificationData.type.toShortString()
       },
     );

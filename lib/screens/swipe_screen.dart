@@ -39,7 +39,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
         title: "Your knowledge has been requested!",
         body: widget.searchCriteria.issue,
         userId: profile.id );
-    await NotificationService().sendMessageToDevice(notificationData);
+    await NotificationService().sendMessageToDevice(notificationData, profile.tokens ?? []);
     //TODO add actual target token of selected userprofile
     //TODO get actual User ID for the tokens
   }
