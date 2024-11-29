@@ -59,6 +59,7 @@ class RequestScreen extends StatelessWidget {
   }
 
   Widget _userProfileCard(Userprofile userprofile) {
+    var profilePicture = userprofile.getDecodedPicture();
     return Card(
       elevation: 2,
       child: Padding(
@@ -66,7 +67,10 @@ class RequestScreen extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatar(
-              radius: 30,
+              radius: 50,
+              backgroundImage: profilePicture != null
+                  ? MemoryImage(profilePicture)
+                  : const AssetImage('assets/images/profile.png') as ImageProvider,
             ),
             SizedBox(width: 16),
             Expanded(

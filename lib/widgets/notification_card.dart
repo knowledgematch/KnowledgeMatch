@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/model/userprofile.dart';
 
 import '../model/notification_data.dart';
 
 class NotificationCard extends StatelessWidget {
   final NotificationData notification;
+  final Userprofile userprofile;
 
-  const NotificationCard({super.key, required this.notification});
+  const NotificationCard({super.key, required this.notification, required this.userprofile});
 
   @override
   Widget build(BuildContext context) {
+    var profilePicture = userprofile.getDecodedPicture();
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          radius: 30,
-          backgroundImage: AssetImage('assets/images/profile.png'),
+          radius: 50,
+          backgroundImage: profilePicture != null
+              ? MemoryImage(profilePicture)
+              : const AssetImage('assets/images/profile.png') as ImageProvider,
         ),
         isThreeLine: true,
         title: _buildTitle(notification.type),
