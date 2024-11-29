@@ -108,7 +108,7 @@ class BackCard extends StatelessWidget {
               },
               icon: const Icon(Icons.touch_app),
               label: const Text(
-                "Learn more",
+                "See detailed information",
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF722334),

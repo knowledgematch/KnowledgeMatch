@@ -51,7 +51,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Knowledge Match'),
+        title: const Text('KnowledgeMatch'),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.menu),
