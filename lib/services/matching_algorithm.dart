@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../model/user.dart';
 import '../model/userprofile.dart';
 import '../model/search_criteria.dart';
 import 'api_db_connection.dart';
@@ -32,6 +33,7 @@ class MatchingAlgorithm{
         );
       }
     }
+    profiles.removeWhere((user) => user.id == User.instance.id);
     return profiles;
   }
 
@@ -60,10 +62,10 @@ class MatchingAlgorithm{
       description: user['Description'].toString(),
       tokens: tokenList,
     );
+
     if(user['Picture'] != null){
       userprofile.setPicture(base64Encode((user['Picture']['data'] as List<dynamic>).cast<int>()));
     }
-
     return userprofile;
   }
 }
