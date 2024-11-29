@@ -1,4 +1,5 @@
 image: ghcr.io/cirruslabs/flutter # Flutter Docker image with required tools
+
 stages:
   - build
   - test
@@ -21,8 +22,9 @@ build-job:
   artifacts:
     paths:
       - build/app/outputs/flutter-apk/app-release.apk
-    expire_in: 1 week # Keep the artifact available for 1 week
-
+  only:
+    - main 
+    
 unit-test-job:
   stage: test
   script:
@@ -31,7 +33,7 @@ unit-test-job:
     - echo "All tests passed."
   allow_failure: true
 
-lint-test-job:   # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
+lint-test-job:   
   stage: lint
   script:
     - echo "Analyzing code quality..."
@@ -50,20 +52,3 @@ push-apk-job:
   stage: deploy
   dependencies:
     - build-job
-  script:
-    - echo "Preparing to push APK to GitLab repository..."
-    - apk_path="build/app/outputs/flutter-apk/app-release.apk"
-    - apk_target="apk/app-release.apk"
-    - git config --global user.email "ci@example.com" # Replace with your GitLab CI email
-    - git config --global user.name "GitLab CI"
-    - git clone "https://oauth2:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git" repo # Clone the repo
-    - cd repo
-    - mkdir -p apk # Ensure the target directory exists
-    - cp "../$apk_path" "$apk_target" # Copy the APK file
-    - git add "$apk_target"
-    - >
-      git commit -m "Update APK: $(date +'%Y-%m-%d %H:%M:%S')"
-    - git push
-    - echo "APK pushed to the repository."
-  only:
-    - main # Run on the main branch
