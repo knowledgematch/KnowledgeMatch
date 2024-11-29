@@ -22,9 +22,10 @@ build-job:
   artifacts:
     paths:
       - build/app/outputs/flutter-apk/app-release.apk
-  only:
-    - main 
-    
+    expire_in: 1 week # Keep the artifact available for 1 week
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' # Run this job only when pushing to the main branch
+
 unit-test-job:
   stage: test
   script:
@@ -33,7 +34,7 @@ unit-test-job:
     - echo "All tests passed."
   allow_failure: true
 
-lint-test-job:   
+lint-test-job:
   stage: lint
   script:
     - echo "Analyzing code quality..."
@@ -41,14 +42,10 @@ lint-test-job:
     - echo "Code analysis completed with no issues."
   allow_failure: true
 
-deploy-job:      # Placeholder for future deployment tasks
+deploy-job:
   stage: deploy
-  environment: production
+  environment:
+    name: production
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
-
-push-apk-job:
-  stage: deploy
-  dependencies:
-    - build-job
