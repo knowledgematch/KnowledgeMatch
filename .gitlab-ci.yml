@@ -1,0 +1,69 @@
+image: ghcr.io/cirruslabs/flutter # Flutter Docker image with required tools
+stages:
+  - build
+  - test
+  - lint
+  - deploy
+
+variables:
+  JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64" # Set Java path for Gradle
+
+build-job:
+  stage: build
+  before_script:
+    - echo "Setting up dynamic Gradle properties..."
+    - echo "org.gradle.java.home=$JAVA_HOME" >> android/gradle.properties
+    - cat android/gradle.properties
+  script:
+    - echo "Building Flutter application..."
+    - flutter build apk --release
+    - echo "Build complete."
+  artifacts:
+    paths:
+      - build/app/outputs/flutter-apk/app-release.apk
+    expire_in: 1 week # Keep the artifact available for 1 week
+
+unit-test-job:
+  stage: test
+  script:
+    - echo "Running Flutter tests..."
+    - flutter test
+    - echo "All tests passed."
+  allow_failure: true
+
+lint-test-job:   # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
+  stage: lint
+  script:
+    - echo "Analyzing code quality..."
+    - flutter analyze
+    - echo "Code analysis completed with no issues."
+  allow_failure: true
+
+deploy-job:      # Placeholder for future deployment tasks
+  stage: deploy
+  environment: production
+  script:
+    - echo "Deploying application..."
+    - echo "Application successfully deployed."
+
+push-apk-job:
+  stage: deploy
+  dependencies:
+    - build-job
+  script:
+    - echo "Preparing to push APK to GitLab repository..."
+    - apk_path="build/app/outputs/flutter-apk/app-release.apk"
+    - apk_target="apk/app-release.apk"
+    - git config --global user.email "ci@example.com" # Replace with your GitLab CI email
+    - git config --global user.name "GitLab CI"
+    - git clone "https://oauth2:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git" repo # Clone the repo
+    - cd repo
+    - mkdir -p apk # Ensure the target directory exists
+    - cp "../$apk_path" "$apk_target" # Copy the APK file
+    - git add "$apk_target"
+    - >
+      git commit -m "Update APK: $(date +'%Y-%m-%d %H:%M:%S')"
+    - git push
+    - echo "APK pushed to the repository."
+  only:
+    - main # Run on the main branch
