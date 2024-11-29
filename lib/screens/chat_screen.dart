@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/screens/request_screen.dart';
 import 'package:knowledgematch/services/firestore_service.dart';
 import 'package:knowledgematch/widgets/notification_card.dart';
 import '../model/notification_data.dart';
-import 'chat_room_screen.dart';
+import '../model/user.dart';
+import '../services/matching_algorithm.dart';
 
 class ChatScreen extends StatelessWidget {
   final firestoreService = FirestoreService();
@@ -21,7 +23,7 @@ class ChatScreen extends StatelessWidget {
           Expanded(
             child: FutureBuilder<List<NotificationData>>(
               future: firestoreService.fetchNotifications(
-                userID: 1234,
+                userID: User.instance.id ?? 0,
                 type: NotificationType.knowledgeRequest,
               ),
               builder: (context, snapshot) {
@@ -39,17 +41,20 @@ class ChatScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final notification = notifications[index];
                       return GestureDetector(
-                        onTap: () {
-                          // Navigate to chat room
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  RequestDetailScreen(notification: notification
+                          onTap: () async {
+                            final userProfile = await MatchingAlgorithm().getUserProfileById(notification.sourceUserId); // Replace with your actual method and parameters
+
+                            // Navigate to RequestDetailScreen with the userProfile
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RequestScreen(
+                                  notificationData: notification,
+                                  userprofile: userProfile,
+                                ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
                         child: NotificationCard(notification: notification)
                       );
                     },
