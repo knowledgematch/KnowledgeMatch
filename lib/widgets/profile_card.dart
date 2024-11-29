@@ -3,16 +3,35 @@ import '../model/userprofile.dart';
 
 class ProfileCard extends StatelessWidget {
   final Userprofile profile;
+  final double width;
+  final double height;
 
-  const ProfileCard({super.key, required this.profile});
+  const ProfileCard({
+    super.key,
+    required this.profile,
+    required this.width,
+    required this.height,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      child: Card(
-        elevation: 8,
-        margin: const EdgeInsets.all(16),
+      child: Container(
+        width: width,
+        height: height,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: SingleChildScrollView(
