@@ -10,11 +10,13 @@ class FirestoreService {
       QuerySnapshot sourceSnapshot = await FirebaseFirestore.instance
           .collection('notifications')
           .where('source_user_id', isEqualTo: userID.toString())
+          .orderBy('timestamp', descending: true)
           .get();
 
       QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
           .collection('notifications')
           .where('target_user_id', isEqualTo: userID.toString())
+          .orderBy('timestamp', descending: true)
           .get();
 
       List<QueryDocumentSnapshot> allDocs = [...sourceSnapshot.docs, ...targetSnapshot.docs];
