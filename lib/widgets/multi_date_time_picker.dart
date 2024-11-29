@@ -51,13 +51,10 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min, // Shrink-wrap the children
       children: [
-        ElevatedButton(
-          onPressed: _addDateTime,
-          child: Text('Add Date & Time'),
-        ),
         SizedBox(
-          height: 300,
+          height: 280,
           child: ListView.builder(
             itemCount: selectedTimeFrames.length,
             itemBuilder: (context, index) {
@@ -75,6 +72,10 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
               );
             },
           ),
+        ),
+        ElevatedButton(
+          onPressed: _addDateTime,
+          child: Text('Add Date & Time'),
         ),
         // if (selectedTimeFrames.isNotEmpty)
         //   ElevatedButton(

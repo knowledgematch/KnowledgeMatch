@@ -122,7 +122,6 @@ class NotificationBodyState extends State<NotificationBody> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 24),
         Card(
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: ListTile(
@@ -218,7 +217,7 @@ class NotificationBodyState extends State<NotificationBody> {
             ),
           ],
         ),
-        SizedBox(height: 8)
+        Spacer()
       ],
     );
   }
