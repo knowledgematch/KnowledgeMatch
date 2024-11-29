@@ -22,9 +22,8 @@ build-job:
   artifacts:
     paths:
       - build/app/outputs/flutter-apk/app-release.apk
-    expire_in: 1 week # Keep the artifact available for 1 week
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"' # Run this job only when pushing to the main branch
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 unit-test-job:
   stage: test
