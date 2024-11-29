@@ -5,7 +5,7 @@ import '../model/userprofile.dart';
 import 'flip_card.dart';
 
 class BackCard extends StatelessWidget {
-  final Userprofile profile; // Dynamische Daten des Profils
+  final Userprofile profile;
   final double width;
   final double height;
 
@@ -18,6 +18,7 @@ class BackCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var profilePicture = profile.getDecodedPicture();
     return Container(
       width: width,
       height: height,
@@ -42,11 +43,14 @@ class BackCard extends StatelessWidget {
             radius: 60,
             backgroundColor: const Color(0xFF722334).withOpacity(0.2),
             child: CircleAvatar(
-              radius: 55,
-              backgroundColor: Colors.grey[300],
-              child: Icon(Icons.person, size: 70, color: Colors.grey[700]),
+              radius: 50,
+              backgroundImage: profilePicture != null
+                  ? MemoryImage(profilePicture)
+                  : const AssetImage('assets/images/profile.png') as ImageProvider,
             ),
           ),
+
+
           const SizedBox(height: 16),
 
           // Name
@@ -93,12 +97,10 @@ class BackCard extends StatelessWidget {
             ),
           ),
 
-          // Button für mehr Informationen
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () {
-                // Zugriff auf die _toggleCard-Methode durch die übergeordnete FlipCard-Instanz
                 final flipCardState = context.findAncestorStateOfType<FlipCardState>();
                 if (flipCardState != null) {
                   flipCardState.toggleCard(); // Karte drehen
@@ -118,8 +120,6 @@ class BackCard extends StatelessWidget {
               ),
             ),
           ),
-
-          // Zusätzlicher Hinweis für Benutzer
           const Padding(
             padding: EdgeInsets.only(top: 8),
             child: Text(

@@ -15,6 +15,7 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var profilePicture = profile.getDecodedPicture();
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       child: Container(
@@ -41,13 +42,10 @@ class ProfileCard extends StatelessWidget {
                 // Profile Image
                 Center(
                   child: CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.grey[300],
-                    child: Icon(
-                      Icons.person,
-                      size: 50,
-                      color: Colors.grey[600],
-                    ),
+                    radius: 50,
+                    backgroundImage: profilePicture != null
+                        ? MemoryImage(profilePicture)
+                        : const AssetImage('assets/images/profile.png') as ImageProvider,
                   ),
                 ),
                 SizedBox(height: 20),

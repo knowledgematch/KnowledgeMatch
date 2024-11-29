@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
+
 class Userprofile {
   final int id;
   final String name;
@@ -8,6 +12,7 @@ class Userprofile {
   final int? reachability;
   final String description;
   final int seniority;
+  String? picture;
   List<String>? tokens = [];
 
   Userprofile({
@@ -26,5 +31,17 @@ class Userprofile {
 
   List<String>? getTokensList(){
     return tokens;
+  }
+
+  void setPicture(String? picture){
+    this.picture = picture;
+  }
+
+  Uint8List? getDecodedPicture() {
+    if (picture != null) {
+      print(picture);
+      return base64Decode(picture!);
+    }
+    return null;
   }
 }

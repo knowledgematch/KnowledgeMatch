@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../model/userprofile.dart';
 import '../model/search_criteria.dart';
 import 'api_db_connection.dart';
@@ -46,7 +48,7 @@ class MatchingAlgorithm{
           .map<String>((token) => token.trim())
           .toList();
     }
-    return Userprofile(
+    Userprofile userprofile = Userprofile(
       id: int.parse(user['U_ID'].toString()),
       seniority: int.parse(user['Seniority'].toString()),
       name: user['FullName'].toString(),
@@ -58,5 +60,10 @@ class MatchingAlgorithm{
       description: user['Description'].toString(),
       tokens: tokenList,
     );
+    if(user['Picture'] != null){
+      userprofile.setPicture(base64Encode((user['Picture']['data'] as List<dynamic>).cast<int>()));
+    }
+
+    return userprofile;
   }
 }
