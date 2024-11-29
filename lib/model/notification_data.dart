@@ -53,7 +53,7 @@ class NotificationData {
         body: map['body'] ?? '',
         targetUserId: int.parse(map['target_user_id'] ?? ''),
         sourceUserId: int.parse(map['source_user_id'] ?? ''),
-        timestamp: DateTime.parse(fireStoreTimestamp)
+        timestamp: DateTime.parse(fireStoreTimestamp).toLocal()
       );
   }
 
@@ -65,7 +65,7 @@ class NotificationData {
         targetUserId: int.tryParse(message.data['target_user_id']) ?? 0,
         sourceUserId: int.tryParse(message.data['source_user_id']) ?? 0,
         type: NotificationType.fromString(message.data['notification_type']),
-        timestamp: DateTime.parse(fireStoreTimestamp)
+        timestamp: DateTime.parse(fireStoreTimestamp).toLocal()
     );
   }
 }
