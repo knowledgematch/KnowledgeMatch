@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
 import '../model/user.dart';
-import '../services/user_service.dart';
 import 'keyword_selection_screen.dart';
 import 'login_screen.dart';
 import 'change_pw_screen.dart';
