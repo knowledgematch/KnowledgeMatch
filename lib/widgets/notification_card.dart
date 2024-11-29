@@ -11,7 +11,7 @@ class NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var profilePicture = userprofile.getDecodedPicture();
+    var profilePicture = userprofile.getPicture();
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(

@@ -18,7 +18,7 @@ class BackCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var profilePicture = profile.getDecodedPicture();
+    var profilePicture = profile.getPicture();
     return Container(
       width: width,
       height: height,

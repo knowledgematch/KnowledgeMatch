@@ -59,7 +59,7 @@ class RequestScreen extends StatelessWidget {
   }
 
   Widget _userProfileCard(Userprofile userprofile) {
-    var profilePicture = userprofile.getDecodedPicture();
+    var profilePicture = userprofile.getPicture();
     return Card(
       elevation: 2,
       child: Padding(
