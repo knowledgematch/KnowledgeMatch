@@ -4,7 +4,7 @@ import 'package:knowledgematch/model/notification_data.dart';
 class FirestoreService {
   Future<List<NotificationData>> fetchNotifications({
     required int userID,
-    required NotificationType type
+    NotificationType? type
   }) async {
     try {
       QuerySnapshot sourceSnapshot = await FirebaseFirestore.instance

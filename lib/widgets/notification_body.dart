@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/services/matching_algorithm.dart';
 import '../model/notification_data.dart';
 import '../model/userprofile.dart';
 import '../services/notification_service.dart';
@@ -75,7 +74,6 @@ class NotificationBodyState extends State<NotificationBody> {
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
                 );
-                //Userprofile targetUser = await MatchingAlgorithm().getUserProfileById(widget.notificationData.targetUserId);
                 await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
               },
               style: ElevatedButton.styleFrom(
@@ -100,7 +98,6 @@ class NotificationBodyState extends State<NotificationBody> {
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
                 );
-                //Userprofile targetUser = await MatchingAlgorithm().getUserProfileById(widget.notificationData.targetUserId);
                 await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
               },
               style: ElevatedButton.styleFrom(
@@ -397,7 +394,6 @@ class NotificationBodyState extends State<NotificationBody> {
                                             sourceUserId: widget
                                                 .notificationData.sourceUserId,
                                           );
-                                          //Userprofile targetUser = await MatchingAlgorithm().getUserProfileById(widget.notificationData.targetUserId);
                                           await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
                                           if (mounted) {
                                             ScaffoldMessenger.of(context)
@@ -478,7 +474,6 @@ class NotificationBodyState extends State<NotificationBody> {
           children: [
             ElevatedButton(
               onPressed: () {
-                // Go back to edit the date
                 Navigator.pop(context); // Return to the previous screen
               },
               style: ElevatedButton.styleFrom(
@@ -489,12 +484,13 @@ class NotificationBodyState extends State<NotificationBody> {
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
               child: Text(
-                'Edit Date',
+                'Exit',
                 style: TextStyle(color: Colors.white),
               ),
             ),
           ],
         ),
+        Spacer(),
       ],
     );
   }
