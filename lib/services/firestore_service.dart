@@ -7,11 +7,11 @@ class FirestoreService {
     NotificationType? type
   }) async {
     try {
-      QuerySnapshot sourceSnapshot = await FirebaseFirestore.instance
-          .collection('notifications')
-          .where('source_user_id', isEqualTo: userID.toString())
-          .orderBy('timestamp', descending: true)
-          .get();
+      // QuerySnapshot sourceSnapshot = await FirebaseFirestore.instance
+      //     .collection('notifications')
+      //     .where('source_user_id', isEqualTo: userID.toString())
+      //     .orderBy('timestamp', descending: true)
+      //     .get();
 
       QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
           .collection('notifications')
@@ -19,7 +19,7 @@ class FirestoreService {
           .orderBy('timestamp', descending: true)
           .get();
 
-      List<QueryDocumentSnapshot> allDocs = [...sourceSnapshot.docs, ...targetSnapshot.docs];
+      List<QueryDocumentSnapshot> allDocs = [...targetSnapshot.docs]; //...sourceSnapshot.docs,
 
       List<Map<String, dynamic>> firestoreData = allDocs.map((doc) {
         return {
