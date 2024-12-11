@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
 import '../model/user.dart';
@@ -47,12 +48,32 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
     if (pickedFile != null) {
       final fileBytes = await pickedFile.readAsBytes();
+      const targetSizeInKB = 100;
+      final compressedBytes = await compressImageToTargetSize(fileBytes, targetSizeInKB * 1024);
       setState(() {
-        _pictureData = fileBytes; // Update picture data for display
+        _pictureData = compressedBytes;
       });
     } else {
       print('No image selected.');
     }
+  }
+
+  Future<Uint8List> compressImageToTargetSize(Uint8List fileBytes, int targetSizeInBytes) async {
+    int quality = 100;
+    Uint8List compressedBytes = fileBytes;
+
+    // Keep compressing until the file size is below the target
+    while (compressedBytes.length > targetSizeInBytes && quality > 10) {
+      compressedBytes = await FlutterImageCompress.compressWithList(
+        fileBytes,
+        quality: quality,
+        minWidth: 300,
+        minHeight: 300,
+      );
+      quality -= 10;
+    }
+
+    return compressedBytes;
   }
 
   Future<void> _loadUserData() async {
