@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/model/reachability.dart';
 
 import '../model/request_date_data.dart';
 
@@ -87,18 +88,18 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      DropdownButton<MeetingType>(
-                        value: selectedTimeFrames[index].meetingType ??
-                            MeetingType.onlineOrInPerson,
-                        items: MeetingType.values.map((MeetingType type) {
-                          return DropdownMenuItem<MeetingType>(
-                            value: type,
-                            child: Text(type.toString()),
+                      DropdownButton<Reachability>(
+                        value: selectedTimeFrames[index].reachability ??
+                            Reachability.onlineOrInPerson,
+                        items: Reachability.values.map((Reachability value) {
+                          return DropdownMenuItem<Reachability>(
+                            value: value,
+                            child: Text(value.toString()),
                           );
                         }).toList(),
-                        onChanged: (MeetingType? newValue) {
+                        onChanged: (Reachability? newValue) {
                           setState(() {
-                            selectedTimeFrames[index].meetingType = newValue;
+                            selectedTimeFrames[index].reachability = newValue;
                           });
                         },
                       ),

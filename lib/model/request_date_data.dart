@@ -1,40 +1,12 @@
 import 'package:intl/intl.dart';
 
-enum MeetingType {
-  online,
-  inPerson,
-  onlineOrInPerson;
-
-  factory MeetingType.fromString(String type) {
-    switch (type) {
-      case 'In Person':
-        return inPerson;
-      case 'Online':
-        return online;
-      case 'Online/In Person':
-        return onlineOrInPerson;
-      default:
-        return onlineOrInPerson;
-    }
-  }
-  @override
-  String toString() {
-    switch (this) {
-      case MeetingType.online:
-        return 'Online';
-      case MeetingType.inPerson:
-        return 'In Person';
-      case MeetingType.onlineOrInPerson:
-        return 'Online/In Person';
-    }
-  }
-}
+import 'reachability.dart';
 
 class RequestDateData {
   final DateTime dateTime;
-  MeetingType? meetingType;
+  Reachability? reachability;
 
-  RequestDateData({required this.dateTime, this.meetingType});
+  RequestDateData({required this.dateTime, this.reachability});
 
   /// Returns a formatted date: "DD MM YYYY"
   String getFormattedDate() {
@@ -53,7 +25,7 @@ class RequestDateData {
           '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}',
       'time':
           '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}',
-      'type': meetingType.toString() // Enum to string
+      'type': reachability.toString() // Enum to string
     };
   }
 
@@ -62,6 +34,6 @@ class RequestDateData {
     return RequestDateData(
         dateTime: DateTime.parse(
             '${json['date']}T${json['time']}'), // Combine date and time
-        meetingType: MeetingType.fromString(json['type']));
+        reachability: Reachability.fromString(json['type']));
   }
 }

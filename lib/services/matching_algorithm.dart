@@ -1,36 +1,42 @@
 import 'dart:convert';
 
+import 'package:knowledgematch/model/reachability.dart';
+
 import '../model/user.dart';
 import '../model/userprofile.dart';
 import '../model/search_criteria.dart';
 import 'api_db_connection.dart';
 
-class MatchingAlgorithm{
+class MatchingAlgorithm {
   Future<List<String>> getKeywords() async {
     var result = await ApiDbConnection().fetchKeywords();
     return result.map((item) => item['Keyword'].toString()).toList();
   }
 
-  Future<List<int>?> getReachabilities() async {
-    var result = await ApiDbConnection().fetchDistinctDataFromUser("Reachability");
-    return result.map<int>((row) => int.parse(row['Reachability'].toString())).toList();
+  Future<List<Reachability>?> getReachabilities() async {
+    var result =
+        await ApiDbConnection().fetchDistinctDataFromUser("Reachability");
+    print(result);
+    return result
+        .map<Reachability>(
+            (row) => ReachabilityValue.fromValue((row['Reachability'])))
+        .toList();
   }
 
-  Future<List<Userprofile>> matchingAlgorithm(SearchCriteria searchCriteria) async {
+  Future<List<Userprofile>> matchingAlgorithm(
+      SearchCriteria searchCriteria) async {
     List<Userprofile> profiles = [];
     var data = await ApiDbConnection().fetchUserByInput(
-        uId: null,
-        name: null,
-        surname: null,
-        keyword: searchCriteria.keyword,
-        reachability: searchCriteria.reachability.toString(),
-        email: null,
+      uId: null,
+      name: null,
+      surname: null,
+      keyword: searchCriteria.keyword,
+      reachability: searchCriteria.reachability?.value.toString(),
+      email: null,
     );
-    if(data != []) {
+    if (data != []) {
       for (var user in data) {
-        profiles.add(
-            _createUserFromJson(user)
-        );
+        profiles.add(_createUserFromJson(user));
       }
     }
     profiles.removeWhere((user) => user.id == User.instance.id);
@@ -42,11 +48,12 @@ class MatchingAlgorithm{
     return _createUserFromJson(data.elementAt(0));
   }
 
-
   Userprofile _createUserFromJson(Map<String, dynamic> user) {
     List<String> tokenList = [];
     if (user['Tokens'] != null && user['Tokens'].toString().trim().isNotEmpty) {
-      tokenList = user['Tokens'].toString().split(',')
+      tokenList = user['Tokens']
+          .toString()
+          .split(',')
           .map<String>((token) => token.trim())
           .toList();
     }
@@ -58,13 +65,15 @@ class MatchingAlgorithm{
       expertString: user['Keywords'].toString(),
       availability: 'Placeholder',
       langString: 'Placeholder',
-      reachability: int.parse(user['Reachability'].toString()),
+      reachability: ReachabilityValue.fromValue(
+          int.parse(user['Reachability'].toString())),
       description: user['Description'].toString(),
       tokens: tokenList,
     );
 
-    if(user['Picture'] != null){
-      userprofile.setPicture(base64Encode((user['Picture']['data'] as List<dynamic>).cast<int>()));
+    if (user['Picture'] != null) {
+      userprofile.setPicture(
+          base64Encode((user['Picture']['data'] as List<dynamic>).cast<int>()));
     }
     return userprofile;
   }

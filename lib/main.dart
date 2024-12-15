@@ -31,7 +31,6 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -57,8 +56,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashScreenState extends State<SplashScreen> {
-
-
   // Instance of Firebase Messaging
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   LocalUser? localUser;
@@ -86,7 +83,6 @@ class SplashScreenState extends State<SplashScreen> {
         description: "description");
   }
 
-
   Future<void> _checkLoggedInStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -107,10 +103,10 @@ class SplashScreenState extends State<SplashScreen> {
     } else {
       // User is not logged in, navigate to LoginScreen
       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()));
-          }
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    }
   }
+
   // Request notification permissions (especially for iOS)
   void _requestPermissions() async {
     NotificationSettings settings = await _messaging.requestPermission(
@@ -132,9 +128,7 @@ class SplashScreenState extends State<SplashScreen> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
         print(message);
-        NotificationService().showNotification(
-          message: message
-        );
+        NotificationService().showNotification(message: message);
       }
     });
 
@@ -163,9 +157,8 @@ class SplashScreenState extends State<SplashScreen> {
                 );
               } else {
                 return RequestScreen(
-                  userprofile: snapshot.data!,
-                  notificationData: NotificationData.fromMessage(message)
-                );
+                    userprofile: snapshot.data!,
+                    notificationData: NotificationData.fromMessage(message));
               }
             },
           ),
@@ -199,16 +192,13 @@ class SplashScreenState extends State<SplashScreen> {
                 );
               } else {
                 return RequestScreen(
-                  userprofile: snapshot.data!,
-                  notificationData:
-                    NotificationData.fromMessage(message)
-                );
+                    userprofile: snapshot.data!,
+                    notificationData: NotificationData.fromMessage(message));
               }
             },
           ),
         ),
       );
-
     }
   }
 

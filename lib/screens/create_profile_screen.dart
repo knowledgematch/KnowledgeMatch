@@ -19,7 +19,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   String _surname = '';
   String _email = '';
   String _password = '';
-  String _reachability = Reachability.InPerson.value.toString();
+  String _reachability = Reachability.inPerson
+      .toString(); //TODO change to actual user preference?!
   File? _selectedImage; // To store the selected profile picture
 
   final ImagePicker _picker = ImagePicker();
@@ -58,7 +59,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             'Picture', // This key should match your backend field
             _selectedImage!.path,
           ));
-
         }
 
         final response = await request.send();
@@ -153,7 +153,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     backgroundImage: _selectedImage != null
                         ? FileImage(_selectedImage!)
                         : AssetImage('assets/images/profile.png')
-                    as ImageProvider,
+                            as ImageProvider,
                     child: _selectedImage == null
                         ? Icon(Icons.camera_alt, size: 50, color: Colors.grey)
                         : null,

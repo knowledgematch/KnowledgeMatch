@@ -1,15 +1,15 @@
+import 'reachability.dart';
+
 class SearchCriteria {
   final String keyword;
-  final String timeFrame;
   final String issue;
-  final int? reachability;
-  final String? location;
+  final Reachability? reachability;
 
   SearchCriteria({
     required this.keyword,
-    required this.timeFrame,
     required this.issue,
     this.reachability,
-    this.location,
   });
+
+  //TODO to JSON!
 }
