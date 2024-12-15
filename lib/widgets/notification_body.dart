@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../model/notification_data.dart';
+import '../model/request_date_data.dart';
 import '../model/userprofile.dart';
 import '../services/notification_service.dart';
 import 'multi_date_time_picker.dart';
@@ -19,7 +20,7 @@ class NotificationBody extends StatefulWidget {
 }
 
 class NotificationBodyState extends State<NotificationBody> {
-  List<Map<String, dynamic>> selectedDates = []; // Store selected dates
+  List<RequestDateData> selectedDates = []; // Store selected dates
   @override
   Widget build(BuildContext context) {
     var type = widget.notificationData.type;
@@ -362,7 +363,7 @@ class NotificationBodyState extends State<NotificationBody> {
                 ElevatedButton(
                   onPressed: () {
                     // Request different dates
-                    List<Map<String, dynamic>> selectedNewDates =
+                    List<RequestDateData> selectedNewDates =
                         []; // Track new dates locally
                     showDialog(
                       context: context,
@@ -502,13 +503,14 @@ class NotificationBodyState extends State<NotificationBody> {
     );
   }
 
-  String buildRequestString(List<Map<String, dynamic>> selectedDates) {
+  String buildRequestString(List<RequestDateData> selectedDates) {
     StringBuffer requestString = StringBuffer();
     requestString.writeln('Meetups requested on: ');
 
     for (var item in selectedDates) {
-      String date = item['date'];
-      String time = item['time'];
+      //TODO change the date and time to Formatting in RequestDateData
+      String date = item.toString();
+      String time = item.toString();
       requestString.writeln('Date: $date, Time: $time');
     }
 

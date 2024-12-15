@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../model/request_date_data.dart';
+
 class MultiDateTimePicker extends StatefulWidget {
-  final Function(List<Map<String, dynamic>>) onDatesSelected;
+  final Function(List<RequestDateData>) onDatesSelected;
 
   const MultiDateTimePicker({
     super.key,
@@ -13,7 +15,7 @@ class MultiDateTimePicker extends StatefulWidget {
 }
 
 class MultiDateTimePickerState extends State<MultiDateTimePicker> {
-  List<Map<String, dynamic>> selectedTimeFrames = [];
+  List<RequestDateData> selectedTimeFrames = [];
 
   void _addDateTime() async {
     final DateTime? pickedDate = await showDatePicker(
@@ -30,15 +32,20 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
       );
 
       if (pickedTime != null && mounted) {
+        final DateTime combinedDateTime = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        );
         setState(() {
-          selectedTimeFrames.add({
-            'date': '${pickedDate.toLocal()}'.split(' ')[0],
-            'time':
-                '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}',
-          });
+          selectedTimeFrames.add(
+            RequestDateData(dateTime: combinedDateTime),
+          );
         });
-        widget.onDatesSelected(selectedTimeFrames);
       }
+      widget.onDatesSelected(selectedTimeFrames);
     }
   }
 
@@ -62,8 +69,8 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
           child: ListView.builder(
             itemCount: selectedTimeFrames.length,
             itemBuilder: (context, index) {
-              final date = selectedTimeFrames[index]['date'];
-              final time = selectedTimeFrames[index]['time'];
+              final date = selectedTimeFrames[index].getFormattedDate();
+              final time = selectedTimeFrames[index].getFormattedTime();
               return Card(
                 child: ListTile(
                   title: Row(children: [
@@ -78,10 +85,24 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                   ]),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [Text("Test"), Text("Test")]),
+                      DropdownButton<MeetingType>(
+                        value: selectedTimeFrames[index].meetingType ??
+                            MeetingType.onlineOrInPerson,
+                        items: MeetingType.values.map((MeetingType type) {
+                          return DropdownMenuItem<MeetingType>(
+                            value: type,
+                            child: Text(type.toString()),
+                          );
+                        }).toList(),
+                        onChanged: (MeetingType? newValue) {
+                          setState(() {
+                            selectedTimeFrames[index].meetingType = newValue;
+                          });
+                        },
+                      ),
+                      SizedBox(width: 8),
                       IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () => _removeDateTime(index),
