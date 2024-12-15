@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../model/notification_data.dart';
 import '../model/request_date_data.dart';
@@ -247,26 +250,25 @@ class NotificationBodyState extends State<NotificationBody> {
   }
 
   Widget _onMeetupRequestBody(BuildContext context) {
-    List<Map<String, String>> incomingDates = []; // To store parsed dates
-    Map<String, String>? selectedDate; // To track the selected date
+    List<RequestDateData> incomingDates = []; // To store parsed dates
+    RequestDateData? selectedDate; // To track the selected date
 
-    // Parse incoming dates from plain string
-    String body = widget.notificationData.body;
-    List<String> lines = body.split('\n'); // Split the string into lines
+    try {
+      // Parse the entire JSON body into a Map
+      var body = widget.notificationData.body;
+      Map<String, dynamic> jsonData = jsonDecode(body);
 
-    if (lines.isNotEmpty && lines[0].startsWith('Meetups requested on:')) {
-      for (int i = 1; i < lines.length; i++) {
-        // Skip the header and parse each date-time line
-        final line = lines[i];
-        if (line.startsWith('Date:')) {
-          final parts = line.split(', Time: ');
-          if (parts.length == 2) {
-            final date = parts[0].replaceFirst('Date: ', '').trim();
-            final time = parts[1].trim();
-            incomingDates.add({'date': date, 'time': time});
-          }
-        }
+      // Extract the list of meetupsRequested
+      if (jsonData['meetupsRequested'] is List) {
+        List<dynamic> meetups = jsonData['meetupsRequested'];
+
+        // Parse each meetup entry
+        incomingDates = meetups.map((item) {
+          return RequestDateData.fromJson(item);
+        }).toList();
       }
+    } catch (e) {
+      print('Error parsing JSON: $e'); // Log the error for debugging
     }
 
     return StatefulBuilder(
@@ -299,10 +301,23 @@ class NotificationBodyState extends State<NotificationBody> {
             // Display incoming dates
             if (incomingDates.isNotEmpty)
               ...incomingDates.map((dateTime) {
-                String date = dateTime['date']!;
-                String time = dateTime['time']!;
-                return RadioListTile<Map<String, String>>(
-                  title: Text('Date: $date, Time: $time'),
+                String date = dateTime.getFormattedDate();
+                String time = dateTime.getFormattedTime();
+                return RadioListTile<RequestDateData>(
+                  title: Row(
+                    children: [
+                      Text('Date: ',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(date),
+                    ],
+                  ),
+                  subtitle: Row(
+                    children: [
+                      Text('Time: ',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(time),
+                    ],
+                  ),
                   value: dateTime,
                   groupValue: selectedDate,
                   onChanged: (value) {
@@ -311,7 +326,7 @@ class NotificationBodyState extends State<NotificationBody> {
                     });
                   },
                 );
-              }).toList(),
+              }),
 
             if (incomingDates.isEmpty)
               Text(
@@ -334,7 +349,7 @@ class NotificationBodyState extends State<NotificationBody> {
                             type: NotificationType.meetupConfirmation,
                             title: "Meetup Confirmation",
                             body:
-                                "Confirmed Date: ${selectedDate!['date']}, Time: ${selectedDate!['time']}",
+                                "Confirmed Date: ${selectedDate!.getFormattedDate()}, Time: ${selectedDate!.getFormattedTime()}",
                             targetUserId: widget.notificationData.targetUserId,
                             sourceUserId: widget.notificationData.sourceUserId,
                           );
@@ -504,16 +519,14 @@ class NotificationBodyState extends State<NotificationBody> {
   }
 
   String buildRequestString(List<RequestDateData> selectedDates) {
-    StringBuffer requestString = StringBuffer();
-    requestString.writeln('Meetups requested on: ');
+    // Create a JSON-compatible list of maps
+    List<Map<String, dynamic>> meetups =
+        selectedDates.map((item) => item.toJson()).toList();
 
-    for (var item in selectedDates) {
-      //TODO change the date and time to Formatting in RequestDateData
-      String date = item.toString();
-      String time = item.toString();
-      requestString.writeln('Date: $date, Time: $time');
-    }
+    // Create the final JSON object
+    Map<String, dynamic> jsonObject = {'meetupsRequested': meetups};
 
-    return requestString.toString();
+    // Convert to JSON string
+    return jsonEncode(jsonObject);
   }
 }
