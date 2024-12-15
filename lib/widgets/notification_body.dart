@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../model/notification_data.dart';
 import '../model/userprofile.dart';
@@ -74,7 +73,8 @@ class NotificationBodyState extends State<NotificationBody> {
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
                 );
-                await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
+                await NotificationService().sendMessageToDevice(
+                    notification, widget.userprofile.tokens ?? []);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
@@ -98,7 +98,8 @@ class NotificationBodyState extends State<NotificationBody> {
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
                 );
-                await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
+                await NotificationService().sendMessageToDevice(
+                    notification, widget.userprofile.tokens ?? []);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
@@ -178,14 +179,16 @@ class NotificationBodyState extends State<NotificationBody> {
                 );
 
                 // Call the notification service
-                await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
+                await NotificationService().sendMessageToDevice(
+                    notification, widget.userprofile.tokens ?? []);
 
                 // Show success message and close
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldMessenger.of(NotificationBodyState().context)
+                      .showSnackBar(
                     SnackBar(content: Text("Meetup request sent!")),
                   );
-                  Navigator.pop(context);
+                  Navigator.pop(NotificationBodyState().context);
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -282,7 +285,7 @@ class NotificationBodyState extends State<NotificationBody> {
                     ),
                   ),
                   trailing:
-                  Icon(Icons.date_range, color: Colors.orange, size: 40)),
+                      Icon(Icons.date_range, color: Colors.orange, size: 40)),
             ),
             SizedBox(height: 8),
             if (incomingDates.isNotEmpty)
@@ -334,7 +337,8 @@ class NotificationBodyState extends State<NotificationBody> {
                             targetUserId: widget.notificationData.targetUserId,
                             sourceUserId: widget.notificationData.sourceUserId,
                           );
-                          await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
+                          await NotificationService().sendMessageToDevice(
+                              notification, widget.userprofile.tokens ?? []);
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -387,14 +391,17 @@ class NotificationBodyState extends State<NotificationBody> {
                                             type:
                                                 NotificationType.meetupRequest,
                                             title: "Request for New Dates",
-                                            body:
-                                                dates,
+                                            body: dates,
                                             targetUserId: widget
                                                 .notificationData.targetUserId,
                                             sourceUserId: widget
                                                 .notificationData.sourceUserId,
                                           );
-                                          await NotificationService().sendMessageToDevice(notification, widget.userprofile.tokens ?? []);
+                                          await NotificationService()
+                                              .sendMessageToDevice(
+                                                  notification,
+                                                  widget.userprofile.tokens ??
+                                                      []);
                                           if (mounted) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(

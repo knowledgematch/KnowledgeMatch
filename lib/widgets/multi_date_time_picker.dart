@@ -33,7 +33,8 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
         setState(() {
           selectedTimeFrames.add({
             'date': '${pickedDate.toLocal()}'.split(' ')[0],
-            'time': '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}',
+            'time':
+                '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}',
           });
         });
         widget.onDatesSelected(selectedTimeFrames);
@@ -65,22 +66,33 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
               final time = selectedTimeFrames[index]['time'];
               return Card(
                 child: ListTile(
-                  title: Text(date),
-                  subtitle: Text(time),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () => _removeDateTime(index),
+                  title: Row(children: [
+                    Text("Date: ",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(date)
+                  ]),
+                  subtitle: Row(children: [
+                    Text("Time: ",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(time)
+                  ]),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [Text("Test"), Text("Test")]),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => _removeDateTime(index),
+                      ),
+                    ],
                   ),
                 ),
               );
             },
           ),
         ),
-        // if (selectedTimeFrames.isNotEmpty)
-        //   ElevatedButton(
-        //     onPressed: _submitDates,
-        //     child: Text('Submit Dates'),
-        //   ),
       ],
     );
   }
