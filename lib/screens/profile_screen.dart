@@ -23,6 +23,7 @@ class ProfileScreen extends StatefulWidget {
 class ProfileScreenState extends State<ProfileScreen> {
   final user = User.instance;
   Uint8List? _pictureData; // Store the picture as Uint8List
+  String _seniority = '0';
   String _uId = '';
   Reachability _reachability = Reachability.inPerson; // Default value
 
@@ -126,16 +127,14 @@ class ProfileScreenState extends State<ProfileScreen> {
         user.setPicture(_pictureData);
 
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString(
-            'userData',
-            jsonEncode({
-              'U_ID': _uId,
-              'Name': user.name,
-              'Surname': user.surname,
-              'Reachability': user.reachability,
-              'Email': user.email,
-              'Description': user.description,
-            }));
+        await prefs.setString('userData', jsonEncode({
+          'U_ID': _uId,
+          'Name': user.name,
+          'Surname': user.surname,
+          'Reachability': user.reachability,
+          'Email': user.email,
+          'Description': user.description,
+        }));
       } else {
         final responseBody = await response.stream.bytesToString();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -175,8 +174,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                     radius: 50,
                     backgroundImage: _pictureData != null
                         ? MemoryImage(_pictureData!)
-                        : const AssetImage('assets/images/profile.png')
-                            as ImageProvider,
+                        : const AssetImage('assets/images/profile.png') as ImageProvider,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -194,7 +192,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   items: Reachability.values.map((Reachability reachability) {
                     return DropdownMenuItem<Reachability>(
                       value: reachability,
-                      child: Text(reachability.toString()),
+                      child: Text(reachability.description),
                     );
                   }).toList(),
                   decoration: const InputDecoration(
@@ -212,7 +210,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                     border: OutlineInputBorder(),
                   ),
                   items: [
-                    for (var i = 0; i <= 12; i++)
+                    for (var i = 1; i <= 12; i++)
                       DropdownMenuItem(value: i, child: Text('Semester $i')),
                     const DropdownMenuItem(value: -1, child: Text('Professor')),
                   ],
@@ -234,8 +232,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const ChangePasswordScreen()),
+                      MaterialPageRoute(builder: (context) => const ChangePasswordScreen()),
                     );
                   },
                   child: const Text('Change Password'),
@@ -245,8 +242,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const KeywordSelectionScreen()),
+                      MaterialPageRoute(builder: (context) => const KeywordSelectionScreen()),
                     );
                   },
                   child: const Text('Edit Keywords'),
