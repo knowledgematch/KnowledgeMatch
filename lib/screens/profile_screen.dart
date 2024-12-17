@@ -10,6 +10,7 @@ import 'login_screen.dart';
 import 'change_pw_screen.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http_parser/http_parser.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -22,7 +23,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   final user = User.instance;
   Uint8List? _pictureData;
   String _uId = '';
-  Reachability _reachability = Reachability.inPerson;
+  Reachability _reachability = Reachability.InPerson; // Default value
 
   final _formKey = GlobalKey<FormState>();
 
@@ -30,7 +31,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  int _semester = 1;
+  int _semester = 1; // Default to 1
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -45,7 +46,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       final fileBytes = await pickedFile.readAsBytes();
       const targetSizeInKB = 100;
       final compressedBytes =
-          await compressImageToTargetSize(fileBytes, targetSizeInKB * 1024);
+      await compressImageToTargetSize(fileBytes, targetSizeInKB * 1024);
       setState(() {
         _pictureData = compressedBytes;
       });
@@ -89,17 +90,28 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _saveProfile() async {
+    final uri = Uri.parse('http://86.119.45.62/users/$_uId');
+    final request = http.MultipartRequest('PUT', uri);
+
+    request.fields['Name'] = _nameController.text;
+    request.fields['Surname'] = _surnameController.text;
+    request.fields['Reachability'] = _reachability.value.toString();
+    request.fields['Email'] = _emailController.text;
+    request.fields['Seniority'] = _semester.toString();
+    request.fields['Description'] = _descriptionController.text;
+
+    if (_pictureData != null) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'Picture',
+        _pictureData!,
+        filename: 'profile_picture.jpg',
+        contentType: MediaType('image', 'jpeg'),
+      ));
+    }
+
     try {
-      final response = ApiDbConnection().saveProfile(
-          _uId,
-          _nameController.text,
-          _surnameController.text,
-          _reachability.value.toString(),
-          _emailController.text,
-          _semester.toString(),
-          _descriptionController.text,
-          _pictureData);
-      if (response == 204) {
+      final response = await request.send();
+      if (response.statusCode == 204) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile saved successfully!')),
         );
@@ -122,13 +134,14 @@ class ProfileScreenState extends State<ProfileScreen> {
           'Description': user.description,
         }));
       } else {
+        final responseBody = await response.stream.bytesToString();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save profile')),
+          SnackBar(content: Text('Failed to save profile: $responseBody')),
         );
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error:')),
+        SnackBar(content: Text('Error: $error')),
       );
     }
   }
