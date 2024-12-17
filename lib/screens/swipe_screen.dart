@@ -36,13 +36,14 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
   // Use the NotificationService to send a notification
   Future<void> _sendSwipeRightNotification(Userprofile profile) async {
     var notificationData = NotificationData(
-        type: NotificationType.knowledgeRequest,
-        title: "Your knowledge has been requested!",
-        body: widget.searchCriteria.issue,
-        targetUserId: profile.id,
-        sourceUserId: User.instance.id ?? 0,
+      type: NotificationType.knowledgeRequest,
+      title: "Your knowledge has been requested!",
+      body: widget.searchCriteria.toString(),
+      targetUserId: profile.id,
+      sourceUserId: User.instance.id ?? 0,
     );
-    await NotificationService().sendMessageToDevice(notificationData, profile.tokens ?? []);
+    await NotificationService()
+        .sendMessageToDevice(notificationData, profile.tokens ?? []);
   }
 
   @override
@@ -96,11 +97,12 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                     if (direction == SwipeDirection.right) {
                       //send notification
                       final snackBar = SnackBar(
-                          content: const Text('Request sent'),
-                          duration: Duration(milliseconds: 500),
+                        content: const Text('Request sent'),
+                        duration: Duration(milliseconds: 500),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      _sendSwipeRightNotification(profiles[_controller.currentIndex]);
+                      _sendSwipeRightNotification(
+                          profiles[_controller.currentIndex]);
                       profiles.removeAt(_controller.currentIndex);
                       _controller.currentIndex--;
                     } else if (direction == SwipeDirection.left) {}
@@ -120,8 +122,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                             color: properties.direction == SwipeDirection.right
                                 ? Colors.green.withOpacity(0.9)
                                 : properties.direction == SwipeDirection.left
-                                ? Colors.red.withOpacity(0.9)
-                                : Colors.transparent,
+                                    ? Colors.red.withOpacity(0.9)
+                                    : Colors.transparent,
                             blurRadius: 40,
                             spreadRadius: 5,
                           ),
@@ -182,5 +184,3 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
     );
   }
 }
-
-
