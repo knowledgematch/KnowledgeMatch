@@ -22,7 +22,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   final user = User.instance;
   Uint8List? _pictureData;
   String _uId = '';
-  Reachability _reachability = Reachability.InPerson;
+  Reachability _reachability = Reachability.inPerson;
 
   final _formKey = GlobalKey<FormState>();
 

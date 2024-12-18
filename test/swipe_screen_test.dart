@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/model/reachability.dart';
 import 'package:knowledgematch/model/search_criteria.dart';
 import 'package:knowledgematch/model/userprofile.dart';
 import 'package:knowledgematch/screens/swipe_screen.dart';
@@ -12,7 +13,7 @@ void main() {
 class SwipeScreenTestApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SearchCriteria searchCriteria = SearchCriteria(keyword: 'OOP', timeFrame: '', issue: '', reachability: 2, location: '');
+    SearchCriteria searchCriteria = SearchCriteria(keyword: 'OOP', issue: '', reachability: Reachability.online);
     return MaterialApp(
       home: SwipeScreen(
         searchCriteria: searchCriteria,

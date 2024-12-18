@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/model/reachability.dart';
 import 'package:knowledgematch/model/search_criteria.dart';
 import 'package:knowledgematch/model/userprofile.dart';
 import 'package:knowledgematch/screens/swipe_screen.dart';
@@ -13,7 +14,7 @@ class SwipeScreenTestApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: SwipeScreen(
-        searchCriteria: SearchCriteria(keyword: '', timeFrame: '', issue: "Test Criteria", reachability: 0, location: ''),
+        searchCriteria: SearchCriteria(keyword: '', issue: "Test Criteria", reachability: Reachability.inPerson),
         profiles: _getMatchingUserProfiles(_mockProfiles()),
       ),
     );
@@ -29,7 +30,7 @@ class SwipeScreenTestApp extends StatelessWidget {
         expertString: 'Placeholder here',
         availability: 'Placeholder here',
         langString: 'Placeholder here',
-        reachability: 1,
+        reachability: Reachability.inPerson,
         description: 'Number1Profile',
         seniority: 0,
       ),
@@ -40,7 +41,7 @@ class SwipeScreenTestApp extends StatelessWidget {
         expertString: 'Placeholder here',
         availability: 'Placeholder here',
         langString: 'Placeholder here',
-        reachability: 1,
+        reachability: Reachability.inPerson,
         description: 'Number2Profile',
         seniority: 4,
       ),
@@ -51,7 +52,7 @@ class SwipeScreenTestApp extends StatelessWidget {
         expertString: 'Placeholder here',
         availability: 'Placeholder here',
         langString: 'Placeholder here',
-        reachability: 1,
+        reachability: Reachability.inPerson,
         description: 'Number3Profile',
         seniority: 1,
       ),
@@ -62,7 +63,7 @@ class SwipeScreenTestApp extends StatelessWidget {
         expertString: 'Placeholder here',
         availability: 'Placeholder here',
         langString: 'Placeholder here',
-        reachability: 1,
+        reachability: Reachability.inPerson,
         description: 'Number4Profile',
         seniority: 0,
       ),
@@ -73,7 +74,7 @@ class SwipeScreenTestApp extends StatelessWidget {
         expertString: 'Placeholder here',
         availability: 'Placeholder here',
         langString: 'Placeholder here',
-        reachability: 1,
+        reachability: Reachability.inPerson,
         description: 'Number5Profile',
         seniority: 1,
       ),
@@ -84,7 +85,7 @@ class SwipeScreenTestApp extends StatelessWidget {
         expertString: 'Placeholder here',
         availability: 'Placeholder here',
         langString: 'Placeholder here',
-        reachability: 1,
+        reachability: Reachability.inPerson,
         description: 'Number6Profile',
         seniority: 2,
       )
