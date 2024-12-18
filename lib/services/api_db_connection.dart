@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:knowledgematch/model/userprofile.dart';
+import 'dart:typed_data';
+import 'package:http_parser/http_parser.dart';
 
 class ApiDbConnection {
   var host = '86.119.45.62';
@@ -32,7 +34,6 @@ class ApiDbConnection {
       final response = await http.post(finalUri);
 
       if (response.statusCode == 201) {
-        // Successfully created
         return true;
       } else {
         print('Failed to add User2Keyword entry. Status: ${response.statusCode}, Body: ${response.body}');
@@ -83,20 +84,97 @@ class ApiDbConnection {
     return await _fetcher(finalUri);
   }
 
-  Future<List<Map<String, dynamic>>> _fetcher(Uri uri) async {
+  Future<int> changePassword(
+    String email,
+    String oldPassword,
+    String newPassword,
+  ) async {
+    var finalUri = baseUri.replace(
+      path: '/change-password',
+    );
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'email': email,
+      'oldPassword': oldPassword,
+      'newPassword': newPassword,
+    });
+
     try {
-      final response = await http.get(uri);
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        if (data is List) {
-          return data.map((item) => Map<String, dynamic>.from(item)).toList();
-        }
-      }
-      print('Failed to fetch from $uri. Status Code: ${response.statusCode}');
-      return [];
-    } catch (e) {
-      print('Error with: $e');
-      return [];
+      final response = await http.post(finalUri, headers: headers, body: body);
+      return response.statusCode;
+    } catch (error) {
+      return -1;
+    }
+  }
+
+  Future<int> createAccount(
+      String name,
+      String surname,
+      String email,
+      String password,
+      String reachability,
+      File? image
+      ) async {
+    var finalUri = baseUri.replace(
+      path: '/users',
+    );
+
+    final request = http.MultipartRequest('POST', finalUri);
+    request.fields['Name'] = name;
+    request.fields['Surname'] = surname;
+    request.fields['Email'] = email;
+    request.fields['Password'] = password;
+    request.fields['Reachability'] = reachability;
+    if (image != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'Picture',
+        image.path,
+      ));
+    }
+    late http.StreamedResponse response;
+    try {
+      response = await request.send();
+      return response.statusCode;
+    } catch (error) {
+      return -1;
+    }
+  }
+
+  Future<int> saveProfile(
+      String uId,
+      String name,
+      String surname,
+      String reachability,
+      String email,
+      String seniority,
+      String description,
+      Uint8List? image
+      ) async {
+    var finalUri = baseUri.replace(
+      path: '/users/$uId',
+    );
+    final request = http.MultipartRequest('PUT', finalUri);
+
+    request.fields['Name'] = name;
+    request.fields['Surname'] = surname;
+    request.fields['Reachability'] = reachability;
+    request.fields['Email'] = email;
+    request.fields['Seniority'] = seniority;
+    request.fields['Description'] = description;
+    if (image != null) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'Picture',
+        image as List<int>,
+        filename: 'profile_picture.jpg',
+        contentType: MediaType('image', 'jpeg'),
+      ));
+    }
+
+    try {
+      final response = await request.send();
+      return response.statusCode;
+    } catch (error) {
+      return -1;
     }
   }
 
@@ -149,6 +227,23 @@ class ApiDbConnection {
       }
     } catch (e) {
       print('Error deleting FCM token: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _fetcher(Uri uri) async {
+    try {
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data is List) {
+          return data.map((item) => Map<String, dynamic>.from(item)).toList();
+        }
+      }
+      print('Failed to fetch from $uri. Status Code: ${response.statusCode}');
+      return [];
+    } catch (e) {
+      print('Error with: $e');
+      return [];
     }
   }
 }

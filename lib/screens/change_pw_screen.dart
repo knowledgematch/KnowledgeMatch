@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
+import 'package:knowledgematch/services/api_db_connection.dart';
 import 'dart:convert';
 
 class ChangePasswordScreen extends StatefulWidget {
@@ -36,36 +36,23 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
     }
   }
 
-  Future<void> _changePassword() async {
+  void _changePassword() {
     if (_formKey.currentState!.validate()) {
-      final email = _email; // Get the email from profile data
+      final email = _email;
       final oldPassword = _oldPasswordController.text;
       final newPassword = _newPasswordController.text;
 
-      final url = Uri.parse('http://86.119.45.62/change-password');
-      final headers = {'Content-Type': 'application/json'};
-      final body = jsonEncode({
-        'email': email,
-        'oldPassword': oldPassword,
-        'newPassword': newPassword,
-      });
+      final response = ApiDbConnection()
+          .changePassword(email, oldPassword, newPassword);
 
-      try {
-        final response = await http.post(url, headers: headers, body: body);
-
-        if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Password changed successfully!')),
-          );
-          Navigator.pop(context);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ${response.body}')),
-          );
-        }
-      } catch (error) {
+      if (response == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $error')),
+          const SnackBar(content: Text('Password changed successfully!')),
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $response')),
         );
       }
     }
