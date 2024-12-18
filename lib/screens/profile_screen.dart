@@ -208,7 +208,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                _buildDescriptionField(),
+                _buildTextField(_descriptionController, 'Description'),
                 const SizedBox(height: 16),
 
                 ElevatedButton(
@@ -255,20 +255,6 @@ class ProfileScreenState extends State<ProfileScreen> {
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
-      ),
-    );
-  }
-
-  Widget _buildDescriptionField() {
-    return SizedBox(
-      height: 100,
-      child: TextFormField(
-        controller: _descriptionController,
-        maxLines: null,
-        decoration: const InputDecoration(
-          labelText: 'Description',
-          border: OutlineInputBorder(),
-        ),
       ),
     );
   }
