@@ -1,8 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:knowledgematch/services/api_db_connection.dart';
 
 import '../model/reachability.dart';
 import 'login_screen.dart';
@@ -20,11 +19,10 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   String _email = '';
   String _password = '';
   String _reachability = Reachability.InPerson.value.toString();
-  File? _selectedImage; // To store the selected profile picture
+  File? _selectedImage;
 
   final ImagePicker _picker = ImagePicker();
 
-  // Function to handle image picking
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -39,78 +37,40 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   }
 
   // Function to handle account creation
-  Future<void> _createAccount() async {
+  void _createAccount() {
     if (_formKey.currentState!.validate()) {
-      try {
-        final uri = Uri.parse('http://86.119.45.62/users');
-        final request = http.MultipartRequest('POST', uri);
+      final response = ApiDbConnection().createAccount(
+          _name,
+          _surname,
+          _email,
+          _password,
+          _reachability,
+          _selectedImage,
+      );
 
-        // Add text fields to the request
-        request.fields['Name'] = _name;
-        request.fields['Surname'] = _surname;
-        request.fields['Email'] = _email;
-        request.fields['Password'] = _password;
-        request.fields['Reachability'] = _reachability;
-
-        // Add the image file to the request if selected
-        if (_selectedImage != null) {
-          request.files.add(await http.MultipartFile.fromPath(
-            'Picture', // This key should match your backend field
-            _selectedImage!.path,
-          ));
-
-        }
-
-        final response = await request.send();
-
-        if (response.statusCode == 200) {
-          // Account created successfully
-          final responseBody = await response.stream.bytesToString();
-          final responseData = jsonDecode(responseBody);
-
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: Text('Success'),
-              content: Text('Account created successfully!'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                    Navigator.pop(context); // Go back to login screen
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            ),
-          );
-        } else {
-          // Error in account creation
-          final responseBody = await response.stream.bytesToString();
-          final errorResponse = jsonDecode(responseBody);
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: Text('Error'),
-              content: Text(errorResponse['message'] ?? 'An error occurred'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            ),
-          );
-        }
-      } catch (e) {
-        print('Error: $e');
+      if (response == 200) {
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Success'),
+            content: Text('Account created successfully!'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  Navigator.pop(context);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } else {
         showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
             title: Text('Error'),
-            content: Text('An error occurred, please try again later.'),
+            content: Text('An error occurred'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
