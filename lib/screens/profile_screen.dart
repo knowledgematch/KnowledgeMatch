@@ -189,8 +189,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
+
                 _buildTextField(_emailController, 'Email'),
                 const SizedBox(height: 16),
+
                 DropdownButtonFormField<int>(
                   value: _semester,
                   decoration: const InputDecoration(
@@ -198,15 +200,17 @@ class ProfileScreenState extends State<ProfileScreen> {
                     border: OutlineInputBorder(),
                   ),
                   items: [
-                    for (var i = 1; i <= 12; i++)
+                    for (var i = 0; i <= 12; i++)
                       DropdownMenuItem(value: i, child: Text('Semester $i')),
                     const DropdownMenuItem(value: -1, child: Text('Professor')),
                   ],
                   onChanged: (value) => setState(() => _semester = value!),
                 ),
                 const SizedBox(height: 16),
+
                 _buildDescriptionField(),
                 const SizedBox(height: 16),
+
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
@@ -216,6 +220,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   child: const Text('Save Changes'),
                 ),
                 const SizedBox(height: 16),
+
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -225,6 +230,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   },
                   child: const Text('Change Password'),
                 ),
+
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
