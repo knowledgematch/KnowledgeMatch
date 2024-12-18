@@ -4,13 +4,13 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:knowledgematch/model/search_criteria.dart';
 
 import '../model/notification_data.dart';
 import '../model/user.dart';
 import '../model/userprofile.dart';
 import '../screens/request_screen.dart';
 import 'matching_algorithm.dart';
-
 
 late BuildContext appContext;
 
@@ -42,7 +42,6 @@ class NotificationService {
     android: initializationSettingsAndroid,
     iOS: initializationSettingsIOS,
   );
-
 
   Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
     this.navigatorKey = navigatorKey;
@@ -98,16 +97,16 @@ class NotificationService {
                 );
               } else {
                 return RequestScreen(
-                  userprofile: snapshot.data!,
-                  notificationData: NotificationData.fromFirestoreData(data)
-                   //title: data['title'],
-                   //body: data['body'],
-                   //targetUserId: int.tryParse(data['target_user_id']) ?? 0,
-                   //type: NotificationType.fromString(data['notification_type']),
-                   //sourceUserId: int.tryParse(data['source_user_id']) ?? 0,
-                   //success: bool,
-                  //),
-                );
+                    userprofile: snapshot.data!,
+                    notificationData: NotificationData.fromFirestoreData(data)
+                    //title: data['title'],
+                    //body: data['body'],
+                    //targetUserId: int.tryParse(data['target_user_id']) ?? 0,
+                    //type: NotificationType.fromString(data['notification_type']),
+                    //sourceUserId: int.tryParse(data['source_user_id']) ?? 0,
+                    //success: bool,
+                    //),
+                    );
               }
             },
           ),
@@ -116,16 +115,17 @@ class NotificationService {
     }
   }
 
+  //TODO Show Notification -> handle different body to display. Create NotificaitonData and then decide on how to display the message?
   Future<void> showNotification({
     required RemoteMessage message,
     String? payload,
     String channelId = 'default_channel',
     String channelName = 'Default Notifications',
     String channelDescription =
-    'This channel is used for default notifications.',
+        'This channel is used for default notifications.',
   }) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'default_channel',
       'Default Notifications',
       channelDescription: 'This channel is used for default notifications.',
@@ -135,7 +135,7 @@ class NotificationService {
     );
 
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
-    DarwinNotificationDetails();
+        DarwinNotificationDetails();
 
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
@@ -146,7 +146,6 @@ class NotificationService {
       'title': message.notification?.title ?? '',
       'body': message.notification?.body ?? '',
     });
-    print(notificationPayload);
 
     await flutterLocalNotificationsPlugin.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -157,10 +156,8 @@ class NotificationService {
     );
   }
 
-
   Future<void> sendMessageToDevice(
-      NotificationData notificationData,
-      List<String> tokens) async {
+      NotificationData notificationData, List<String> tokens) async {
     print(tokens);
 
     final result =

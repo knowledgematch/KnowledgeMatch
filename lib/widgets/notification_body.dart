@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/model/reachability.dart';
+import 'package:knowledgematch/model/search_criteria.dart';
 import '../model/notification_data.dart';
 import '../model/request_date_data.dart';
 import '../model/userprofile.dart';
@@ -37,6 +38,8 @@ class NotificationBodyState extends State<NotificationBody> {
   }
 
   Widget _onRequestBody(BuildContext context) {
+    SearchCriteria searchCriteria =
+        SearchCriteria.fromJSONString(widget.notificationData.body);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -54,7 +57,7 @@ class NotificationBodyState extends State<NotificationBody> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              widget.notificationData.body,
+              searchCriteria.issue,
               style: TextStyle(
                 fontSize: 16,
               ),
@@ -73,7 +76,7 @@ class NotificationBodyState extends State<NotificationBody> {
                 var notification = NotificationData(
                   type: NotificationType.requestAccepted,
                   title: "Accepted request",
-                  body: "Your request was accepted!",
+                  body: searchCriteria.toString(),
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
                 );
@@ -124,6 +127,8 @@ class NotificationBodyState extends State<NotificationBody> {
   }
 
   Widget _onAcceptBody(BuildContext context) {
+    SearchCriteria searchCriteria =
+        SearchCriteria.fromJSONString(widget.notificationData.body);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -151,6 +156,8 @@ class NotificationBodyState extends State<NotificationBody> {
         ),
         SizedBox(height: 8),
         MultiDateTimePicker(
+          searchCriteriaReachability:
+              searchCriteria.reachability ?? Reachability.onlineOrInPerson,
           onDatesSelected: (dates) async {
             setState(() {
               selectedDates = dates;
@@ -172,7 +179,8 @@ class NotificationBodyState extends State<NotificationBody> {
                   return;
                 }
 
-                String dates = buildRequestString(selectedDates);
+                String dates =
+                    RequestDateData.buildRequestString(selectedDates);
 
                 var notification = NotificationData(
                   type: NotificationType.meetupRequest,
@@ -388,6 +396,8 @@ class NotificationBodyState extends State<NotificationBody> {
                             child: Column(
                               children: [
                                 MultiDateTimePicker(
+                                  searchCriteriaReachability:
+                                      Reachability.onlineOrInPerson,
                                   onDatesSelected: (newDates) {
                                     setState(() {
                                       selectedNewDates =
@@ -401,8 +411,9 @@ class NotificationBodyState extends State<NotificationBody> {
                                   onPressed: selectedNewDates.isEmpty
                                       ? null
                                       : () async {
-                                          final dates = buildRequestString(
-                                              selectedNewDates);
+                                          final dates = RequestDateData
+                                              .buildRequestString(
+                                                  selectedNewDates);
                                           var notification = NotificationData(
                                             type:
                                                 NotificationType.meetupRequest,
@@ -516,17 +527,5 @@ class NotificationBodyState extends State<NotificationBody> {
         Spacer(),
       ],
     );
-  }
-
-  String buildRequestString(List<RequestDateData> selectedDates) {
-    // Create a JSON-compatible list of maps
-    List<Map<String, dynamic>> meetups =
-        selectedDates.map((item) => item.toJson()).toList();
-
-    // Create the final JSON object
-    Map<String, dynamic> jsonObject = {'meetupsRequested': meetups};
-
-    // Convert to JSON string
-    return jsonEncode(jsonObject);
   }
 }

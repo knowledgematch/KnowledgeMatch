@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'reachability.dart';
 
 class SearchCriteria {
@@ -15,13 +17,13 @@ class SearchCriteria {
     return {
       'keyword': keyword,
       'issue': issue,
-      'reachability': reachability.toString()
+      'reachability': reachability?.toString()
     };
   }
 
   @override
   String toString() {
-    return toJSON().toString();
+    return jsonEncode(toJSON());
   }
 
   factory SearchCriteria.fromJSON(Map<String, dynamic> json) {
@@ -32,5 +34,9 @@ class SearchCriteria {
           ? Reachability.fromString(json['reachability'] as String)
           : null, // Handle null case safely
     );
+  }
+  factory SearchCriteria.fromJSONString(String jsonString) {
+    final Map<String, dynamic> json = jsonDecode(jsonString);
+    return SearchCriteria.fromJSON(json);
   }
 }

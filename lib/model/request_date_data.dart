@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:intl/intl.dart';
 
 import 'reachability.dart';
@@ -8,17 +10,19 @@ class RequestDateData {
 
   RequestDateData({required this.dateTime, this.reachability});
 
-  /// Returns a formatted date: "DD MM YYYY"
+  /// Returns a formatted date: "DD/MM/YYYY"
   String getFormattedDate() {
     return DateFormat('dd/MM/yyyy').format(dateTime);
   }
 
-  /// Returns a formatted time: "HH MM"
+  /// Returns a formatted time: "HH:MM"
   String getFormattedTime() {
     return DateFormat('HH:mm').format(dateTime);
   }
 
-  /// Creates a JSON style Map to send as part of the notificaiton body
+  /// Creates a JSON style map from a [RequestDateData] object
+  ///
+  /// returns a [Map]
   Map<String, dynamic> toJson() {
     return {
       'date':
@@ -35,5 +39,21 @@ class RequestDateData {
         dateTime: DateTime.parse(
             '${json['date']}T${json['time']}'), // Combine date and time
         reachability: Reachability.fromString(json['type']));
+  }
+
+  /// Helper Method to create a String from [selectedDates]
+  ///
+  /// Takes a [List] of RequestDateData
+  /// returns a json encoded [String]
+  static String buildRequestString(List<RequestDateData> selectedDates) {
+    // Create a JSON-compatible list of maps
+    List<Map<String, dynamic>> meetups =
+        selectedDates.map((item) => item.toJson()).toList();
+
+    // Create the final JSON object
+    Map<String, dynamic> jsonObject = {'meetupsRequested': meetups};
+
+    // Convert to JSON string
+    return jsonEncode(jsonObject);
   }
 }

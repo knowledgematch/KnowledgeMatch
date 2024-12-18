@@ -1,4 +1,3 @@
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 enum NotificationType {
@@ -14,7 +13,7 @@ enum NotificationType {
         return NotificationType.knowledgeRequest;
       case 'requestAccepted':
         return NotificationType.requestAccepted;
-      case 'requestDeclined' :
+      case 'requestDeclined':
         return NotificationType.requestDeclined;
       case 'meetupRequest':
         return NotificationType.meetupRequest;
@@ -29,6 +28,7 @@ enum NotificationType {
 }
 
 class NotificationData {
+  //TODO add RequestID to manage requests --or manage with target and source userid?
   final NotificationType type;
   final String title;
   final String body;
@@ -36,28 +36,26 @@ class NotificationData {
   final int sourceUserId;
   final DateTime? timestamp;
 
-  NotificationData({
-        required this.type,
-        required this.title,
-        required this.body,
-        required this.targetUserId,
-        required this.sourceUserId,
-        this.timestamp
-  });
+  NotificationData(
+      {required this.type,
+      required this.title,
+      required this.body,
+      required this.targetUserId,
+      required this.sourceUserId,
+      this.timestamp});
 
-  factory NotificationData.fromFirestoreData(Map<String, dynamic> map){
-      String fireStoreTimestamp = map['timestamp'];
+  factory NotificationData.fromFirestoreData(Map<String, dynamic> map) {
+    String fireStoreTimestamp = map['timestamp'];
     return NotificationData(
         type: NotificationType.fromString(map['notification_type'] ?? ''),
         title: map['title'] ?? '',
         body: map['body'] ?? '',
         targetUserId: int.parse(map['target_user_id'] ?? ''),
         sourceUserId: int.parse(map['source_user_id'] ?? ''),
-        timestamp: DateTime.parse(fireStoreTimestamp).toLocal()
-      );
+        timestamp: DateTime.parse(fireStoreTimestamp).toLocal());
   }
 
-  factory NotificationData.fromMessage(RemoteMessage message){
+  factory NotificationData.fromMessage(RemoteMessage message) {
     String fireStoreTimestamp = message.data['timestamp'];
     return NotificationData(
         title: message.notification?.title ?? '',
@@ -65,7 +63,7 @@ class NotificationData {
         targetUserId: int.tryParse(message.data['target_user_id']) ?? 0,
         sourceUserId: int.tryParse(message.data['source_user_id']) ?? 0,
         type: NotificationType.fromString(message.data['notification_type']),
-        timestamp: DateTime.parse(fireStoreTimestamp).toLocal()
-    );
+        timestamp: DateTime.parse(fireStoreTimestamp).toLocal());
   }
 }
+

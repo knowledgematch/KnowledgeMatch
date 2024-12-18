@@ -5,11 +5,12 @@ import '../model/request_date_data.dart';
 
 class MultiDateTimePicker extends StatefulWidget {
   final Function(List<RequestDateData>) onDatesSelected;
+  final Reachability searchCriteriaReachability;
 
-  const MultiDateTimePicker({
-    super.key,
-    required this.onDatesSelected,
-  });
+  const MultiDateTimePicker(
+      {super.key,
+      required this.onDatesSelected,
+      required this.searchCriteriaReachability});
 
   @override
   MultiDateTimePickerState createState() => MultiDateTimePickerState();
@@ -59,6 +60,15 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
 
   @override
   Widget build(BuildContext context) {
+    List<Reachability> elligibleReachability = <Reachability>[];
+    switch (widget.searchCriteriaReachability) {
+      case Reachability.online:
+        elligibleReachability.add(Reachability.online);
+      case Reachability.inPerson:
+        elligibleReachability.add(Reachability.inPerson);
+      case Reachability.onlineOrInPerson:
+        elligibleReachability.addAll(Reachability.values);
+    }
     return Column(
       children: [
         ElevatedButton(
@@ -90,8 +100,8 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                     children: [
                       DropdownButton<Reachability>(
                         value: selectedTimeFrames[index].reachability ??
-                            Reachability.onlineOrInPerson,
-                        items: Reachability.values.map((Reachability value) {
+                            widget.searchCriteriaReachability,
+                        items: elligibleReachability.map((Reachability value) {
                           return DropdownMenuItem<Reachability>(
                             value: value,
                             child: Text(value.toString()),
