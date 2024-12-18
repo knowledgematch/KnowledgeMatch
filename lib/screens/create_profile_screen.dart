@@ -18,7 +18,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   String _surname = '';
   String _email = '';
   String _password = '';
-  String _reachability = Reachability.inPerson.value.toString();
+  String _reachability = Reachability.InPerson.value.toString();
   File? _selectedImage;
 
   final ImagePicker _picker = ImagePicker();
