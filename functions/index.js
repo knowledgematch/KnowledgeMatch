@@ -30,7 +30,7 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
         source_user_id: sourceUserId,
         notification_type: notificationType,
         timestamp: timestamp,
-        payload: payload,
+        payload: payload.toString(),
         request_id: requestId,
       },
       tokens: tokens,
