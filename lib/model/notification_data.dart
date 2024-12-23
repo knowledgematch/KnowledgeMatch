@@ -34,8 +34,8 @@ class NotificationData {
   final bool? isOpen;
   final NotificationType type;
   final String title;
-  final String description;
-  final Map<String, dynamic> body;
+  final String body;
+  final Map<String, dynamic> payload;
   final int targetUserId;
   final int sourceUserId;
   final DateTime? timestamp;
@@ -43,8 +43,8 @@ class NotificationData {
   NotificationData(
       {required this.type,
       required this.title,
-      required this.description,
       required this.body,
+      required this.payload,
       required this.targetUserId,
       required this.sourceUserId,
       this.timestamp,
@@ -56,8 +56,8 @@ class NotificationData {
     return NotificationData(
         type: NotificationType.fromString(map['notification_type'] ?? ''),
         title: map['title'] ?? '',
-        description: map['description'] ?? '',
         body: map['body'] ?? '',
+        payload: map['payload'] ?? '',
         targetUserId: int.parse(map['target_user_id'] ?? ''),
         sourceUserId: int.parse(map['source_user_id'] ?? ''),
         timestamp: DateTime.parse(fireStoreTimestamp).toLocal(),
@@ -70,8 +70,8 @@ class NotificationData {
     return NotificationData(
         type: NotificationType.fromString(message.data['notification_type']),
         title: message.notification?.title ?? '',
-        description: message.data['description'] ?? '',
-        body: jsonDecode(message.notification?.body ?? ''),
+        body: message.data['body'] ?? '',
+        payload: jsonDecode(message.data['payload'] ?? ''),
         targetUserId: int.tryParse(message.data['target_user_id']) ?? 0,
         sourceUserId: int.tryParse(message.data['source_user_id']) ?? 0,
         timestamp: DateTime.parse(fireStoreTimestamp).toLocal(),

@@ -4,7 +4,6 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:knowledgematch/model/search_criteria.dart';
 
 import '../model/notification_data.dart';
 import '../model/user.dart';
@@ -138,7 +137,7 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
       data.title,
-      data.description,
+      data.body,
       platformChannelSpecifics,
       payload: jsonEncode(data.body),
     );
@@ -154,10 +153,13 @@ class NotificationService {
         'tokens': tokens,
         'title': notificationData.title,
         'body': notificationData.body,
+        'payload': notificationData.payload,
         'target_user_id': notificationData.targetUserId.toString(),
         'source_user_id': User.instance.id,
         'notification_type': notificationData.type.toShortString(),
-        'timestamp': notificationData.timestamp.toString()
+        'timestamp': notificationData.timestamp.toString(),
+        'request_id': notificationData.requestID,
+        'is_open': notificationData.isOpen
       },
     );
     if (result.data['success']) {
