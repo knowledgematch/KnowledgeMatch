@@ -76,7 +76,8 @@ class NotificationBodyState extends State<NotificationBody> {
                 var notification = NotificationData(
                   type: NotificationType.requestAccepted,
                   title: "Accepted request",
-                  body: searchCriteria.toString(),
+                  body: searchCriteria.issue,
+                  payload: searchCriteria.toJSON(),
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
                 );
@@ -102,6 +103,7 @@ class NotificationBodyState extends State<NotificationBody> {
                   type: NotificationType.requestDeclined,
                   title: "Declined request",
                   body: "Your request was declined.",
+                  payload: searchCriteria.toJSON(),
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
                 );
@@ -185,7 +187,9 @@ class NotificationBodyState extends State<NotificationBody> {
                 var notification = NotificationData(
                   type: NotificationType.meetupRequest,
                   title: "Meetup has been requested",
-                  body: dates,
+                  body: dates.toString(),
+                  payload: RequestDateData.buildDatesMap(selectedDates),
+                  requestID: widget.notificationData.requestID,
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
                 );
@@ -358,6 +362,7 @@ class NotificationBodyState extends State<NotificationBody> {
                             title: "Meetup Confirmation",
                             body:
                                 "Confirmed Date: ${selectedDate!.getFormattedDate()}, Time: ${selectedDate!.getFormattedTime()}",
+                            payload: selectedDate!.toJson(),
                             targetUserId: widget.notificationData.targetUserId,
                             sourceUserId: widget.notificationData.sourceUserId,
                           );
@@ -419,6 +424,9 @@ class NotificationBodyState extends State<NotificationBody> {
                                                 NotificationType.meetupRequest,
                                             title: "Request for New Dates",
                                             body: dates,
+                                            payload:
+                                                RequestDateData.buildDatesMap(
+                                                    selectedNewDates),
                                             targetUserId: widget
                                                 .notificationData.targetUserId,
                                             sourceUserId: widget
