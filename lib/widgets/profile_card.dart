@@ -52,49 +52,49 @@ class ProfileCard extends StatelessWidget {
                 SizedBox(height: 20),
 
                 // Name Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Name',
                   value: profile.name,
                 ),
                 SizedBox(height: 10),
 
                 // Location Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Location',
                   value: profile.location,
                 ),
                 SizedBox(height: 10),
 
                 // Expertise Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Expert in',
                   value: profile.expertise.join(', '),
                 ),
                 SizedBox(height: 10),
 
                 // Availability Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Availability',
                   value: profile.availability,
                 ),
                 SizedBox(height: 10),
 
                 // Language Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Languages',
                   value: profile.languages.join(', '),
                 ),
                 SizedBox(height: 10),
 
                 // Reachability Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Reachability',
                   value: profile.reachability.toString(),
                 ),
                 SizedBox(height: 10),
 
                 // Description Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Description',
                   value: profile.description,
                 ),
@@ -102,7 +102,7 @@ class ProfileCard extends StatelessWidget {
                 SizedBox(height: 10),
 
                 // Seniority Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Seniority',
                   value: profile.seniority.toString(),
                 ),
@@ -116,7 +116,7 @@ class ProfileCard extends StatelessWidget {
     );
   }
 
-  Widget _ProfileInfoField({required String label, required String value}) {
+  Widget _profileInfoField({required String label, required String value}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

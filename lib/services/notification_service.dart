@@ -98,15 +98,7 @@ class NotificationService {
               } else {
                 return RequestScreen(
                     userprofile: snapshot.data!,
-                    notificationData: NotificationData.fromFirestoreData(data)
-                    //title: data['title'],
-                    //body: data['body'],
-                    //targetUserId: int.tryParse(data['target_user_id']) ?? 0,
-                    //type: NotificationType.fromString(data['notification_type']),
-                    //sourceUserId: int.tryParse(data['source_user_id']) ?? 0,
-                    //success: bool,
-                    //),
-                    );
+                    notificationData: NotificationData.fromFirestoreData(data));
               }
             },
           ),
@@ -115,7 +107,6 @@ class NotificationService {
     }
   }
 
-  //TODO Show Notification -> handle different body to display. Create NotificaitonData and then decide on how to display the message?
   Future<void> showNotification({
     required RemoteMessage message,
     String? payload,
@@ -141,18 +132,15 @@ class NotificationService {
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
-    final String notificationPayload = jsonEncode({
-      ...message.data,
-      'title': message.notification?.title ?? '',
-      'body': message.notification?.body ?? '',
-    });
+
+    var data = NotificationData.fromMessage(message);
 
     await flutterLocalNotificationsPlugin.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      message.notification?.title,
-      message.notification?.body,
+      data.title,
+      data.description,
       platformChannelSpecifics,
-      payload: notificationPayload,
+      payload: jsonEncode(data.body),
     );
   }
 
