@@ -62,7 +62,7 @@ class NotificationData {
         sourceUserId: int.parse(map['source_user_id'] ?? ''),
         timestamp: DateTime.parse(fireStoreTimestamp).toLocal(),
         requestID: map['request_id'] ?? '',
-        isOpen: bool.parse(map['is_open'] ?? true));
+        isOpen: bool.tryParse(map['is_open'] ?? true));
   }
 
   factory NotificationData.fromMessage(RemoteMessage message) {
@@ -77,5 +77,20 @@ class NotificationData {
         timestamp: DateTime.parse(fireStoreTimestamp).toLocal(),
         requestID: message.data['request_id'] ?? '',
         isOpen: message.data['is_open']);
+  }
+
+  /// Converts this NotificationData object into a JSON-serializable Map.
+  Map<String, dynamic> toJson() {
+    return {
+      'request_id': requestID,
+      'is_open': isOpen.toString(),
+      'notification_type': type.toShortString(),
+      'title': title,
+      'body': body,
+      'payload': payload,
+      'target_user_id': targetUserId.toString(),
+      'source_user_id': sourceUserId.toString(),
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+    };
   }
 }

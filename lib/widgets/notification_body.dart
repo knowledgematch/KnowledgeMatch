@@ -39,7 +39,7 @@ class NotificationBodyState extends State<NotificationBody> {
 
   Widget _onRequestBody(BuildContext context) {
     SearchCriteria searchCriteria =
-        SearchCriteria.fromJSONString(widget.notificationData.body);
+        SearchCriteria.fromJSON(widget.notificationData.payload);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

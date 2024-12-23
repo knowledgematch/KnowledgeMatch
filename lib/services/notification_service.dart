@@ -76,12 +76,12 @@ class NotificationService {
       final Map<String, dynamic> data = Map<String, dynamic>.from(
         jsonDecode(notificationResponse.payload!),
       );
-      print(int.tryParse(data['source_user_id']) ?? 0);
+      print(data['source_user_id'] ?? 0);
       navigatorKey?.currentState?.push(
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
             future: MatchingAlgorithm().getUserProfileById(
-              int.tryParse(data['source_user_id']) ?? 0,
+              int.parse(data['source_user_id'] ?? 0),
             ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -133,14 +133,14 @@ class NotificationService {
     );
 
     var data = NotificationData.fromMessage(message);
+    print(data.toString());
 
     await flutterLocalNotificationsPlugin.show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      data.title,
-      data.body,
-      platformChannelSpecifics,
-      payload: jsonEncode(data.body),
-    );
+        DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        data.title,
+        data.body,
+        platformChannelSpecifics,
+        payload: jsonEncode(data.toJson()));
   }
 
   Future<void> sendMessageToDevice(
