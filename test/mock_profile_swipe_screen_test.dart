@@ -91,13 +91,17 @@ class SwipeScreenTestApp extends StatelessWidget {
       )
     ];
   }
-  Future<List<Userprofile>> _getMatchingUserProfiles(Future<List<Userprofile>> arg) async {
+
+  Future<List<Userprofile>> _getMatchingUserProfiles(
+      Future<List<Userprofile>> arg) async {
     List<Userprofile> profiles = await arg;
     profiles.sort((a, b) {
       if (a.seniority == 0) return 1;
-      if (b.seniority == 0) return -1;
-      else return a.seniority.compareTo(b.seniority);
-    });  // Sort matching profiles by seniority  (0-seniority is prioritized the least)
+      if (b.seniority == 0)
+        return -1;
+      else
+        return a.seniority.compareTo(b.seniority);
+    }); // Sort matching profiles by seniority  (0-seniority is prioritized the least)
     return profiles;
   }
 }
