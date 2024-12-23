@@ -30,16 +30,13 @@ class RequestScreen extends StatelessWidget {
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _userProfileCard(userprofile),
-            Expanded (
-              child:
-            NotificationBody(
-                userprofile: userprofile, notificationData: notificationData)
-          ,) ]
-        ));
+        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          _userProfileCard(userprofile),
+          Expanded(
+            child: NotificationBody(
+                userprofile: userprofile, notificationData: notificationData),
+          )
+        ]));
   }
 
   Widget _buildTitle(NotificationData notification) {
@@ -70,7 +67,8 @@ class RequestScreen extends StatelessWidget {
               radius: 50,
               backgroundImage: profilePicture != null
                   ? MemoryImage(profilePicture)
-                  : const AssetImage('assets/images/profile.png') as ImageProvider,
+                  : const AssetImage('assets/images/profile.png')
+                      as ImageProvider,
             ),
             SizedBox(width: 16),
             Expanded(
