@@ -56,4 +56,18 @@ class RequestDateData {
     // Convert to JSON string
     return jsonEncode(jsonObject);
   }
+
+  ///Helper Method to create a JSON map from a [List] of dates
+  ///
+  static Map<String, dynamic> buildDatesMap(
+      List<RequestDateData> selectedDates) {
+    List<Map<String, dynamic>> meetups =
+        selectedDates.map((item) => item.toJson()).toList();
+
+    // Create the final JSON object
+    Map<String, dynamic> jsonObject = {'meetupsRequested': meetups};
+
+    // Convert to JSON string
+    return jsonObject;
+  }
 }

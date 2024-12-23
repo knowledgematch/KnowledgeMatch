@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/notification_data.dart';
 import 'package:swipable_stack/swipable_stack.dart';
@@ -38,7 +40,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
     var notificationData = NotificationData(
       type: NotificationType.knowledgeRequest,
       title: "Your knowledge has been requested!",
-      body: widget.searchCriteria.toString(),
+      body: widget.searchCriteria.issue,
+      payload: widget.searchCriteria.toJSON(),
       targetUserId: profile.id,
       sourceUserId: User.instance.id ?? 0,
     );
