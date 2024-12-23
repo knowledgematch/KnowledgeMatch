@@ -70,7 +70,7 @@ class NotificationData {
     return NotificationData(
         type: NotificationType.fromString(message.data['notification_type']),
         title: message.notification?.title ?? '',
-        body: message.data['body'] ?? '',
+        body: message.notification?.body ?? '',
         payload: jsonDecode(message.data['payload'] ?? ''),
         targetUserId: int.tryParse(message.data['target_user_id']) ?? 0,
         sourceUserId: int.tryParse(message.data['source_user_id']) ?? 0,

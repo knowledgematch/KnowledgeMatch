@@ -130,7 +130,7 @@ class NotificationBodyState extends State<NotificationBody> {
 
   Widget _onAcceptBody(BuildContext context) {
     SearchCriteria searchCriteria =
-        SearchCriteria.fromJSONString(widget.notificationData.body);
+        SearchCriteria.fromJSON(widget.notificationData.payload);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -267,8 +267,7 @@ class NotificationBodyState extends State<NotificationBody> {
 
     try {
       // Parse the entire JSON body into a Map
-      var body = widget.notificationData.body;
-      Map<String, dynamic> jsonData = jsonDecode(body);
+      var jsonData = widget.notificationData.payload;
 
       // Extract the list of meetupsRequested
       if (jsonData['meetupsRequested'] is List) {
