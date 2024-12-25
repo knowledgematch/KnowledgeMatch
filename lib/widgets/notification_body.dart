@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/reachability.dart';
 import 'package:knowledgematch/model/search_criteria.dart';
