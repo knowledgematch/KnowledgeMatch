@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/notification_data.dart';
 import 'package:swipable_stack/swipable_stack.dart';
@@ -35,12 +33,20 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
     }
   }
 
-  // Use the NotificationService to send a notification
+  /// Use the NotificationService to send a [NotificationType.knowledgeRequest] notification.
+  ///
+  /// Creates [NotificationData] from [SearchCriteria] and [Userprofile].
+  /// Uses the [NotificationService] to send the data to the users [Userprofile.tokens]
+  ///
+  /// @param profile to send the notification to.
+
   Future<void> _sendSwipeRightNotification(Userprofile profile) async {
+    var topic = widget.searchCriteria.keyword;
     var notificationData = NotificationData(
       type: NotificationType.knowledgeRequest,
       title: "Your knowledge has been requested!",
-      body: widget.searchCriteria.issue,
+      body:
+          "From: ${User.instance.name} ${User.instance.surname}, Topic: $topic",
       payload: widget.searchCriteria.toJSON(),
       targetUserId: profile.id,
       sourceUserId: User.instance.id ?? 0,
