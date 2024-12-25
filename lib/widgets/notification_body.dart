@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/reachability.dart';
 import 'package:knowledgematch/model/search_criteria.dart';
+import 'package:knowledgematch/model/user.dart';
 import '../model/notification_data.dart';
 import '../model/request_date_data.dart';
 import '../model/userprofile.dart';
@@ -44,6 +43,21 @@ class NotificationBodyState extends State<NotificationBody> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 24),
+        Card(
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: ListTile(
+              title: Text(
+                "New Knowledge request",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              trailing: Icon(Icons.question_mark_rounded,
+                  color: Colors.orange, size: 40)),
+        ),
+
+        SizedBox(height: 24),
         Text(
           'Problem description:',
           style: TextStyle(
@@ -76,7 +90,8 @@ class NotificationBodyState extends State<NotificationBody> {
                 var notification = NotificationData(
                   type: NotificationType.requestAccepted,
                   title: "Accepted request",
-                  body: searchCriteria.issue,
+                  body:
+                      "Your request has been accepted by + ${User.instance.name}",
                   payload: searchCriteria.toJSON(),
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
