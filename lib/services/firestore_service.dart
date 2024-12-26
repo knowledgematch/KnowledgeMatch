@@ -2,24 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:knowledgematch/model/notification_data.dart';
 
 class FirestoreService {
-  Future<List<NotificationData>> fetchNotifications({
-    required int userID,
-    NotificationType? type
-  }) async {
+  Future<List<NotificationData>> fetchNotifications(
+      {required int userID, NotificationType? type}) async {
     try {
-      // QuerySnapshot sourceSnapshot = await FirebaseFirestore.instance
-      //     .collection('notifications')
-      //     .where('source_user_id', isEqualTo: userID.toString())
-      //     .orderBy('timestamp', descending: true)
-      //     .get();
-
       QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
           .collection('notifications')
           .where('target_user_id', isEqualTo: userID.toString())
           .orderBy('timestamp', descending: true)
           .get();
 
-      List<QueryDocumentSnapshot> allDocs = [...targetSnapshot.docs]; //...sourceSnapshot.docs,
+      List<QueryDocumentSnapshot> allDocs = [
+        ...targetSnapshot.docs
+      ]; //...sourceSnapshot.docs,
 
       List<Map<String, dynamic>> firestoreData = allDocs.map((doc) {
         return {
@@ -37,5 +31,36 @@ class FirestoreService {
       print('Error fetching notifications: $error');
       rethrow;
     }
+  }
+
+  /// Closes all notifications with matching [requestID]
+  ///
+  /// sets the [is_open] status to [false]
+  ///
+  /// [requestID] : request to close
+
+  Future<void> closeRequest(String? requestID) async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('notifications')
+        .where('request_id', isEqualTo: requestID)
+        .get();
+
+    for (final doc in querySnapshot.docs) {
+      await doc.reference.update({'is_open': false});
+    }
+  }
+
+  /// Updates the [is_open] field of the document
+  ///
+  /// sets the [is_open] field according to [isOpen]
+  /// which represents the status of the notification
+  /// [documentID] : document to change the status of
+  Future<void> notificationStatusUpdate(bool isOpen, String documentID) async {
+    await FirebaseFirestore.instance
+        .collection('notifications')
+        .doc(documentID)
+        .update({
+      'status': isOpen,
+    });
   }
 }
