@@ -86,22 +86,24 @@ class NotificationBodyState extends State<NotificationBody> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                var notification = NotificationData(
-                    type: NotificationType.requestAccepted,
-                    title: "Accepted request",
-                    body:
-                        "Your request has been accepted by + ${User.instance.name}",
-                    payload: searchCriteria.toJSON(),
-                    targetUserId: widget.notificationData.targetUserId,
-                    sourceUserId: widget.notificationData.sourceUserId,
-                    requestID: widget.notificationData.requestID);
-                FirestoreService().notificationStatusUpdate(
-                    false, widget.notificationData.documentID);
-                await NotificationService().sendMessageToDevice(
-                    notification, widget.userprofile.tokens ?? []);
-              },
+              onPressed: widget.notificationData.isOpen!
+                  ? () async {
+                      Navigator.pop(context);
+                      var notification = NotificationData(
+                          type: NotificationType.requestAccepted,
+                          title: "Accepted request",
+                          body:
+                              "Your request has been accepted by + ${User.instance.name}",
+                          payload: searchCriteria.toJSON(),
+                          targetUserId: widget.notificationData.targetUserId,
+                          sourceUserId: widget.notificationData.sourceUserId,
+                          requestID: widget.notificationData.requestID);
+                      FirestoreService().notificationStatusUpdate(
+                          false, widget.notificationData.documentID);
+                      await NotificationService().sendMessageToDevice(
+                          notification, widget.userprofile.tokens ?? []);
+                    }
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
