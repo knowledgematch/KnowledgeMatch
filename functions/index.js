@@ -38,6 +38,7 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
         payload: JSON.stringify(payload),
         request_id: requestId,
         document_id: documentID,
+        is_open: true.toString(),
       },
       tokens: tokens,
     };

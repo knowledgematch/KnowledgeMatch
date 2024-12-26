@@ -79,7 +79,7 @@ class NotificationData {
         sourceUserId: int.tryParse(message.data['source_user_id']) ?? 0,
         timestamp: DateTime.parse(fireStoreTimestamp).toLocal(),
         requestID: message.data['request_id'] ?? '',
-        isOpen: message.data['is_open'],
+        isOpen: bool.tryParse(message.data['is_open']),
         documentID: message.data['document_id'] ?? '');
   }
 
