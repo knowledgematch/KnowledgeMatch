@@ -7,7 +7,9 @@ class FirestoreService {
     try {
       QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
           .collection('notifications')
-          .where('target_user_id', isEqualTo: userID.toString())
+          .where(Filter.or(
+              Filter('target_user_id', isEqualTo: userID.toString()),
+              Filter('source_user_id', isEqualTo: userID.toString())))
           .orderBy('timestamp', descending: true)
           .get();
 
@@ -46,7 +48,7 @@ class FirestoreService {
         .get();
 
     for (final doc in querySnapshot.docs) {
-      await doc.reference.update({'is_open': false});
+      await doc.reference.update({'is_open': false.toString()});
     }
   }
 
@@ -61,7 +63,7 @@ class FirestoreService {
         .collection('notifications')
         .doc(documentID)
         .update({
-      'is_open': isOpen,
+      'is_open': isOpen.toString(),
     });
   }
 }

@@ -86,7 +86,8 @@ class NotificationBodyState extends State<NotificationBody> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: widget.notificationData.isOpen!
+              onPressed: widget.notificationData.isOpen ==
+                      true //Check if the notificaion is still Open -> null if 'false' or null, disables button
                   ? () async {
                       Navigator.pop(context);
                       var notification = NotificationData(
