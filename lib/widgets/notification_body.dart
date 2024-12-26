@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/reachability.dart';
 import 'package:knowledgematch/model/search_criteria.dart';
 import 'package:knowledgematch/model/user.dart';
+import 'package:knowledgematch/services/firestore_service.dart';
 import '../model/notification_data.dart';
 import '../model/request_date_data.dart';
 import '../model/userprofile.dart';
@@ -88,14 +89,15 @@ class NotificationBodyState extends State<NotificationBody> {
               onPressed: () async {
                 Navigator.pop(context);
                 var notification = NotificationData(
-                  type: NotificationType.requestAccepted,
-                  title: "Accepted request",
-                  body:
-                      "Your request has been accepted by + ${User.instance.name}",
-                  payload: searchCriteria.toJSON(),
-                  targetUserId: widget.notificationData.targetUserId,
-                  sourceUserId: widget.notificationData.sourceUserId,
-                );
+                    type: NotificationType.requestAccepted,
+                    title: "Accepted request",
+                    body:
+                        "Your request has been accepted by + ${User.instance.name}",
+                    payload: searchCriteria.toJSON(),
+                    targetUserId: widget.notificationData.targetUserId,
+                    sourceUserId: widget.notificationData.sourceUserId,
+                    requestID: widget.notificationData.requestID);
+                //FirestoreService().notificationStatusUpdate(widget.notificationData)
                 await NotificationService().sendMessageToDevice(
                     notification, widget.userprofile.tokens ?? []);
               },
@@ -117,13 +119,17 @@ class NotificationBodyState extends State<NotificationBody> {
                 var notification = NotificationData(
                   type: NotificationType.requestDeclined,
                   title: "Declined request",
-                  body: "Your request was declined.",
+                  body: "Your request was declined by ${User.instance.name}",
                   payload: searchCriteria.toJSON(),
                   targetUserId: widget.notificationData.targetUserId,
                   sourceUserId: widget.notificationData.sourceUserId,
+                  requestID: widget.notificationData.requestID,
                 );
+
                 await NotificationService().sendMessageToDevice(
                     notification, widget.userprofile.tokens ?? []);
+                FirestoreService()
+                    .closeRequest(widget.notificationData.requestID);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
