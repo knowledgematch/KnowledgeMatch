@@ -159,8 +159,6 @@ class NotificationService {
         'notification_type': notificationData.type.toShortString(),
         'timestamp': notificationData.timestamp.toString(),
         'request_id': notificationData.requestID,
-        //'is_open': notificationData.isOpen,
-        //'document_id': notificationData.documentID,
       },
     );
     if (result.data['success']) {
