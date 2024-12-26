@@ -63,13 +63,13 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
     });
 
     console.log(
-        "Single notification doc saved to Firestore with ID:",
-        documentID,
+      "Single notification doc saved to Firestore with ID:",
+      documentID,
     );
 
-    return {success: true, successCount: response.successCount};
+    return { success: true, successCount: response.successCount };
   } catch (error) {
     console.error("Error sending message:", error);
-    return {success: false, error: error.toString()};
+    return { success: false, error: error.toString() };
   }
 });
