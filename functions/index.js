@@ -56,7 +56,7 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
       body: body,
       notification_type: notificationType,
       payload: payload,
-      is_open: true,
+      is_open: true.toString(),
       successCount: response.successCount,
       timestamp: timestamp,
       request_id: requestId,
