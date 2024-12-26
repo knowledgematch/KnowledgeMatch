@@ -12,13 +12,18 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
   const notificationType = request.data.notification_type;
   const timestamp = new Date().toISOString();
   const payload = request.data.payload;
-  const documentID = firestore.collection("temp").doc().id;
+
+  // Generate an Id in the 'notificaitons' collection
+  const documentID = firestore.collection("notifications").doc().id;
+
+  // if no requestId has been passed to the cloudfunction
+  // -> sets the requestId to the documentID
   let requestId = request.data.request_id;
+  if (!requestId) {
+    requestId = documentID;
+  }
 
   try {
-    if (!requestId) {
-      requestId = documentID;
-    }
     // Create the FCM message
     const message = {
       notification: {
@@ -41,32 +46,25 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
     const response = await admin.messaging().sendEachForMulticast(message);
     console.log("Successfully sent messages:", response);
 
-    // Save notifications to Firestore
-    const notificationsRef = firestore.collection("notifications");
-
-    const savePromises = response.responses.map((result, index) => {
-      const token = tokens[index];
-      const success = result.success;
-      const error = result.error ? result.error.message : null;
-
-      return notificationsRef.add({
-        source_user_id: sourceUserId,
-        target_user_id: targetUserId,
-        token: token,
-        title: title,
-        body: body,
-        notification_type: notificationType,
-        payload: payload,
-        is_open: true,
-        success: success,
-        error: error,
-        timestamp: timestamp,
-        request_id: requestId,
-      });
+    // Save notification to firestore
+    await firestore.collection("notifications").doc(documentID).set({
+      source_user_id: sourceUserId,
+      target_user_id: targetUserId,
+      tokens: tokens,
+      title: title,
+      body: body,
+      notification_type: notificationType,
+      payload: payload,
+      is_open: true,
+      successCount: response.successCount,
+      timestamp: timestamp,
+      request_id: requestId,
     });
 
-    await Promise.all(savePromises);
-    console.log("Notifications saved to Firestore");
+    console.log(
+        "Single notification doc saved to Firestore with ID:",
+        documentID,
+    );
 
     return {success: true, successCount: response.successCount};
   } catch (error) {
