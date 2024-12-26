@@ -55,12 +55,13 @@ class FirestoreService {
   /// sets the [is_open] field according to [isOpen]
   /// which represents the status of the notification
   /// [documentID] : document to change the status of
-  Future<void> notificationStatusUpdate(bool isOpen, String documentID) async {
+  Future<void> notificationStatusUpdate(bool isOpen, String? documentID) async {
+    if (documentID == null) return;
     await FirebaseFirestore.instance
         .collection('notifications')
         .doc(documentID)
         .update({
-      'status': isOpen,
+      'is_open': isOpen,
     });
   }
 }

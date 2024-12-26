@@ -97,7 +97,8 @@ class NotificationBodyState extends State<NotificationBody> {
                     targetUserId: widget.notificationData.targetUserId,
                     sourceUserId: widget.notificationData.sourceUserId,
                     requestID: widget.notificationData.requestID);
-                //FirestoreService().notificationStatusUpdate(widget.notificationData)
+                FirestoreService().notificationStatusUpdate(
+                    false, widget.notificationData.documentID);
                 await NotificationService().sendMessageToDevice(
                     notification, widget.userprofile.tokens ?? []);
               },
