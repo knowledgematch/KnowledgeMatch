@@ -30,6 +30,7 @@ enum NotificationType {
 }
 
 class NotificationData {
+  final String? documentID;
   final String? requestID;
   final bool? isOpen;
   final NotificationType type;
@@ -49,7 +50,8 @@ class NotificationData {
       required this.sourceUserId,
       this.timestamp,
       this.requestID,
-      this.isOpen});
+      this.isOpen,
+      this.documentID});
 
   factory NotificationData.fromFirestoreData(Map<String, dynamic> map) {
     String fireStoreTimestamp = map['timestamp'];
@@ -62,7 +64,8 @@ class NotificationData {
         sourceUserId: int.parse(map['source_user_id'] ?? ''),
         timestamp: DateTime.parse(fireStoreTimestamp).toLocal(),
         requestID: map['request_id'] ?? '',
-        isOpen: bool.tryParse(map['is_open'] ?? true));
+        isOpen: bool.tryParse(map['is_open'] ?? true),
+        documentID: map['document_id'] ?? '');
   }
 
   factory NotificationData.fromMessage(RemoteMessage message) {
@@ -76,7 +79,8 @@ class NotificationData {
         sourceUserId: int.tryParse(message.data['source_user_id']) ?? 0,
         timestamp: DateTime.parse(fireStoreTimestamp).toLocal(),
         requestID: message.data['request_id'] ?? '',
-        isOpen: message.data['is_open']);
+        isOpen: message.data['is_open'],
+        documentID: message.data['document_id'] ?? '');
   }
 
   /// Converts this NotificationData object into a JSON-serializable Map.
@@ -91,6 +95,7 @@ class NotificationData {
       'target_user_id': targetUserId.toString(),
       'source_user_id': sourceUserId.toString(),
       'timestamp': timestamp?.toUtc().toIso8601String(),
+      'document_id': documentID,
     };
   }
 }
