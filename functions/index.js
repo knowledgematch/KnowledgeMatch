@@ -12,12 +12,12 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
   const notificationType = request.data.notification_type;
   const timestamp = new Date().toISOString();
   const payload = request.data.payload;
+  const documentID = firestore.collection("temp").doc().id;
   let requestId = request.data.request_id;
 
   try {
     if (!requestId) {
-      const tempDocRef = firestore.collection("temp").doc();
-      requestId = tempDocRef.id;
+      requestId = documentID;
     }
     // Create the FCM message
     const message = {
@@ -32,6 +32,7 @@ exports.sendToDevice = functions.https.onCall(async (request) => {
         timestamp: timestamp,
         payload: JSON.stringify(payload),
         request_id: requestId,
+        document_id: documentID,
       },
       tokens: tokens,
     };
