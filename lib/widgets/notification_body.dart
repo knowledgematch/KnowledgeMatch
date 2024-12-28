@@ -87,14 +87,20 @@ class NotificationBodyState extends State<NotificationBody> {
           children: [
             ElevatedButton(
               onPressed: widget.notificationData.isOpen ==
-                      true //Check if the notificaion is still Open -> null if 'false' or null, disables button
+                      true //Check if the notificaion is still Open -> null if 'false' or null, which disables button
                   ? () async {
-                      Navigator.pop(context);
+                      // Show success message and close
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Request accepted.")));
+                        Navigator.pop(context);
+                      }
+
                       var notification = NotificationData(
                           type: NotificationType.requestAccepted,
                           title: "Accepted request",
                           body:
-                              "Your request has been accepted by + ${User.instance.name}",
+                              "Your request has been accepted by ${User.instance.name} ${User.instance.surname}",
                           payload: searchCriteria.toJSON(),
                           targetUserId: widget.notificationData.targetUserId,
                           sourceUserId: widget.notificationData.sourceUserId,
@@ -118,23 +124,32 @@ class NotificationBodyState extends State<NotificationBody> {
               ),
             ),
             ElevatedButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                var notification = NotificationData(
-                  type: NotificationType.requestDeclined,
-                  title: "Declined request",
-                  body: "Your request was declined by ${User.instance.name}",
-                  payload: searchCriteria.toJSON(),
-                  targetUserId: widget.notificationData.targetUserId,
-                  sourceUserId: widget.notificationData.sourceUserId,
-                  requestID: widget.notificationData.requestID,
-                );
+              onPressed: widget.notificationData.isOpen == true
+                  ? () async {
+                      // Show success message and close
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Request declined.")));
+                        Navigator.pop(context);
+                      }
 
-                await NotificationService().sendMessageToDevice(
-                    notification, widget.userprofile.tokens ?? []);
-                FirestoreService()
-                    .closeRequest(widget.notificationData.requestID);
-              },
+                      var notification = NotificationData(
+                        type: NotificationType.requestDeclined,
+                        title: "Declined request",
+                        body:
+                            "Your request was declined by ${User.instance.name} ${User.instance.surname}",
+                        payload: searchCriteria.toJSON(),
+                        targetUserId: widget.notificationData.targetUserId,
+                        sourceUserId: widget.notificationData.sourceUserId,
+                        requestID: widget.notificationData.requestID,
+                      );
+
+                      await NotificationService().sendMessageToDevice(
+                          notification, widget.userprofile.tokens ?? []);
+                      FirestoreService()
+                          .closeRequest(widget.notificationData.requestID);
+                    }
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
