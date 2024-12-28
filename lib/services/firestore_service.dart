@@ -37,9 +37,9 @@ class FirestoreService {
 
   /// Closes all notifications with matching [requestID]
   ///
-  /// sets the [is_open] status to [false]
+  /// sets the [is_open] document Field in Firestore to [false]
   ///
-  /// [requestID] : request to close
+  /// [requestID] : request_id field of documents to close
 
   Future<void> closeRequest(String? requestID) async {
     final querySnapshot = await FirebaseFirestore.instance
