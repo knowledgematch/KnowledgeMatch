@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data'; // Import for Uint8List
-import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
   // Singleton instance
