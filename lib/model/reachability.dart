@@ -24,6 +24,8 @@ enum Reachability {
         return 'In Person';
       case Reachability.onlineOrInPerson:
         return 'Online/In Person';
+      default:
+        return 'Online/In Person';
     }
   }
 }

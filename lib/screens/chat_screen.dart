@@ -11,10 +11,10 @@ class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  ChatScreenState createState() => ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class ChatScreenState extends State<ChatScreen> {
   final FirestoreService firestoreService = FirestoreService();
   final Map<int, Userprofile?> _userProfiles = {};
   List<NotificationData> _notifications = [];
@@ -37,7 +37,8 @@ class _ChatScreenState extends State<ChatScreen> {
       final limitedNotifications = notifications.take(20).toList();
 
       for (final notification in limitedNotifications) {
-        final userProfile = await MatchingAlgorithm().getUserProfileById(notification.sourceUserId);
+        final userProfile = await MatchingAlgorithm()
+            .getUserProfileById(notification.sourceUserId);
         _userProfiles[notification.sourceUserId] = userProfile;
       }
 
@@ -62,35 +63,34 @@ class _ChatScreenState extends State<ChatScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null
-          ? Center(child: Text('Error: $_errorMessage'))
-          : _notifications.isEmpty
-          ? const Center(child: Text('No requests found.'))
-          : ListView.builder(
-        itemCount: _notifications.length,
-        itemBuilder: (context, index) {
-          final notification = _notifications[index];
-          final userProfile = _userProfiles[notification.sourceUserId];
-          return GestureDetector(
-            onTap: () {
-              if (userProfile != null) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RequestScreen(
-                      notificationData: notification,
-                      userprofile: userProfile,
+              ? Center(child: Text('Error: $_errorMessage'))
+              : _notifications.isEmpty
+                  ? const Center(child: Text('No requests found.'))
+                  : ListView.builder(
+                      itemCount: _notifications.length,
+                      itemBuilder: (context, index) {
+                        final notification = _notifications[index];
+                        final userProfile =
+                            _userProfiles[notification.sourceUserId];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RequestScreen(
+                                  notificationData: notification,
+                                  userprofile: userProfile,
+                                ),
+                              ),
+                            );
+                          },
+                          child: NotificationCard(
+                            notification: notification,
+                            userprofile: userProfile!,
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                );
-              }
-            },
-            child: NotificationCard(
-              notification: notification,
-              userprofile: userProfile!,
-            ),
-          );
-        },
-      ),
     );
   }
 }
