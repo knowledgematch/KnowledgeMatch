@@ -234,7 +234,6 @@ class NotificationBodyState extends State<NotificationBody> {
                       }
                       var dates = RequestDateData.buildDatesMap(selectedDates);
                       Map<String, dynamic> combineJson = {
-                        //TODO Parse that correctly -> Check meetupsrequested!!! and the way date json is encoded
                         "dates": dates,
                         "search_criteria": searchCriteria.toJSON(),
                       };
@@ -294,6 +293,7 @@ class NotificationBodyState extends State<NotificationBody> {
   Widget _onMeetupRequestBody(BuildContext context) {
     List<RequestDateData> incomingDates = []; // To store parsed dates
     RequestDateData? selectedDate; // To track the selected date
+    SearchCriteria? searchCriteria;
 
     try {
       var jsonData = widget.notificationData.payload;
@@ -312,8 +312,7 @@ class NotificationBodyState extends State<NotificationBody> {
         }
       }
       if (jsonData['search_criteria'] is Map) {
-        var searchCriteria =
-            SearchCriteria.fromJSON(jsonData['search_criteria']);
+        searchCriteria = SearchCriteria.fromJSON(jsonData['search_criteria']);
         print(searchCriteria.toString());
       }
     } catch (e) {
@@ -406,11 +405,14 @@ class NotificationBodyState extends State<NotificationBody> {
                           await NotificationService().sendMessageToDevice(
                               notification, widget.userprofile.tokens ?? []);
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text("Date confirmed successfully!")),
-                          );
-                          Navigator.pop(context);
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content:
+                                      Text("Date confirmed successfully!")),
+                            );
+                            Navigator.pop(context);
+                          }
                         },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
@@ -438,8 +440,11 @@ class NotificationBodyState extends State<NotificationBody> {
                             child: Column(
                               children: [
                                 MultiDateTimePicker(
-                                  searchCriteriaReachability:
-                                      Reachability.onlineOrInPerson,
+                                  searchCriteriaReachability: searchCriteria ==
+                                              null ||
+                                          searchCriteria.reachability == null
+                                      ? Reachability.onlineOrInPerson
+                                      : searchCriteria.reachability!,
                                   onDatesSelected: (newDates) {
                                     setState(() {
                                       selectedNewDates =
@@ -453,17 +458,21 @@ class NotificationBodyState extends State<NotificationBody> {
                                   onPressed: selectedNewDates.isEmpty
                                       ? null
                                       : () async {
-                                          final dates = RequestDateData
-                                              .buildRequestString(
+                                          final dates =
+                                              RequestDateData.buildDatesMap(
                                                   selectedNewDates);
+                                          Map<String, dynamic> combineJson = {
+                                            "dates": dates,
+                                            "search_criteria":
+                                                searchCriteria?.toJSON(),
+                                          };
+
                                           var notification = NotificationData(
                                             type:
                                                 NotificationType.meetupRequest,
                                             title: "Request for New Dates",
-                                            body: dates,
-                                            payload:
-                                                RequestDateData.buildDatesMap(
-                                                    selectedNewDates),
+                                            body: jsonEncode(combineJson),
+                                            payload: combineJson,
                                             targetUserId: widget
                                                 .notificationData.targetUserId,
                                             sourceUserId: widget
@@ -474,16 +483,15 @@ class NotificationBodyState extends State<NotificationBody> {
                                                   notification,
                                                   widget.userprofile.tokens ??
                                                       []);
-                                          if (mounted) {
+                                          if (context.mounted) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               SnackBar(
                                                   content: Text(
                                                       "New dates proposed successfully!")),
                                             );
+                                            Navigator.pop(context);
                                           }
-                                          Navigator.pop(
-                                              context); // Close the dialog
                                         },
                                   child: Text('Send New Dates'),
                                 ),
