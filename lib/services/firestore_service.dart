@@ -7,9 +7,11 @@ class FirestoreService {
     try {
       QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
           .collection('notifications')
-          .where(Filter.or(
-              Filter('target_user_id', isEqualTo: userID.toString()),
-              Filter('source_user_id', isEqualTo: userID.toString())))
+          .where(Filter('target_user_id', isEqualTo: userID.toString()))
+
+          //Filter.or(
+          //    Filter('target_user_id', isEqualTo: userID.toString()),
+          //    Filter('source_user_id', isEqualTo: userID.toString())))
           .orderBy('timestamp', descending: true)
           .get();
 

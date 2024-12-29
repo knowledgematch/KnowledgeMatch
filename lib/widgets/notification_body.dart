@@ -104,8 +104,8 @@ class NotificationBodyState extends State<NotificationBody> {
                           body:
                               "Your request has been accepted by ${User.instance.name} ${User.instance.surname}",
                           payload: searchCriteria.toJSON(),
-                          targetUserId: widget.notificationData.targetUserId,
-                          sourceUserId: widget.notificationData.sourceUserId,
+                          targetUserId: widget.userprofile.id,
+                          sourceUserId: User.instance.id!,
                           requestID: widget.notificationData.requestID);
                       FirestoreService().notificationStatusUpdate(
                           false, widget.notificationData.documentID);
@@ -141,8 +141,8 @@ class NotificationBodyState extends State<NotificationBody> {
                         body:
                             "Your request was declined by ${User.instance.name} ${User.instance.surname}",
                         payload: searchCriteria.toJSON(),
-                        targetUserId: widget.notificationData.targetUserId,
-                        sourceUserId: widget.notificationData.sourceUserId,
+                        targetUserId: widget.notificationData.sourceUserId,
+                        sourceUserId: widget.userprofile.id,
                         requestID: widget.notificationData.requestID,
                       );
 
@@ -244,8 +244,8 @@ class NotificationBodyState extends State<NotificationBody> {
                         body: jsonEncode(combineJson),
                         payload: combineJson,
                         requestID: widget.notificationData.requestID,
-                        targetUserId: widget.notificationData.targetUserId,
-                        sourceUserId: widget.notificationData.sourceUserId,
+                        targetUserId: widget.userprofile.id,
+                        sourceUserId: User.instance.id!,
                       );
 
                       //Update Status of the previous request
@@ -413,8 +413,8 @@ class NotificationBodyState extends State<NotificationBody> {
                             body:
                                 "Confirmed Date: ${selectedDate!.getFormattedDate()}, Time: ${selectedDate!.getFormattedTime()}",
                             payload: selectedDate!.toJson(),
-                            targetUserId: widget.notificationData.targetUserId,
-                            sourceUserId: widget.notificationData.sourceUserId,
+                            targetUserId: widget.userprofile.id,
+                            sourceUserId: User.instance.id!,
                           );
 
                           await NotificationService().sendMessageToDevice(
@@ -499,12 +499,10 @@ class NotificationBodyState extends State<NotificationBody> {
                                                   body:
                                                       "${User.instance.name} requested new dates!",
                                                   payload: combineJson,
-                                                  targetUserId: widget
-                                                      .notificationData
-                                                      .targetUserId,
-                                                  sourceUserId: widget
-                                                      .notificationData
-                                                      .sourceUserId,
+                                                  targetUserId:
+                                                      widget.userprofile.id,
+                                                  sourceUserId:
+                                                      User.instance.id!,
                                                 );
 
                                                 //close previous request
