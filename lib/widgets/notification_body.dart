@@ -248,6 +248,10 @@ class NotificationBodyState extends State<NotificationBody> {
                         sourceUserId: widget.notificationData.sourceUserId,
                       );
 
+                      //Update Status of the previous request
+                      FirestoreService().notificationStatusUpdate(
+                          false, widget.notificationData.documentID);
+
                       await NotificationService().sendMessageToDevice(
                           notification, widget.userprofile.tokens ?? []);
                     }
@@ -389,9 +393,19 @@ class NotificationBodyState extends State<NotificationBody> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: selectedDate == null
+                  onPressed: selectedDate == null ||
+                          widget.notificationData.isOpen == false
                       ? null
                       : () async {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content:
+                                      Text("Date confirmed successfully!")),
+                            );
+                            Navigator.pop(context);
+                          }
+
                           // Confirm the selected date
                           var notification = NotificationData(
                             type: NotificationType.meetupConfirmation,
@@ -402,17 +416,13 @@ class NotificationBodyState extends State<NotificationBody> {
                             targetUserId: widget.notificationData.targetUserId,
                             sourceUserId: widget.notificationData.sourceUserId,
                           );
+
                           await NotificationService().sendMessageToDevice(
                               notification, widget.userprofile.tokens ?? []);
 
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content:
-                                      Text("Date confirmed successfully!")),
-                            );
-                            Navigator.pop(context);
-                          }
+                          //Close all notifications associated with the request
+                          FirestoreService()
+                              .closeRequest(widget.notificationData.requestID);
                         },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
@@ -428,80 +438,98 @@ class NotificationBodyState extends State<NotificationBody> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    // Request different dates
-                    List<RequestDateData> selectedNewDates =
-                        []; // Track new dates locally
-                    showDialog(
-                      context: context,
-                      builder: (context) => StatefulBuilder(
-                        builder: (context, setState) {
-                          return Dialog(
-                            child: Column(
-                              children: [
-                                MultiDateTimePicker(
-                                  searchCriteriaReachability: searchCriteria ==
-                                              null ||
-                                          searchCriteria.reachability == null
-                                      ? Reachability.onlineOrInPerson
-                                      : searchCriteria.reachability!,
-                                  onDatesSelected: (newDates) {
-                                    setState(() {
-                                      selectedNewDates =
-                                          newDates; // Update the local list
-                                    });
-                                  },
-                                ),
-                                Spacer(),
-                                // Confirm Button for Sending the Notification
-                                ElevatedButton(
-                                  onPressed: selectedNewDates.isEmpty
-                                      ? null
-                                      : () async {
-                                          final dates =
-                                              RequestDateData.buildDatesMap(
-                                                  selectedNewDates);
-                                          Map<String, dynamic> combineJson = {
-                                            "dates": dates,
-                                            "search_criteria":
-                                                searchCriteria?.toJSON(),
-                                          };
-
-                                          var notification = NotificationData(
-                                            type:
-                                                NotificationType.meetupRequest,
-                                            title: "Request for New Dates",
-                                            body: jsonEncode(combineJson),
-                                            payload: combineJson,
-                                            targetUserId: widget
-                                                .notificationData.targetUserId,
-                                            sourceUserId: widget
-                                                .notificationData.sourceUserId,
-                                          );
-                                          await NotificationService()
-                                              .sendMessageToDevice(
-                                                  notification,
-                                                  widget.userprofile.tokens ??
-                                                      []);
-                                          if (context.mounted) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                  content: Text(
-                                                      "New dates proposed successfully!")),
-                                            );
-                                            Navigator.pop(context);
-                                          }
+                  onPressed: widget.notificationData.isOpen == true
+                      ? () {
+                          // Request different dates
+                          List<RequestDateData> selectedNewDates =
+                              []; // Track new dates locally
+                          showDialog(
+                            context: context,
+                            builder: (context) => StatefulBuilder(
+                              builder: (context, setState) {
+                                return Dialog(
+                                  child: Column(
+                                    children: [
+                                      MultiDateTimePicker(
+                                        searchCriteriaReachability:
+                                            searchCriteria == null ||
+                                                    searchCriteria
+                                                            .reachability ==
+                                                        null
+                                                ? Reachability.onlineOrInPerson
+                                                : searchCriteria.reachability!,
+                                        onDatesSelected: (newDates) {
+                                          setState(() {
+                                            selectedNewDates =
+                                                newDates; // Update the local list
+                                          });
                                         },
-                                  child: Text('Send New Dates'),
-                                ),
-                              ],
+                                      ),
+                                      Spacer(),
+                                      // Confirm Button for Sending the Notification
+                                      ElevatedButton(
+                                        onPressed: selectedNewDates.isEmpty
+                                            ? null
+                                            : () async {
+                                                if (context.mounted) {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    SnackBar(
+                                                        content: Text(
+                                                            "New dates proposed successfully!")),
+                                                  );
+                                                  Navigator.pop(context);
+                                                }
+                                                final dates = RequestDateData
+                                                    .buildDatesMap(
+                                                        selectedNewDates);
+                                                Map<String, dynamic>
+                                                    combineJson = {
+                                                  "dates": dates,
+                                                  "search_criteria":
+                                                      searchCriteria?.toJSON(),
+                                                };
+
+                                                var notification =
+                                                    NotificationData(
+                                                  type: NotificationType
+                                                      .meetupRequest,
+                                                  title:
+                                                      "Request for New Dates",
+                                                  body:
+                                                      "${User.instance.name} requested new dates!",
+                                                  payload: combineJson,
+                                                  targetUserId: widget
+                                                      .notificationData
+                                                      .targetUserId,
+                                                  sourceUserId: widget
+                                                      .notificationData
+                                                      .sourceUserId,
+                                                );
+
+                                                //close previous request
+                                                FirestoreService()
+                                                    .notificationStatusUpdate(
+                                                        false,
+                                                        widget.notificationData
+                                                            .documentID);
+                                                await NotificationService()
+                                                    .sendMessageToDevice(
+                                                        notification,
+                                                        widget.userprofile
+                                                                .tokens ??
+                                                            []);
+                                              },
+                                        child: Text('Send New Dates'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
                           );
-                        },
-                      ),
-                    );
-                  },
+                        }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
@@ -523,6 +551,7 @@ class NotificationBodyState extends State<NotificationBody> {
   }
 
   Widget _onMeetupConfirmation(BuildContext context) {
+    FirestoreService().closeRequest(widget.notificationData.requestID);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -564,7 +593,7 @@ class NotificationBodyState extends State<NotificationBody> {
                 Navigator.pop(context); // Return to the previous screen
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey,
+                backgroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
