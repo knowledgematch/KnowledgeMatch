@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/model/reachability.dart';
 import 'package:knowledgematch/model/search_criteria.dart';
@@ -212,41 +214,45 @@ class NotificationBodyState extends State<NotificationBody> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: () async {
-                if (selectedDates.isEmpty) {
-                  // Show error if no dates are selected
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Please select at least one date!")),
-                  );
-                  return;
-                }
+              onPressed: widget.notificationData.isOpen == true
+                  ? () async {
+                      if (selectedDates.isEmpty) {
+                        // Show error if no dates are selected
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content:
+                                  Text("Please select at least one date!")),
+                        );
+                        return;
+                      }
+                      // Show success message and close
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Meetup request sent!")),
+                        );
+                        Navigator.pop(context);
+                      }
+                      var dates = RequestDateData.buildDatesMap(selectedDates);
+                      Map<String, dynamic> combineJson = {
+                        //TODO Parse that correctly -> Check meetupsrequested!!! and the way date json is encoded
+                        "dates": dates,
+                        "search_criteria": searchCriteria.toJSON(),
+                      };
 
-                String dates =
-                    RequestDateData.buildRequestString(selectedDates);
+                      var notification = NotificationData(
+                        type: NotificationType.meetupRequest,
+                        title: "Meetup has been requested",
+                        body: jsonEncode(combineJson),
+                        payload: combineJson,
+                        requestID: widget.notificationData.requestID,
+                        targetUserId: widget.notificationData.targetUserId,
+                        sourceUserId: widget.notificationData.sourceUserId,
+                      );
 
-                var notification = NotificationData(
-                  type: NotificationType.meetupRequest,
-                  title: "Meetup has been requested",
-                  body: dates.toString(),
-                  payload: RequestDateData.buildDatesMap(selectedDates),
-                  requestID: widget.notificationData.requestID,
-                  targetUserId: widget.notificationData.targetUserId,
-                  sourceUserId: widget.notificationData.sourceUserId,
-                );
-
-                // Call the notification service
-                await NotificationService().sendMessageToDevice(
-                    notification, widget.userprofile.tokens ?? []);
-
-                // Show success message and close
-                if (mounted) {
-                  ScaffoldMessenger.of(NotificationBodyState().context)
-                      .showSnackBar(
-                    SnackBar(content: Text("Meetup request sent!")),
-                  );
-                  Navigator.pop(NotificationBodyState().context);
-                }
-              },
+                      await NotificationService().sendMessageToDevice(
+                          notification, widget.userprofile.tokens ?? []);
+                    }
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
@@ -256,22 +262,6 @@ class NotificationBodyState extends State<NotificationBody> {
               ),
               child: Text(
                 'Send',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context); // Close dialog
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: Text(
-                'Cancel',
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -306,20 +296,28 @@ class NotificationBodyState extends State<NotificationBody> {
     RequestDateData? selectedDate; // To track the selected date
 
     try {
-      // Parse the entire JSON body into a Map
       var jsonData = widget.notificationData.payload;
 
-      // Extract the list of meetupsRequested
-      if (jsonData['meetupsRequested'] is List) {
-        List<dynamic> meetups = jsonData['meetupsRequested'];
+      print("JsonData: $jsonData}");
+      //Extract the list of meetupsRequested
+      if (jsonData['dates'] is Map) {
+        var datesData = jsonData['dates'];
+        if (datesData['meetupsRequested'] is List) {
+          List<dynamic> meetups = datesData['meetupsRequested'];
 
-        // Parse each meetup entry
-        incomingDates = meetups.map((item) {
-          return RequestDateData.fromJson(item);
-        }).toList();
+          // Parse each meetup entry
+          incomingDates = meetups.map((item) {
+            return RequestDateData.fromJson(item);
+          }).toList();
+        }
+      }
+      if (jsonData['search_criteria'] is Map) {
+        var searchCriteria =
+            SearchCriteria.fromJSON(jsonData['search_criteria']);
+        print(searchCriteria.toString());
       }
     } catch (e) {
-      print('Error parsing JSON: $e'); // Log the error for debugging
+      print('Error parsing JSON: $e');
     }
 
     return StatefulBuilder(
