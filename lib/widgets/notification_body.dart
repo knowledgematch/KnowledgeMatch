@@ -239,7 +239,7 @@ class NotificationBodyState extends State<NotificationBody> {
                       var notification = NotificationData(
                         type: NotificationType.meetupRequest,
                         title: "Meetup has been requested",
-                        body: jsonEncode(combineJson),
+                        body: "${User.instance.name} suggests meetup dates!",
                         payload: combineJson,
                         requestID: widget.notificationData.requestID,
                         targetUserId: widget.userprofile.id,
