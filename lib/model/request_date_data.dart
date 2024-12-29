@@ -38,7 +38,9 @@ class RequestDateData {
     return RequestDateData(
         dateTime: DateTime.parse(
             '${json['date']}T${json['time']}'), // Combine date and time
-        reachability: Reachability.fromString(json['type']));
+        reachability: json['type'] == null || json['type'] == 'null'
+            ? Reachability.onlineOrInPerson
+            : Reachability.fromString(json['type']));
   }
 
   /// Helper Method to create a String from [selectedDates]

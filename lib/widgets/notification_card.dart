@@ -7,7 +7,8 @@ class NotificationCard extends StatelessWidget {
   final NotificationData notification;
   final Userprofile userprofile;
 
-  const NotificationCard({super.key, required this.notification, required this.userprofile});
+  const NotificationCard(
+      {super.key, required this.notification, required this.userprofile});
 
   @override
   Widget build(BuildContext context) {
@@ -15,42 +16,47 @@ class NotificationCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
-        leading: CircleAvatar(
-          radius: 50,
-          backgroundImage: profilePicture != null
-              ? MemoryImage(profilePicture)
-              : const AssetImage('assets/images/profile.png') as ImageProvider,
-        ),
-        isThreeLine: true,
-        title: _buildTitle(notification.type),
-        subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSubtitle(notification.type, notification.title), // First line (e.g., notification body)
-            SizedBox(height: 4),
-            Text(
-              notification.timestamp!.toLocal().toString(),
-              style: TextStyle(fontSize: 15, color: Colors.grey),
-            ), // Second line (e.g., timestamp)
-          ],
-        ),
-        trailing: _buildTrailingWidget(notification.type)
-      ),
+          leading: CircleAvatar(
+            radius: 50,
+            backgroundImage: profilePicture != null
+                ? MemoryImage(profilePicture)
+                : const AssetImage('assets/images/profile.png')
+                    as ImageProvider,
+          ),
+          isThreeLine: true,
+          title: _buildTitle(notification.type),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSubtitle(notification.type,
+                  notification.title), // First line (e.g., notification body)
+              SizedBox(height: 4),
+              Text(
+                notification.timestamp!.toLocal().toString(),
+                style: TextStyle(fontSize: 15, color: Colors.grey),
+              ), // Second line (e.g., timestamp)
+            ],
+          ),
+          trailing: _buildTrailingWidget(notification.type)),
     );
   }
 
   Widget _buildTitle(NotificationType type) {
     switch (type) {
       case NotificationType.knowledgeRequest:
-        return Text("Open Request", style: TextStyle(fontWeight: FontWeight.bold));
+        return Text("New Request",
+            style: TextStyle(fontWeight: FontWeight.bold));
       case NotificationType.requestDeclined:
         return Text("Declined Request", style: TextStyle(color: Colors.red));
       case NotificationType.requestAccepted:
         return Text("Accepted Request", style: TextStyle(color: Colors.green));
       case NotificationType.meetupRequest:
-        return Text("New Meetup Request", style: TextStyle(fontStyle: FontStyle.italic));
+        return Text("New Meetup Request",
+            style: TextStyle(fontStyle: FontStyle.italic));
       case NotificationType.meetupConfirmation:
-        return Text("Meetup Confirmation", style: TextStyle(decoration: TextDecoration.underline));
-      }
+        return Text("Meetup Confirmation",
+            style: TextStyle(decoration: TextDecoration.underline));
+    }
   }
 
   Widget _buildSubtitle(NotificationType type, String body) {
@@ -65,7 +71,7 @@ class NotificationCard extends StatelessWidget {
         return Text(notification.body);
       case NotificationType.meetupConfirmation:
         return Text(notification.body);
-      }
+    }
   }
 
   Widget _buildTrailingWidget(NotificationType type) {
