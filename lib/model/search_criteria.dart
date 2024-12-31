@@ -28,12 +28,9 @@ class SearchCriteria {
 
   factory SearchCriteria.fromJSON(Map<String, dynamic> json) {
     return SearchCriteria(
-      keyword: json['keyword'] as String,
-      issue: json['issue'] as String,
-      reachability: json['reachability'] != null
-          ? Reachability.fromString(json['reachability'] as String)
-          : null, // Handle null case safely
-    );
+        keyword: json['keyword'] as String,
+        issue: json['issue'] as String,
+        reachability: Reachability.fromString(json['reachability'] as String));
   }
   factory SearchCriteria.fromJSONString(String jsonString) {
     final Map<String, dynamic> json = jsonDecode(jsonString);

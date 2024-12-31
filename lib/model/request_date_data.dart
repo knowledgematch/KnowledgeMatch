@@ -38,7 +38,9 @@ class RequestDateData {
     return RequestDateData(
         dateTime: DateTime.parse(
             '${json['date']}T${json['time']}'), // Combine date and time
-        reachability: Reachability.fromString(json['type']));
+        reachability: json['type'] == null || json['type'] == 'null'
+            ? Reachability.onlineOrInPerson
+            : Reachability.fromString(json['type']));
   }
 
   /// Helper Method to create a String from [selectedDates]
@@ -55,5 +57,19 @@ class RequestDateData {
 
     // Convert to JSON string
     return jsonEncode(jsonObject);
+  }
+
+  ///Helper Method to create a JSON map from a [List] of dates
+  ///
+  static Map<String, dynamic> buildDatesMap(
+      List<RequestDateData> selectedDates) {
+    List<Map<String, dynamic>> meetups =
+        selectedDates.map((item) => item.toJson()).toList();
+
+    // Create the final JSON object
+    Map<String, dynamic> jsonObject = {'meetupsRequested': meetups};
+
+    // Convert to JSON string
+    return jsonObject;
   }
 }

@@ -4,7 +4,6 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:knowledgematch/model/search_criteria.dart';
 
 import '../model/notification_data.dart';
 import '../model/user.dart';
@@ -77,12 +76,12 @@ class NotificationService {
       final Map<String, dynamic> data = Map<String, dynamic>.from(
         jsonDecode(notificationResponse.payload!),
       );
-      print(int.tryParse(data['source_user_id']) ?? 0);
+      print(data['source_user_id'] ?? 0);
       navigatorKey?.currentState?.push(
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
             future: MatchingAlgorithm().getUserProfileById(
-              int.tryParse(data['source_user_id']) ?? 0,
+              int.parse(data['source_user_id'] ?? 0),
             ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -98,15 +97,7 @@ class NotificationService {
               } else {
                 return RequestScreen(
                     userprofile: snapshot.data!,
-                    notificationData: NotificationData.fromFirestoreData(data)
-                    //title: data['title'],
-                    //body: data['body'],
-                    //targetUserId: int.tryParse(data['target_user_id']) ?? 0,
-                    //type: NotificationType.fromString(data['notification_type']),
-                    //sourceUserId: int.tryParse(data['source_user_id']) ?? 0,
-                    //success: bool,
-                    //),
-                    );
+                    notificationData: NotificationData.fromFirestoreData(data));
               }
             },
           ),
@@ -115,7 +106,6 @@ class NotificationService {
     }
   }
 
-  //TODO Show Notification -> handle different body to display. Create NotificaitonData and then decide on how to display the message?
   Future<void> showNotification({
     required RemoteMessage message,
     String? payload,
@@ -141,19 +131,16 @@ class NotificationService {
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
-    final String notificationPayload = jsonEncode({
-      ...message.data,
-      'title': message.notification?.title ?? '',
-      'body': message.notification?.body ?? '',
-    });
+
+    var data = NotificationData.fromMessage(message);
+    print(data.toString());
 
     await flutterLocalNotificationsPlugin.show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      message.notification?.title,
-      message.notification?.body,
-      platformChannelSpecifics,
-      payload: notificationPayload,
-    );
+        DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        data.title,
+        data.body,
+        platformChannelSpecifics,
+        payload: jsonEncode(data.toJson()));
   }
 
   Future<void> sendMessageToDevice(
@@ -166,10 +153,14 @@ class NotificationService {
         'tokens': tokens,
         'title': notificationData.title,
         'body': notificationData.body,
+        'payload': notificationData.payload,
         'target_user_id': notificationData.targetUserId.toString(),
         'source_user_id': User.instance.id,
         'notification_type': notificationData.type.toShortString(),
-        'timestamp': notificationData.timestamp.toString()
+        'timestamp': notificationData.timestamp.toString(),
+        'request_id': notificationData.requestID,
+        'is_open': notificationData.isOpen,
+        'document_id': notificationData.documentID,
       },
     );
     if (result.data['success']) {
