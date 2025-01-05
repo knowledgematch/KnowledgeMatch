@@ -3,6 +3,7 @@ import 'package:knowledgematch/model/reachability.dart';
 import 'package:knowledgematch/model/search_criteria.dart';
 import 'package:knowledgematch/model/user.dart';
 import 'package:knowledgematch/services/firestore_service.dart';
+import 'package:knowledgematch/services/forward_to_external.dart';
 import '../model/notification_data.dart';
 import '../model/request_date_data.dart';
 import '../model/userprofile.dart';
@@ -301,7 +302,7 @@ class NotificationBodyState extends State<NotificationBody> {
       var jsonData = widget.notificationData.payload;
 
       print("JsonData: $jsonData}");
-      //Extract the list of meetupsRequested
+      //Extract the list of requested meetups
       if (jsonData['dates'] is Map) {
         var datesData = jsonData['dates'];
         if (datesData['meetupsRequested'] is List) {
@@ -350,9 +351,9 @@ class NotificationBodyState extends State<NotificationBody> {
 
             // Display incoming dates
             if (incomingDates.isNotEmpty)
-              ...incomingDates.map((dateTime) {
-                String date = dateTime.getFormattedDate();
-                String time = dateTime.getFormattedTime();
+              ...incomingDates.map((RequestDateData requestedDate) {
+                String date = requestedDate.getFormattedDate();
+                String time = requestedDate.getFormattedTime();
                 return RadioListTile<RequestDateData>(
                   title: Row(
                     children: [
@@ -368,13 +369,22 @@ class NotificationBodyState extends State<NotificationBody> {
                       Text(time),
                     ],
                   ),
-                  value: dateTime,
+                  value: requestedDate,
                   groupValue: selectedDate,
                   onChanged: (value) {
                     setState(() {
                       selectedDate = value; // Update selected date
                     });
                   },
+                  // The widget on the trailing side of the tile
+                  secondary: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(requestedDate.reachability.toString(),
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
                 );
               }),
 
@@ -409,7 +419,7 @@ class NotificationBodyState extends State<NotificationBody> {
                             type: NotificationType.meetupConfirmation,
                             title: "Meetup Confirmation",
                             body:
-                                "Confirmed Date: ${selectedDate!.getFormattedDate()}, Time: ${selectedDate!.getFormattedTime()}",
+                                "${selectedDate!.reachability} ${selectedDate!.getFormattedDate()} ${selectedDate!.getFormattedTime()}",
                             payload: selectedDate!.toJson(),
                             targetUserId: widget.userprofile.id,
                             sourceUserId: User.instance.id!,
@@ -446,6 +456,7 @@ class NotificationBodyState extends State<NotificationBody> {
                             builder: (context) => StatefulBuilder(
                               builder: (context, setState) {
                                 return Dialog(
+                                  insetPadding: EdgeInsets.zero,
                                   child: Column(
                                     children: [
                                       MultiDateTimePicker(
@@ -548,12 +559,17 @@ class NotificationBodyState extends State<NotificationBody> {
 
   Widget _onMeetupConfirmation(BuildContext context) {
     FirestoreService().closeRequest(widget.notificationData.requestID);
+    final name = widget.userprofile
+        .name; //TODO just add a field for the userprofile email address
+    final replacedName = name.toLowerCase().replaceAll(' ', '.');
+
+    final email = '$replacedName@students.fhnw.ch';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 24),
         Text(
-          'Meetup Confirmation:',
+          ' Meetup Confirmation:',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -577,9 +593,35 @@ class NotificationBodyState extends State<NotificationBody> {
                     Icon(Icons.date_range, color: Colors.green, size: 40)),
           ),
         ),
-
-        Spacer(),
-
+        SizedBox(height: 8),
+        Text(
+          ' Keep in touch:',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 8),
+        Card(
+          elevation: 2,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListTile(
+                onTap: () async {
+                  ForwardToExternal.openTeamsChat(email);
+                },
+                title: Text(
+                  'Link to $name\'s Teams Account',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: Text(email),
+                trailing: Icon(Icons.chat, color: Colors.blue, size: 40)),
+          ),
+        ),
+        SizedBox(height: 16),
         // Action Buttons
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

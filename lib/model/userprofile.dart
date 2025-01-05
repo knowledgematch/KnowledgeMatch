@@ -15,6 +15,7 @@ class Userprofile {
   final int seniority;
   Uint8List? picture;
   List<String>? tokens = [];
+  //TODO add email address
 
   Userprofile({
     required this.id,
@@ -42,4 +43,3 @@ class Userprofile {
     return picture;
   }
 }
-
