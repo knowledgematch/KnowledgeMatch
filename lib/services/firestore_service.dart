@@ -7,8 +7,9 @@ class FirestoreService {
     try {
       QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
           .collection('notifications')
-          .where(Filter('target_user_id', isEqualTo: userID.toString()))
-          .where(Filter('is_open', isEqualTo: true.toString()))
+          .where(Filter.and(
+            Filter('target_user_id', isEqualTo: userID.toString()),
+            Filter('is_open', isEqualTo: true.toString())))
 
           //Filter.or(
           //    Filter('target_user_id', isEqualTo: userID.toString()),
