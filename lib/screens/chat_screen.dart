@@ -6,6 +6,7 @@ import 'package:knowledgematch/widgets/notification_card.dart';
 import '../model/notification_data.dart';
 import '../model/user.dart';
 import '../services/matching_algorithm.dart';
+import 'confirmed_meetup_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -59,6 +60,19 @@ class ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Requests'),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ConfirmedMeetupsScreen(),
+                ),
+              );
+            },
+            child: const Text('Confirmed'),
+          ),
+        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

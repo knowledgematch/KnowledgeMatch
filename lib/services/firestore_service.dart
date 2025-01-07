@@ -8,6 +8,7 @@ class FirestoreService {
       QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
           .collection('notifications')
           .where(Filter('target_user_id', isEqualTo: userID.toString()))
+          .where(Filter('is_open', isEqualTo: true.toString()))
 
           //Filter.or(
           //    Filter('target_user_id', isEqualTo: userID.toString()),
@@ -15,26 +16,45 @@ class FirestoreService {
           .orderBy('timestamp', descending: true)
           .get();
 
-      List<QueryDocumentSnapshot> allDocs = [
-        ...targetSnapshot.docs
-      ]; //...sourceSnapshot.docs,
-
-      List<Map<String, dynamic>> firestoreData = allDocs.map((doc) {
-        return {
-          'id': doc.id,
-          ...doc.data() as Map<String, dynamic>,
-        };
-      }).toList();
-
-      List<NotificationData> notifications = firestoreData.map((map) {
-        return NotificationData.fromFirestoreData(map);
-      }).toList();
-
-      return notifications;
+      return _buildList(targetSnapshot: targetSnapshot);
     } catch (error) {
       print('Error fetching notifications: $error');
       rethrow;
     }
+  }
+
+  Future<List<NotificationData>> fetchConfirmed({required int userID}) async {
+    try {
+      QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
+          .collection('notifications')
+          .where(Filter('target_user_id', isEqualTo: userID.toString()))
+          .where(Filter('notification_type',
+              isEqualTo: NotificationType.meetupConfirmation.toShortString()))
+          .orderBy('timestamp', descending: true)
+          .get();
+
+      return _buildList(targetSnapshot: targetSnapshot);
+    } catch (error) {
+      print('Error fetching notifications: $error');
+      rethrow;
+    }
+  }
+
+  Future<List<NotificationData>> _buildList(
+      {required QuerySnapshot targetSnapshot}) async {
+    List<QueryDocumentSnapshot> allDocs = [...targetSnapshot.docs];
+    List<Map<String, dynamic>> firestoreData = allDocs.map((doc) {
+      return {
+        'id': doc.id,
+        ...doc.data() as Map<String, dynamic>,
+      };
+    }).toList();
+
+    List<NotificationData> notifications = firestoreData.map((map) {
+      return NotificationData.fromFirestoreData(map);
+    }).toList();
+
+    return notifications;
   }
 
   /// Closes all notifications with matching [requestID]
