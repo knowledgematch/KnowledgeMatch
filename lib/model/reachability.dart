@@ -3,6 +3,15 @@ enum Reachability {
   inPerson,
   onlineOrInPerson;
 
+  /// A factory constructor for creating a [Reachability] instance from a [String].
+  ///
+  /// The input string is matched against known values to create an appropriate [Reachability] instance:
+  /// - 'In Person' -> [Reachability.inPerson]
+  /// - 'Online' -> [Reachability.online]
+  /// - 'Online/In Person' -> [Reachability.onlineOrInPerson]
+  ///
+  /// If the input string does not match any of the above values, the default
+  /// value [Reachability.onlineOrInPerson] is returned.
   factory Reachability.fromString(String type) {
     switch (type) {
       case 'In Person':
@@ -15,6 +24,7 @@ enum Reachability {
         return onlineOrInPerson;
     }
   }
+
   @override
   String toString() {
     switch (this) {
@@ -47,6 +57,9 @@ extension ReachabilityValue on Reachability {
 
   String get description => _descriptionMap[this]!;
 
+  /// Converts an integer value to a [Reachability] instance.
+  ///
+  /// Throws [ArgumentError] if the [value] does not correspond to a valid reachability.
   static Reachability fromValue(int value) {
     return _valueMap.entries
         .firstWhere((entry) => entry.value == value,

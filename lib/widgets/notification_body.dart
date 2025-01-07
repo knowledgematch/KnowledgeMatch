@@ -25,7 +25,7 @@ class NotificationBody extends StatefulWidget {
 }
 
 class NotificationBodyState extends State<NotificationBody> {
-  List<RequestDateData> selectedDates = []; // Store selected dates
+  List<RequestDateData> selectedDates = [];
   @override
   Widget build(BuildContext context) {
     var type = widget.notificationData.type;
@@ -90,7 +90,6 @@ class NotificationBodyState extends State<NotificationBody> {
               onPressed: widget.notificationData.isOpen ==
                       true //Check if the notificaion is still Open -> null if 'false' or null, which disables button
                   ? () async {
-                      // Show success message and close
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Request accepted.")));

@@ -124,16 +124,16 @@ class ProfileCard extends StatelessWidget {
           label,
           style: const TextStyle(
             fontSize: 16,
-            color: Color(0xFF722334), // Titel-Farbe angepasst
+            color: Color(0xFF722334),
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 5), // Space between label and value
+        SizedBox(height: 5),
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.grey[300], // Background color of the box
+            color: Colors.grey[300],
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(

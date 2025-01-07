@@ -29,12 +29,12 @@ class NotificationCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSubtitle(notification.type,
-                  notification.title), // First line (e.g., notification body)
+                  notification.title),
               SizedBox(height: 4),
               Text(
                 notification.timestamp!.toLocal().toString(),
                 style: TextStyle(fontSize: 15, color: Colors.grey),
-              ), // Second line (e.g., timestamp)
+              ),
             ],
           ),
           trailing: _buildTrailingWidget(notification.type)),

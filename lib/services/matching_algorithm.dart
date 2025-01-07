@@ -13,16 +13,34 @@ class MatchingAlgorithm {
     return result.map((item) => item['Keyword'].toString()).toList();
   }
 
+  /// Fetches a list of distinct reachability values from the server.
+  ///
+  /// This method makes a request to the server to retrieve distinct reachability values,
+  /// then maps the results to a list of `Reachability` objects. It returns a list of
+  /// `Reachability` objects if the request is successful, or `null` if there is an error.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with a list of [Reachability] objects or `null` if the request fails.
   Future<List<Reachability>?> getReachabilities() async {
     var result =
         await ApiDbConnection().fetchDistinctDataFromUser("Reachability");
-    print(result);
     return result
         .map<Reachability>(
             (row) => ReachabilityValue.fromValue((row['Reachability'])))
         .toList();
   }
 
+  /// Retrieves a list of user profiles that match the specified search criteria.
+  ///
+  /// This method uses the provided [SearchCriteria] to filter users based on various parameters
+  /// such as keyword and reachability. It returns a list of [Userprofile] objects, excluding the
+  /// current user, after applying the matching algorithm.
+  ///
+  /// Parameters:
+  /// - [searchCriteria]: The criteria used to filter users, including keyword and reachability.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with a list of matching [Userprofile] objects.
   Future<List<Userprofile>> matchingAlgorithm(
       SearchCriteria searchCriteria) async {
     List<Userprofile> profiles = [];
@@ -43,11 +61,30 @@ class MatchingAlgorithm {
     return profiles;
   }
 
+  /// Fetches the user profile corresponding to the specified user ID.
+  ///
+  /// This method retrieves user data by the given [id] and converts it into a [Userprofile] object.
+  ///
+  /// Parameters:
+  /// - [id]: The ID of the user whose profile is to be fetched.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with the [Userprofile] object corresponding to the given user ID.
   Future<Userprofile> getUserProfileById(int id) async {
     var data = await ApiDbConnection().fetchUserByInput(uId: id.toString());
     return _createUserFromJson(data.elementAt(0));
   }
 
+  /// Creates a [Userprofile] object from a JSON [Map].
+  ///
+  /// This method parses the provided [user] map and converts it into a [Userprofile] object.
+  /// It also processes any associated tokens and picture data.
+  ///
+  /// Parameters:
+  /// - [user]: A map containing user data to be converted.
+  ///
+  /// Returns:
+  /// - A [Userprofile] object populated with the parsed data from the map.
   Userprofile _createUserFromJson(Map<String, dynamic> user) {
     List<String> tokenList = [];
     if (user['Tokens'] != null && user['Tokens'].toString().trim().isNotEmpty) {

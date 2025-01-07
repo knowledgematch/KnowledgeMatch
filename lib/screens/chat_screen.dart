@@ -28,6 +28,20 @@ class ChatScreenState extends State<ChatScreen> {
     _loadNotificationsAndProfiles();
   }
 
+  /// Loads notifications and user profiles asynchronously.
+  ///
+  /// This method fetches notifications of type [NotificationType.knowledgeRequest]
+  /// for the current user using the [firestoreService]. It limits the notifications
+  /// to the first 20 and then retrieves the user profile for each notification's
+  /// source user. The notifications and user profiles are stored in local variables
+  /// and the UI is updated accordingly.
+  ///
+  /// If an error occurs during the process, the error message is captured and the
+  /// loading state is updated.
+  ///
+  /// Returns:
+  /// - A [Future] that completes when notifications and user profiles have been
+  ///   loaded and the UI state has been updated.
   Future<void> _loadNotificationsAndProfiles() async {
     try {
       final notifications = await firestoreService.fetchNotifications(

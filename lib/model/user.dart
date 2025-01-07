@@ -17,11 +17,28 @@ class User {
   String? surname;
   int? reachability;
   String? email;
-  String? picture; // This will hold the base64 string of the image
+  String? picture;
   int? seniority;
   String? description;
 
-  // Populate the instance from JSON
+  /// Populates the [User] instance's fields using data from a JSON map.
+  ///
+  /// Extracts values from the provided [json] map and assigns them to the
+  /// corresponding fields in the [User] instance. If the JSON includes
+  /// a `Picture`, it is encoded as a base64 string and stored in the [picture] field.
+  ///
+  /// Parameters:
+  /// - [json]: A map containing key-value pairs that represent user data.
+  ///
+  /// Fields Populated:
+  /// - `id`: Extracted from the `U_ID` key.
+  /// - `name`: Extracted from the `Name` key.
+  /// - `surname`: Extracted from the `Surname` key.
+  /// - `reachability`: Extracted from the `Reachability` key.
+  /// - `email`: Extracted from the `Email` key.
+  /// - `picture`: Encoded as a base64 string if present under the `Picture` key.
+  /// - `seniority`: Extracted from the `Seniority` key.
+  /// - `description`: Extracted from the `Description` key.
   void populateFromJson(Map<String, dynamic> json) {
     id = json['U_ID'] as int?;
     name = json['Name'] as String?;
@@ -29,7 +46,6 @@ class User {
     reachability = json['Reachability'] as int?;
     email = json['Email'] as String?;
 
-    // Store picture as a base64 string
     picture = json['Picture'] != null
         ? base64Encode((json['Picture']['data'] as List<dynamic>).cast<int>())
         : null;
@@ -38,7 +54,7 @@ class User {
     description = json['Description'] as String?;
   }
 
-  // Method to decode the base64 string to Uint8List
+  /// Returns the decoded [Uint8List] of the [picture] if available
   Uint8List? getDecodedPicture() {
     if (picture != null) {
       return base64Decode(picture!);
@@ -46,14 +62,16 @@ class User {
     return null;
   }
 
+  /// Sets the [picture] field by encoding an image to a base64 string.
   void setPicture(Uint8List? imageData) {
     if (imageData != null) {
-      picture = base64Encode(imageData); // Encode Uint8List to Base64 string
+      picture = base64Encode(imageData);
     } else {
-      picture = null; // Handle null case
+      picture = null;
     }
   }
 
+  /// Removes all data from the user
   void reset() {
     id = null;
     name = null;

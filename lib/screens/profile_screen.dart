@@ -39,6 +39,18 @@ class ProfileScreenState extends State<ProfileScreen> {
     _loadUserData();
   }
 
+  /// Opens the gallery to pick an image, compresses it, and updates the selected image data.
+  ///
+  /// This method allows the user to pick an image from the gallery, reads the image as bytes,
+  /// compresses it to a target size (in kilobytes), and updates the state with the compressed
+  /// image data.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters. It uses the image picker to allow the user
+  ///   to select and compress an image.
+  ///
+  /// Returns:
+  /// - This method does not return anything.
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -52,6 +64,18 @@ class ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  /// Compresses an image to a target size in bytes.
+  ///
+  /// This method takes an image's byte data and compresses it iteratively to reduce its size
+  /// until it meets the target size, adjusting the quality in each iteration. The compression
+  /// stops once the target size is achieved or the quality reaches a minimum threshold.
+  ///
+  /// Parameters:
+  /// - [fileBytes]: The byte data of the image to compress.
+  /// - [targetSizeInBytes]: The target size in bytes for the compressed image.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with the compressed image byte data ([Uint8List]).
   Future<Uint8List> compressImageToTargetSize(
       Uint8List fileBytes, int targetSizeInBytes) async {
     int quality = 100;
@@ -68,6 +92,16 @@ class ProfileScreenState extends State<ProfileScreen> {
     return compressedBytes;
   }
 
+  /// Loads the user data from shared preferences and updates the UI.
+  ///
+  /// This method retrieves the stored user data from shared preferences, decodes it, and updates
+  /// the relevant fields in the UI, such as user name, email, semester, description, and picture.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters. It uses the stored user data in shared preferences.
+  ///
+  /// Returns:
+  /// - This method does not return anything.
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final userDataString = prefs.getString('userData');
@@ -88,6 +122,17 @@ class ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  /// Saves the user's profile data to the database and shared preferences.
+  ///
+  /// This method sends the updated user profile data to the server via the API. If the save operation is successful,
+  /// it updates the local user object and shared preferences with the new profile data. If the operation fails,
+  /// it displays an error message to the user.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters. It uses the current values from the controllers and state variables.
+  ///
+  /// Returns:
+  /// - This method does not return anything.
   Future<void> _saveProfile() async {
     try {
       final response = ApiDbConnection().saveProfile(
@@ -259,6 +304,16 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  /// Logs out the user by clearing the session data and navigating to the login screen.
+  ///
+  /// This method deletes the user's FCM token from the server, clears all data stored in shared preferences,
+  /// resets the user instance, and navigates the user to the login screen.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters.
+  ///
+  /// Returns:
+  /// - This method does not return anything.
   Future<void> _logout() async {
     ApiDbConnection().deleteFcmToken(User.instance.id ?? 0);
     final prefs = await SharedPreferences.getInstance();

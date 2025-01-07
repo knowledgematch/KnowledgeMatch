@@ -23,6 +23,14 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
+  /// Opens the gallery to pick an image and updates the selected image.
+  ///
+  /// This method uses the image picker to open the device's gallery and allow the user
+  /// to select an image. If an image is selected, the selected image is stored in the
+  /// `_selectedImage` variable as a [File]. If no image is selected, a message is logged.
+  ///
+  /// Returns:
+  /// - A [Future] that completes when the image selection process is finished.
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -36,7 +44,11 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     }
   }
 
-  // Function to handle account creation
+  /// Handles the account creation process.
+  ///
+  /// Validates the form and attempts to create a new account by calling
+  /// [ApiDbConnection().createAccount]. If the account creation is successful,
+  /// a success dialog is shown. If there is an error, an error dialog is shown.
   void _createAccount() {
     if (_formKey.currentState!.validate()) {
       final response = ApiDbConnection().createAccount(
@@ -85,7 +97,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     }
   }
 
-  // Function to go back to the login screen
+  /// Function to go back to the login screen
   void _goToLoginScreen() {
     Navigator.pushReplacement(
       context,

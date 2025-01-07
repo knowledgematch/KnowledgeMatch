@@ -15,7 +15,6 @@ late BuildContext appContext;
 
 class NotificationService {
   GlobalKey<NavigatorState>? navigatorKey;
-  // Singleton pattern
   static final NotificationService _notificationService =
       NotificationService._internal();
   factory NotificationService() {
@@ -23,25 +22,26 @@ class NotificationService {
   }
   NotificationService._internal();
 
-  // Instance of FlutterLocalNotificationsPlugin
+  /// Instance of FlutterLocalNotificationsPlugin
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  // Initialization settings for Android
+  /// Initialization settings for Android
   final AndroidInitializationSettings initializationSettingsAndroid =
       const AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  // Initialization settings for iOS
+  /// Initialization settings for iOS
   final DarwinInitializationSettings initializationSettingsIOS =
       const DarwinInitializationSettings();
 
-  // Initialization settings for both platforms
+  /// Initialization settings for both platforms
   late final InitializationSettings initializationSettings =
       InitializationSettings(
     android: initializationSettingsAndroid,
     iOS: initializationSettingsIOS,
   );
 
+  /// Create the notification channel for Android
   Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
     this.navigatorKey = navigatorKey;
     await flutterLocalNotificationsPlugin.initialize(
@@ -49,11 +49,10 @@ class NotificationService {
       onDidReceiveNotificationResponse: onSelectNotification,
     );
 
-    // Create the notification channel for Android
     await _createNotificationChannel();
   }
 
-  // Create a notification channel for Android (8.0+)
+  /// Create a notification channel for Android (8.0+)
   Future<void> _createNotificationChannel() async {
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'default_channel',
@@ -68,15 +67,21 @@ class NotificationService {
         ?.createNotificationChannel(channel);
   }
 
+  /// Handles the notification selection action.
+  ///
+  /// This method processes the payload of the notification, decodes it, and uses the
+  /// `source_user_id` to fetch the corresponding [Userprofile]. The profile is then passed
+  /// to a `RequestScreen` for display. If the notification payload is null or invalid,
+  /// appropriate actions are taken.
+  ///
+  /// Parameters:
+  /// - [notificationResponse]: The response object containing the notification data.
   Future<void> onSelectNotification(
       NotificationResponse notificationResponse) async {
     if (notificationResponse.payload != null) {
-      print('Notification payload: ${notificationResponse.payload}');
-
       final Map<String, dynamic> data = Map<String, dynamic>.from(
         jsonDecode(notificationResponse.payload!),
       );
-      print(data['source_user_id'] ?? 0);
       navigatorKey?.currentState?.push(
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
@@ -106,6 +111,19 @@ class NotificationService {
     }
   }
 
+  /// Displays a notification with the given message and payload.
+  ///
+  /// This method is responsible for creating and displaying notifications on both
+  /// Android and iOS platforms. It uses `flutterLocalNotificationsPlugin` to show
+  /// the notification and sets up the notification details (e.g., channel, importance,
+  /// and priority). The payload (optional) is also included in the notification data.
+  ///
+  /// Parameters:
+  /// - [message]: The notification message to display.
+  /// - [payload]: Optional data to associate with the notification.
+  /// - [channelId]: The ID of the notification channel (defaults to 'default_channel').
+  /// - [channelName]: The name of the notification channel (defaults to 'Default Notifications').
+  /// - [channelDescription]: The description of the notification channel (defaults to a generic description).
   Future<void> showNotification({
     required RemoteMessage message,
     String? payload,
@@ -133,7 +151,6 @@ class NotificationService {
     );
 
     var data = NotificationData.fromMessage(message);
-    print(data.toString());
 
     await flutterLocalNotificationsPlugin.show(
         DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -143,10 +160,18 @@ class NotificationService {
         payload: jsonEncode(data.toJson()));
   }
 
+  /// Sends a message to the specified devices using Firebase Cloud Functions.
+  ///
+  /// This method is responsible for invoking a Firebase Cloud Function to send
+  /// a notification to a list of device tokens. It sends the notification details
+  /// such as title, body, payload, and additional metadata (e.g., user IDs, timestamps).
+  /// The result of the function call is logged for success or failure.
+  ///
+  /// Parameters:
+  /// - [notificationData]: The notification data to send to the devices.
+  /// - [tokens]: The list of device tokens to which the notification will be sent.
   Future<void> sendMessageToDevice(
       NotificationData notificationData, List<String> tokens) async {
-    print(tokens);
-
     final result =
         await FirebaseFunctions.instance.httpsCallable('sendToDevice').call(
       {

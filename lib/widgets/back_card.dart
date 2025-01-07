@@ -37,7 +37,6 @@ class BackCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Avatar mit Rand
           SizedBox(height: 50),
           CircleAvatar(
             radius: 60,
@@ -64,7 +63,6 @@ class BackCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
 
-          // Dynamische Credentials
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
@@ -83,7 +81,6 @@ class BackCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Beschreibung
           Expanded(
             child: Text(
               profile.description == "null"
@@ -103,7 +100,7 @@ class BackCard extends StatelessWidget {
               onPressed: () {
                 final flipCardState = context.findAncestorStateOfType<FlipCardState>();
                 if (flipCardState != null) {
-                  flipCardState.toggleCard(); // Karte drehen
+                  flipCardState.toggleCard();
                 }
               },
               icon: const Icon(Icons.touch_app),
@@ -152,9 +149,9 @@ class RotationYTransition extends AnimatedWidget {
       child: animation.value < 0.5
           ? child
           : Transform(
-        transform: Matrix4.rotationY(3.1416),
-        alignment: Alignment.center,
-        child: child,
+            transform: Matrix4.rotationY(3.1416),
+            alignment: Alignment.center,
+            child: child,
       ),
     );
   }

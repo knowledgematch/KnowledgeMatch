@@ -53,6 +53,7 @@ class NotificationData {
       this.isOpen,
       this.documentID});
 
+  /// A factory constructor that creates a [NotificationData] instance from a Firestore data map.
   factory NotificationData.fromFirestoreData(Map<String, dynamic> map) {
     String fireStoreTimestamp = map['timestamp'];
     return NotificationData(
@@ -68,6 +69,7 @@ class NotificationData {
         documentID: map['document_id'] ?? '');
   }
 
+  /// A factory constructor that creates a [NotificationData] instance from a [RemoteMessage].
   factory NotificationData.fromMessage(RemoteMessage message) {
     String fireStoreTimestamp = message.data['timestamp'];
     return NotificationData(
@@ -83,7 +85,7 @@ class NotificationData {
         documentID: message.data['document_id'] ?? '');
   }
 
-  /// Converts this NotificationData object into a JSON-serializable Map.
+  /// Converts this NotificationData object into a [json]-serializable Map.
   Map<String, dynamic> toJson() {
     return {
       'request_id': requestID,

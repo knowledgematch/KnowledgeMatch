@@ -68,7 +68,18 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // Method to store logged-in user persistently
+  /// Stores the logged-in user's token and data in shared preferences.
+  ///
+  /// This method saves the user's authentication token and associated user data in the
+  /// shared preferences. After storing the data, it retrieves and decodes the user data,
+  /// initializing the user based on the stored user ID.
+  ///
+  /// Parameters:
+  /// - [token]: The authentication token to store.
+  /// - [user]: A map containing the user's data to store.
+  ///
+  /// Returns:
+  /// - This method does not return anything.
   Future<void> storeLoggedInUser(String token, Map<String, dynamic> user) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);

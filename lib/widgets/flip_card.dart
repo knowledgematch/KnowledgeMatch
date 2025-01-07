@@ -16,7 +16,7 @@ class FlipCard extends StatefulWidget {
 class FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  bool _isBackVisible = true; // Rückseite wird zuerst angezeigt.
+  bool _isBackVisible = true;
 
   @override
   void initState() {
@@ -31,12 +31,14 @@ class FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin 
     ));
   }
 
+  /// Disposes of the resources used by the controller when the widget is removed from the widget tree.
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
+  /// Called when the widget configuration changes and the widget's state needs to be updated.
   @override
   void didUpdateWidget(covariant FlipCard oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -46,6 +48,7 @@ class FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin 
     }
   }
 
+  /// Toggles the flip animation of the card.
   void toggleCard() {
     if (_controller.isAnimating) return;
     if (_isBackVisible) {
@@ -62,14 +65,13 @@ class FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin 
       onTap: toggleCard,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // Ermitteln der Breite und Höhe aus den Layout-Constraints
           final cardWidth = constraints.maxWidth;
           final cardHeight = constraints.maxHeight;
 
           return AnimatedBuilder(
             animation: _animation,
             builder: (context, child) {
-              final isBack = _animation.value <= 0.5; // Rückseite zuerst
+              final isBack = _animation.value <= 0.5;
               final rotationAngle = _animation.value * 3.1416;
               return Transform(
                 transform: Matrix4.identity()

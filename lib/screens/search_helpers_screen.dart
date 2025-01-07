@@ -29,12 +29,25 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
 
   Future<void> _loadData() async {
     keywords = await MatchingAlgorithm().getKeywords();
-    print("got Keywords");
     reachabilities = (await MatchingAlgorithm().getReachabilities())!;
-    print("got reachabilites");
     setState(() {});
   }
 
+  /// Retrieves a list of user profiles that match the specified search criteria.
+  ///
+  /// This method uses a [MatchingAlgorithm] to identify profiles that meet
+  /// the given [searchCriteria]. The resulting list of profiles is sorted
+  /// by seniority in ascending order, with profiles having a seniority of 0
+  /// prioritized the least.
+  ///
+  /// Parameters:
+  /// - [searchCriteria]: The criteria used to filter and match user profiles.
+  ///
+  /// Returns a [Future] containing a sorted list of [Userprofile] objects.
+  ///
+  /// Sorting Behavior:
+  /// - Profiles with `seniority == 0` are put to -1 as it indicates a lecturer.
+  /// - Other profiles are sorted in ascending order of their seniority values.
   Future<List<Userprofile>> _getMatchingUserProfiles(
       SearchCriteria searchCriteria) async {
     Future<List<Userprofile>> matchingProfiles =
@@ -48,7 +61,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
       } else {
         return a.seniority.compareTo(b.seniority);
       }
-    }); // Sort matching profiles by seniority  (0-seniority is prioritized the least)
+    });
     return profiles;
   }
 

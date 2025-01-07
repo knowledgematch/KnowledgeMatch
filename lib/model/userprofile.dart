@@ -31,14 +31,17 @@ class Userprofile {
   })  : expertise = expertString.split(" "),
         languages = langString.split(" ");
 
+  /// Returns a [List] of [String] tokens
   List<String>? getTokensList() {
     return tokens;
   }
 
+  /// Saves a base64-encoded [String] as a [Uint8List] in [picture]
   void setPicture(String picture) {
     this.picture = base64Decode(picture);
   }
 
+  /// Returns [Uint8List] in [picture]
   Uint8List? getPicture() {
     return picture;
   }
