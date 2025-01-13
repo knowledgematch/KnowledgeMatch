@@ -82,14 +82,18 @@ class SplashScreenState extends State<SplashScreen> {
       //update fcmToken
       ApiDbConnection().updateFcmToken(User.instance.id.toString());
       //navigate to MainScreen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainScreen()),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
+      }
     } else {
-      // User is not logged in, navigate to LoginScreen
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      if (mounted) {
+        // User is not logged in, navigate to LoginScreen
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      }
     }
   }
 
