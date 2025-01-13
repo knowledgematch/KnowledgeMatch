@@ -28,22 +28,22 @@ unit-test-job:
   script:
     - echo "Running Flutter tests..."
     - flutter test
-    - echo "All tests passed."
-  allow_failure: true
+    - echo "Testing done."
+  allow_failure: false
 
 lint-test-job:   # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
   stage: lint
   script:
     - echo "Analyzing code quality..."
     - flutter analyze
-    - echo "Code analysis completed with no issues."
-  allow_failure: true
+    - echo "Code analysis completed."
+  allow_failure: false
 
 deploy-job:      # Placeholder for future deployment tasks
   stage: deploy
   environment: production
   script:
-    - echo "Deploying application..."
+    - echo "Deploying application...""
     - echo "Application successfully deployed."
 
 push-apk-job:
