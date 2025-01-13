@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/model/userprofile.dart';
+import 'package:knowledgematch/models/userprofile.dart';
 
-import '../model/notification_data.dart';
+import 'package:knowledgematch/models/notification_data.dart';
 
 class NotificationCard extends StatelessWidget {
   final NotificationData notification;
@@ -28,8 +28,7 @@ class NotificationCard extends StatelessWidget {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSubtitle(notification.type,
-                  notification.title),
+              _buildSubtitle(notification.type, notification.title),
               SizedBox(height: 4),
               Text(
                 notification.timestamp!.toLocal().toString(),

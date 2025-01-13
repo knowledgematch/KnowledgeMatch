@@ -4,17 +4,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'model/user.dart';
-import 'screens/login_screen.dart';
-import '/screens/request_screen.dart';
-import '/services/matching_algorithm.dart';
-import '/services/notification_service.dart';
-import '/services/user_service.dart';
-import 'model/notification_data.dart';
-import 'model/userprofile.dart';
-import 'screens/main_screen.dart';
+import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/screens/login_screen.dart';
+import 'package:knowledgematch/screens/request_screen.dart';
+import 'package:knowledgematch/services/matching_algorithm.dart';
+import 'package:knowledgematch/services/notification_service.dart';
+import 'package:knowledgematch/services/user_service.dart';
+import 'package:knowledgematch/models/notification_data.dart';
+import 'package:knowledgematch/models/userprofile.dart';
+import 'package:knowledgematch/screens/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:knowledgematch/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

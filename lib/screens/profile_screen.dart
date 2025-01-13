@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
-import '../model/user.dart';
-import '../model/reachability.dart';
+import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/models/reachability.dart';
 import 'keyword_selection_screen.dart';
 import 'login_screen.dart';
 import 'change_pw_screen.dart';
@@ -57,7 +57,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       final fileBytes = await pickedFile.readAsBytes();
       const targetSizeInKB = 100;
       final compressedBytes =
-      await compressImageToTargetSize(fileBytes, targetSizeInKB * 1024);
+          await compressImageToTargetSize(fileBytes, targetSizeInKB * 1024);
       setState(() {
         _pictureData = compressedBytes;
       });
@@ -158,14 +158,16 @@ class ProfileScreenState extends State<ProfileScreen> {
         user.setPicture(_pictureData);
 
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('userData', jsonEncode({
-          'U_ID': _uId,
-          'Name': user.name,
-          'Surname': user.surname,
-          'Reachability': user.reachability,
-          'Email': user.email,
-          'Description': user.description,
-        }));
+        await prefs.setString(
+            'userData',
+            jsonEncode({
+              'U_ID': _uId,
+              'Name': user.name,
+              'Surname': user.surname,
+              'Reachability': user.reachability,
+              'Email': user.email,
+              'Description': user.description,
+            }));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to save profile')),
@@ -204,17 +206,15 @@ class ProfileScreenState extends State<ProfileScreen> {
                     radius: 50,
                     backgroundImage: _pictureData != null
                         ? MemoryImage(_pictureData!)
-                        : const AssetImage('assets/images/profile.png') as ImageProvider,
+                        : const AssetImage('assets/images/profile.png')
+                            as ImageProvider,
                   ),
                 ),
                 const SizedBox(height: 16),
-
                 _buildTextField(_nameController, 'Name'),
                 const SizedBox(height: 16),
-
                 _buildTextField(_surnameController, 'Surname'),
                 const SizedBox(height: 16),
-
                 DropdownButtonFormField<Reachability>(
                   value: _reachability,
                   onChanged: (Reachability? newValue) {
@@ -234,10 +234,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-
                 _buildTextField(_emailController, 'Email'),
                 const SizedBox(height: 16),
-
                 DropdownButtonFormField<int>(
                   value: _semester,
                   decoration: const InputDecoration(
@@ -252,10 +250,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                   onChanged: (value) => setState(() => _semester = value!),
                 ),
                 const SizedBox(height: 16),
-
                 _buildTextField(_descriptionController, 'Description'),
                 const SizedBox(height: 16),
-
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
@@ -265,23 +261,23 @@ class ProfileScreenState extends State<ProfileScreen> {
                   child: const Text('Save Changes'),
                 ),
                 const SizedBox(height: 16),
-
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ChangePasswordScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const ChangePasswordScreen()),
                     );
                   },
                   child: const Text('Change Password'),
                 ),
-
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const KeywordSelectionScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const KeywordSelectionScreen()),
                     );
                   },
                   child: const Text('Edit Keywords'),

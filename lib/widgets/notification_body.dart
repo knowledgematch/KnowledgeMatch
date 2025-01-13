@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/model/reachability.dart';
-import 'package:knowledgematch/model/search_criteria.dart';
-import 'package:knowledgematch/model/user.dart';
+import 'package:knowledgematch/models/notification_data.dart';
+import 'package:knowledgematch/models/reachability.dart';
+import 'package:knowledgematch/models/request_date_data.dart';
+import 'package:knowledgematch/models/search_criteria.dart';
+import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/models/userprofile.dart';
 import 'package:knowledgematch/services/firestore_service.dart';
 import 'package:knowledgematch/services/forward_to_external.dart';
-import '../model/notification_data.dart';
-import '../model/request_date_data.dart';
-import '../model/userprofile.dart';
-import '../services/notification_service.dart';
+import 'package:knowledgematch/services/notification_service.dart';
+
 import 'multi_date_time_picker.dart';
 
 class NotificationBody extends StatefulWidget {

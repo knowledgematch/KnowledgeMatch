@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/model/notification_data.dart';
+import 'package:knowledgematch/models/notification_data.dart';
+import 'package:knowledgematch/models/search_criteria.dart';
+import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/models/userprofile.dart';
+import 'package:knowledgematch/services/notification_service.dart';
+import 'package:knowledgematch/widgets/flip_card.dart';
 import 'package:swipable_stack/swipable_stack.dart';
-import '../model/search_criteria.dart';
-import '../model/user.dart';
-import '../model/userprofile.dart';
-import '../services/notification_service.dart';
-import '../widgets/flip_card.dart';
 
 class SwipeScreen extends StatefulWidget {
   final SearchCriteria searchCriteria;

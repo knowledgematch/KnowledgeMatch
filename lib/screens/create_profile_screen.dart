@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
 
-import '../model/reachability.dart';
+import 'package:knowledgematch/models/reachability.dart';
 import 'login_screen.dart';
 
 class CreateProfileScreen extends StatefulWidget {
@@ -52,12 +52,12 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   void _createAccount() {
     if (_formKey.currentState!.validate()) {
       final response = ApiDbConnection().createAccount(
-          _name,
-          _surname,
-          _email,
-          _password,
-          _reachability,
-          _selectedImage,
+        _name,
+        _surname,
+        _email,
+        _password,
+        _reachability,
+        _selectedImage,
       );
 
       if (response == 200) {

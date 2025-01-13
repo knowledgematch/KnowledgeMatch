@@ -1,9 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import 'dart:typed_data';
 import 'package:http_parser/http_parser.dart';
 
 class ApiDbConnection {
@@ -78,7 +78,8 @@ class ApiDbConnection {
       if (response.statusCode == 201) {
         return true;
       } else {
-        print('Failed to add User2Keyword entry. Status: ${response.statusCode}, Body: ${response.body}');
+        print(
+            'Failed to add User2Keyword entry. Status: ${response.statusCode}, Body: ${response.body}');
         return false;
       }
     } catch (e) {
@@ -207,14 +208,8 @@ class ApiDbConnection {
   ///
   /// Returns:
   /// - A [Future] that completes with the status code of the account creation request or -1 if there was an error.
-  Future<int> createAccount(
-      String name,
-      String surname,
-      String email,
-      String password,
-      String reachability,
-      File? image
-      ) async {
+  Future<int> createAccount(String name, String surname, String email,
+      String password, String reachability, File? image) async {
     var finalUri = baseUri.replace(
       path: '/users',
     );
@@ -266,8 +261,7 @@ class ApiDbConnection {
       String email,
       String seniority,
       String description,
-      Uint8List? image
-      ) async {
+      Uint8List? image) async {
     var finalUri = baseUri.replace(
       path: '/users/$uId',
     );

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:knowledgematch/model/notification_data.dart';
+import 'package:knowledgematch/models/notification_data.dart';
 
 class FirestoreService {
   /// Fetches notifications for a specific user with an optional filter for notification type.
@@ -20,8 +20,8 @@ class FirestoreService {
       QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
           .collection('notifications')
           .where(Filter.and(
-            Filter('target_user_id', isEqualTo: userID.toString()),
-            Filter('is_open', isEqualTo: true.toString())))
+              Filter('target_user_id', isEqualTo: userID.toString()),
+              Filter('is_open', isEqualTo: true.toString())))
           .orderBy('timestamp', descending: true)
           .get();
 
@@ -48,9 +48,10 @@ class FirestoreService {
       QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
           .collection('notifications')
           .where(Filter.and(
-          Filter('target_user_id', isEqualTo: userID.toString()),
-          Filter('notification_type',
-              isEqualTo: NotificationType.meetupConfirmation.toShortString())))
+              Filter('target_user_id', isEqualTo: userID.toString()),
+              Filter('notification_type',
+                  isEqualTo:
+                      NotificationType.meetupConfirmation.toShortString())))
           .orderBy('timestamp', descending: true)
           .get();
 

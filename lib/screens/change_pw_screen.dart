@@ -14,8 +14,8 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmNewPasswordController = TextEditingController();
-  String _uId = '';
+  final TextEditingController _confirmNewPasswordController =
+      TextEditingController();
   String _email = '';
 
   @override
@@ -41,7 +41,6 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
     if (userDataString != null) {
       final userData = jsonDecode(userDataString);
       setState(() {
-        _uId = userData['U_ID'].toString();
         _email = userData['Email'].toString();
       });
     }
@@ -67,8 +66,8 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
       final oldPassword = _oldPasswordController.text;
       final newPassword = _newPasswordController.text;
 
-      final response = ApiDbConnection()
-          .changePassword(email, oldPassword, newPassword);
+      final response =
+          ApiDbConnection().changePassword(email, oldPassword, newPassword);
 
       if (response == 200) {
         ScaffoldMessenger.of(context).showSnackBar(

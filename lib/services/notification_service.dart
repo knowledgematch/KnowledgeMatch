@@ -4,11 +4,11 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:knowledgematch/models/notification_data.dart';
+import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/models/userprofile.dart';
+import 'package:knowledgematch/screens/request_screen.dart';
 
-import '../model/notification_data.dart';
-import '../model/user.dart';
-import '../model/userprofile.dart';
-import '../screens/request_screen.dart';
 import 'matching_algorithm.dart';
 
 late BuildContext appContext;

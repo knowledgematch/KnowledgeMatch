@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/model/userprofile.dart';
+import 'package:knowledgematch/models/userprofile.dart';
 import 'package:knowledgematch/screens/request_screen.dart';
 import 'package:knowledgematch/services/firestore_service.dart';
 import 'package:knowledgematch/widgets/notification_card.dart';
-import '../model/notification_data.dart';
-import '../model/user.dart';
-import '../services/matching_algorithm.dart';
-import 'confirmed_meetup_screen.dart';
+import 'package:knowledgematch/models/notification_data.dart';
+import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/services/matching_algorithm.dart';
+import 'package:knowledgematch/screens/confirmed_meetup_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});

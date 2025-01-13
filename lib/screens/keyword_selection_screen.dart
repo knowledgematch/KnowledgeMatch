@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
-import '../model/user.dart';
-
+import 'package:knowledgematch/models/user.dart';
 
 //TODO Keywords Entries are inserted correctly into the database but the UI isn't properly updating
 class KeywordSelectionScreen extends StatefulWidget {
@@ -41,7 +40,8 @@ class _KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
 
     _userKeywordsFuture.then((userKeywords) {
       setState(() {
-        _selectedKeywordIds = userKeywords.map<int>((keyword) => keyword['K_ID'] as int).toSet();
+        _selectedKeywordIds =
+            userKeywords.map<int>((keyword) => keyword['K_ID'] as int).toSet();
       });
     }).catchError((error) {
       print('Error fetching user keywords: $error');
@@ -76,7 +76,8 @@ class _KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
     // Call the API based on selection
     bool success;
     if (isSelected) {
-      success = await _apiDbConnection.removeUser2KeywordEntry(userId, keywordId);
+      success =
+          await _apiDbConnection.removeUser2KeywordEntry(userId, keywordId);
     } else {
       success = await _apiDbConnection.addUser2KeywordEntry(userId, keywordId);
     }
@@ -85,14 +86,17 @@ class _KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
       // Revert selection if API call fails
       setState(() {
         if (isSelected) {
-          _selectedKeywordIds.add(keywordId); // Re-add if it was previously selected
+          _selectedKeywordIds
+              .add(keywordId); // Re-add if it was previously selected
         } else {
-          _selectedKeywordIds.remove(keywordId); // Re-remove if it was previously unselected
+          _selectedKeywordIds
+              .remove(keywordId); // Re-remove if it was previously unselected
         }
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to update keyword selection for keyword ID: $keywordId'),
+          content: Text(
+              'Failed to update keyword selection for keyword ID: $keywordId'),
         ),
       );
     }
@@ -111,17 +115,20 @@ class _KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
             return const Center(child: CircularProgressIndicator());
           } else if (allKeywordsSnapshot.hasError) {
             return Center(child: Text('Error: ${allKeywordsSnapshot.error}'));
-          } else if (!allKeywordsSnapshot.hasData || allKeywordsSnapshot.data!.isEmpty) {
+          } else if (!allKeywordsSnapshot.hasData ||
+              allKeywordsSnapshot.data!.isEmpty) {
             return const Center(child: Text('No keywords found.'));
           }
 
           return FutureBuilder<List<Map<String, dynamic>>>(
             future: _userKeywordsFuture,
             builder: (context, userKeywordsSnapshot) {
-              if (userKeywordsSnapshot.connectionState == ConnectionState.waiting) {
+              if (userKeywordsSnapshot.connectionState ==
+                  ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (userKeywordsSnapshot.hasError) {
-                return Center(child: Text('Error: ${userKeywordsSnapshot.error}'));
+                return Center(
+                    child: Text('Error: ${userKeywordsSnapshot.error}'));
               } else if (userKeywordsSnapshot.hasData) {
                 // Populate selected keywords once
                 _selectedKeywordIds = userKeywordsSnapshot.data!

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/screens/request_screen.dart';
 
-import '../model/notification_data.dart';
-import '../model/user.dart';
-import '../model/userprofile.dart';
-import '../services/firestore_service.dart';
-import '../services/matching_algorithm.dart';
-import '../widgets/notification_card.dart';
+import 'package:knowledgematch/models/notification_data.dart';
+import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/models/userprofile.dart';
+import 'package:knowledgematch/services/firestore_service.dart';
+import 'package:knowledgematch/services/matching_algorithm.dart';
+import 'package:knowledgematch/widgets/notification_card.dart';
 
 class ConfirmedMeetupsScreen extends StatefulWidget {
   const ConfirmedMeetupsScreen({super.key});
@@ -16,7 +16,6 @@ class ConfirmedMeetupsScreen extends StatefulWidget {
 }
 
 class ConfirmedMeetupsScreenState extends State<ConfirmedMeetupsScreen> {
-
   final FirestoreService firestoreService = FirestoreService();
   final Map<int, Userprofile?> _userProfiles = {};
   List<NotificationData> _notifications = [];
@@ -78,34 +77,34 @@ class ConfirmedMeetupsScreenState extends State<ConfirmedMeetupsScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null
-          ? Center(child: Text('Error: $_errorMessage'))
-          : _notifications.isEmpty
-          ? const Center(child: Text('No requests found.'))
-          : ListView.builder(
-        itemCount: _notifications.length,
-        itemBuilder: (context, index) {
-          final notification = _notifications[index];
-          final userProfile =
-          _userProfiles[notification.sourceUserId];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RequestScreen(
-                    notificationData: notification,
-                    userprofile: userProfile,
-                  ),
-                ),
-              );
-            },
-            child: NotificationCard(
-              notification: notification,
-              userprofile: userProfile!,
-            ),
-          );
-        },
-      ),
+              ? Center(child: Text('Error: $_errorMessage'))
+              : _notifications.isEmpty
+                  ? const Center(child: Text('No requests found.'))
+                  : ListView.builder(
+                      itemCount: _notifications.length,
+                      itemBuilder: (context, index) {
+                        final notification = _notifications[index];
+                        final userProfile =
+                            _userProfiles[notification.sourceUserId];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RequestScreen(
+                                  notificationData: notification,
+                                  userprofile: userProfile,
+                                ),
+                              ),
+                            );
+                          },
+                          child: NotificationCard(
+                            notification: notification,
+                            userprofile: userProfile!,
+                          ),
+                        );
+                      },
+                    ),
     );
   }
 }

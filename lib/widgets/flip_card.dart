@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:knowledgematch/models/userprofile.dart';
 import 'package:knowledgematch/widgets/profile_card.dart';
 
-import '../model/userprofile.dart';
 import 'back_card.dart';
 
 class FlipCard extends StatefulWidget {
@@ -13,7 +13,8 @@ class FlipCard extends StatefulWidget {
   FlipCardState createState() => FlipCardState();
 }
 
-class FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin {
+class FlipCardState extends State<FlipCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   bool _isBackVisible = true;
@@ -80,21 +81,21 @@ class FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin 
                 alignment: Alignment.center,
                 child: isBack
                     ? BackCard(
-                  key: const ValueKey(true),
-                  profile: widget.profile,
-                  width: cardWidth,
-                  height: cardHeight,
-                )
+                        key: const ValueKey(true),
+                        profile: widget.profile,
+                        width: cardWidth,
+                        height: cardHeight,
+                      )
                     : Transform(
-                  transform: Matrix4.rotationY(3.1416),
-                  alignment: Alignment.center,
-                  child: ProfileCard(
-                    key: const ValueKey(false),
-                    profile: widget.profile,
-                    width: cardWidth,
-                    height: cardHeight,
-                  ),
-                ),
+                        transform: Matrix4.rotationY(3.1416),
+                        alignment: Alignment.center,
+                        child: ProfileCard(
+                          key: const ValueKey(false),
+                          profile: widget.profile,
+                          width: cardWidth,
+                          height: cardHeight,
+                        ),
+                      ),
               );
             },
           );

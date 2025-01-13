@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:knowledgematch/model/reachability.dart';
+import 'package:knowledgematch/models/reachability.dart';
+import 'package:knowledgematch/models/search_criteria.dart';
+import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/models/userprofile.dart';
 
-import '../model/user.dart';
-import '../model/userprofile.dart';
-import '../model/search_criteria.dart';
 import 'api_db_connection.dart';
 
 class MatchingAlgorithm {

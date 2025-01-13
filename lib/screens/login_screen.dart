@@ -1,12 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:knowledgematch/models/user.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import '../model/user.dart';
-import '../services/user_service.dart';
+
+import 'package:knowledgematch/services/user_service.dart';
 import 'create_profile_screen.dart';
-import 'main_screen.dart'; // Import the MainScreen
-import 'package:http/http.dart' as http;
+import 'main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -80,7 +82,8 @@ class _LoginScreenState extends State<LoginScreen> {
   ///
   /// Returns:
   /// - This method does not return anything.
-  Future<void> storeLoggedInUser(String token, Map<String, dynamic> user) async {
+  Future<void> storeLoggedInUser(
+      String token, Map<String, dynamic> user) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
     await prefs.setString('userData', jsonEncode(user));
@@ -116,16 +119,15 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CreateProfileScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => CreateProfileScreen()),
                 );
               },
               child: Text('Create a new account'),
             ),
             ElevatedButton(
               onPressed: _isLoading ? null : _login,
-              child: _isLoading
-                  ? CircularProgressIndicator()
-                  : Text('Login'),
+              child: _isLoading ? CircularProgressIndicator() : Text('Login'),
             ),
           ],
         ),
