@@ -4,13 +4,13 @@ import 'package:knowledgematch/models/user.dart';
 
 //TODO Keywords Entries are inserted correctly into the database but the UI isn't properly updating
 class KeywordSelectionScreen extends StatefulWidget {
-  const KeywordSelectionScreen({Key? key}) : super(key: key);
+  const KeywordSelectionScreen({super.key});
 
   @override
-  _KeywordSelectionScreenState createState() => _KeywordSelectionScreenState();
+  KeywordSelectionScreenState createState() => KeywordSelectionScreenState();
 }
 
-class _KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
+class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
   final ApiDbConnection _apiDbConnection = ApiDbConnection();
   late Future<List<Map<String, dynamic>>> _allKeywordsFuture;
   late Future<List<Map<String, dynamic>>> _userKeywordsFuture;
@@ -93,12 +93,14 @@ class _KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
               .remove(keywordId); // Re-remove if it was previously unselected
         }
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-              'Failed to update keyword selection for keyword ID: $keywordId'),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Failed to update keyword selection for keyword ID: $keywordId'),
+          ),
+        );
+      }
     }
   }
 
