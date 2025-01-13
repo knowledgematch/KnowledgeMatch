@@ -108,6 +108,14 @@ class ProfileCard extends StatelessWidget {
                 ),
 
                 SizedBox(height: 20),
+
+                // Email Field
+                _profileInfoField(
+                  label: 'Email',
+                  value: profile.email,
+                ),
+
+                SizedBox(height: 20),
               ],
             ),
           ),

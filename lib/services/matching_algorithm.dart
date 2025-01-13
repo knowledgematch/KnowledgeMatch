@@ -106,6 +106,7 @@ class MatchingAlgorithm {
           int.parse(user['Reachability'].toString())),
       description: user['Description'].toString(),
       tokens: tokenList,
+      email: user['Email'].toString()
     );
 
     if (user['Picture'] != null) {

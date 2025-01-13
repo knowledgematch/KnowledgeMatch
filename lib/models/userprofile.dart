@@ -15,7 +15,7 @@ class Userprofile {
   final int seniority;
   Uint8List? picture;
   List<String>? tokens = [];
-  //TODO add email address
+  final String email;
 
   Userprofile({
     required this.id,
@@ -28,6 +28,7 @@ class Userprofile {
     required this.description,
     this.tokens,
     required this.seniority,
+    required this.email
   })  : expertise = expertString.split(" "),
         languages = langString.split(" ");
 
