@@ -17,19 +17,19 @@ class Userprofile {
   List<String>? tokens = [];
   final String email;
 
-  Userprofile({
-    required this.id,
-    required this.name,
-    required this.location,
-    required String expertString,
-    required this.availability,
-    required String langString,
-    this.reachability,
-    required this.description,
-    this.tokens,
-    required this.seniority,
-    required this.email
-  })  : expertise = expertString.split(" "),
+  Userprofile(
+      {required this.id,
+      required this.name,
+      required this.location,
+      required String expertString,
+      required this.availability,
+      required String langString,
+      this.reachability,
+      required this.description,
+      this.tokens,
+      required this.seniority,
+      required this.email})
+      : expertise = expertString.split(" "),
         languages = langString.split(" ");
 
   /// Returns a [List] of [String] tokens

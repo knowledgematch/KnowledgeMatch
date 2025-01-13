@@ -127,7 +127,6 @@ class NotificationBodyState extends State<NotificationBody> {
             ElevatedButton(
               onPressed: widget.notificationData.isOpen == true
                   ? () async {
-                      // Show success message and close
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Request declined.")));
@@ -373,10 +372,9 @@ class NotificationBodyState extends State<NotificationBody> {
                   groupValue: selectedDate,
                   onChanged: (value) {
                     setState(() {
-                      selectedDate = value; // Update selected date
+                      selectedDate = value;
                     });
                   },
-                  // The widget on the trailing side of the tile
                   secondary: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -559,11 +557,10 @@ class NotificationBodyState extends State<NotificationBody> {
 
   Widget _onMeetupConfirmation(BuildContext context) {
     FirestoreService().closeRequest(widget.notificationData.requestID);
-    final name = widget.userprofile
-        .name; //TODO just add a field for the userprofile email address
-    final replacedName = name.toLowerCase().replaceAll(' ', '.');
+    final name = widget.userprofile.name;
+    final email = widget.userprofile.email;
 
-    final email = '$replacedName@students.fhnw.ch';
+    //final email = '$replacedName@students.fhnw.ch';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
