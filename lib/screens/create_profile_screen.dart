@@ -34,6 +34,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
   /// Returns:
   /// - A [Future] that completes when the image selection process is finished.
   Future<void> _pickImage() async {
+    //TODO move methods to a service/model class
     final pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
     );
@@ -51,6 +52,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
   /// Validates the form and attempts to create a new account by calling
   /// [ApiDbConnection().createAccount]. If the account creation is successful,
   /// a success dialog is shown. If there is an error, an error dialog is shown.
+  //TODO move methods to a service/model class
   void _createAccount() async {
     if (_formKey.currentState!.validate()) {
       final response = await ApiDbConnection().createAccount(
