@@ -24,6 +24,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
     _loadUserId();
   }
 
+//TODO Move logic to service class!
   /// Loads the user ID and email from shared preferences.
   ///
   /// This method retrieves the `userData` string from shared preferences, decodes
@@ -46,6 +47,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
     }
   }
 
+//TODO Move logic to Service class!
   /// Changes the user's password after validating the form.
   ///
   /// This method validates the current form using the [formKey]. If the form is valid,
@@ -60,24 +62,28 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
   ///
   /// Returns:
   /// - This method does not return a value. It updates the UI based on the response from the API.
-  void _changePassword() {
+  void _changePassword() async {
     if (_formKey.currentState!.validate()) {
       final email = _email;
       final oldPassword = _oldPasswordController.text;
       final newPassword = _newPasswordController.text;
 
-      final response =
-          ApiDbConnection().changePassword(email, oldPassword, newPassword);
+      final response = await ApiDbConnection()
+          .changePassword(email, oldPassword, newPassword);
 
       if (response == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Password changed successfully!')),
-        );
-        Navigator.pop(context);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Password changed successfully!')),
+          );
+          Navigator.pop(context);
+        }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $response')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $response')),
+          );
+        }
       }
     }
   }

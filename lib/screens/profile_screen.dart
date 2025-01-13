@@ -135,7 +135,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   /// - This method does not return anything.
   Future<void> _saveProfile() async {
     try {
-      final response = ApiDbConnection().saveProfile(
+      final response = await ApiDbConnection().saveProfile(
           _uId,
           _nameController.text,
           _surnameController.text,
@@ -145,9 +145,11 @@ class ProfileScreenState extends State<ProfileScreen> {
           _descriptionController.text,
           _pictureData);
       if (response == 204) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile saved successfully!')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Profile saved successfully!')),
+          );
+        }
 
         user.name = _nameController.text;
         user.surname = _surnameController.text;
@@ -169,14 +171,18 @@ class ProfileScreenState extends State<ProfileScreen> {
               'Description': user.description,
             }));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save profile')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to save profile')),
+          );
+        }
       }
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error:')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error:')),
+        );
+      }
     }
   }
 
@@ -315,9 +321,11 @@ class ProfileScreenState extends State<ProfileScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     User.instance.reset();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    }
   }
 }
