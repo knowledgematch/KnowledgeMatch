@@ -43,7 +43,7 @@ deploy-job:      # Placeholder for future deployment tasks
   stage: deploy
   environment: production
   script:
-    - echo "Deploying application...""
+    - echo "Deploying application..."
     - echo "Application successfully deployed."
 
 push-apk-job:
