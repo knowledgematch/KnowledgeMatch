@@ -7,11 +7,13 @@ import 'package:knowledgematch/models/reachability.dart';
 import 'login_screen.dart';
 
 class CreateProfileScreen extends StatefulWidget {
+  const CreateProfileScreen({super.key});
+
   @override
-  _CreateProfileScreenState createState() => _CreateProfileScreenState();
+  CreateProfileScreenState createState() => CreateProfileScreenState();
 }
 
-class _CreateProfileScreenState extends State<CreateProfileScreen> {
+class CreateProfileScreenState extends State<CreateProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
   String _name = '';
@@ -49,9 +51,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   /// Validates the form and attempts to create a new account by calling
   /// [ApiDbConnection().createAccount]. If the account creation is successful,
   /// a success dialog is shown. If there is an error, an error dialog is shown.
-  void _createAccount() {
+  void _createAccount() async {
     if (_formKey.currentState!.validate()) {
-      final response = ApiDbConnection().createAccount(
+      final response = await ApiDbConnection().createAccount(
         _name,
         _surname,
         _email,
@@ -59,6 +61,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
         _reachability,
         _selectedImage,
       );
+
+      if (!mounted) return;
 
       if (response == 200) {
         showDialog(

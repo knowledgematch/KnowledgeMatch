@@ -129,9 +129,9 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                         if (shouldShowGlow)
                           BoxShadow(
                             color: properties.direction == SwipeDirection.right
-                                ? Colors.green.withOpacity(0.9)
+                                ? Colors.green.withValues(alpha: 0.9)
                                 : properties.direction == SwipeDirection.left
-                                    ? Colors.red.withOpacity(0.9)
+                                    ? Colors.red.withValues(alpha: 0.9)
                                     : Colors.transparent,
                             blurRadius: 40,
                             spreadRadius: 5,
