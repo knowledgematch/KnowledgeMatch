@@ -6,7 +6,6 @@ import 'package:knowledgematch/services/api_db_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'model/user.dart';
 import 'screens/login_screen.dart';
-import '/model/local_user.dart';
 import '/screens/request_screen.dart';
 import '/services/matching_algorithm.dart';
 import '/services/notification_service.dart';
@@ -58,29 +57,16 @@ class SplashScreen extends StatefulWidget {
 class SplashScreenState extends State<SplashScreen> {
   // Instance of Firebase Messaging
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  LocalUser? localUser;
 
   @override
   void initState() {
     super.initState();
     NotificationService().init(widget.navigatorKey);
     _checkLoggedInStatus();
-    _setLocalUser();
     _requestPermissions();
 
     // Initialize FCM
     _initializeFCM();
-    _getToken();
-  }
-
-  void _setLocalUser() {
-    localUser = LocalUser(
-        name: "Alice",
-        location: "Location",
-        expertString: "expertString",
-        availability: "availability",
-        langString: "langString",
-        description: "description");
   }
 
   Future<void> _checkLoggedInStatus() async {
@@ -200,14 +186,6 @@ class SplashScreenState extends State<SplashScreen> {
         ),
       );
     }
-  }
-
-  // Retrieve and print the device's FCM token
-  void _getToken() async {
-    String? token = await _messaging.getToken();
-    print('FCM Token: $token');
-    localUser?.getTokensList()?.add(token!);
-    print('FCM Token: ${localUser?.getTokensList()?.single}');
   }
 
   @override
