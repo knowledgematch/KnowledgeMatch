@@ -27,7 +27,7 @@ class BackCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.3),
+            color: Colors.grey.withOpacity(0.3),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -39,7 +39,7 @@ class BackCard extends StatelessWidget {
           SizedBox(height: 50),
           CircleAvatar(
             radius: 60,
-            backgroundColor: const Color(0xFF722334).withValues(alpha: 0.2),
+            backgroundColor: const Color(0xFF722334).withOpacity(0.2),
             child: CircleAvatar(
               radius: 50,
               backgroundImage: profilePicture != null
@@ -65,7 +65,7 @@ class BackCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: const Color(0xFF722334).withValues(alpha: 0.1),
+              color: const Color(0xFF722334).withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
