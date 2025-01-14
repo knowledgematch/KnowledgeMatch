@@ -6,15 +6,12 @@ stages:
   - deploy
 
 variables:
-  #JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64" # Set Java path for Gradle
 
 build-job:
   stage: build
   before_script:
-    # Dynamically set JAVA_HOME based on where `java` is actually installed.
     - apt-get update && apt-get install -y openjdk-17-jdk
     - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-    #- export JAVA_HOME="$(which java)"
     - echo "JAVA_HOME is set to $JAVA_HOME"
     - echo "Setting up dynamic Gradle properties..."
     - echo "org.gradle.java.home=$JAVA_HOME" >> android/gradle.properties
@@ -36,7 +33,7 @@ unit-test-job:
     - echo "Testing done."
   allow_failure: false
 
-lint-test-job:   # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
+lint-test-job: # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
   stage: lint
   script:
     - echo "Analyzing code quality..."
@@ -44,7 +41,7 @@ lint-test-job:   # This job runs code quality checks (analyzes code for errors, 
     - echo "Code analysis completed."
   allow_failure: false
 
-deploy-job:      # Placeholder for future deployment tasks
+deploy-job: # Placeholder for future deployment tasks
   stage: deploy
   environment: production
   script:
