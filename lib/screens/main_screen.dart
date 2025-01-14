@@ -20,6 +20,7 @@ class MainScreenState extends State<MainScreen> {
     ChatScreen(),
   ];
 
+  /// Updates the state with the new tab [index]
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;

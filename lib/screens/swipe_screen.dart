@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/model/notification_data.dart';
+import 'package:knowledgematch/models/notification_data.dart';
+import 'package:knowledgematch/models/search_criteria.dart';
+import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/models/userprofile.dart';
+import 'package:knowledgematch/services/notification_service.dart';
+import 'package:knowledgematch/widgets/flip_card.dart';
 import 'package:swipable_stack/swipable_stack.dart';
-import '../model/search_criteria.dart';
-import '../model/user.dart';
-import '../model/userprofile.dart';
-import '../services/notification_service.dart';
-import '../widgets/flip_card.dart';
 
 class SwipeScreen extends StatefulWidget {
   final SearchCriteria searchCriteria;
@@ -33,16 +33,26 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
     }
   }
 
-  // Use the NotificationService to send a notification
+  /// Use the NotificationService to send a [NotificationType.knowledgeRequest] notification.
+  ///
+  /// Creates [NotificationData] from [SearchCriteria] and [Userprofile].
+  /// Uses the [NotificationService] to send the data to the users [Userprofile.tokens]
+  ///
+  /// @param profile to send the notification to.
+
   Future<void> _sendSwipeRightNotification(Userprofile profile) async {
+    var topic = widget.searchCriteria.keyword;
     var notificationData = NotificationData(
-        type: NotificationType.knowledgeRequest,
-        title: "Your knowledge has been requested!",
-        body: widget.searchCriteria.issue,
-        targetUserId: profile.id,
-        sourceUserId: User.instance.id ?? 0,
+      type: NotificationType.knowledgeRequest,
+      title: "Your knowledge has been requested!",
+      body:
+          "From: ${User.instance.name} ${User.instance.surname}, Topic: $topic",
+      payload: widget.searchCriteria.toJSON(),
+      targetUserId: profile.id,
+      sourceUserId: User.instance.id ?? 0,
     );
-    await NotificationService().sendMessageToDevice(notificationData, profile.tokens ?? []);
+    await NotificationService()
+        .sendMessageToDevice(notificationData, profile.tokens ?? []);
   }
 
   @override
@@ -96,11 +106,12 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                     if (direction == SwipeDirection.right) {
                       //send notification
                       final snackBar = SnackBar(
-                          content: const Text('Request sent'),
-                          duration: Duration(milliseconds: 500),
+                        content: const Text('Request sent'),
+                        duration: Duration(milliseconds: 500),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      _sendSwipeRightNotification(profiles[_controller.currentIndex]);
+                      _sendSwipeRightNotification(
+                          profiles[_controller.currentIndex]);
                       profiles.removeAt(_controller.currentIndex);
                       _controller.currentIndex--;
                     } else if (direction == SwipeDirection.left) {}
@@ -120,8 +131,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                             color: properties.direction == SwipeDirection.right
                                 ? Colors.green.withOpacity(0.9)
                                 : properties.direction == SwipeDirection.left
-                                ? Colors.red.withOpacity(0.9)
-                                : Colors.transparent,
+                                    ? Colors.red.withOpacity(0.9)
+                                    : Colors.transparent,
                             blurRadius: 40,
                             spreadRadius: 5,
                           ),
@@ -182,5 +193,3 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
     );
   }
 }
-
-

@@ -1,31 +1,40 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:knowledgematch/services/api_db_connection.dart';
 
-import '../model/reachability.dart';
+import 'package:knowledgematch/models/reachability.dart';
 import 'login_screen.dart';
 
 class CreateProfileScreen extends StatefulWidget {
+  const CreateProfileScreen({super.key});
+
   @override
-  _CreateProfileScreenState createState() => _CreateProfileScreenState();
+  CreateProfileScreenState createState() => CreateProfileScreenState();
 }
 
-class _CreateProfileScreenState extends State<CreateProfileScreen> {
+class CreateProfileScreenState extends State<CreateProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
   String _name = '';
   String _surname = '';
   String _email = '';
   String _password = '';
-  String _reachability = Reachability.InPerson.value.toString();
-  File? _selectedImage; // To store the selected profile picture
+  String _reachability = Reachability.inPerson.value.toString();
+  File? _selectedImage;
 
   final ImagePicker _picker = ImagePicker();
 
-  // Function to handle image picking
+  /// Opens the gallery to pick an image and updates the selected image.
+  ///
+  /// This method uses the image picker to open the device's gallery and allow the user
+  /// to select an image. If an image is selected, the selected image is stored in the
+  /// `_selectedImage` variable as a [File]. If no image is selected, a message is logged.
+  ///
+  /// Returns:
+  /// - A [Future] that completes when the image selection process is finished.
   Future<void> _pickImage() async {
+    //TODO move methods to a service/model class
     final pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
     );
@@ -38,79 +47,48 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     }
   }
 
-  // Function to handle account creation
-  Future<void> _createAccount() async {
+  /// Handles the account creation process.
+  ///
+  /// Validates the form and attempts to create a new account by calling
+  /// [ApiDbConnection().createAccount]. If the account creation is successful,
+  /// a success dialog is shown. If there is an error, an error dialog is shown.
+  //TODO move methods to a service/model class
+  void _createAccount() async {
     if (_formKey.currentState!.validate()) {
-      try {
-        final uri = Uri.parse('http://86.119.45.62/users');
-        final request = http.MultipartRequest('POST', uri);
+      final response = await ApiDbConnection().createAccount(
+        _name,
+        _surname,
+        _email,
+        _password,
+        _reachability,
+        _selectedImage,
+      );
 
-        // Add text fields to the request
-        request.fields['Name'] = _name;
-        request.fields['Surname'] = _surname;
-        request.fields['Email'] = _email;
-        request.fields['Password'] = _password;
-        request.fields['Reachability'] = _reachability;
+      if (!mounted) return;
 
-        // Add the image file to the request if selected
-        if (_selectedImage != null) {
-          request.files.add(await http.MultipartFile.fromPath(
-            'Picture', // This key should match your backend field
-            _selectedImage!.path,
-          ));
-
-        }
-
-        final response = await request.send();
-
-        if (response.statusCode == 200) {
-          // Account created successfully
-          final responseBody = await response.stream.bytesToString();
-          final responseData = jsonDecode(responseBody);
-
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: Text('Success'),
-              content: Text('Account created successfully!'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                    Navigator.pop(context); // Go back to login screen
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            ),
-          );
-        } else {
-          // Error in account creation
-          final responseBody = await response.stream.bytesToString();
-          final errorResponse = jsonDecode(responseBody);
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: Text('Error'),
-              content: Text(errorResponse['message'] ?? 'An error occurred'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            ),
-          );
-        }
-      } catch (e) {
-        print('Error: $e');
+      if (response == 200) {
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Success'),
+            content: Text('Account created successfully!'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  Navigator.pop(context);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } else {
         showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
             title: Text('Error'),
-            content: Text('An error occurred, please try again later.'),
+            content: Text('An error occurred'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
@@ -125,7 +103,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     }
   }
 
-  // Function to go back to the login screen
+  /// Function to go back to the login screen
   void _goToLoginScreen() {
     Navigator.pushReplacement(
       context,
@@ -153,7 +131,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     backgroundImage: _selectedImage != null
                         ? FileImage(_selectedImage!)
                         : AssetImage('assets/images/profile.png')
-                    as ImageProvider,
+                            as ImageProvider,
                     child: _selectedImage == null
                         ? Icon(Icons.camera_alt, size: 50, color: Colors.grey)
                         : null,

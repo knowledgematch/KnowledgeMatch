@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../model/userprofile.dart';
+import 'package:knowledgematch/models/userprofile.dart';
 
 class ProfileCard extends StatelessWidget {
   final Userprofile profile;
@@ -45,55 +45,56 @@ class ProfileCard extends StatelessWidget {
                     radius: 50,
                     backgroundImage: profilePicture != null
                         ? MemoryImage(profilePicture)
-                        : const AssetImage('assets/images/profile.png') as ImageProvider,
+                        : const AssetImage('assets/images/profile.png')
+                            as ImageProvider,
                   ),
                 ),
                 SizedBox(height: 20),
 
                 // Name Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Name',
                   value: profile.name,
                 ),
                 SizedBox(height: 10),
 
                 // Location Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Location',
                   value: profile.location,
                 ),
                 SizedBox(height: 10),
 
                 // Expertise Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Expert in',
                   value: profile.expertise.join(', '),
                 ),
                 SizedBox(height: 10),
 
                 // Availability Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Availability',
                   value: profile.availability,
                 ),
                 SizedBox(height: 10),
 
                 // Language Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Languages',
                   value: profile.languages.join(', '),
                 ),
                 SizedBox(height: 10),
 
                 // Reachability Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Reachability',
-                  value: _getReachability(profile.reachability),
+                  value: profile.reachability.toString(),
                 ),
                 SizedBox(height: 10),
 
                 // Description Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Description',
                   value: profile.description,
                 ),
@@ -101,9 +102,17 @@ class ProfileCard extends StatelessWidget {
                 SizedBox(height: 10),
 
                 // Seniority Field
-                _ProfileInfoField(
+                _profileInfoField(
                   label: 'Seniority',
                   value: profile.seniority.toString(),
+                ),
+
+                SizedBox(height: 20),
+
+                // Email Field
+                _profileInfoField(
+                  label: 'Email',
+                  value: profile.email,
                 ),
 
                 SizedBox(height: 20),
@@ -115,7 +124,7 @@ class ProfileCard extends StatelessWidget {
     );
   }
 
-  Widget _ProfileInfoField({required String label, required String value}) {
+  Widget _profileInfoField({required String label, required String value}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -123,16 +132,16 @@ class ProfileCard extends StatelessWidget {
           label,
           style: const TextStyle(
             fontSize: 16,
-            color: Color(0xFF722334), // Titel-Farbe angepasst
+            color: Color(0xFF722334),
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 5), // Space between label and value
+        SizedBox(height: 5),
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.grey[300], // Background color of the box
+            color: Colors.grey[300],
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
@@ -142,18 +151,5 @@ class ProfileCard extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  String _getReachability(int? reachability) {
-    switch (reachability) {
-      case 0:
-        return 'Online';
-      case 1:
-        return 'In Person';
-      case 2:
-        return 'Online, In Person';
-      default:
-        return 'Online';
-    }
   }
 }

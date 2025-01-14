@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
-import '../model/user.dart';
+import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/models/reachability.dart';
 import 'keyword_selection_screen.dart';
 import 'login_screen.dart';
 import 'change_pw_screen.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http_parser/http_parser.dart';
-
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -22,17 +20,17 @@ class ProfileScreen extends StatefulWidget {
 
 class ProfileScreenState extends State<ProfileScreen> {
   final user = User.instance;
-  Uint8List? _pictureData; // Store the picture as Uint8List
-  String _seniority = '0';
+  Uint8List? _pictureData;
   String _uId = '';
+  Reachability _reachability = Reachability.inPerson;
 
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
-  final TextEditingController _reachabilityController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  int _semester = 1;
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -41,28 +39,49 @@ class ProfileScreenState extends State<ProfileScreen> {
     _loadUserData();
   }
 
-  // Function to handle image picking
+  //TODO move to service/utility class
+  /// Opens the gallery to pick an image, compresses it, and updates the selected image data.
+  ///
+  /// This method allows the user to pick an image from the gallery, reads the image as bytes,
+  /// compresses it to a target size (in kilobytes), and updates the state with the compressed
+  /// image data.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters. It uses the image picker to allow the user
+  ///   to select and compress an image.
+  ///
+  /// Returns:
+  /// - This method does not return anything.
   Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(
-      source: ImageSource.gallery,
-    );
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       final fileBytes = await pickedFile.readAsBytes();
       const targetSizeInKB = 100;
-      final compressedBytes = await compressImageToTargetSize(fileBytes, targetSizeInKB * 1024);
+      final compressedBytes =
+          await compressImageToTargetSize(fileBytes, targetSizeInKB * 1024);
       setState(() {
         _pictureData = compressedBytes;
       });
-    } else {
-      print('No image selected.');
     }
   }
 
-  Future<Uint8List> compressImageToTargetSize(Uint8List fileBytes, int targetSizeInBytes) async {
+  //TODO move to service/utility class
+  /// Compresses an image to a target size in bytes.
+  ///
+  /// This method takes an image's byte data and compresses it iteratively to reduce its size
+  /// until it meets the target size, adjusting the quality in each iteration. The compression
+  /// stops once the target size is achieved or the quality reaches a minimum threshold.
+  ///
+  /// Parameters:
+  /// - [fileBytes]: The byte data of the image to compress.
+  /// - [targetSizeInBytes]: The target size in bytes for the compressed image.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with the compressed image byte data ([Uint8List]).
+  Future<Uint8List> compressImageToTargetSize(
+      Uint8List fileBytes, int targetSizeInBytes) async {
     int quality = 100;
     Uint8List compressedBytes = fileBytes;
-
-    // Keep compressing until the file size is below the target
     while (compressedBytes.length > targetSizeInBytes && quality > 10) {
       compressedBytes = await FlutterImageCompress.compressWithList(
         fileBytes,
@@ -72,10 +91,20 @@ class ProfileScreenState extends State<ProfileScreen> {
       );
       quality -= 10;
     }
-
     return compressedBytes;
   }
 
+  //TODO move to service/utility class
+  /// Loads the user data from shared preferences and updates the UI.
+  ///
+  /// This method retrieves the stored user data from shared preferences, decodes it, and updates
+  /// the relevant fields in the UI, such as user name, email, semester, description, and picture.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters. It uses the stored user data in shared preferences.
+  ///
+  /// Returns:
+  /// - This method does not return anything.
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final userDataString = prefs.getString('userData');
@@ -87,101 +116,78 @@ class ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         _nameController.text = user.name!;
         _surnameController.text = user.surname!;
-        _reachabilityController.text = user.reachability!.toString();
+        _reachability = ReachabilityValue.fromValue(user.reachability ?? 0);
         _emailController.text = user.email!;
+        _semester = user.seniority!;
         _descriptionController.text = user.description ?? '';
         _pictureData = user.getDecodedPicture();
       });
-    } else {
-      print('No user data found.');
     }
   }
 
+  //TODO move to service/utility class
+  /// Saves the user's profile data to the database and shared preferences.
+  ///
+  /// This method sends the updated user profile data to the server via the API. If the save operation is successful,
+  /// it updates the local user object and shared preferences with the new profile data. If the operation fails,
+  /// it displays an error message to the user.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters. It uses the current values from the controllers and state variables.
+  ///
+  /// Returns:
+  /// - This method does not return anything.
   Future<void> _saveProfile() async {
-    print(_uId);
-    final uri = Uri.parse('http://86.119.45.62/users/$_uId');
-    final request = http.MultipartRequest('PUT', uri);
-
-    // Ensure required fields are added to the request
-    request.fields['Name'] = _nameController.text;
-    request.fields['Surname'] = _surnameController.text;
-    request.fields['Reachability'] = _reachabilityController.text;
-    request.fields['Email'] = _emailController.text;
-    request.fields['Seniority'] = _seniority;
-    request.fields['Description'] = _descriptionController.text;
-
-    // Add the image file to the request if it exists
-    if (_pictureData != null) {
-      request.files.add(http.MultipartFile.fromBytes(
-        'Picture', // This key should match your backend field
-        _pictureData!,
-        filename: 'profile_picture.jpg', // Providing a filename
-        contentType: MediaType('image', 'jpeg'), // Specify the correct content type
-      ));
-    }
-
-    // Debugging: Log the fields being sent
-    print('Sending request with fields: ${request.fields}');
-
     try {
-      final response = await request.send();
+      final response = await ApiDbConnection().saveProfile(
+          _uId,
+          _nameController.text,
+          _surnameController.text,
+          _reachability.value.toString(),
+          _emailController.text,
+          _semester.toString(),
+          _descriptionController.text,
+          _pictureData);
+      if (response == 204) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Profile saved successfully!')),
+          );
+        }
 
-      if (response.statusCode == 204) {
-        // Profile updated successfully
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar( content: Text('Profile saved successfully!'),
-                          duration: Duration(milliseconds: 500), ),
-        );
-
-        // Optionally update SharedPreferences or local user state here
-        // Update the user instance with new values
         user.name = _nameController.text;
         user.surname = _surnameController.text;
-        user.reachability = int.tryParse(_reachabilityController.text);
+        user.reachability = _reachability.value;
         user.email = _emailController.text;
+        user.seniority = _semester;
         user.description = _descriptionController.text;
         user.setPicture(_pictureData);
 
-        // Encode user data to JSON and save it in SharedPreferences
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('userData', jsonEncode({
-          'U_ID': _uId,
-          'Name': user.name,
-          'Surname': user.surname,
-          'Reachability': user.reachability,
-          'Email': user.email,
-          'Description': user.description,
-          // Assuming you might want to save the picture data as well
-        }));
+        await prefs.setString(
+            'userData',
+            jsonEncode({
+              'U_ID': _uId,
+              'Name': user.name,
+              'Surname': user.surname,
+              'Reachability': user.reachability,
+              'Email': user.email,
+              'Description': user.description,
+            }));
       } else {
-        // Read and log the response body for debugging
-        final responseBody = await response.stream.bytesToString();
-        ScaffoldMessenger.of(context).showSnackBar(
-          //SnackBar(content: Text('Failed to save profile: ${response.reasonPhrase}, Body: $responseBody')),
-          SnackBar( content: Text('Failed to save profile: ${response.reasonPhrase}, Body: $responseBody'),
-                    duration: Duration(milliseconds: 500), ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to save profile')),
+          );
+        }
       }
     } catch (error) {
-      // Handle network or other errors
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar( content: Text('Error: $error'),
-                  duration: Duration(milliseconds: 500), ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error:')),
+        );
+      }
     }
-  }
-
-
-  Future<void> _logout() async {
-    ApiDbConnection().deleteFcmToken(User.instance.id ?? 0);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    User.instance.reset();
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
   }
 
   @override
@@ -193,15 +199,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {
-              _logout();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Logged out successfully'),
-                  duration: Duration(milliseconds: 500),
-                ),
-              );
-            }
+            onPressed: _logout,
           ),
         ],
       ),
@@ -213,58 +211,56 @@ class ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               children: [
                 GestureDetector(
-                  onTap: _pickImage, // Trigger image picker when tapped
+                  onTap: _pickImage,
                   child: CircleAvatar(
                     radius: 50,
                     backgroundImage: _pictureData != null
-                        ? MemoryImage(_pictureData!) // Use MemoryImage to display Uint8List
-                        : const AssetImage('assets/images/profile.png') as ImageProvider,
+                        ? MemoryImage(_pictureData!)
+                        : const AssetImage('assets/images/profile.png')
+                            as ImageProvider,
                   ),
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
+                _buildTextField(_nameController, 'Name'),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: _surnameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Surname',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
+                _buildTextField(_surnameController, 'Surname'),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: _reachabilityController,
+                DropdownButtonFormField<Reachability>(
+                  value: _reachability,
+                  onChanged: (Reachability? newValue) {
+                    setState(() {
+                      _reachability = newValue!;
+                    });
+                  },
+                  items: Reachability.values.map((Reachability reachability) {
+                    return DropdownMenuItem<Reachability>(
+                      value: reachability,
+                      child: Text(reachability.description),
+                    );
+                  }).toList(),
                   decoration: const InputDecoration(
                     labelText: 'Reachability',
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: _emailController,
+                _buildTextField(_emailController, 'Email'),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<int>(
+                  value: _semester,
                   decoration: const InputDecoration(
-                    labelText: 'Email',
+                    labelText: 'Semester',
                     border: OutlineInputBorder(),
                   ),
+                  items: [
+                    for (var i = 0; i <= 12; i++)
+                      DropdownMenuItem(value: i, child: Text('Semester $i')),
+                    const DropdownMenuItem(value: -1, child: Text('Professor')),
+                  ],
+                  onChanged: (value) => setState(() => _semester = value!),
                 ),
                 const SizedBox(height: 16),
-                SizedBox(
-                  height: 100, // Set height for description box
-                  child: TextFormField(
-                    controller: _descriptionController,
-                    maxLines: null, // Allow text to wrap within the box
-                    decoration: const InputDecoration(
-                      labelText: 'Description',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
+                _buildTextField(_descriptionController, 'Description'),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
@@ -279,18 +275,19 @@ class ProfileScreenState extends State<ProfileScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChangePasswordScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const ChangePasswordScreen()),
                     );
                   },
                   child: const Text('Change Password'),
                 ),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const KeywordSelectionScreen(),
-                      ),
+                          builder: (context) => const KeywordSelectionScreen()),
                     );
                   },
                   child: const Text('Edit Keywords'),
@@ -301,5 +298,38 @@ class ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+    );
+  }
+
+  /// Logs out the user by clearing the session data and navigating to the login screen.
+  ///
+  /// This method deletes the user's FCM token from the server, clears all data stored in shared preferences,
+  /// resets the user instance, and navigates the user to the login screen.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters.
+  ///
+  /// Returns:
+  /// - This method does not return anything.
+  Future<void> _logout() async {
+    ApiDbConnection().deleteFcmToken(User.instance.id ?? 0);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    User.instance.reset();
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    }
   }
 }

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/models/userprofile.dart';
 import 'package:knowledgematch/screens/request_screen.dart';
-import 'package:knowledgematch/services/firestore_service.dart';
-import 'package:knowledgematch/widgets/notification_card.dart';
+
 import 'package:knowledgematch/models/notification_data.dart';
 import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/models/userprofile.dart';
+import 'package:knowledgematch/services/firestore_service.dart';
 import 'package:knowledgematch/services/matching_algorithm.dart';
-import 'package:knowledgematch/screens/confirmed_meetup_screen.dart';
+import 'package:knowledgematch/widgets/notification_card.dart';
 
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+class ConfirmedMeetupsScreen extends StatefulWidget {
+  const ConfirmedMeetupsScreen({super.key});
 
   @override
-  ChatScreenState createState() => ChatScreenState();
+  ConfirmedMeetupsScreenState createState() => ConfirmedMeetupsScreenState();
 }
 
-class ChatScreenState extends State<ChatScreen> {
+class ConfirmedMeetupsScreenState extends State<ConfirmedMeetupsScreen> {
   final FirestoreService firestoreService = FirestoreService();
   final Map<int, Userprofile?> _userProfiles = {};
   List<NotificationData> _notifications = [];
@@ -45,9 +45,8 @@ class ChatScreenState extends State<ChatScreen> {
   ///   loaded and the UI state has been updated.
   Future<void> _loadNotificationsAndProfiles() async {
     try {
-      final notifications = await firestoreService.fetchNotifications(
+      final notifications = await firestoreService.fetchConfirmed(
         userID: User.instance.id ?? 0,
-        type: NotificationType.knowledgeRequest,
       );
 
       final limitedNotifications = notifications.take(20).toList();
@@ -74,20 +73,7 @@ class ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Requests'),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ConfirmedMeetupsScreen(),
-                ),
-              );
-            },
-            child: const Text('Confirmed'),
-          ),
-        ],
+        title: const Text('Confirmed Requests'),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

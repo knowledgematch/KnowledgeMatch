@@ -4,18 +4,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'model/user.dart';
-import 'screens/login_screen.dart';
-import '/model/local_user.dart';
-import '/screens/request_screen.dart';
-import '/services/matching_algorithm.dart';
-import '/services/notification_service.dart';
-import '/services/user_service.dart';
-import 'model/notification_data.dart';
-import 'model/userprofile.dart';
-import 'screens/main_screen.dart';
+import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/screens/login_screen.dart';
+import 'package:knowledgematch/screens/request_screen.dart';
+import 'package:knowledgematch/services/matching_algorithm.dart';
+import 'package:knowledgematch/services/notification_service.dart';
+import 'package:knowledgematch/services/user_service.dart';
+import 'package:knowledgematch/models/notification_data.dart';
+import 'package:knowledgematch/models/userprofile.dart';
+import 'package:knowledgematch/screens/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:knowledgematch/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +29,6 @@ Future<void> main() async {
 
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -57,35 +55,19 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashScreenState extends State<SplashScreen> {
-
-
   // Instance of Firebase Messaging
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  LocalUser? localUser;
 
   @override
   void initState() {
     super.initState();
     NotificationService().init(widget.navigatorKey);
     _checkLoggedInStatus();
-    _setLocalUser();
     _requestPermissions();
 
     // Initialize FCM
     _initializeFCM();
-    _getToken();
   }
-
-  void _setLocalUser() {
-    localUser = LocalUser(
-        name: "Alice",
-        location: "Location",
-        expertString: "expertString",
-        availability: "availability",
-        langString: "langString",
-        description: "description");
-  }
-
 
   Future<void> _checkLoggedInStatus() async {
     final prefs = await SharedPreferences.getInstance();
@@ -100,17 +82,21 @@ class SplashScreenState extends State<SplashScreen> {
       //update fcmToken
       ApiDbConnection().updateFcmToken(User.instance.id.toString());
       //navigate to MainScreen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainScreen()),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
+      }
     } else {
-      // User is not logged in, navigate to LoginScreen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()));
-          }
+      if (mounted) {
+        // User is not logged in, navigate to LoginScreen
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      }
+    }
   }
+
   // Request notification permissions (especially for iOS)
   void _requestPermissions() async {
     NotificationSettings settings = await _messaging.requestPermission(
@@ -132,9 +118,7 @@ class SplashScreenState extends State<SplashScreen> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
         print(message);
-        NotificationService().showNotification(
-          message: message
-        );
+        NotificationService().showNotification(message: message);
       }
     });
 
@@ -163,9 +147,8 @@ class SplashScreenState extends State<SplashScreen> {
                 );
               } else {
                 return RequestScreen(
-                  userprofile: snapshot.data!,
-                  notificationData: NotificationData.fromMessage(message)
-                );
+                    userprofile: snapshot.data!,
+                    notificationData: NotificationData.fromMessage(message));
               }
             },
           ),
@@ -184,7 +167,7 @@ class SplashScreenState extends State<SplashScreen> {
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
             future: MatchingAlgorithm().getUserProfileById(
-              int.tryParse(message.data['source_user_id']) ?? 0,
+              int.parse(message.data['source_user_id'] ?? 0),
             ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -199,25 +182,14 @@ class SplashScreenState extends State<SplashScreen> {
                 );
               } else {
                 return RequestScreen(
-                  userprofile: snapshot.data!,
-                  notificationData:
-                    NotificationData.fromMessage(message)
-                );
+                    userprofile: snapshot.data!,
+                    notificationData: NotificationData.fromMessage(message));
               }
             },
           ),
         ),
       );
-
     }
-  }
-
-  // Retrieve and print the device's FCM token
-  void _getToken() async {
-    String? token = await _messaging.getToken();
-    print('FCM Token: $token');
-    localUser?.getTokensList()?.add(token!);
-    print('FCM Token: ${localUser?.getTokensList()?.single}');
   }
 
   @override

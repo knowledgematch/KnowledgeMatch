@@ -1,10 +1,12 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
-import 'package:knowledgematch/model/user.dart';
+import 'package:knowledgematch/models/user.dart';
 
 Future<void> initializeUser(int userId) async {
   try {
-    final response = await http.get(Uri.parse('http://86.119.45.62/users/$userId'));
+    final response =
+        await http.get(Uri.parse('http://86.119.45.62/users/$userId'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);

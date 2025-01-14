@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/model/userprofile.dart';
+import 'package:knowledgematch/models/reachability.dart';
+import 'package:knowledgematch/models/search_criteria.dart';
+import 'package:knowledgematch/models/userprofile.dart';
+import 'package:knowledgematch/services/matching_algorithm.dart';
+
 import 'swipe_screen.dart';
-import '../model/search_criteria.dart';
-import '../services/matching_algorithm.dart';
-import '../model/reachability.dart';
 
 class FindMatchesScreen extends StatefulWidget {
   const FindMatchesScreen({super.key});
@@ -15,13 +16,11 @@ class FindMatchesScreen extends StatefulWidget {
 class FindMatchesScreenState extends State<FindMatchesScreen> {
   final _formKey = GlobalKey<FormState>();
   String? keyword;
-  DateTime? selectedTimeFrame;
   String? description;
-  int? reachability;
-  String? country;
+  Reachability? reachability;
 
   late List<String> keywords = [];
-  late List<int> reachabilities = [];
+  late List<Reachability> reachabilities = [];
 
   @override
   void initState() {
@@ -35,14 +34,36 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
     setState(() {});
   }
 
-  Future<List<Userprofile>> _getMatchingUserProfiles(SearchCriteria searchCriteria) async {
-    Future<List<Userprofile>> matchingProfiles = MatchingAlgorithm().matchingAlgorithm(searchCriteria);
+  //TODO move to service method:
+  /// Retrieves a list of user profiles that match the specified search criteria.
+  ///
+  /// This method uses a [MatchingAlgorithm] to identify profiles that meet
+  /// the given [searchCriteria]. The resulting list of profiles is sorted
+  /// by seniority in ascending order, with profiles having a seniority of 0
+  /// prioritized the least.
+  ///
+  /// Parameters:
+  /// - [searchCriteria]: The criteria used to filter and match user profiles.
+  ///
+  /// Returns a [Future] containing a sorted list of [Userprofile] objects.
+  ///
+  /// Sorting Behavior:
+  /// - Profiles with `seniority == 0` are put to -1 as it indicates a lecturer.
+  /// - Other profiles are sorted in ascending order of their seniority values.
+  Future<List<Userprofile>> _getMatchingUserProfiles(
+      SearchCriteria searchCriteria) async {
+    Future<List<Userprofile>> matchingProfiles =
+        MatchingAlgorithm().matchingAlgorithm(searchCriteria);
     List<Userprofile> profiles = await matchingProfiles;
     profiles.sort((a, b) {
-      if (a.seniority == 0) return 1;
-      if (b.seniority == 0) return -1;
-      else return a.seniority.compareTo(b.seniority);
-    });  // Sort matching profiles by seniority  (0-seniority is prioritized the least)
+      if (a.seniority == 0) {
+        return 1;
+      } else if (b.seniority == 0) {
+        return -1;
+      } else {
+        return a.seniority.compareTo(b.seniority);
+      }
+    });
     return profiles;
   }
 
@@ -89,46 +110,12 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                 },
               ),
 
-              const SizedBox(height: 16),
-
-              // Calender Picker
-              const Text(
-                  "What is your desired time frame to discuss the matter?"),
-              InkWell(
-                onTap: () async {
-                  final DateTime? picked = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime(2101),
-                  );
-                  if (picked != null) {
-                    setState(() {
-                      selectedTimeFrame = picked;
-                    });
-                  }
-                },
-                child: InputDecorator(
-                  decoration: InputDecoration(
-                    hintText: selectedTimeFrame != null
-                        ? '${selectedTimeFrame!.toLocal()}'.split(' ')[0]
-                        : 'Date and Time Selector',
-                  ),
-                  child: Text(
-                    selectedTimeFrame != null
-                        ? '${selectedTimeFrame!.toLocal()}'.split(' ')[0]
-                        : 'Select Date',
-                    style: const TextStyle(color: Colors.black54),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
 
               // Issue field
               const Text("Please describe your issue:"),
               TextFormField(
-                maxLines: 3,
+                maxLines: 7,
                 decoration: const InputDecoration(
                   hintText:
                       'For example: How does one proceed in a curve discussion?',
@@ -144,19 +131,18 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                   description = value;
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
 
               // Connection dropdown
               const Text("How do you want to connect?"),
-              DropdownButtonFormField<int>(
+              DropdownButtonFormField<Reachability>(
                 decoration: const InputDecoration(
                   hintText: 'Select an option',
                 ),
                 items: reachabilities.map((reachability) {
-                  return DropdownMenuItem<int>(
+                  return DropdownMenuItem<Reachability>(
                     value: reachability,
-                    child: Text(
-                        ReachabilityValue.fromValue(reachability).description),
+                    child: Text(reachability.toString()),
                   );
                 }).toList(),
                 onChanged: (value) {
@@ -174,20 +160,6 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
 
               const SizedBox(height: 24),
 
-              // Search button
-              const Text("Find students and experts near you"),
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: 'for e.g., Brugg (optional)',
-                  border: OutlineInputBorder(),
-                ),
-                onSaved: (value) {
-                  country = value;
-                },
-              ),
-
-              const SizedBox(height: 24),
-
               ElevatedButton(
                 onPressed: () {
                   FocusScope.of(context).unfocus();
@@ -195,12 +167,8 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                     _formKey.currentState!.save();
                     SearchCriteria searchCriteria = SearchCriteria(
                       keyword: keyword!,
-                      timeFrame: selectedTimeFrame != null
-                          ? selectedTimeFrame!.toIso8601String()
-                          : '',
                       issue: description!,
                       reachability: reachability,
-                      location: country,
                     );
 
                     Navigator.push(

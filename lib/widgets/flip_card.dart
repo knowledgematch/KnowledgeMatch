@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:knowledgematch/models/userprofile.dart';
 import 'package:knowledgematch/widgets/profile_card.dart';
 
-import '../model/userprofile.dart';
 import 'back_card.dart';
 
 class FlipCard extends StatefulWidget {
@@ -13,10 +13,11 @@ class FlipCard extends StatefulWidget {
   FlipCardState createState() => FlipCardState();
 }
 
-class FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin {
+class FlipCardState extends State<FlipCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  bool _isBackVisible = true; // Rückseite wird zuerst angezeigt.
+  bool _isBackVisible = true;
 
   @override
   void initState() {
@@ -31,12 +32,14 @@ class FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin 
     ));
   }
 
+  /// Disposes of the resources used by the controller when the widget is removed from the widget tree.
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
+  /// Called when the widget configuration changes and the widget's state needs to be updated.
   @override
   void didUpdateWidget(covariant FlipCard oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -46,6 +49,7 @@ class FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin 
     }
   }
 
+  /// Toggles the flip animation of the card.
   void toggleCard() {
     if (_controller.isAnimating) return;
     if (_isBackVisible) {
@@ -62,14 +66,13 @@ class FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin 
       onTap: toggleCard,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // Ermitteln der Breite und Höhe aus den Layout-Constraints
           final cardWidth = constraints.maxWidth;
           final cardHeight = constraints.maxHeight;
 
           return AnimatedBuilder(
             animation: _animation,
             builder: (context, child) {
-              final isBack = _animation.value <= 0.5; // Rückseite zuerst
+              final isBack = _animation.value <= 0.5;
               final rotationAngle = _animation.value * 3.1416;
               return Transform(
                 transform: Matrix4.identity()
@@ -78,21 +81,21 @@ class FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin 
                 alignment: Alignment.center,
                 child: isBack
                     ? BackCard(
-                  key: const ValueKey(true),
-                  profile: widget.profile,
-                  width: cardWidth,
-                  height: cardHeight,
-                )
+                        key: const ValueKey(true),
+                        profile: widget.profile,
+                        width: cardWidth,
+                        height: cardHeight,
+                      )
                     : Transform(
-                  transform: Matrix4.rotationY(3.1416),
-                  alignment: Alignment.center,
-                  child: ProfileCard(
-                    key: const ValueKey(false),
-                    profile: widget.profile,
-                    width: cardWidth,
-                    height: cardHeight,
-                  ),
-                ),
+                        transform: Matrix4.rotationY(3.1416),
+                        alignment: Alignment.center,
+                        child: ProfileCard(
+                          key: const ValueKey(false),
+                          profile: widget.profile,
+                          width: cardWidth,
+                          height: cardHeight,
+                        ),
+                      ),
               );
             },
           );

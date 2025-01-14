@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/models/userprofile.dart';
 
-import '../model/userprofile.dart';
 import 'flip_card.dart';
 
 class BackCard extends StatelessWidget {
@@ -37,7 +36,6 @@ class BackCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Avatar mit Rand
           SizedBox(height: 50),
           CircleAvatar(
             radius: 60,
@@ -46,10 +44,10 @@ class BackCard extends StatelessWidget {
               radius: 50,
               backgroundImage: profilePicture != null
                   ? MemoryImage(profilePicture)
-                  : const AssetImage('assets/images/profile.png') as ImageProvider,
+                  : const AssetImage('assets/images/profile.png')
+                      as ImageProvider,
             ),
           ),
-
 
           const SizedBox(height: 16),
 
@@ -64,7 +62,6 @@ class BackCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
 
-          // Dynamische Credentials
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
@@ -83,7 +80,6 @@ class BackCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Beschreibung
           Expanded(
             child: Text(
               profile.description == "null"
@@ -101,9 +97,10 @@ class BackCard extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () {
-                final flipCardState = context.findAncestorStateOfType<FlipCardState>();
+                final flipCardState =
+                    context.findAncestorStateOfType<FlipCardState>();
                 if (flipCardState != null) {
-                  flipCardState.toggleCard(); // Karte drehen
+                  flipCardState.toggleCard();
                 }
               },
               icon: const Icon(Icons.touch_app),
@@ -140,8 +137,9 @@ class BackCard extends StatelessWidget {
 class RotationYTransition extends AnimatedWidget {
   final Widget child;
 
-  const RotationYTransition({Key? key, required Animation<double> turns, required this.child})
-      : super(key: key, listenable: turns);
+  const RotationYTransition(
+      {super.key, required Animation<double> turns, required this.child})
+      : super(listenable: turns);
 
   @override
   Widget build(BuildContext context) {
@@ -152,10 +150,10 @@ class RotationYTransition extends AnimatedWidget {
       child: animation.value < 0.5
           ? child
           : Transform(
-        transform: Matrix4.rotationY(3.1416),
-        alignment: Alignment.center,
-        child: child,
-      ),
+              transform: Matrix4.rotationY(3.1416),
+              alignment: Alignment.center,
+              child: child,
+            ),
     );
   }
 }
