@@ -74,6 +74,7 @@ class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
       }
     });
 
+    //TODO add/remove data in one singular API request and not on every button switch
     // Call the API based on selection
     bool success;
     if (isSelected) {
