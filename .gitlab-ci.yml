@@ -6,11 +6,14 @@ stages:
   - deploy
 
 variables:
-  JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64" # Set Java path for Gradle
+  #JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64" # Set Java path for Gradle
 
 build-job:
   stage: build
   before_script:
+    # Dynamically set JAVA_HOME based on where `java` is actually installed.
+    - export JAVA_HOME="$(dirname "$(dirname "$(which java)")")"
+    - echo "JAVA_HOME is set to $JAVA_HOME"
     - echo "Setting up dynamic Gradle properties..."
     - echo "org.gradle.java.home=$JAVA_HOME" >> android/gradle.properties
     - cat android/gradle.properties
