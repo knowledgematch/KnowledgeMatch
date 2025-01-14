@@ -26,6 +26,7 @@ class NotificationBody extends StatefulWidget {
   NotificationBodyState createState() => NotificationBodyState();
 }
 
+//TODO State Pattern?! - check with expert about general structure of the project and then refactor accordingly
 class NotificationBodyState extends State<NotificationBody> {
   List<RequestDateData> selectedDates = [];
   @override
