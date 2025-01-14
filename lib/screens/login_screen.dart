@@ -77,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  //TODO move to service class
   /// Stores the logged-in user's token and data in shared preferences.
   ///
   /// This method saves the user's authentication token and associated user data in the

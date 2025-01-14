@@ -28,6 +28,7 @@ class ChatScreenState extends State<ChatScreen> {
     _loadNotificationsAndProfiles();
   }
 
+//TODO move to service class
   /// Loads notifications and user profiles asynchronously.
   ///
   /// This method fetches notifications of type [NotificationType.knowledgeRequest]

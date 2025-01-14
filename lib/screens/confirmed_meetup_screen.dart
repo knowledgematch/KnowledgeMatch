@@ -28,6 +28,7 @@ class ConfirmedMeetupsScreenState extends State<ConfirmedMeetupsScreen> {
     _loadNotificationsAndProfiles();
   }
 
+//TODO move to service class
   /// Loads notifications and user profiles asynchronously.
   ///
   /// This method fetches notifications of type [NotificationType.knowledgeRequest]

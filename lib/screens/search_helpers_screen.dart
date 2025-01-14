@@ -34,6 +34,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
     setState(() {});
   }
 
+  //TODO move to service method:
   /// Retrieves a list of user profiles that match the specified search criteria.
   ///
   /// This method uses a [MatchingAlgorithm] to identify profiles that meet

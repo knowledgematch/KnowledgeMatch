@@ -22,6 +22,7 @@ class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
     _loadKeywords();
   }
 
+  //TODO move to service class
   /// Loads keywords for the user and all available keywords.
   ///
   /// This method fetches all available keywords and the keywords associated with the current user.

@@ -39,6 +39,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     _loadUserData();
   }
 
+  //TODO move to service/utility class
   /// Opens the gallery to pick an image, compresses it, and updates the selected image data.
   ///
   /// This method allows the user to pick an image from the gallery, reads the image as bytes,
@@ -64,6 +65,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  //TODO move to service/utility class
   /// Compresses an image to a target size in bytes.
   ///
   /// This method takes an image's byte data and compresses it iteratively to reduce its size
@@ -92,6 +94,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     return compressedBytes;
   }
 
+  //TODO move to service/utility class
   /// Loads the user data from shared preferences and updates the UI.
   ///
   /// This method retrieves the stored user data from shared preferences, decodes it, and updates
@@ -122,6 +125,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  //TODO move to service/utility class
   /// Saves the user's profile data to the database and shared preferences.
   ///
   /// This method sends the updated user profile data to the server via the API. If the save operation is successful,
