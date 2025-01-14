@@ -11,6 +11,8 @@ analyzer:
   errors:
     # until we introduce logging:
     avoid_print: ignore
+    # until we upgrade to newer versions (dependency issue with two packages):
+    deprecated_member_use: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
