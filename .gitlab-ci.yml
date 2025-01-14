@@ -12,7 +12,7 @@ build-job:
   stage: build
   before_script:
     # Dynamically set JAVA_HOME based on where `java` is actually installed.
-    - export JAVA_HOME="$(dirname "$(dirname "$(which java)")")"
+    - export JAVA_HOME="$(which java)"
     - echo "JAVA_HOME is set to $JAVA_HOME"
     - echo "Setting up dynamic Gradle properties..."
     - echo "org.gradle.java.home=$JAVA_HOME" >> android/gradle.properties
