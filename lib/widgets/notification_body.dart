@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/models/notification_data.dart';
 import 'package:knowledgematch/models/reachability.dart';
