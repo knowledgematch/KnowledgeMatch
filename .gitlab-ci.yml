@@ -23,7 +23,6 @@ build-job:
   artifacts:
     paths:
       - build/app/outputs/flutter-apk/app-release.apk
-    expire_in: 1 week # Keep the artifact available for 1 week
 
 unit-test-job:
   stage: test
