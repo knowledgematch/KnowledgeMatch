@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/models/notification_data.dart';
 import 'package:knowledgematch/models/reachability.dart';
@@ -419,12 +420,16 @@ class NotificationBodyState extends State<NotificationBody> {
                             body:
                                 "${selectedDate!.reachability} ${selectedDate!.getFormattedDate()} ${selectedDate!.getFormattedTime()}",
                             payload: selectedDate!.toJson(),
+                            requestID: widget.notificationData.requestID,
                             targetUserId: widget.userprofile.id,
                             sourceUserId: User.instance.id!,
                           );
 
                           await NotificationService().sendMessageToDevice(
                               notification, widget.userprofile.tokens ?? []);
+
+                          FirestoreService()
+                              .addConfirmationToFirestore(notification);
 
                           //Close all notifications associated with the request
                           FirestoreService()
@@ -512,7 +517,7 @@ class NotificationBodyState extends State<NotificationBody> {
                                                       User.instance.id!,
                                                 );
 
-                                                //close previous request
+                                                //close previous request and send new notification
                                                 FirestoreService()
                                                     .notificationStatusUpdate(
                                                         false,
@@ -560,7 +565,6 @@ class NotificationBodyState extends State<NotificationBody> {
     final name = widget.userprofile.name;
     final email = widget.userprofile.email;
 
-    //final email = '$replacedName@students.fhnw.ch';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

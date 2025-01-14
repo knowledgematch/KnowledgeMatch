@@ -120,4 +120,31 @@ class FirestoreService {
       'is_open': isOpen.toString(),
     });
   }
+
+  /// Adds a confirmation notificaiton document to Firestore
+  ///
+  /// Takes the provided [notificationData], swaps the sourceUserId and the targetUserId
+  /// as a copy for the user that sends the confirmation
+  Future<void> addConfirmationToFirestore(
+      NotificationData notificationData) async {
+    final data = {
+      'body': notificationData.body,
+      'is_open': 'false',
+      'notification_type': notificationData.type.toShortString(),
+      'payload': notificationData.payload,
+      'request_id': notificationData.requestID.toString(),
+      'target_user_id': notificationData.sourceUserId
+          .toString(), //Swap source and target user intentionally
+      'source_user_id': notificationData.targetUserId.toString(), //Swap target
+      'title': notificationData.title,
+      'timestamp': DateTime.now().toUtc().toIso8601String()
+    };
+
+    try {
+      await FirebaseFirestore.instance.collection('notifications').add(data);
+      print("Confirmation document was successfully added to Firestore");
+    } catch (e) {
+      print("Error while inserting document: $e");
+    }
+  }
 }
