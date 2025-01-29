@@ -28,7 +28,6 @@ class _ContactScreenState extends State<ContactScreen> {
   }
 
   Future<void> _sendEmail() async {
-    // Replace these with your actual email credentials
     String username = 'sender.knowledge.app@gmail.com';
     String password = "plwl drkb ymfa smpn";
 
@@ -37,7 +36,7 @@ class _ContactScreenState extends State<ContactScreen> {
     final message = Message()
       ..from = Address(username, 'KnowledgeMatch Contact Form')
       ..recipients.add(
-          'fhnw.knowledge.match@gmail.com') // Replace with your recipient email
+          'fhnw.knowledge.match@gmail.com')
       ..subject = 'New Contact Form Submission from ${_nameController.text}'
       ..text = '''
               Name: ${_nameController.text}
@@ -53,9 +52,8 @@ class _ContactScreenState extends State<ContactScreen> {
       });
 
       final sendReport = await send(message, smtpServer);
-      print('Message sent: ' + sendReport.toString());
+      print('Message sent: $sendReport');
 
-      // Clear the form
       _nameController.clear();
       _emailController.clear();
       _messageController.clear();
