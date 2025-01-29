@@ -3,6 +3,7 @@ import 'package:knowledgematch/models/reachability.dart';
 import 'package:knowledgematch/models/search_criteria.dart';
 import 'package:knowledgematch/models/userprofile.dart';
 import 'package:knowledgematch/services/matching_algorithm.dart';
+import 'package:knowledgematch/widgets/app_drawer.dart';
 
 import 'swipe_screen.dart';
 
@@ -74,11 +75,8 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
       appBar: AppBar(
         title: const Text('KnowledgeMatch'),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {},
-        ),
       ),
+      drawer: const AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

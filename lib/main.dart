@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/services.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
@@ -18,6 +18,13 @@ import 'package:knowledgematch/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Lock orientation to portrait mode only
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
