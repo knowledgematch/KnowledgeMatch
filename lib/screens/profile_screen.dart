@@ -10,6 +10,7 @@ import 'login_screen.dart';
 import 'change_pw_screen.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:knowledgematch/widgets/app_drawer.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -203,6 +204,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
+      drawer: const AppDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
