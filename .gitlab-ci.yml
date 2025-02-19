@@ -1,4 +1,4 @@
-image: ghcr.io/cirruslabs/flutter # Flutter Docker image with required tools
+image: ghcr.io/cirruslabs/flutter:3.28.0-0.1.prev # Flutter Docker image with required tools
 stages:
   - build
   - test
