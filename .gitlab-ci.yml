@@ -16,7 +16,8 @@ build-job:
     - echo "Setting up dynamic Gradle properties..."
     - echo "org.gradle.java.home=$JAVA_HOME" >> android/gradle.properties
     - cat android/gradle.properties
-    - flutter clean
+    - rm -rf ~/.flutter
+    - curl -sL https://storage.googleapis.com/download.flutter.dev/flutter_linux_v2.10.0-stable.tar.xz | tar xJf -
     - flutter channel stable
     - flutter upgrade --force
     - flutter doctor
