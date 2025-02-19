@@ -16,9 +16,7 @@ build-job:
     - echo "Setting up dynamic Gradle properties..."
     - echo "org.gradle.java.home=$JAVA_HOME" >> android/gradle.properties
     - cat android/gradle.properties
-    - flutter channel stable
-    - flutter upgrade --force
-    - flutter doctor
+    - flutter --version
     - dart --version
   script:
     - echo "Building Flutter application..."
