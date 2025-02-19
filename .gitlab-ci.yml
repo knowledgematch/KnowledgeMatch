@@ -1,4 +1,4 @@
-image: ghcr.io/cirruslabs/flutter # Flutter Docker image with required tools
+image: ghcr.io/cirruslabs/flutter:latest # Flutter Docker image with required tools
 stages:
   - build
   - test
@@ -6,6 +6,7 @@ stages:
   - deploy
 
 variables:
+  DOCKER_PULL_POLICY: "always"
 
 build-job:
   stage: build
@@ -16,6 +17,8 @@ build-job:
     - echo "Setting up dynamic Gradle properties..."
     - echo "org.gradle.java.home=$JAVA_HOME" >> android/gradle.properties
     - cat android/gradle.properties
+    - flutter --version
+    - dart --version
   script:
     - echo "Building Flutter application..."
     - flutter build apk --release
