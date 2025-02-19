@@ -19,7 +19,9 @@ build-job:
     - curl -LO https://storage.googleapis.com/dart-archive/channels/stable/release/3.7.0/sdk/dartsdk-linux-x64-release.zip
     - unzip dartsdk-linux-x64-release.zip -d /usr/lib/
     - rm dartsdk-linux-x64-release.zip
-    - export PATH="$PATH:/usr/lib/dart/bin"
+    - export DART_HOME=/usr/lib/dart-sdk
+    - export PATH="$DART_HOME/bin:$PATH"
+    - which dart
     - dart --version
   script:
     - echo "Building Flutter application..."
