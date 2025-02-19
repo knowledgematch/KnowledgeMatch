@@ -17,7 +17,7 @@ build-job:
     - echo "org.gradle.java.home=$JAVA_HOME" >> android/gradle.properties
     - cat android/gradle.properties
     - rm -rf ~/.flutter
-    - curl -sL https://storage.googleapis.com/download.flutter.dev/flutter_linux_v2.10.0-stable.tar.xz | tar xJf -
+    - curl -sL https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_3.7.8-stable.tar.xz | tar xJf -
     - flutter channel stable
     - flutter upgrade --force
     - flutter doctor
