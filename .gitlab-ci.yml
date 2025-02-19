@@ -5,9 +5,6 @@ stages:
   - lint
   - deploy
 
-variables:
-  DOCKER_PULL_POLICY: "always"
-
 build-job:
   stage: build
   before_script:
