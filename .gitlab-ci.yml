@@ -15,10 +15,12 @@ build-job:
     - echo "JAVA_HOME is set to $JAVA_HOME"
     - echo "Setting up dynamic Gradle properties..."
     - echo "org.gradle.java.home=$JAVA_HOME" >> android/gradle.properties
-    - curl -fsSL https://dart.dev/get-dart-archive | bash
+    - cat android/gradle.properties
+    - curl -LO https://storage.googleapis.com/dart-archive/channels/stable/release/3.7.0/sdk/dartsdk-linux-x64-release.zip
+    - unzip dartsdk-linux-x64-release.zip -d /usr/lib/
+    - rm dartsdk-linux-x64-release.zip
     - export PATH="$PATH:/usr/lib/dart/bin"
     - dart --version
-    - cat android/gradle.properties
   script:
     - echo "Building Flutter application..."
     - flutter build apk --release
