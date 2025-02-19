@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/models/reachability.dart';
-import 'package:knowledgematch/models/search_criteria.dart';
-import 'package:knowledgematch/models/userprofile.dart';
-import 'package:knowledgematch/services/matching_algorithm.dart';
+import 'package:knowledgematch/domain/models/reachability.dart';
+import 'package:knowledgematch/domain/models/search_criteria.dart';
+import 'package:knowledgematch/domain/models/userprofile.dart';
+import 'package:knowledgematch/data/services/matching_algorithm.dart';
 import 'package:knowledgematch/widgets/app_drawer.dart';
 
-import 'swipe_screen.dart';
+import '../swipe_screen/swipe_screen.dart';
 
 class FindMatchesScreen extends StatefulWidget {
   const FindMatchesScreen({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:knowledgematch/models/userprofile.dart';
+import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/widgets/profile_card.dart';
 
 import 'back_card.dart';

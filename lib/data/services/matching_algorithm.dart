@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:knowledgematch/models/reachability.dart';
-import 'package:knowledgematch/models/search_criteria.dart';
-import 'package:knowledgematch/models/user.dart';
-import 'package:knowledgematch/models/userprofile.dart';
+import 'package:knowledgematch/domain/models/reachability.dart';
+import 'package:knowledgematch/domain/models/search_criteria.dart';
+import 'package:knowledgematch/domain/models/user.dart';
+import 'package:knowledgematch/domain/models/userprofile.dart';
 
 import 'api_db_connection.dart';
 

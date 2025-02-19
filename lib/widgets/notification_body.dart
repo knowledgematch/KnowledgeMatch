@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/models/notification_data.dart';
-import 'package:knowledgematch/models/reachability.dart';
-import 'package:knowledgematch/models/request_date_data.dart';
-import 'package:knowledgematch/models/search_criteria.dart';
-import 'package:knowledgematch/models/user.dart';
-import 'package:knowledgematch/models/userprofile.dart';
-import 'package:knowledgematch/services/firestore_service.dart';
-import 'package:knowledgematch/services/forward_to_external.dart';
-import 'package:knowledgematch/services/notification_service.dart';
+import 'package:knowledgematch/domain/models/notification_data.dart';
+import 'package:knowledgematch/domain/models/reachability.dart';
+import 'package:knowledgematch/domain/models/request_date_data.dart';
+import 'package:knowledgematch/domain/models/search_criteria.dart';
+import 'package:knowledgematch/domain/models/user.dart';
+import 'package:knowledgematch/domain/models/userprofile.dart';
+import 'package:knowledgematch/data/services/firestore_service.dart';
+import 'package:knowledgematch/data/services/forward_to_external.dart';
+import 'package:knowledgematch/data/services/notification_service.dart';
 
 import 'multi_date_time_picker.dart';
 

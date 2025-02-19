@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/screens/profile_screen.dart';
-import 'package:knowledgematch/screens/search_helpers_screen.dart';
+import 'package:knowledgematch/ui/profile_screen/profile_screen.dart';
+import 'package:knowledgematch/ui/search_helpers_screen/search_helpers_screen.dart';
 
-import 'chat_screen.dart';
+import '../chat_screen/chat_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

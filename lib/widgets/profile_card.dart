@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/models/userprofile.dart';
+import 'package:knowledgematch/domain/models/userprofile.dart';
 
 class ProfileCard extends StatelessWidget {
   final Userprofile profile;

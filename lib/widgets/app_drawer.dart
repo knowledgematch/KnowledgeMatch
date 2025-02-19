@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/screens/about_screen.dart';
-import 'package:knowledgematch/screens/contact_screen.dart';
+import 'package:knowledgematch/ui/about_screen/about_screen.dart';
+import 'package:knowledgematch/ui/contact_screen/contact_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});

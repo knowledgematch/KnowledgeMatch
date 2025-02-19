@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/models/reachability.dart';
-import 'package:knowledgematch/models/request_date_data.dart';
+import 'package:knowledgematch/domain/models/reachability.dart';
+import 'package:knowledgematch/domain/models/request_date_data.dart';
 
 class MultiDateTimePicker extends StatefulWidget {
   final Function(List<RequestDateData>) onDatesSelected;

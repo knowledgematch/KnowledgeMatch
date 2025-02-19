@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/services/api_db_connection.dart';
-import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/data/services/api_db_connection.dart';
+import 'package:knowledgematch/domain/models/user.dart';
 
 //TODO Keywords Entries are inserted correctly into the database but the UI isn't properly updating
 class KeywordSelectionScreen extends StatefulWidget {

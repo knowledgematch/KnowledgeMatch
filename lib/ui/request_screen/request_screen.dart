@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/models/notification_data.dart';
+import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/widgets/notification_body.dart';
 
-import '../models/userprofile.dart';
+import '../../domain/models/userprofile.dart';
 
 class RequestScreen extends StatelessWidget {
   final NotificationData notificationData;

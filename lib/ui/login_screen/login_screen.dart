@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:knowledgematch/models/user.dart';
-import 'package:knowledgematch/services/api_db_connection.dart';
+import 'package:knowledgematch/domain/models/user.dart';
+import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:knowledgematch/services/user_service.dart';
-import 'create_profile_screen.dart';
-import 'main_screen.dart';
+import 'package:knowledgematch/data/services/user_service.dart';
+import '../create_profile_screen/create_profile_screen.dart';
+import '../main_screen/main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:test/test.dart';
-import 'package:knowledgematch/models/search_criteria.dart';
-import 'package:knowledgematch/models/reachability.dart';
+import 'package:knowledgematch/domain/models/search_criteria.dart';
+import 'package:knowledgematch/domain/models/reachability.dart';
 
 void main() {
   group('SearchCriteria', () {

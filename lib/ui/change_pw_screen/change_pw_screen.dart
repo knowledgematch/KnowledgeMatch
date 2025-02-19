@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:knowledgematch/services/api_db_connection.dart';
+import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'dart:convert';
 
 class ChangePasswordScreen extends StatefulWidget {

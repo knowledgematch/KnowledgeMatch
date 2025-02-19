@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/models/notification_data.dart';
-import 'package:knowledgematch/models/search_criteria.dart';
-import 'package:knowledgematch/models/user.dart';
-import 'package:knowledgematch/models/userprofile.dart';
-import 'package:knowledgematch/services/notification_service.dart';
+import 'package:knowledgematch/domain/models/notification_data.dart';
+import 'package:knowledgematch/domain/models/search_criteria.dart';
+import 'package:knowledgematch/domain/models/user.dart';
+import 'package:knowledgematch/domain/models/userprofile.dart';
+import 'package:knowledgematch/data/services/notification_service.dart';
 import 'package:knowledgematch/widgets/flip_card.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 

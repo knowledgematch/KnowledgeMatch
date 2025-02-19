@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/domain/models/user.dart';
 
 Future<void> initializeUser(int userId) async {
   try {

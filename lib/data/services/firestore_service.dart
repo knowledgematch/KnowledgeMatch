@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:knowledgematch/models/notification_data.dart';
+import 'package:knowledgematch/domain/models/notification_data.dart';
 
 class FirestoreService {
   /// Fetches notifications for a specific user with an optional filter for notification type.

@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:knowledgematch/services/api_db_connection.dart';
+import 'package:knowledgematch/data/services/api_db_connection.dart';
 
-import 'package:knowledgematch/models/reachability.dart';
-import 'login_screen.dart';
+import 'package:knowledgematch/domain/models/reachability.dart';
+import '../login_screen/login_screen.dart';
 
 class CreateProfileScreen extends StatefulWidget {
   const CreateProfileScreen({super.key});
