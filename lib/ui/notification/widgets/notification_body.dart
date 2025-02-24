@@ -9,7 +9,8 @@ import 'package:knowledgematch/data/services/firestore_service.dart';
 import 'package:knowledgematch/data/services/forward_to_external.dart';
 import 'package:knowledgematch/data/services/notification_service.dart';
 
-import 'multi_date_time_picker.dart';
+import '../../../widgets/multi_date_time_picker.dart';
+
 
 class NotificationBody extends StatefulWidget {
   final NotificationData notificationData;

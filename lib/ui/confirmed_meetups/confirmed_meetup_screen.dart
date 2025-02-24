@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/domain/models/userprofile.dart';
-import 'package:knowledgematch/ui/request_screen/request_screen.dart';
-import 'package:knowledgematch/data/services/firestore_service.dart';
-import 'package:knowledgematch/widgets/notification_card.dart';
+
 import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/user.dart';
+import 'package:knowledgematch/domain/models/userprofile.dart';
+import 'package:knowledgematch/data/services/firestore_service.dart';
 import 'package:knowledgematch/data/services/matching_algorithm.dart';
-import 'package:knowledgematch/ui/confirmed_meetup_screen/confirmed_meetup_screen.dart';
 
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+import '../notification/widgets/notification_card.dart';
+import '../request/request_screen.dart';
+
+class ConfirmedMeetupsScreen extends StatefulWidget {
+  const ConfirmedMeetupsScreen({super.key});
 
   @override
-  ChatScreenState createState() => ChatScreenState();
+  ConfirmedMeetupsScreenState createState() => ConfirmedMeetupsScreenState();
 }
 
-class ChatScreenState extends State<ChatScreen> {
+class ConfirmedMeetupsScreenState extends State<ConfirmedMeetupsScreen> {
   final FirestoreService firestoreService = FirestoreService();
   final Map<int, Userprofile?> _userProfiles = {};
   List<NotificationData> _notifications = [];
@@ -45,9 +46,8 @@ class ChatScreenState extends State<ChatScreen> {
   ///   loaded and the UI state has been updated.
   Future<void> _loadNotificationsAndProfiles() async {
     try {
-      final notifications = await firestoreService.fetchNotifications(
+      final notifications = await firestoreService.fetchConfirmed(
         userID: User.instance.id ?? 0,
-        type: NotificationType.knowledgeRequest,
       );
 
       final limitedNotifications = notifications.take(20).toList();
@@ -74,20 +74,7 @@ class ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Requests'),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ConfirmedMeetupsScreen(),
-                ),
-              );
-            },
-            child: const Text('Confirmed'),
-          ),
-        ],
+        title: const Text('Confirmed Requests'),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

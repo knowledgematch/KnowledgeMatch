@@ -7,8 +7,8 @@ import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:knowledgematch/data/services/user_service.dart';
-import '../create_profile_screen/create_profile_screen.dart';
-import '../main_screen/main_screen.dart';
+import '../create_profile/create_profile_screen.dart';
+import '../main/main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

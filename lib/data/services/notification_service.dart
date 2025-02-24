@@ -7,8 +7,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
-import 'package:knowledgematch/ui/request_screen/request_screen.dart';
 
+import '../../ui/request/request_screen.dart';
 import 'matching_algorithm.dart';
 
 late BuildContext appContext;

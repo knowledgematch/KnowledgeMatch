@@ -5,12 +5,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/reachability.dart';
-import '../keyword_selection_screen/keyword_selection_screen.dart';
-import '../login_screen/login_screen.dart';
-import '../change_pw_screen/change_pw_screen.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knowledgematch/widgets/app_drawer.dart';
+
+import '../change_pw/change_pw_screen.dart';
+import '../keyword_selection/keyword_selection_screen.dart';
+import '../login/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
