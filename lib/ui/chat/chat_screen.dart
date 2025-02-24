@@ -6,8 +6,8 @@ import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/data/services/matching_algorithm.dart';
 
 import '../confirmed_meetups/confirmed_meetup_screen.dart';
-import '../notification/widgets/notification_card.dart';
-import '../request/request_screen.dart';
+import '../request/widgets/notification_card.dart';
+import '../request/widgets/request_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -34,7 +34,7 @@ class ChatScreenState extends State<ChatScreen> {
   ///
   /// This method fetches notifications of type [NotificationType.knowledgeRequest]
   /// for the current user using the [firestoreService]. It limits the notifications
-  /// to the first 20 and then retrieves the user profile for each notification's
+  /// to the first 20 and then retrieves the user profile for each request's
   /// source user. The notifications and user profiles are stored in local variables
   /// and the UI is updated accordingly.
   ///

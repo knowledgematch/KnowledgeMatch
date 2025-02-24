@@ -33,12 +33,12 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
     }
   }
 
-  /// Use the NotificationService to send a [NotificationType.knowledgeRequest] notification.
+  /// Use the NotificationService to send a [NotificationType.knowledgeRequest] request.
   ///
   /// Creates [NotificationData] from [SearchCriteria] and [Userprofile].
   /// Uses the [NotificationService] to send the data to the users [Userprofile.tokens]
   ///
-  /// @param profile to send the notification to.
+  /// @param profile to send the request to.
 
   Future<void> _sendSwipeRightNotification(Userprofile profile) async {
     var topic = widget.searchCriteria.keyword;
@@ -104,7 +104,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                 onSwipeCompleted: (index, direction) {
                   setState(() {
                     if (direction == SwipeDirection.right) {
-                      //send notification
+                      //send request
                       final snackBar = SnackBar(
                         content: const Text('Request sent'),
                         duration: Duration(milliseconds: 500),

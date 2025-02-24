@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 
 class FirestoreService {
-  /// Fetches notifications for a specific user with an optional filter for notification type.
+  /// Fetches notifications for a specific user with an optional filter for request type.
   ///
   /// Queries the `notifications` collection for notifications where the
   /// `target_user_id` matches the given user ID and `is_open` is true.
@@ -109,7 +109,7 @@ class FirestoreService {
   /// Updates the [is_open] field of the document
   ///
   /// sets the [is_open] field according to [isOpen]
-  /// which represents the status of the notification
+  /// which represents the status of the request
   /// [documentID] : document to change the status of
   Future<void> notificationStatusUpdate(bool isOpen, String? documentID) async {
     if (documentID == null) return;

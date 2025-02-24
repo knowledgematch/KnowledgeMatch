@@ -6,8 +6,9 @@ import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/data/services/firestore_service.dart';
 import 'package:knowledgematch/data/services/matching_algorithm.dart';
 
-import '../notification/widgets/notification_card.dart';
-import '../request/request_screen.dart';
+import '../request/widgets/notification_card.dart';
+import '../request/widgets/request_screen.dart';
+
 
 class ConfirmedMeetupsScreen extends StatefulWidget {
   const ConfirmedMeetupsScreen({super.key});
@@ -34,7 +35,7 @@ class ConfirmedMeetupsScreenState extends State<ConfirmedMeetupsScreen> {
   ///
   /// This method fetches notifications of type [NotificationType.knowledgeRequest]
   /// for the current user using the [firestoreService]. It limits the notifications
-  /// to the first 20 and then retrieves the user profile for each notification's
+  /// to the first 20 and then retrieves the user profile for each request's
   /// source user. The notifications and user profiles are stored in local variables
   /// and the UI is updated accordingly.
   ///

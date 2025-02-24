@@ -26,7 +26,7 @@ class _ContactScreenState extends State<ContactScreen> {
   }
 
   Future<void> _sendEmail() async {
-    String username = 'sender.knowledge.app@gmail.com';
+    String username = 'sender.knowledge.app@gmail.com'; //TODO hide login data & pw
     String password = "plwl drkb ymfa smpn";
     String name = "KnowledgeMatch Contact Form";
     String email = username;

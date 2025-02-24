@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:knowledgematch/ui/login/login_screen.dart';
 import 'package:knowledgematch/ui/main/main_screen.dart';
-import 'package:knowledgematch/ui/request/request_screen.dart';
+import 'package:knowledgematch/ui/request/widgets/request_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/data/services/matching_algorithm.dart';
@@ -104,7 +104,7 @@ class SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  // Request notification permissions (especially for iOS)
+  // Request request permissions (especially for iOS)
   void _requestPermissions() async {
     NotificationSettings settings = await _messaging.requestPermission(
       alert: true,

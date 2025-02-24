@@ -8,7 +8,7 @@ import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 
-import '../../ui/request/request_screen.dart';
+import '../../ui/request/widgets/request_screen.dart';
 import 'matching_algorithm.dart';
 
 late BuildContext appContext;
@@ -41,7 +41,7 @@ class NotificationService {
     iOS: initializationSettingsIOS,
   );
 
-  /// Create the notification channel for Android
+  /// Create the request channel for Android
   Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
     this.navigatorKey = navigatorKey;
     await flutterLocalNotificationsPlugin.initialize(
@@ -52,7 +52,7 @@ class NotificationService {
     await _createNotificationChannel();
   }
 
-  /// Create a notification channel for Android (8.0+)
+  /// Create a request channel for Android (8.0+)
   Future<void> _createNotificationChannel() async {
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'default_channel',
@@ -67,15 +67,15 @@ class NotificationService {
         ?.createNotificationChannel(channel);
   }
 
-  /// Handles the notification selection action.
+  /// Handles the request selection action.
   ///
-  /// This method processes the payload of the notification, decodes it, and uses the
+  /// This method processes the payload of the request, decodes it, and uses the
   /// `source_user_id` to fetch the corresponding [Userprofile]. The profile is then passed
-  /// to a `RequestScreen` for display. If the notification payload is null or invalid,
+  /// to a `RequestScreen` for display. If the request payload is null or invalid,
   /// appropriate actions are taken.
   ///
   /// Parameters:
-  /// - [notificationResponse]: The response object containing the notification data.
+  /// - [notificationResponse]: The response object containing the request data.
   Future<void> onSelectNotification(
       NotificationResponse notificationResponse) async {
     if (notificationResponse.payload != null) {
@@ -111,19 +111,19 @@ class NotificationService {
     }
   }
 
-  /// Displays a notification with the given message and payload.
+  /// Displays a request with the given message and payload.
   ///
   /// This method is responsible for creating and displaying notifications on both
   /// Android and iOS platforms. It uses `flutterLocalNotificationsPlugin` to show
-  /// the notification and sets up the notification details (e.g., channel, importance,
-  /// and priority). The payload (optional) is also included in the notification data.
+  /// the request and sets up the request details (e.g., channel, importance,
+  /// and priority). The payload (optional) is also included in the request data.
   ///
   /// Parameters:
-  /// - [message]: The notification message to display.
-  /// - [payload]: Optional data to associate with the notification.
-  /// - [channelId]: The ID of the notification channel (defaults to 'default_channel').
-  /// - [channelName]: The name of the notification channel (defaults to 'Default Notifications').
-  /// - [channelDescription]: The description of the notification channel (defaults to a generic description).
+  /// - [message]: The request message to display.
+  /// - [payload]: Optional data to associate with the request.
+  /// - [channelId]: The ID of the request channel (defaults to 'default_channel').
+  /// - [channelName]: The name of the request channel (defaults to 'Default Notifications').
+  /// - [channelDescription]: The description of the request channel (defaults to a generic description).
   Future<void> showNotification({
     required RemoteMessage message,
     String? payload,
@@ -163,13 +163,13 @@ class NotificationService {
   /// Sends a message to the specified devices using Firebase Cloud Functions.
   ///
   /// This method is responsible for invoking a Firebase Cloud Function to send
-  /// a notification to a list of device tokens. It sends the notification details
+  /// a request to a list of device tokens. It sends the request details
   /// such as title, body, payload, and additional metadata (e.g., user IDs, timestamps).
   /// The result of the function call is logged for success or failure.
   ///
   /// Parameters:
-  /// - [notificationData]: The notification data to send to the devices.
-  /// - [tokens]: The list of device tokens to which the notification will be sent.
+  /// - [notificationData]: The request data to send to the devices.
+  /// - [tokens]: The list of device tokens to which the request will be sent.
   Future<void> sendMessageToDevice(
       NotificationData notificationData, List<String> tokens) async {
     final result =
