@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 
-//TODO Keywords Entries are inserted correctly into the database but the UI isn't properly updating
+/// Screen for selecting keywords.
+///
+/// Displays all available keywords along with checkboxes and shows which keywords the user has selected.
+/// Changes are saved only when the user taps the save button.
 class KeywordSelectionScreen extends StatefulWidget {
   const KeywordSelectionScreen({super.key});
 
@@ -10,11 +13,14 @@ class KeywordSelectionScreen extends StatefulWidget {
   KeywordSelectionScreenState createState() => KeywordSelectionScreenState();
 }
 
+/// State for [KeywordSelectionScreen].
 class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
   final ApiDbConnection _apiDbConnection = ApiDbConnection();
   late Future<List<Map<String, dynamic>>> _allKeywordsFuture;
   late Future<List<Map<String, dynamic>>> _userKeywordsFuture;
   Set<int> _selectedKeywordIds = {};
+  Set<int> _initialKeywordIds = {};
+  bool _isSaving = false; // Indicates if a save operation is in progress.
 
   @override
   void initState() {
@@ -22,18 +28,11 @@ class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
     _loadKeywords();
   }
 
-  //TODO move to service class
-  /// Loads keywords for the user and all available keywords.
+  /// Loads all keywords and the keywords selected by the current user.
   ///
-  /// This method fetches all available keywords and the keywords associated with the current user.
-  /// It updates the state with the user's selected keyword IDs once the user-specific keywords
-  /// are successfully fetched. If an error occurs while fetching user keywords, an error is printed.
-  ///
-  /// Parameters:
-  /// - This method does not take any parameters. It uses the current user's ID to fetch their keywords.
-  ///
-  /// Returns:
-  /// - This method does not return a value. It updates the state with the user's selected keyword IDs.
+  /// This method fetches the list of all available keywords and the list of keywords associated
+  /// with the current user (based on [User.instance.id]). The user's selected keyword IDs are
+  /// then updated in the local state. The initial selection is stored in [_initialKeywordIds].
   void _loadKeywords() {
     final userId = User.instance.id!;
     _allKeywordsFuture = _apiDbConnection.fetchKeywords();
@@ -43,66 +42,91 @@ class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
       setState(() {
         _selectedKeywordIds =
             userKeywords.map<int>((keyword) => keyword['K_ID'] as int).toSet();
+        // Save initial selection for later comparison.
+        _initialKeywordIds = Set<int>.from(_selectedKeywordIds);
       });
     }).catchError((error) {
       print('Error fetching user keywords: $error');
     });
   }
 
-  /// Toggles the selection state of a keyword and updates the API accordingly.
+  /// Toggles the selection state of a keyword locally.
   ///
-  /// This method checks if the given keyword ID is already selected, updates the local selection
-  /// state optimistically, and then calls the API to either add or remove the keyword for the user.
-  /// If the API call fails, the local selection state is reverted, and an error message is shown.
+  /// This method updates the local state to add or remove a keyword ID from [_selectedKeywordIds]
+  /// when the user taps the corresponding checkbox. The API is not called immediately;
+  /// instead, all changes will be sent when the user taps "Save".
   ///
-  /// Parameters:
-  /// - [keywordId]: The ID of the keyword to toggle the selection for.
-  ///
-  /// Returns:
-  /// - This method does not return a value. It updates the selection state and shows a snack bar if
-  ///   the API call fails.
-  void _toggleKeywordSelection(int keywordId) async {
-    final userId = User.instance.id!;
-    bool isSelected = _selectedKeywordIds.contains(keywordId);
-
-    // Optimistically update selection state
+  /// Parameter:
+  /// - [keywordId]: The ID of the keyword to toggle.
+  void _toggleKeywordSelection(int keywordId) {
     setState(() {
-      if (isSelected) {
+      if (_selectedKeywordIds.contains(keywordId)) {
         _selectedKeywordIds.remove(keywordId);
       } else {
         _selectedKeywordIds.add(keywordId);
       }
     });
+  }
 
-    //TODO add/remove data in one singular API request and not on every button switch
-    // Call the API based on selection
-    bool success;
-    if (isSelected) {
-      success =
-          await _apiDbConnection.removeUser2KeywordEntry(userId, keywordId);
-    } else {
-      success = await _apiDbConnection.addUser2KeywordEntry(userId, keywordId);
+  /// Saves keyword changes by comparing the current selections to the initial selections.
+  ///
+  /// This method determines which keywords have been added or removed since the keywords were loaded,
+  /// and then calls [addUser2KeywordEntry] for added keywords and [removeUser2KeywordEntry] for removed keywords.
+  /// All API calls are only made when the user presses the save button.
+  ///
+  /// Returns a [Future] that completes once all API calls have finished.
+  Future<void> _saveKeywordChanges() async {
+    setState(() {
+      _isSaving = true;
+    });
+
+    final userId = User.instance.id!;
+    // Determine which keywords were added or removed.
+    final addedKeywords = _selectedKeywordIds.difference(_initialKeywordIds);
+    final removedKeywords = _initialKeywordIds.difference(_selectedKeywordIds);
+
+    bool allSuccess = true;
+
+    // Process added keywords.
+    for (final kid in addedKeywords) {
+      if (!await _apiDbConnection.addUser2KeywordEntry(userId, kid)) {
+        allSuccess = false;
+        print('Failed to add keyword with ID: $kid');
+      }
     }
 
-    if (!success) {
-      // Revert selection if API call fails
-      setState(() {
-        if (isSelected) {
-          _selectedKeywordIds
-              .add(keywordId); // Re-add if it was previously selected
-        } else {
-          _selectedKeywordIds
-              .remove(keywordId); // Re-remove if it was previously unselected
-        }
-      });
+    // Process removed keywords.
+    for (final kid in removedKeywords) {
+      if (!await _apiDbConnection.removeUser2KeywordEntry(userId, kid)) {
+        allSuccess = false;
+        print('Failed to remove keyword with ID: $kid');
+      }
+    }
+
+    setState(() {
+      _isSaving = false;
+    });
+
+    //TODO Fix User Feedback
+    // Provide user feedback.
+    if (!allSuccess) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-                'Failed to update keyword selection for keyword ID: $keywordId'),
+          const SnackBar(
+            content: Text('Failed to update keyword selection'),
           ),
         );
       }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Keyword selection updated successfully'),
+          ),
+        );
+      }
+      // Update the initial state to reflect the new saved selection.
+      _initialKeywordIds = Set<int>.from(_selectedKeywordIds);
     }
   }
 
@@ -111,6 +135,17 @@ class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select Keywords'),
+        actions: [
+          IconButton(
+            icon: _isSaving
+                ? const CircularProgressIndicator(
+              color: Colors.white,
+            )
+                : const Icon(Icons.save),
+            onPressed: _isSaving ? null : _saveKeywordChanges,
+            tooltip: 'Save changes',
+          )
+        ],
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _allKeywordsFuture,
@@ -133,12 +168,8 @@ class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
               } else if (userKeywordsSnapshot.hasError) {
                 return Center(
                     child: Text('Error: ${userKeywordsSnapshot.error}'));
-              } else if (userKeywordsSnapshot.hasData) {
-                // Populate selected keywords once
-                _selectedKeywordIds = userKeywordsSnapshot.data!
-                    .map<int>((keyword) => keyword['K_ID'] as int)
-                    .toSet();
               }
+              // The initial selection has been set in _loadKeywords().
 
               return _buildKeywordList(allKeywordsSnapshot.data!);
             },
@@ -148,6 +179,14 @@ class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
     );
   }
 
+  /// Builds the list view for all keywords.
+  ///
+  /// This widget displays a [ListView] of keywords with a [Checkbox] next to each.
+  ///
+  /// Parameter:
+  /// - [allKeywords]: A list of maps representing all available keywords.
+  ///
+  /// Returns a [Widget] displaying the keyword list.
   Widget _buildKeywordList(List<Map<String, dynamic>> allKeywords) {
     return ListView.builder(
       itemCount: allKeywords.length,
@@ -162,7 +201,6 @@ class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
           trailing: Checkbox(
             value: isSelected,
             onChanged: (value) {
-              // Ensures that the value is not null
               if (value != null) {
                 _toggleKeywordSelection(keywordId);
               }
