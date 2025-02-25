@@ -2,24 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 
 import '../../../domain/models/userprofile.dart';
+import '../view_model/request.dart';
 import 'notification_body.dart';
 
 class RequestScreen extends StatelessWidget {
-  final NotificationData notificationData;
-  final Userprofile userprofile;
+  final Request request; //viewmodel
 
-  const RequestScreen({
-    super.key,
-    required this.userprofile,
-    required this.notificationData,
-  });
+  const RequestScreen({super.key, required this.request});
 
   @override
   Widget build(BuildContext context) {
-    print('UserProfile ID: ${userprofile.name}');
+    print('UserProfile ID: ${request.userprofile.name}');
     return Scaffold(
         appBar: AppBar(
-          title: _buildTitle(notificationData),
+          title: _buildTitle(),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
@@ -31,16 +27,17 @@ class RequestScreen extends StatelessWidget {
           foregroundColor: Colors.black,
         ),
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          _userProfileCard(userprofile),
+          _userProfileCard(request.userprofile),
           Expanded(
             child: NotificationBody(
-                userprofile: userprofile, notificationData: notificationData),
+                userprofile: request.userprofile,
+                notificationData: request.notificationData),
           )
         ]));
   }
 
-  Widget _buildTitle(NotificationData notification) {
-    var type = notification.type;
+  Widget _buildTitle() {
+    var type = request.notificationData.type;
     switch (type) {
       case NotificationType.knowledgeRequest:
         return Text("New request:");
