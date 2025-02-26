@@ -3,9 +3,10 @@ import 'package:knowledgematch/domain/models/reachability.dart';
 import 'package:knowledgematch/domain/models/search_criteria.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/data/services/matching_algorithm.dart';
+import 'package:knowledgematch/ui/swipe/view_model/swipe_view_model.dart';
 import 'package:knowledgematch/widgets/app_drawer.dart';
 
-import '../swipe/swipe_screen.dart';
+import '../swipe/widgets/swipe_screen.dart';
 
 
 class FindMatchesScreen extends StatefulWidget {
@@ -174,8 +175,9 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => SwipeScreen(
-                            searchCriteria: searchCriteria,
-                            profiles: _getMatchingUserProfiles(searchCriteria)),
+                            viewModel: SwipeViewModel(
+                                searchCriteria: searchCriteria,
+                                profiles: _getMatchingUserProfiles(searchCriteria))),
                       ),
                     );
                   }

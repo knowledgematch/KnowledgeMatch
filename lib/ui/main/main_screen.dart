@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../chat/chat_screen.dart';
 import '../profile/profile_screen.dart';
-import '../search_helpers/search_helpers_screen.dart';
+import '../find_matches/find_matches_screen.dart';
 
 
 class MainScreen extends StatefulWidget {

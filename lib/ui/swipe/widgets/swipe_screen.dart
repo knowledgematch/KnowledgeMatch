@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/domain/models/notification_data.dart';
-import 'package:knowledgematch/domain/models/search_criteria.dart';
-import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
-import 'package:knowledgematch/data/services/notification_service.dart';
-import 'package:knowledgematch/widgets/flip_card.dart';
+import 'package:knowledgematch/ui/swipe/view_model/swipe_view_model.dart';
+import 'package:knowledgematch/ui/swipe/widgets/flip_card.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
 class SwipeScreen extends StatefulWidget {
-  final SearchCriteria searchCriteria;
-  final Future<List<Userprofile>> profiles;
+  final SwipeViewModel viewModel;
 
   const SwipeScreen({
     super.key,
-    required this.searchCriteria,
-    required this.profiles,
+    required this.viewModel,
   });
 
   @override
@@ -22,7 +17,6 @@ class SwipeScreen extends StatefulWidget {
 }
 
 class ProfileSwipeScreenState extends State<SwipeScreen> {
-  final SwipableStackController _controller = SwipableStackController();
   bool shouldShowGlow = false;
 
   void checkSwipeDirection(double swipeDistance) {
@@ -33,27 +27,6 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
     }
   }
 
-  /// Use the NotificationService to send a [NotificationType.knowledgeRequest] request.
-  ///
-  /// Creates [NotificationData] from [SearchCriteria] and [Userprofile].
-  /// Uses the [NotificationService] to send the data to the users [Userprofile.tokens]
-  ///
-  /// @param profile to send the request to.
-
-  Future<void> _sendSwipeRightNotification(Userprofile profile) async {
-    var topic = widget.searchCriteria.keyword;
-    var notificationData = NotificationData(
-      type: NotificationType.knowledgeRequest,
-      title: "Your knowledge has been requested!",
-      body:
-          "From: ${User.instance.name} ${User.instance.surname}, Topic: $topic",
-      payload: widget.searchCriteria.toJSON(),
-      targetUserId: profile.id,
-      sourceUserId: User.instance.id ?? 0,
-    );
-    await NotificationService()
-        .sendMessageToDevice(notificationData, profile.tokens ?? []);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +34,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: FutureBuilder<List<Userprofile>>(
-          future: widget.profiles, // The Future that holds the list
+          future: widget.viewModel.profiles, // The Future that holds the list
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Text("Matches Loading...");
@@ -79,7 +52,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
         centerTitle: true,
       ),
       body: FutureBuilder<List<Userprofile>>(
-        future: widget.profiles,
+        future: widget.viewModel.profiles,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -98,26 +71,12 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: SwipableStack(
-                controller: _controller,
+                controller: widget.viewModel.controller,
                 itemCount: profiles.length,
                 horizontalSwipeThreshold: 0.8,
                 onSwipeCompleted: (index, direction) {
                   setState(() {
-                    if (direction == SwipeDirection.right) {
-                      //send request
-                      final snackBar = SnackBar(
-                        content: const Text('Request sent'),
-                        duration: Duration(milliseconds: 500),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      _sendSwipeRightNotification(
-                          profiles[_controller.currentIndex]);
-                      profiles.removeAt(_controller.currentIndex);
-                      _controller.currentIndex--;
-                    } else if (direction == SwipeDirection.left) {}
-                    if (_controller.currentIndex == profiles.length - 1) {
-                      _controller.currentIndex = -1;
-                    }
+                    widget.viewModel.handleSwipe(direction, profiles, context);
                   });
                 },
                 builder: (context, properties) {
