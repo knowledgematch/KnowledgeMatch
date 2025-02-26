@@ -4,23 +4,18 @@ import 'package:knowledgematch/domain/models/reachability.dart';
 import 'package:knowledgematch/domain/models/request_date_data.dart';
 import 'package:knowledgematch/domain/models/search_criteria.dart';
 import 'package:knowledgematch/domain/models/user.dart';
-import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/data/services/firestore_service.dart';
 import 'package:knowledgematch/data/services/forward_to_external.dart';
 import 'package:knowledgematch/data/services/notification_service.dart';
+import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
 
 import '../../../widgets/multi_date_time_picker.dart';
-
+import 'on_request_body.dart';
 
 class NotificationBody extends StatefulWidget {
-  final NotificationData notificationData;
-  final Userprofile userprofile;
+  final RequestViewModel viewModel;
 
-  const NotificationBody({
-    super.key,
-    required this.userprofile,
-    required this.notificationData,
-  });
+  const NotificationBody({super.key, required this.viewModel});
 
   @override
   NotificationBodyState createState() => NotificationBodyState();
@@ -31,143 +26,15 @@ class NotificationBodyState extends State<NotificationBody> {
   List<RequestDateData> selectedDates = [];
   @override
   Widget build(BuildContext context) {
-    var type = widget.notificationData.type;
+    var type = widget.viewModel.notificationData.type;
     return switch (type) {
-      NotificationType.knowledgeRequest => _onRequestBody(context),
+      NotificationType.knowledgeRequest =>
+        OnRequestBody(viewModel: widget.viewModel),
       NotificationType.requestDeclined => _onDeclinedBody(context),
       NotificationType.requestAccepted => _onAcceptBody(context),
       NotificationType.meetupRequest => _onMeetupRequestBody(context),
       NotificationType.meetupConfirmation => _onMeetupConfirmation(context),
     };
-  }
-
-  Widget _onRequestBody(BuildContext context) {
-    SearchCriteria searchCriteria =
-        SearchCriteria.fromJSON(widget.notificationData.payload);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 24),
-        Card(
-          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: ListTile(
-              title: Text(
-                "New Knowledge request",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              trailing: Icon(Icons.question_mark_rounded,
-                  color: Colors.orange, size: 40)),
-        ),
-
-        SizedBox(height: 24),
-        Text(
-          'Problem description:',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 8),
-        Card(
-          elevation: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              searchCriteria.issue,
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-          ),
-        ),
-        Spacer(),
-
-        // Action Buttons
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ElevatedButton(
-              onPressed: widget.notificationData.isOpen ==
-                      true //Check if the notificaion is still Open -> null if 'false' or null, which disables button
-                  ? () async {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Request accepted.")));
-                        Navigator.pop(context);
-                      }
-
-                      var notification = NotificationData(
-                          type: NotificationType.requestAccepted,
-                          title: "Accepted request",
-                          body:
-                              "Your request has been accepted by ${User.instance.name} ${User.instance.surname}",
-                          payload: searchCriteria.toJSON(),
-                          targetUserId: widget.userprofile.id,
-                          sourceUserId: User.instance.id!,
-                          requestID: widget.notificationData.requestID);
-                      FirestoreService().notificationStatusUpdate(
-                          false, widget.notificationData.documentID);
-                      await NotificationService().sendMessageToDevice(
-                          notification, widget.userprofile.tokens ?? []);
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: Text(
-                'Accept',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: widget.notificationData.isOpen == true
-                  ? () async {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Request declined.")));
-                        Navigator.pop(context);
-                      }
-
-                      var notification = NotificationData(
-                        type: NotificationType.requestDeclined,
-                        title: "Declined request",
-                        body:
-                            "Your request was declined by ${User.instance.name} ${User.instance.surname}",
-                        payload: searchCriteria.toJSON(),
-                        targetUserId: widget.notificationData.sourceUserId,
-                        sourceUserId: widget.userprofile.id,
-                        requestID: widget.notificationData.requestID,
-                      );
-
-                      await NotificationService().sendMessageToDevice(
-                          notification, widget.userprofile.tokens ?? []);
-                      FirestoreService()
-                          .closeRequest(widget.notificationData.requestID);
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: Text(
-                'Decline',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
   }
 
   Widget _onAcceptBody(BuildContext context) {
