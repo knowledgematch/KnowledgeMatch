@@ -44,7 +44,7 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
           searchCriteriaReachability:
               widget.viewModel.searchCriteria.reachability ??
                   Reachability.onlineOrInPerson,
-          onDatesSelected: (dates) async {
+          onDatesSelected: (dates) {
             setState(() {
               widget.viewModel.selectedDates = dates;
             });

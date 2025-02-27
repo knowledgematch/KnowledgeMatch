@@ -6,6 +6,7 @@ import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/data/services/firestore_service.dart';
 import 'package:knowledgematch/data/services/matching_algorithm.dart';
 
+import '../request/view_model/request_view_model.dart';
 import '../request/widgets/notification_card.dart';
 import '../request/widgets/request_screen.dart';
 
@@ -95,8 +96,10 @@ class ConfirmedMeetupsScreenState extends State<ConfirmedMeetupsScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => RequestScreen(
+                                  viewModel: RequestViewModel(
                                   notificationData: notification,
                                   userprofile: userProfile,
+                                  ),
                                 ),
                               ),
                             );

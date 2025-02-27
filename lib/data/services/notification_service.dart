@@ -8,6 +8,7 @@ import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 
+import '../../ui/request/view_model/request_view_model.dart';
 import '../../ui/request/widgets/request_screen.dart';
 import 'matching_algorithm.dart';
 
@@ -101,8 +102,10 @@ class NotificationService {
                 );
               } else {
                 return RequestScreen(
+                  viewModel: RequestViewModel(
                     userprofile: snapshot.data!,
-                    notificationData: NotificationData.fromFirestoreData(data));
+                    notificationData: NotificationData.fromFirestoreData(data)),
+                );
               }
             },
           ),

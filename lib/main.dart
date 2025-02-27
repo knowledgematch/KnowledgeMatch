@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:knowledgematch/ui/login/login_screen.dart';
 import 'package:knowledgematch/ui/main/main_screen.dart';
+import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
 import 'package:knowledgematch/ui/request/widgets/request_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knowledgematch/domain/models/user.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     appContext = context;
@@ -57,6 +59,7 @@ class SplashScreen extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
 
   const SplashScreen({super.key, required this.navigatorKey});
+
   @override
   SplashScreenState createState() => SplashScreenState();
 }
@@ -154,8 +157,10 @@ class SplashScreenState extends State<SplashScreen> {
                 );
               } else {
                 return RequestScreen(
-                    userprofile: snapshot.data!,
-                    notificationData: NotificationData.fromMessage(message));
+                  viewModel: RequestViewModel(
+                      userprofile: snapshot.data!,
+                      notificationData: NotificationData.fromMessage(message)),
+                );
               }
             },
           ),
@@ -189,8 +194,10 @@ class SplashScreenState extends State<SplashScreen> {
                 );
               } else {
                 return RequestScreen(
-                    userprofile: snapshot.data!,
-                    notificationData: NotificationData.fromMessage(message));
+                  viewModel: RequestViewModel(
+                      userprofile: snapshot.data!,
+                      notificationData: NotificationData.fromMessage(message)),
+                );
               }
             },
           ),

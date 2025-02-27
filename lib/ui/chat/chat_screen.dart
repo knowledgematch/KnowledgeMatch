@@ -6,6 +6,7 @@ import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/data/services/matching_algorithm.dart';
 
 import '../confirmed_meetups/confirmed_meetup_screen.dart';
+import '../request/view_model/request_view_model.dart';
 import '../request/widgets/notification_card.dart';
 import '../request/widgets/request_screen.dart';
 
@@ -108,8 +109,10 @@ class ChatScreenState extends State<ChatScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => RequestScreen(
+                                  viewModel: RequestViewModel(
                                   notificationData: notification,
                                   userprofile: userProfile,
+                                  ),
                                 ),
                               ),
                             );

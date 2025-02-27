@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:knowledgematch/domain/models/search_criteria.dart';
 
 import '../../../data/services/firestore_service.dart';
+import '../../../data/services/forward_to_external.dart';
 import '../../../data/services/notification_service.dart';
 import '../../../domain/models/notification_data.dart';
 import '../../../domain/models/request_date_data.dart';
@@ -11,12 +12,15 @@ import '../../../domain/models/userprofile.dart';
 class RequestViewModel extends ChangeNotifier {
   final NotificationData notificationData;
   final Userprofile userprofile;
-  final SearchCriteria searchCriteria;
 
   RequestViewModel({required this.notificationData, required this.userprofile})
       : searchCriteria = SearchCriteria.fromJSON(notificationData.payload);
 
   List<RequestDateData> selectedDates = [];
+  List<RequestDateData> incomingDates = [];
+  List<RequestDateData> newDates = [];
+  SearchCriteria searchCriteria;
+  RequestDateData? selectedDate;
 
   void acceptRequest() async {
     var notification = NotificationData(
@@ -73,5 +77,84 @@ class RequestViewModel extends ChangeNotifier {
 
     await NotificationService()
         .sendMessageToDevice(notification, userprofile.tokens ?? []);
+  }
+
+  void parseIncomingDates() {
+    try {
+      var jsonData = notificationData.payload;
+
+      print("JsonData: $jsonData}");
+      //Extract the list of requested meetups
+      if (jsonData['dates'] is Map) {
+        var datesData = jsonData['dates'];
+        if (datesData['meetupsRequested'] is List) {
+          List<dynamic> meetups = datesData['meetupsRequested'];
+
+          //Parse each meetup entry
+          incomingDates = meetups.map((item) {
+            return RequestDateData.fromJson(item);
+          }).toList();
+        }
+      }
+      if (jsonData['search_criteria'] is Map) {
+        searchCriteria = SearchCriteria.fromJSON(jsonData['search_criteria']);
+        print(searchCriteria.toString());
+      }
+    } catch (e) {
+      print('Error parsing JSON: $e');
+    }
+  }
+
+  void confirmDate() async {
+    //Confirm the selected date
+    var notification = NotificationData(
+      type: NotificationType.meetupConfirmation,
+      title: "Meetup Confirmation",
+      body:
+          "${selectedDate!.reachability} ${selectedDate!.getFormattedDate()} ${selectedDate!.getFormattedTime()}",
+      payload: selectedDate!.toJson(),
+      requestID: notificationData.requestID,
+      targetUserId: userprofile.id,
+      sourceUserId: User.instance.id!,
+    );
+
+    await NotificationService()
+        .sendMessageToDevice(notification, userprofile.tokens ?? []);
+
+    FirestoreService().addConfirmationToFirestore(notification);
+
+    //Close all notifications associated with the request
+    FirestoreService().closeRequest(notificationData.requestID);
+  }
+
+  void proposeNewDates() async {
+    final dates = RequestDateData.buildDatesMap(newDates);
+    Map<String, dynamic> combineJson = {
+      "dates": dates,
+      "search_criteria": searchCriteria.toJSON(),
+    };
+
+    var notification = NotificationData(
+      type: NotificationType.meetupRequest,
+      title: "Request for New Dates",
+      body: "${User.instance.name} requested new dates!",
+      payload: combineJson,
+      targetUserId: userprofile.id,
+      sourceUserId: User.instance.id!,
+    );
+
+    //close previous request and send new notification
+    FirestoreService()
+        .notificationStatusUpdate(false, notificationData.documentID);
+    await NotificationService()
+        .sendMessageToDevice(notification, userprofile.tokens ?? []);
+  }
+
+  void closeRequestDelegate() async {
+    FirestoreService().closeRequest(notificationData.requestID);
+  }
+
+  void forwardToTeamsDelegate() async {
+    ForwardToExternal.openTeamsChat(userprofile.email);
   }
 }
