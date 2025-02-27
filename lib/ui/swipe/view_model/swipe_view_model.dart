@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/data/services/matching_algorithm.dart';
 
 import '../../../data/services/notification_service.dart';
 import '../../../domain/models/notification_data.dart';
@@ -9,7 +10,7 @@ import 'package:swipable_stack/swipable_stack.dart';
 
 class SwipeViewModel extends ChangeNotifier {
   final SearchCriteria searchCriteria;
-  final Future<List<Userprofile>> profilesFuture;
+  late final Future<List<Userprofile>> profilesFuture;
 
   final SwipableStackController controller = SwipableStackController();
 
@@ -17,8 +18,9 @@ class SwipeViewModel extends ChangeNotifier {
 
   SwipeViewModel({
     required this.searchCriteria,
-    required this.profilesFuture,
-  });
+  }){
+    profilesFuture = MatchingAlgorithm().getMatchingUserProfiles(searchCriteria);
+  }
 
   void setProfiles(List<Userprofile> loadedProfiles) {
     profiles = loadedProfiles;

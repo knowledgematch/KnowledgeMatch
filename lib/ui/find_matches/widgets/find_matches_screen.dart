@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/reachability.dart';
 import 'package:knowledgematch/domain/models/search_criteria.dart';
-import 'package:knowledgematch/domain/models/userprofile.dart';
-import 'package:knowledgematch/data/services/matching_algorithm.dart';
+import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_model.dart';
 import 'package:knowledgematch/ui/swipe/view_model/swipe_view_model.dart';
 import 'package:knowledgematch/widgets/app_drawer.dart';
 
-import '../swipe/widgets/swipe_screen.dart';
-
+import '../../swipe/widgets/swipe_screen.dart';
 
 class FindMatchesScreen extends StatefulWidget {
-  const FindMatchesScreen({super.key});
+  final FindMatchesViewModel viewModel;
+
+  const FindMatchesScreen({
+    super.key,
+    required this.viewModel,
+  });
 
   @override
   FindMatchesScreenState createState() => FindMatchesScreenState();
@@ -18,56 +21,11 @@ class FindMatchesScreen extends StatefulWidget {
 
 class FindMatchesScreenState extends State<FindMatchesScreen> {
   final _formKey = GlobalKey<FormState>();
-  String? keyword;
-  String? description;
-  Reachability? reachability;
-
-  late List<String> keywords = [];
-  late List<Reachability> reachabilities = [];
 
   @override
   void initState() {
     super.initState();
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    keywords = await MatchingAlgorithm().getKeywords();
-    reachabilities = (await MatchingAlgorithm().getReachabilities())!;
-    setState(() {});
-  }
-
-  //TODO move to service method:
-  /// Retrieves a list of user profiles that match the specified search criteria.
-  ///
-  /// This method uses a [MatchingAlgorithm] to identify profiles that meet
-  /// the given [searchCriteria]. The resulting list of profiles is sorted
-  /// by seniority in ascending order, with profiles having a seniority of 0
-  /// prioritized the least.
-  ///
-  /// Parameters:
-  /// - [searchCriteria]: The criteria used to filter and match user profiles.
-  ///
-  /// Returns a [Future] containing a sorted list of [Userprofile] objects.
-  ///
-  /// Sorting Behavior:
-  /// - Profiles with `seniority == 0` are put to -1 as it indicates a lecturer.
-  /// - Other profiles are sorted in ascending order of their seniority values.
-  Future<List<Userprofile>> _getMatchingUserProfiles(
-      SearchCriteria searchCriteria) async {
-    Future<List<Userprofile>> matchingProfiles =
-        MatchingAlgorithm().matchingAlgorithm(searchCriteria);
-    List<Userprofile> profiles = await matchingProfiles;
-    profiles.sort((a, b) {
-      if (a.seniority == 0) {
-        return 1;
-      } else if (b.seniority == 0) {
-        return -1;
-      } else {
-        return a.seniority.compareTo(b.seniority);
-      }
-    });
-    return profiles;
+    widget.viewModel.loadData();
   }
 
   @override
@@ -91,7 +49,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                 decoration: const InputDecoration(
                   hintText: 'Select a topic',
                 ),
-                items: keywords.map((topic) {
+                items: widget.viewModel.keywords.map((topic) {
                   return DropdownMenuItem<String>(
                     value: topic,
                     child: Text(topic),
@@ -99,7 +57,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    keyword = value;
+                    widget.viewModel.keyword = value;
                   });
                 },
                 validator: (value) {
@@ -128,7 +86,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  description = value;
+                  widget.viewModel.description = value;
                 },
               ),
               const SizedBox(height: 24),
@@ -139,7 +97,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                 decoration: const InputDecoration(
                   hintText: 'Select an option',
                 ),
-                items: reachabilities.map((reachability) {
+                items: widget.viewModel.reachabilities.map((reachability) {
                   return DropdownMenuItem<Reachability>(
                     value: reachability,
                     child: Text(reachability.toString()),
@@ -147,7 +105,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    reachability = value;
+                    widget.viewModel.reachability = value;
                   });
                 },
                 validator: (value) {
@@ -166,9 +124,9 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     SearchCriteria searchCriteria = SearchCriteria(
-                      keyword: keyword!,
-                      issue: description!,
-                      reachability: reachability,
+                      keyword: widget.viewModel.keyword!,
+                      issue: widget.viewModel.description!,
+                      reachability: widget.viewModel.reachability,
                     );
 
                     Navigator.push(
@@ -176,8 +134,8 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                       MaterialPageRoute(
                         builder: (context) => SwipeScreen(
                             viewModel: SwipeViewModel(
-                                searchCriteria: searchCriteria,
-                                profilesFuture: _getMatchingUserProfiles(searchCriteria))),
+                          searchCriteria: searchCriteria,
+                        )),
                       ),
                     );
                   }
