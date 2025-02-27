@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/models/reachability.dart';
-import '../../../domain/models/search_criteria.dart';
 import '../../../widgets/multi_date_time_picker.dart';
 import '../view_model/request_view_model.dart';
 
@@ -47,7 +46,7 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
                   Reachability.onlineOrInPerson,
           onDatesSelected: (dates) async {
             setState(() {
-              selectedDates = dates;
+              widget.viewModel.selectedDates = dates;
             });
           },
         ),
@@ -57,9 +56,9 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: widget.notificationData.isOpen == true
+              onPressed: widget.viewModel.notificationData.isOpen == true
                   ? () async {
-                      if (selectedDates.isEmpty) {
+                      if (widget.viewModel.selectedDates.isEmpty) {
                         // Show error if no dates are selected
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -75,28 +74,7 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
                         );
                         Navigator.pop(context);
                       }
-                      var dates = RequestDateData.buildDatesMap(selectedDates);
-                      Map<String, dynamic> combineJson = {
-                        "dates": dates,
-                        "search_criteria": searchCriteria.toJSON(),
-                      };
-
-                      var notification = NotificationData(
-                        type: NotificationType.meetupRequest,
-                        title: "Meetup has been requested",
-                        body: "${User.instance.name} suggests meetup dates!",
-                        payload: combineJson,
-                        requestID: widget.notificationData.requestID,
-                        targetUserId: widget.userprofile.id,
-                        sourceUserId: User.instance.id!,
-                      );
-
-                      //Update Status of the previous request
-                      FirestoreService().notificationStatusUpdate(
-                          false, widget.notificationData.documentID);
-
-                      await NotificationService().sendMessageToDevice(
-                          notification, widget.userprofile.tokens ?? []);
+                      widget.viewModel.proposeSelectedDates();
                     }
                   : null,
               style: ElevatedButton.styleFrom(

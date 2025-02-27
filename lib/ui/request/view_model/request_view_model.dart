@@ -4,6 +4,7 @@ import 'package:knowledgematch/domain/models/search_criteria.dart';
 import '../../../data/services/firestore_service.dart';
 import '../../../data/services/notification_service.dart';
 import '../../../domain/models/notification_data.dart';
+import '../../../domain/models/request_date_data.dart';
 import '../../../domain/models/user.dart';
 import '../../../domain/models/userprofile.dart';
 
@@ -14,6 +15,8 @@ class RequestViewModel extends ChangeNotifier {
 
   RequestViewModel({required this.notificationData, required this.userprofile})
       : searchCriteria = SearchCriteria.fromJSON(notificationData.payload);
+
+  List<RequestDateData> selectedDates = [];
 
   void acceptRequest() async {
     var notification = NotificationData(
@@ -42,9 +45,33 @@ class RequestViewModel extends ChangeNotifier {
       sourceUserId: userprofile.id,
       requestID: notificationData.requestID,
     );
-
     await NotificationService()
         .sendMessageToDevice(notification, userprofile.tokens ?? []);
     FirestoreService().closeRequest(notificationData.requestID);
+  }
+
+  void proposeSelectedDates() async {
+    var dates = RequestDateData.buildDatesMap(selectedDates);
+    Map<String, dynamic> combineJson = {
+      "dates": dates,
+      "search_criteria": searchCriteria.toJSON(),
+    };
+
+    var notification = NotificationData(
+      type: NotificationType.meetupRequest,
+      title: "Meetup has been requested",
+      body: "${User.instance.name} suggests meetup dates!",
+      payload: combineJson,
+      requestID: notificationData.requestID,
+      targetUserId: userprofile.id,
+      sourceUserId: User.instance.id!,
+    );
+
+    //Update Status of the previous request
+    FirestoreService()
+        .notificationStatusUpdate(false, notificationData.documentID);
+
+    await NotificationService()
+        .sendMessageToDevice(notification, userprofile.tokens ?? []);
   }
 }
