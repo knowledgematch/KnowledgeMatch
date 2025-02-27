@@ -9,14 +9,20 @@ import 'package:swipable_stack/swipable_stack.dart';
 
 class SwipeViewModel extends ChangeNotifier {
   final SearchCriteria searchCriteria;
-  final Future<List<Userprofile>> profiles;
+  final Future<List<Userprofile>> profilesFuture;
 
   final SwipableStackController controller = SwipableStackController();
 
+  List<Userprofile> profiles = [];
+
   SwipeViewModel({
     required this.searchCriteria,
-    required this.profiles,
+    required this.profilesFuture,
   });
+
+  void setProfiles(List<Userprofile> loadedProfiles) {
+    profiles = loadedProfiles;
+  }
 
   /// Use the NotificationService to send a [NotificationType.knowledgeRequest] request.
   ///
@@ -25,7 +31,7 @@ class SwipeViewModel extends ChangeNotifier {
   ///
   /// @param profile to send the request to.
 
-  Future<void> sendSwipeRightNotification(List<Userprofile> profiles) async {
+  Future<void> sendSwipeRightNotification() async {
     var profile = profiles[controller.currentIndex];
     var topic = searchCriteria.keyword;
     var notificationData = NotificationData(
@@ -42,7 +48,7 @@ class SwipeViewModel extends ChangeNotifier {
         .sendMessageToDevice(notificationData, profile.tokens ?? []);
   }
 
-  void handleSwipe(SwipeDirection direction, List<Userprofile> profiles, BuildContext context){
+  void handleSwipe(SwipeDirection direction, BuildContext context){
     if (direction == SwipeDirection.right) {
       //send request
       final snackBar = SnackBar(
@@ -50,7 +56,7 @@ class SwipeViewModel extends ChangeNotifier {
         duration: Duration(milliseconds: 500),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      sendSwipeRightNotification(profiles);
+      sendSwipeRightNotification();
       controller.currentIndex--;
     }
     if (controller.currentIndex == profiles.length - 1) {

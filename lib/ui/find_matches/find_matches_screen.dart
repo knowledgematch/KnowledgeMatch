@@ -177,7 +177,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                         builder: (context) => SwipeScreen(
                             viewModel: SwipeViewModel(
                                 searchCriteria: searchCriteria,
-                                profiles: _getMatchingUserProfiles(searchCriteria))),
+                                profilesFuture: _getMatchingUserProfiles(searchCriteria))),
                       ),
                     );
                   }
