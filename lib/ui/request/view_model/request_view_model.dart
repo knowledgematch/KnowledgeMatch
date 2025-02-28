@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:knowledgematch/domain/models/search_criteria.dart';
 
