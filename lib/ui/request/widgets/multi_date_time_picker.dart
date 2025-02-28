@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/reachability.dart';
 import 'package:knowledgematch/domain/models/request_date_data.dart';
 
-class MultiDateTimePicker extends StatefulWidget {
-  final Function(List<RequestDateData>) onDatesSelected;
-  final Reachability searchCriteriaReachability;
+import '../view_model/request_view_model.dart';
 
-  const MultiDateTimePicker(
-      {super.key,
-      required this.onDatesSelected,
-      required this.searchCriteriaReachability});
+class MultiDateTimePicker extends StatefulWidget {
+  final RequestViewModel viewModel;
+  const MultiDateTimePicker({super.key, required this.viewModel});
 
   @override
   MultiDateTimePickerState createState() => MultiDateTimePickerState();
@@ -51,7 +48,8 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
           );
         });
       }
-      widget.onDatesSelected(selectedTimeFrames);
+      widget.viewModel.selectedDates = selectedTimeFrames;
+      //widget.onDatesSelected(selectedTimeFrames);
     }
   }
 
@@ -60,18 +58,21 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
     setState(() {
       selectedTimeFrames.removeAt(index);
     });
-    widget.onDatesSelected(selectedTimeFrames);
+    widget.viewModel.selectedDates;
+    //widget.onDatesSelected(selectedTimeFrames);
   }
 
   @override
   Widget build(BuildContext context) {
     List<Reachability> elligibleReachability = <Reachability>[];
-    switch (widget.searchCriteriaReachability) {
+    switch (widget.viewModel.searchCriteria.reachability) {
       case Reachability.online:
         elligibleReachability.add(Reachability.online);
       case Reachability.inPerson:
         elligibleReachability.add(Reachability.inPerson);
       case Reachability.onlineOrInPerson:
+        elligibleReachability.addAll(Reachability.values);
+      case null:
         elligibleReachability.addAll(Reachability.values);
     }
     return Column(
@@ -105,7 +106,7 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                     children: [
                       DropdownButton<Reachability>(
                         value: selectedTimeFrames[index].reachability ??
-                            widget.searchCriteriaReachability,
+                            widget.viewModel.searchCriteria.reachability,
                         items: elligibleReachability.map((Reachability value) {
                           return DropdownMenuItem<Reachability>(
                             value: value,

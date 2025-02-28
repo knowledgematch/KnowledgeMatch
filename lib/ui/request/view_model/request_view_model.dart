@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:knowledgematch/domain/models/search_criteria.dart';
 
@@ -14,7 +16,11 @@ class RequestViewModel extends ChangeNotifier {
   final Userprofile userprofile;
 
   RequestViewModel({required this.notificationData, required this.userprofile})
-      : searchCriteria = SearchCriteria.fromJSON(notificationData.payload);
+      : searchCriteria = notificationData.payload['search_criteria'] == Null || //for both formats being used
+                notificationData.payload['search_criteria'] is Map
+            ? SearchCriteria.fromJSON(
+                notificationData.payload['search_criteria'])
+            : SearchCriteria.fromJSON(notificationData.payload);
 
   List<RequestDateData> selectedDates = [];
   List<RequestDateData> incomingDates = [];
@@ -96,23 +102,23 @@ class RequestViewModel extends ChangeNotifier {
           }).toList();
         }
       }
-      if (jsonData['search_criteria'] is Map) {
-        searchCriteria = SearchCriteria.fromJSON(jsonData['search_criteria']);
-        print(searchCriteria.toString());
-      }
     } catch (e) {
       print('Error parsing JSON: $e');
     }
   }
 
   void confirmDate() async {
+    Map<String, dynamic> combineJson = {
+    "dates": selectedDate?.toJson(),
+    "search_criteria": searchCriteria.toJSON(),
+  };
     //Confirm the selected date
     var notification = NotificationData(
       type: NotificationType.meetupConfirmation,
       title: "Meetup Confirmation",
       body:
           "${selectedDate!.reachability} ${selectedDate!.getFormattedDate()} ${selectedDate!.getFormattedTime()}",
-      payload: selectedDate!.toJson(),
+      payload: combineJson,
       requestID: notificationData.requestID,
       targetUserId: userprofile.id,
       sourceUserId: User.instance.id!,

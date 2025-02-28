@@ -87,7 +87,7 @@ class NotificationService {
         MaterialPageRoute(
           builder: (context) => FutureBuilder<Userprofile>(
             future: MatchingAlgorithm().getUserProfileById(
-              int.parse(data['source_user_id'] ?? 0),
+              int.parse(data['source_user_id'] ?? "0"),
             ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {

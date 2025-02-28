@@ -18,7 +18,6 @@ class NotificationBody extends StatefulWidget {
 }
 
 class NotificationBodyState extends State<NotificationBody> {
-  // List<RequestDateData> selectedDates = [];
   @override
   Widget build(BuildContext context) {
     var type = widget.viewModel.notificationData.type;

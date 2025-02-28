@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/models/reachability.dart';
-import '../../../widgets/multi_date_time_picker.dart';
 import '../view_model/request_view_model.dart';
+import 'multi_date_time_picker.dart';
 
 class OnAcceptBody extends StatefulWidget {
   const OnAcceptBody({super.key, required this.viewModel});
@@ -40,16 +39,7 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
           ),
         ),
         SizedBox(height: 8),
-        MultiDateTimePicker(
-          searchCriteriaReachability:
-              widget.viewModel.searchCriteria.reachability ??
-                  Reachability.onlineOrInPerson,
-          onDatesSelected: (dates) {
-            setState(() {
-              widget.viewModel.selectedDates = dates;
-            });
-          },
-        ),
+        MultiDateTimePicker(viewModel: widget.viewModel),
         Spacer(),
         // Action Buttons
         Row(

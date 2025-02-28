@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
 
-import '../../../domain/models/reachability.dart';
 import '../../../domain/models/request_date_data.dart';
-import '../../../widgets/multi_date_time_picker.dart';
+import 'multi_date_time_picker.dart';
 
 class OnMeetupRequestBody extends StatefulWidget {
   final RequestViewModel viewModel;
@@ -23,7 +22,8 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
   @override
   Widget build(BuildContext context) {
     //RequestDateData? selectedDate; // To track the selected date
-    // SearchCriteria? searchCriteria;
+     //SearchCriteria? searchCriteria;
+    //print(widget.viewModel.searchCriteria);
     return StatefulBuilder(
       builder: (context, setState) {
         return Column(
@@ -143,17 +143,7 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
                                   insetPadding: EdgeInsets.zero,
                                   child: Column(
                                     children: [
-                                      MultiDateTimePicker(
-                                        searchCriteriaReachability: widget
-                                                .viewModel
-                                                .searchCriteria
-                                                .reachability ??
-                                            Reachability.onlineOrInPerson,
-                                        onDatesSelected: (dates) async {
-                                          setState(() {
-                                            widget.viewModel.newDates = dates;
-                                          });
-                                        },
+                                      MultiDateTimePicker(viewModel: widget.viewModel
                                       ),
                                       Spacer(),
                                       // Confirm Button for Sending the Notification
