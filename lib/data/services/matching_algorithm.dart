@@ -32,6 +32,38 @@ class MatchingAlgorithm {
 
   /// Retrieves a list of user profiles that match the specified search criteria.
   ///
+  /// This method uses a [MatchingAlgorithm] to identify profiles that meet
+  /// the given [searchCriteria]. The resulting list of profiles is sorted
+  /// by seniority in ascending order, with profiles having a seniority of 0
+  /// prioritized the least.
+  ///
+  /// Parameters:
+  /// - [searchCriteria]: The criteria used to filter and match user profiles.
+  ///
+  /// Returns a [Future] containing a sorted list of [Userprofile] objects.
+  ///
+  /// Sorting Behavior:
+  /// - Profiles with `seniority == 0` are put to -1 as it indicates a lecturer.
+  /// - Other profiles are sorted in ascending order of their seniority values.
+  Future<List<Userprofile>> getMatchingUserProfiles(
+      SearchCriteria searchCriteria) async {
+    Future<List<Userprofile>> matchingProfiles =
+    MatchingAlgorithm().matchingAlgorithm(searchCriteria);
+    List<Userprofile> profiles = await matchingProfiles;
+    profiles.sort((a, b) {
+      if (a.seniority == 0) {
+        return 1;
+      } else if (b.seniority == 0) {
+        return -1;
+      } else {
+        return a.seniority.compareTo(b.seniority);
+      }
+    });
+    return profiles;
+  }
+
+  /// Retrieves a list of user profiles that match the specified search criteria.
+  ///
   /// This method uses the provided [SearchCriteria] to filter users based on various parameters
   /// such as keyword and reachability. It returns a list of [Userprofile] objects, excluding the
   /// current user, after applying the matching algorithm.
