@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/models/search_criteria.dart';
 import '../view_model/request_view_model.dart';
 
 class OnRequestBody extends StatelessWidget {
   const OnRequestBody({super.key, required this.viewModel});
+
   final RequestViewModel viewModel;
 
   @override
