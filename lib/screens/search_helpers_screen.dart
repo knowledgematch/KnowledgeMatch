@@ -5,6 +5,7 @@ import 'package:knowledgematch/models/userprofile.dart';
 import 'package:knowledgematch/services/matching_algorithm.dart';
 import 'package:knowledgematch/widgets/app_drawer.dart';
 
+import '../widgets/custom_drop_down.dart';
 import 'swipe_screen.dart';
 
 class FindMatchesScreen extends StatefulWidget {
@@ -85,29 +86,18 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
             children: <Widget>[
               // Topics dropdown
               const Text("What is the topic you are having problems with?"),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  hintText: 'Select a topic',
-                ),
-                items: keywords.map((topic) {
-                  return DropdownMenuItem<String>(
-                    value: topic,
-                    child: Text(topic),
-                  );
-                }).toList(),
+              CustomDropdown<String>(
+                items: keywords,
+                selectedItem: keyword,
+                hintText: 'Select a topic',
                 onChanged: (value) {
                   setState(() {
                     keyword = value;
                   });
                 },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a topic';
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    value == null ? 'Please select a topic' : null,
               ),
-
               const SizedBox(height: 24),
 
               // Issue field
@@ -133,29 +123,17 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
 
               // Connection dropdown
               const Text("How do you want to connect?"),
-              DropdownButtonFormField<Reachability>(
-                decoration: const InputDecoration(
-                  hintText: 'Select an option',
-                ),
-                items: reachabilities.map((reachability) {
-                  return DropdownMenuItem<Reachability>(
-                    value: reachability,
-                    child: Text(reachability.toString()),
-                  );
-                }).toList(),
+              CustomDropdown<Reachability>(
+                items: reachabilities,
+                selectedItem: reachability,
                 onChanged: (value) {
                   setState(() {
                     reachability = value;
                   });
                 },
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select a connection type';
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    value == null ? 'Please select a connection type' : null,
               ),
-
               const SizedBox(height: 24),
 
               ElevatedButton(
@@ -183,7 +161,8 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                   minimumSize: const Size(double.infinity, 50),
                   textStyle: const TextStyle(fontSize: 18),
                 ),
-                child: const Text('Search helpers'),
+                child: const Text('Search helpers',
+                    style: TextStyle(color: Colors.white)),
               ),
             ],
           ),

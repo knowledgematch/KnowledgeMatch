@@ -8,26 +8,41 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Color(0xFFbcb9b0),
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.deepPurple,
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              color: Colors.black,
             ),
             child: Center(
-              child: Text(
-                'KnowledgeMatch',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
+                child: Row(
+              children: [
+                ClipOval(
+                  child: Image.asset('assets/images/logo.png', width: 50),
                 ),
-              ),
-            ),
+                // Image.asset('assets/images/logo.png', width: 50),
+                const SizedBox(width: 10),
+                const Text(
+                  'KnowledgeMatch',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+              ],
+            )),
           ),
           ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('About'),
+            leading: const Icon(
+              Icons.info,
+              color: Colors.black,
+            ),
+            title: const Text(
+              'About',
+              style: TextStyle(color: Colors.black),
+            ),
             onTap: () {
               Navigator.pop(context); // Close the drawer
               Navigator.push(
@@ -37,8 +52,14 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.contact_mail),
-            title: const Text('Contact'),
+            leading: const Icon(
+              Icons.contact_mail,
+              color: Colors.black,
+            ),
+            title: const Text(
+              'Contact',
+              style: TextStyle(color: Colors.black),
+            ),
             onTap: () {
               Navigator.pop(context); // Close the drawer
               Navigator.push(

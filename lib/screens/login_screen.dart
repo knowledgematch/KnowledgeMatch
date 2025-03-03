@@ -115,8 +115,11 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                labelText: 'Email',
+              ),
             ),
+            SizedBox(height: 20),
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(labelText: 'Password'),
@@ -131,11 +134,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       builder: (context) => CreateProfileScreen()),
                 );
               },
-              child: Text('Create a new account'),
+              child: Text('Create a new account',
+                  style: TextStyle(color: Colors.black)),
             ),
             ElevatedButton(
               onPressed: _isLoading ? null : _login,
-              child: _isLoading ? CircularProgressIndicator() : Text('Login'),
+              child: _isLoading
+                  ? CircularProgressIndicator()
+                  : Text('Login', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
