@@ -47,7 +47,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFbcb9b0), // Tema ile uyumlu
+      backgroundColor: const Color(0xFFbcb9b0),
       appBar: AppBar(
         title: FutureBuilder<List<Userprofile>>(
           future: widget.profiles,
