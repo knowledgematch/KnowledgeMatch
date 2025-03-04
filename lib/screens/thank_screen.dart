@@ -14,8 +14,12 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement((context),
-          MaterialPageRoute(builder: (context) => const MainScreen()));
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      }
     });
   }
 
