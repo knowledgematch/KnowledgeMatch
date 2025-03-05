@@ -1,7 +1,8 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
-
+import 'dart:convert';
 import 'thank_screen.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -13,16 +14,11 @@ class ContactScreen extends StatefulWidget {
 
 class _ContactScreenState extends State<ContactScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
   final _messageController = TextEditingController();
   bool _isSending = false;
 
-
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
     _messageController.dispose();
     super.dispose();
   }
@@ -30,17 +26,29 @@ class _ContactScreenState extends State<ContactScreen> {
   Future<void> _sendEmail() async {
     String username = 'sender.knowledge.app@gmail.com';
     String password = "plwl drkb ymfa smpn";
+    String name = "KnowledgeMatch Contact Form";
+    String email = username;
+
+    final prefs = await SharedPreferences.getInstance();
+    final userDataString = prefs.getString('userData');
+
+    if (userDataString != null) {
+      final userData = jsonDecode(userDataString);
+
+      // Accessing using bracket notation
+      name = userData['Name'];
+      email = userData['Email'];
+    }
 
     final smtpServer = gmail(username, password);
 
     final message = Message()
       ..from = Address(username, 'KnowledgeMatch Contact Form')
-      ..recipients.add(
-          'fhnw.knowledge.match@gmail.com')
-      ..subject = 'New Contact Form Submission from ${_nameController.text}'
+      ..recipients.add('fhnw.knowledge.match@gmail.com')
+      ..subject = 'New Contact Form Submission from $name'
       ..text = '''
-              Name: ${_nameController.text}
-              Email: ${_emailController.text}
+              Name: $name
+              Email: $email
 
               Message:
               ${_messageController.text}
@@ -54,8 +62,6 @@ class _ContactScreenState extends State<ContactScreen> {
       final sendReport = await send(message, smtpServer);
       print('Message sent: $sendReport');
 
-      _nameController.clear();
-      _emailController.clear();
       _messageController.clear();
 
       // Navigate to thank you screen
@@ -125,46 +131,6 @@ class _ContactScreenState extends State<ContactScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text(
-                      'Name',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Email',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        if (!value.contains('@')) {
-                          return 'Please enter a valid email';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
                       'Message',
                       style: TextStyle(fontSize: 16),
                     ),
@@ -174,7 +140,7 @@ class _ContactScreenState extends State<ContactScreen> {
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                       ),
-                      maxLines: 5,
+                      maxLines: 8,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your message';
@@ -199,7 +165,10 @@ class _ContactScreenState extends State<ContactScreen> {
                                     AlwaysStoppedAnimation<Color>(Colors.white),
                               ),
                             )
-                          : const Text('Send'),
+                          : const Text(
+                              'Send',
+                              style: TextStyle(color: Colors.white),
+                            ),
                     ),
                   ],
                 ),

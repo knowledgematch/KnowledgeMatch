@@ -26,19 +26,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
   bool shouldShowGlow = false;
 
   void checkSwipeDirection(double swipeDistance) {
-    if (swipeDistance > 0.8) {
-      shouldShowGlow = true;
-    } else {
-      shouldShowGlow = false;
-    }
+    shouldShowGlow = swipeDistance > 0.8;
   }
-
-  /// Use the NotificationService to send a [NotificationType.knowledgeRequest] notification.
-  ///
-  /// Creates [NotificationData] from [SearchCriteria] and [Userprofile].
-  /// Uses the [NotificationService] to send the data to the users [Userprofile.tokens]
-  ///
-  /// @param profile to send the notification to.
 
   Future<void> _sendSwipeRightNotification(Userprofile profile) async {
     var topic = widget.searchCriteria.keyword;
@@ -58,25 +47,28 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      backgroundColor: const Color(0xFFbcb9b0),
       appBar: AppBar(
         title: FutureBuilder<List<Userprofile>>(
-          future: widget.profiles, // The Future that holds the list
+          future: widget.profiles,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Text("Matches Loading...");
             } else if (snapshot.hasError) {
               return const Text("Error loading matches");
             } else if (snapshot.hasData) {
-              // Access the list from snapshot.data and display its length
               final profiles = snapshot.data!;
-              return Text("Matches (${profiles.length})");
+              return Text("Matches (${profiles.length})",
+                  style: const TextStyle(color: Colors.black));
             } else {
-              return const Text("No Matches");
+              return const Text("No Matches",
+                  style: TextStyle(color: Colors.black));
             }
           },
         ),
         centerTitle: true,
+        backgroundColor: const Color(0xFFbcb9b0),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: FutureBuilder<List<Userprofile>>(
         future: widget.profiles,
@@ -104,17 +96,19 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                 onSwipeCompleted: (index, direction) {
                   setState(() {
                     if (direction == SwipeDirection.right) {
-                      //send notification
-                      final snackBar = SnackBar(
-                        content: const Text('Request sent'),
-                        duration: Duration(milliseconds: 500),
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Request sent',
+                              style: TextStyle(color: Colors.white)),
+                          backgroundColor: Colors.black,
+                          duration: const Duration(milliseconds: 500),
+                        ),
                       );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       _sendSwipeRightNotification(
                           profiles[_controller.currentIndex]);
                       profiles.removeAt(_controller.currentIndex);
                       _controller.currentIndex--;
-                    } else if (direction == SwipeDirection.left) {}
+                    }
                     if (_controller.currentIndex == profiles.length - 1) {
                       _controller.currentIndex = -1;
                     }
@@ -129,12 +123,12 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                         if (shouldShowGlow)
                           BoxShadow(
                             color: properties.direction == SwipeDirection.right
-                                ? Colors.green.withOpacity(0.9)
+                                ? Colors.green.withOpacity(0.6)
                                 : properties.direction == SwipeDirection.left
-                                    ? Colors.red.withOpacity(0.9)
+                                    ? Colors.red.withOpacity(0.6)
                                     : Colors.transparent,
-                            blurRadius: 40,
-                            spreadRadius: 5,
+                            blurRadius: 35,
+                            spreadRadius: 4,
                           ),
                       ],
                     ),

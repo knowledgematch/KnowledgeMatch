@@ -76,16 +76,20 @@ class ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: const Text('Requests'),
         actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ConfirmedMeetupsScreen(),
-                ),
-              );
-            },
-            child: const Text('Confirmed'),
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ConfirmedMeetupsScreen(),
+                  ),
+                );
+              },
+              child: const Text('Confirmed',
+                  style: TextStyle(color: Colors.white)),
+            ),
           ),
         ],
       ),

@@ -128,6 +128,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                   onTap: _pickImage,
                   child: CircleAvatar(
                     radius: 50,
+                    backgroundColor: Colors.grey[200],
                     backgroundImage: _selectedImage != null
                         ? FileImage(_selectedImage!)
                         : AssetImage('assets/images/profile.png')
@@ -150,6 +151,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                     return null;
                   },
                 ),
+                SizedBox(height: 16),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Surname'),
                   onChanged: (value) {
@@ -162,6 +164,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                     return null;
                   },
                 ),
+                SizedBox(height: 16),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Email'),
                   onChanged: (value) {
@@ -174,6 +177,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                     return null;
                   },
                 ),
+                SizedBox(height: 16),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Password'),
                   obscureText: true,
@@ -187,6 +191,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                     return null;
                   },
                 ),
+                SizedBox(height: 16),
                 DropdownButtonFormField<Reachability>(
                   value: ReachabilityValue.fromValue(int.parse(_reachability)),
                   onChanged: (Reachability? newValue) {
@@ -205,12 +210,14 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _createAccount,
-                  child: Text('Create Account'),
+                  child: Text('Create Account',
+                      style: TextStyle(color: Colors.white)),
                 ),
                 SizedBox(height: 20),
                 TextButton(
                   onPressed: _goToLoginScreen,
-                  child: Text('Already have an account? Log in'),
+                  child: Text('Already have an account? Log in',
+                      style: TextStyle(color: Colors.black)),
                 ),
               ],
             ),

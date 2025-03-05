@@ -8,8 +8,8 @@ class MultiDateTimePicker extends StatefulWidget {
 
   const MultiDateTimePicker(
       {super.key,
-      required this.onDatesSelected,
-      required this.searchCriteriaReachability});
+        required this.onDatesSelected,
+        required this.searchCriteriaReachability});
 
   @override
   MultiDateTimePickerState createState() => MultiDateTimePickerState();
@@ -89,34 +89,38 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
               final time = selectedTimeFrames[index].getFormattedTime();
               return Card(
                 child: ListTile(
-                  title: Row(children: [
-                    Text("Date: ",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(date)
-                  ]),
-                  subtitle: Row(children: [
-                    Text("Time: ",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(time)
-                  ]),
+                  title: Row(
+                    children: [
+                      Text("Date: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Expanded(child: Text(date)),  // Wrap date text with Expanded
+                    ],
+                  ),
+                  subtitle: Row(
+                    children: [
+                      Text("Time: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Expanded(child: Text(time)),  // Wrap time text with Expanded
+                    ],
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      DropdownButton<Reachability>(
-                        value: selectedTimeFrames[index].reachability ??
-                            widget.searchCriteriaReachability,
-                        items: elligibleReachability.map((Reachability value) {
-                          return DropdownMenuItem<Reachability>(
-                            value: value,
-                            child: Text(value.toString()),
-                          );
-                        }).toList(),
-                        onChanged: (Reachability? newValue) {
-                          setState(() {
-                            selectedTimeFrames[index].reachability = newValue;
-                          });
-                        },
+                      // Wrap the DropdownButton with Flexible to allow it to adjust
+                      Flexible(
+                        child: DropdownButton<Reachability>(
+                          value: selectedTimeFrames[index].reachability ??
+                              widget.searchCriteriaReachability,
+                          items: elligibleReachability.map((Reachability value) {
+                            return DropdownMenuItem<Reachability>(
+                              value: value,
+                              child: Text(value.toString()),
+                            );
+                          }).toList(),
+                          onChanged: (Reachability? newValue) {
+                            setState(() {
+                              selectedTimeFrames[index].reachability = newValue;
+                            });
+                          },
+                        ),
                       ),
                       SizedBox(width: 8),
                       IconButton(
@@ -127,6 +131,7 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                   ),
                 ),
               );
+
             },
           ),
         ),

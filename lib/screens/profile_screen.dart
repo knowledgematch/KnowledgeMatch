@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
 import 'package:knowledgematch/models/user.dart';
 import 'package:knowledgematch/models/reachability.dart';
+import '../widgets/custom_drop_down.dart';
 import 'keyword_selection_screen.dart';
 import 'login_screen.dart';
 import 'change_pw_screen.dart';
@@ -216,6 +217,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   onTap: _pickImage,
                   child: CircleAvatar(
                     radius: 50,
+                    backgroundColor: Colors.grey[200],
                     backgroundImage: _pictureData != null
                         ? MemoryImage(_pictureData!)
                         : const AssetImage('assets/images/profile.png')
@@ -227,40 +229,31 @@ class ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 16),
                 _buildTextField(_surnameController, 'Surname'),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<Reachability>(
-                  value: _reachability,
-                  onChanged: (Reachability? newValue) {
+                CustomDropdown<Reachability>(
+                  items: Reachability.values,
+                  selectedItem: _reachability,
+                  onChanged: (value) {
                     setState(() {
-                      _reachability = newValue!;
+                      if (value != null) _reachability = value;
                     });
                   },
-                  items: Reachability.values.map((Reachability reachability) {
-                    return DropdownMenuItem<Reachability>(
-                      value: reachability,
-                      child: Text(reachability.description),
-                    );
-                  }).toList(),
-                  decoration: const InputDecoration(
-                    labelText: 'Reachability',
-                    border: OutlineInputBorder(),
-                  ),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(_emailController, 'Email'),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<int>(
-                  value: _semester,
-                  decoration: const InputDecoration(
-                    labelText: 'Semester',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: [
-                    for (var i = 0; i <= 12; i++)
-                      DropdownMenuItem(value: i, child: Text('Semester $i')),
-                    const DropdownMenuItem(value: -1, child: Text('Professor')),
-                  ],
-                  onChanged: (value) => setState(() => _semester = value!),
-                ),
+                CustomDropdown<String>(
+                    items: List<String>.generate(13, (i) => 'Semester $i')
+                      ..add("Professor"),
+                    labelText: "Semester",
+                    selectedItem:
+                        (List<String>.generate(13, (i) => 'Semester $i')
+                          ..add("Professor"))[_semester],
+                    onChanged: (value) => setState(
+                          () => _semester =
+                              (List<String>.generate(13, (i) => 'Semester $i')
+                                    ..add("Professor"))
+                                  .indexOf(value!),
+                        )),
                 const SizedBox(height: 16),
                 _buildTextField(_descriptionController, 'Description'),
                 const SizedBox(height: 16),
@@ -270,7 +263,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                       _saveProfile();
                     }
                   },
-                  child: const Text('Save Changes'),
+                  child: const Text('Save Changes',
+                      style: TextStyle(color: Colors.white)),
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
@@ -281,7 +275,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                           builder: (context) => const ChangePasswordScreen()),
                     );
                   },
-                  child: const Text('Change Password'),
+                  child: const Text('Change Password',
+                      style: TextStyle(color: Colors.white)),
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
@@ -292,7 +287,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                           builder: (context) => const KeywordSelectionScreen()),
                     );
                   },
-                  child: const Text('Edit Keywords'),
+                  child: const Text('Edit Keywords',
+                      style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),

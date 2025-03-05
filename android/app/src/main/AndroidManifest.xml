@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 package="ch.fhnw.knowledgematch">
     <application
-        android:label="knowledgematch"
+        android:label="KnowledgeMatch"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

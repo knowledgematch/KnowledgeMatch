@@ -36,20 +36,29 @@ class MainScreenState extends State<MainScreen> {
         onTap: onTabTapped,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(
+              Icons.person,
+              // color: Colors.white,
+            ),
             label: 'Profile',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+            icon: Icon(
+              Icons.search,
+              // color: Colors.white,
+            ),
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
+            icon: Icon(
+              Icons.chat,
+              // color: Colors.white,
+            ),
             label: 'Chat',
           ),
         ],
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: Colors.grey[700],
+        unselectedItemColor: Colors.white,
         backgroundColor: Colors.black87,
       ),
     );
