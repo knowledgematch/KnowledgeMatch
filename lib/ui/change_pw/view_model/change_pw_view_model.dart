@@ -54,16 +54,12 @@ class ChangePwViewModel {
       final oldPassword = _oldPasswordController.text;
       final newPassword = _newPasswordController.text;
 
-      print("Mail: $email\nOld: $oldPassword\nNew: $newPassword");
-
       final response = await ApiDbConnection()
           .changePassword(email, oldPassword, newPassword);
-      print("Statuscode: $response");
       if(response == 200) {
         return true;
       }
     }
-    print("Null");
     return false;
   }
 
