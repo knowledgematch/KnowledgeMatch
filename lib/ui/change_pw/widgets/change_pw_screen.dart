@@ -25,11 +25,11 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: widget.viewModel.getFormKey(),
+          key: widget.viewModel.formKey,
           child: Column(
             children: [
               TextFormField(
-                controller: widget.viewModel.getOldPasswordController(),
+                controller: widget.viewModel.oldPasswordController,
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Old Password',
@@ -44,7 +44,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: widget.viewModel.getNewPasswordController(),
+                controller: widget.viewModel.newPasswordController,
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'New Password',
@@ -62,7 +62,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: widget.viewModel.getConfirmNewPasswordController(),
+                controller: widget.viewModel.confirmNewPasswordController,
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Confirm New Password',
@@ -72,7 +72,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   if (value == null || value.isEmpty) {
                     return 'Please confirm your new password';
                   }
-                  if (value != widget.viewModel.getNewPasswordController().text) {
+                  if (value != widget.viewModel.newPasswordController.text) {
                     return 'Passwords do not match';
                   }
                   return null;

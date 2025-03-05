@@ -67,23 +67,12 @@ class ChangePwViewModel {
     return false;
   }
 
-  GlobalKey<FormState> getFormKey() {
-    return _formKey;
-  }
+  TextEditingController get confirmNewPasswordController =>
+      _confirmNewPasswordController;
 
-  TextEditingController getOldPasswordController() {
-    return _oldPasswordController;
-  }
+  TextEditingController get newPasswordController => _newPasswordController;
 
-  TextEditingController getNewPasswordController() {
-    return _newPasswordController;
-  }
+  TextEditingController get oldPasswordController => _oldPasswordController;
 
-  TextEditingController getConfirmNewPasswordController() {
-    return _confirmNewPasswordController;
-  }
-
-  String getEmail() {
-    return _email;
-  }
+  get formKey => _formKey;
 }
