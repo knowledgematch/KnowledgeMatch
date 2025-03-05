@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
 
-import '../confirmed_meetups/confirmed_meetup_screen.dart';
-import '../request/view_model/request_view_model.dart';
-import '../request/widgets/notification_card.dart';
-import '../request/widgets/request_screen.dart';
+import '../../confirmed_meetups/confirmed_meetup_screen.dart';
+import '../../request/view_model/request_view_model.dart';
+import '../../request/widgets/notification_card.dart';
+import '../../request/widgets/request_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatViewModel viewModel;
