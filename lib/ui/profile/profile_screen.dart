@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knowledgematch/widgets/app_drawer.dart';
 
+import '../change_pw/view_model/change_pw_view_model.dart';
 import '../change_pw/widgets/change_pw_screen.dart';
 import '../keyword_selection/keyword_selection_screen.dart';
 import '../login/login_screen.dart';
@@ -279,7 +280,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ChangePasswordScreen()),
+                          builder: (context) => ChangePasswordScreen(
+                            viewModel: ChangePwViewModel(),
+                          )),
                     );
                   },
                   child: const Text('Change Password'),

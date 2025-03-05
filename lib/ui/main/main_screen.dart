@@ -6,7 +6,6 @@ import '../chat/chat_screen.dart';
 import '../profile/profile_screen.dart';
 import '../find_matches/widgets/find_matches_screen.dart';
 
-
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
