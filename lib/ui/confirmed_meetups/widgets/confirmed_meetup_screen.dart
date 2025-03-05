@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
 
-import '../../confirmed_meetups/view_model/confirmed_meetup_view_model.dart';
-import '../../confirmed_meetups/widgets/confirmed_meetup_screen.dart';
 import '../../request/view_model/request_view_model.dart';
 import '../../request/widgets/notification_card.dart';
 import '../../request/widgets/request_screen.dart';
+import '../view_model/confirmed_meetup_view_model.dart';
 
-class ChatScreen extends StatefulWidget {
-  final ChatViewModel viewModel;
+class ConfirmedMeetupsScreen extends StatefulWidget {
+  final ConfirmedMeetupViewModel viewModel;
 
-  const ChatScreen({super.key, required this.viewModel});
+  const ConfirmedMeetupsScreen({super.key, required this.viewModel});
 
   @override
-  ChatScreenState createState() => ChatScreenState();
+  ConfirmedMeetupsScreenState createState() => ConfirmedMeetupsScreenState();
 }
 
-class ChatScreenState extends State<ChatScreen> {
+class ConfirmedMeetupsScreenState extends State<ConfirmedMeetupsScreen> {
   @override
   void initState() {
     super.initState();
@@ -32,20 +30,7 @@ class ChatScreenState extends State<ChatScreen> {
       builder: (context, _) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Requests'),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ConfirmedMeetupsScreen(viewModel: ConfirmedMeetupViewModel(),),
-                    ),
-                  );
-                },
-                child: const Text('Confirmed'),
-              ),
-            ],
+            title: const Text('Confirmed Requests'),
           ),
           body: widget.viewModel.isLoading
               ? const Center(child: CircularProgressIndicator())
@@ -56,10 +41,8 @@ class ChatScreenState extends State<ChatScreen> {
               : ListView.builder(
             itemCount: widget.viewModel.notification.length,
             itemBuilder: (context, index) {
-              final notification =
-              widget.viewModel.notification[index];
-              final userProfile = widget
-                  .viewModel.userProfiles[notification.sourceUserId];
+              final notification = widget.viewModel.notification[index];
+              final userProfile = widget.viewModel.userProfiles[notification.sourceUserId];
 
               return GestureDetector(
                 onTap: () {
