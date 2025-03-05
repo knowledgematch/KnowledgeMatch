@@ -29,7 +29,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
           child: Column(
             children: [
               TextFormField(
-                controller: widget.viewModel.oldPasswordController,
+                controller: widget.viewModel.getOldPasswordController(),
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Old Password',
@@ -44,7 +44,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: widget.viewModel.newPasswordController,
+                controller: widget.viewModel.getNewPasswordController(),
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'New Password',
@@ -62,7 +62,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: widget.viewModel.confirmNewPasswordController,
+                controller: widget.viewModel.getConfirmNewPasswordController(),
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Confirm New Password',
@@ -72,7 +72,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   if (value == null || value.isEmpty) {
                     return 'Please confirm your new password';
                   }
-                  if (value != widget.viewModel.newPasswordController.text) {
+                  if (value != widget.viewModel.getNewPasswordController().text) {
                     return 'Passwords do not match';
                   }
                   return null;

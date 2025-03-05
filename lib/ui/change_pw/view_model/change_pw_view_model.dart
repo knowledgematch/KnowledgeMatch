@@ -8,9 +8,9 @@ import '../../../data/services/api_db_connection.dart';
 
 class ChangePwViewModel {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController oldPasswordController = TextEditingController();
-  final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmNewPasswordController =
+  final TextEditingController _oldPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmNewPasswordController =
   TextEditingController();
   String _email = '';
 
@@ -51,8 +51,8 @@ class ChangePwViewModel {
   Future<bool> changePassword() async {
     if (_formKey.currentState!.validate()) {
       final email = _email;
-      final oldPassword = oldPasswordController.text;
-      final newPassword = newPasswordController.text;
+      final oldPassword = _oldPasswordController.text;
+      final newPassword = _newPasswordController.text;
 
       print("Mail: $email\nOld: $oldPassword\nNew: $newPassword");
 
@@ -72,15 +72,15 @@ class ChangePwViewModel {
   }
 
   TextEditingController getOldPasswordController() {
-    return oldPasswordController;
+    return _oldPasswordController;
   }
 
   TextEditingController getNewPasswordController() {
-    return newPasswordController;
+    return _newPasswordController;
   }
 
   TextEditingController getConfirmNewPasswordController() {
-    return confirmNewPasswordController;
+    return _confirmNewPasswordController;
   }
 
   String getEmail() {
