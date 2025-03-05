@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../ui/about/about_screen.dart';
+import '../ui/about/widgets/about_screen.dart';
 import '../ui/contact_information/contact_screen.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -30,7 +30,7 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.info),
             title: const Text('About'),
             onTap: () {
-              Navigator.pop(context); // Close the drawer
+              Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const AboutScreen()),
@@ -41,7 +41,7 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.contact_mail),
             title: const Text('Contact'),
             onTap: () {
-              Navigator.pop(context); // Close the drawer
+              Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ContactScreen()),
