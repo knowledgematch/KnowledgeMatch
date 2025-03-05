@@ -7,11 +7,11 @@ import '../../../domain/models/user.dart';
 import '../../../domain/models/userprofile.dart';
 
 class ChatViewModel extends ChangeNotifier {
-  final FirestoreService firestoreService = FirestoreService();
-  final Map<int, Userprofile?> userProfiles = {};
-  List<NotificationData> notificationList = [];
-  String? errorMessage;
-  bool isLoading = true;
+  final FirestoreService _firestoreService = FirestoreService();
+  final Map<int, Userprofile?> _userProfiles = {};
+  List<NotificationData> _notification = [];
+  String? _errorMessage;
+  bool _isLoading = true;
 
   /// Loads notifications and user profiles asynchronously.
   ///
@@ -28,11 +28,11 @@ class ChatViewModel extends ChangeNotifier {
   /// - A [Future] that completes when notifications and user profiles have been
   ///   loaded and the UI state has been updated.
   Future<void> loadNotificationsAndProfiles() async {
-    isLoading = true;
+    _isLoading = true;
     notifyListeners();
 
     try {
-      final notifications = await firestoreService.fetchNotifications(
+      final notifications = await _firestoreService.fetchNotifications(
         userID: User.instance.id ?? 0,
         type: NotificationType.knowledgeRequest,
       );
@@ -42,15 +42,23 @@ class ChatViewModel extends ChangeNotifier {
       for (final notification in limitedNotifications) {
         final userProfile = await MatchingAlgorithm()
             .getUserProfileById(notification.sourceUserId);
-        userProfiles[notification.sourceUserId] = userProfile;
+        _userProfiles[notification.sourceUserId] = userProfile;
       }
 
-      notificationList = limitedNotifications;
+      _notification = limitedNotifications;
     } catch (error) {
-      errorMessage = error.toString();
+      _errorMessage = error.toString();
     } finally {
-      isLoading = false;
+      _isLoading = false;
       notifyListeners();
     }
   }
+
+  bool get isLoading => _isLoading;
+
+  String? get errorMessage => _errorMessage;
+
+  List<NotificationData> get notification => _notification;
+
+  Map<int, Userprofile?> get userProfiles => _userProfiles;
 }

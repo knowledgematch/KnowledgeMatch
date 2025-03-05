@@ -50,13 +50,13 @@ class ChatScreenState extends State<ChatScreen> {
               ? const Center(child: CircularProgressIndicator())
               : widget.viewModel.errorMessage != null
               ? Center(child: Text('Error: ${widget.viewModel.errorMessage}'))
-              : widget.viewModel.notificationList.isEmpty
+              : widget.viewModel.notification.isEmpty
               ? const Center(child: Text('No requests found.'))
               : ListView.builder(
-            itemCount: widget.viewModel.notificationList.length,
+            itemCount: widget.viewModel.notification.length,
             itemBuilder: (context, index) {
               final notification =
-              widget.viewModel.notificationList[index];
+              widget.viewModel.notification[index];
               final userProfile = widget
                   .viewModel.userProfiles[notification.sourceUserId];
 
