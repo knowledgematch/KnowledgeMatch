@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
-
 import '../chat/widgets/chat_screen.dart';
 import '../profile/profile_screen.dart';
 import '../find_matches/widgets/find_matches_screen.dart';
