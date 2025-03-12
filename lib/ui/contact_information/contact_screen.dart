@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 
-import '../thank/thank_screen.dart';
+import '../thank/widget/thank_screen.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});
