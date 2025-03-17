@@ -14,7 +14,8 @@ class RequestViewModel extends ChangeNotifier {
   final Userprofile userprofile;
 
   RequestViewModel({required this.notificationData, required this.userprofile})
-      : searchCriteria = notificationData.payload['search_criteria'] == Null || //for both formats being used
+      : searchCriteria = notificationData.payload['search_criteria'] ==
+                    Null || //for both formats being used
                 notificationData.payload['search_criteria'] is Map
             ? SearchCriteria.fromJSON(
                 notificationData.payload['search_criteria'])
@@ -107,9 +108,9 @@ class RequestViewModel extends ChangeNotifier {
 
   void confirmDate() async {
     Map<String, dynamic> combineJson = {
-    "dates": selectedDate?.toJson(),
-    "search_criteria": searchCriteria.toJSON(),
-  };
+      "dates": selectedDate?.toJson(),
+      "search_criteria": searchCriteria.toJSON(),
+    };
     //Confirm the selected date
     var notification = NotificationData(
       type: NotificationType.meetupConfirmation,
