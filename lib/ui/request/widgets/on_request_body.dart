@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../view_model/request_view_model.dart';
 
 class OnRequestBody extends StatelessWidget {
-  const OnRequestBody({super.key, required this.viewModel});
-
-  final RequestViewModel viewModel;
+  const OnRequestBody({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<RequestViewModel>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../view_model/request_view_model.dart';
 
 class OnMeetupConfirmationBody extends StatelessWidget {
-  const OnMeetupConfirmationBody({super.key, required this.viewModel});
-  final RequestViewModel viewModel;
+  const OnMeetupConfirmationBody({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<RequestViewModel>();
     viewModel.closeRequestDelegate();
 
     return Column(

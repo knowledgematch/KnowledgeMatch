@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
+import 'package:provider/provider.dart';
 
 import 'on_accept_body.dart';
 import 'on_decline_body.dart';
@@ -9,9 +10,7 @@ import 'on_meetup_request_body.dart';
 import 'on_request_body.dart';
 
 class NotificationBody extends StatefulWidget {
-  final RequestViewModel viewModel;
-
-  const NotificationBody({super.key, required this.viewModel});
+  const NotificationBody({super.key});
 
   @override
   NotificationBodyState createState() => NotificationBodyState();
@@ -20,17 +19,14 @@ class NotificationBody extends StatefulWidget {
 class NotificationBodyState extends State<NotificationBody> {
   @override
   Widget build(BuildContext context) {
-    var type = widget.viewModel.notificationData.type;
+    final viewModel = context.watch<RequestViewModel>();
+    var type = viewModel.notificationData.type;
     return switch (type) {
-      NotificationType.knowledgeRequest =>
-        OnRequestBody(viewModel: widget.viewModel),
-      NotificationType.requestDeclined =>
-        OnDeclineBody(viewModel: widget.viewModel),
-      NotificationType.requestAccepted =>
-        OnAcceptBody(viewModel: widget.viewModel),
+      NotificationType.knowledgeRequest => OnRequestBody(),
+      NotificationType.requestDeclined => OnDeclineBody(),
+      NotificationType.requestAccepted => OnAcceptBody(),
       NotificationType.meetupRequest => OnMeetupRequestBody(),
-      NotificationType.meetupConfirmation =>
-        OnMeetupConfirmationBody(viewModel: widget.viewModel),
+      NotificationType.meetupConfirmation => OnMeetupConfirmationBody(),
     };
   }
 }

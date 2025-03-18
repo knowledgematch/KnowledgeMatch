@@ -13,15 +13,13 @@ class MultiDateTimePicker extends StatefulWidget {
 }
 
 class MultiDateTimePickerState extends State<MultiDateTimePicker> {
-  // List<RequestDateData> selectedTimeFrames = [];
-
   /// Opens a date and time picker to allow the user to select a specific date and time.
   ///
   /// The function first shows a date picker, then a time picker if a valid date is selected.
   /// It combines the selected date and time into a `DateTime` object and adds it to the `selectedTimeFrames` list.
   /// Once a valid date-time is selected, it calls the `onDatesSelected` callback with the updated list.
   void _addDateTime() async {
-    final viewModel = context.read<RequestViewModel>();
+    final viewModel = context.watch<RequestViewModel>();
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),

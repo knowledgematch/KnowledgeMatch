@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../view_model/request_view_model.dart';
 import 'multi_date_time_picker.dart';
 
 class OnAcceptBody extends StatefulWidget {
-  const OnAcceptBody({super.key, required this.viewModel});
-
-  final RequestViewModel viewModel;
+  const OnAcceptBody({super.key});
 
   @override
   OnAcceptBodyState createState() => OnAcceptBodyState();
@@ -15,6 +14,7 @@ class OnAcceptBody extends StatefulWidget {
 class OnAcceptBodyState extends State<OnAcceptBody> {
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<RequestViewModel>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -22,7 +22,7 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: ListTile(
               title: Text(
-                widget.viewModel.notificationData.body,
+                viewModel.notificationData.body,
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -40,16 +40,17 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
           ),
         ),
         SizedBox(height: 8),
-        MultiDateTimePicker(),
+        ChangeNotifierProvider.value(
+            value: viewModel, child: const MultiDateTimePicker()),
         Spacer(),
         // Action Buttons
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: widget.viewModel.notificationData.isOpen == true
+              onPressed: viewModel.notificationData.isOpen == true
                   ? () async {
-                      if (widget.viewModel.state.selectedDates.isEmpty) {
+                      if (viewModel.state.selectedDates.isEmpty) {
                         // Show error if no dates are selected
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -65,7 +66,7 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
                         );
                         Navigator.pop(context);
                       }
-                      widget.viewModel.proposeSelectedDates();
+                      viewModel.proposeSelectedDates();
                     }
                   : null,
               style: ElevatedButton.styleFrom(

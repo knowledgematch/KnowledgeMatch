@@ -7,18 +7,17 @@ import 'notification_body.dart';
 import 'user_profile_card.dart';
 
 class RequestScreen extends StatelessWidget {
-  final RequestViewModel viewModel;
-
-  const RequestScreen({super.key, required this.viewModel});
+  const RequestScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<RequestViewModel>();
     print('UserProfile ID: ${viewModel.userprofile.name}');
     return ChangeNotifierProvider.value(
         value: viewModel,
         child: Scaffold(
             appBar: AppBar(
-              title: _buildTitle(),
+              title: _buildTitle(viewModel),
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
                 onPressed: () {
@@ -34,11 +33,11 @@ class RequestScreen extends StatelessWidget {
               UserProfileCard(
                 viewModel: viewModel,
               ),
-              Expanded(child: NotificationBody(viewModel: viewModel))
+              Expanded(child: NotificationBody())
             ])));
   }
 
-  Widget _buildTitle() {
+  Widget _buildTitle(RequestViewModel viewModel) {
     var type = viewModel.notificationData.type;
     switch (type) {
       case NotificationType.knowledgeRequest:

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../request/view_model/request_view_model.dart';
 import '../../request/widgets/notification_card.dart';
@@ -35,36 +36,40 @@ class ConfirmedMeetupsScreenState extends State<ConfirmedMeetupsScreen> {
           body: widget.viewModel.isLoading
               ? const Center(child: CircularProgressIndicator())
               : widget.viewModel.errorMessage != null
-              ? Center(child: Text('Error: ${widget.viewModel.errorMessage}'))
-              : widget.viewModel.notification.isEmpty
-              ? const Center(child: Text('No requests found.'))
-              : ListView.builder(
-            itemCount: widget.viewModel.notification.length,
-            itemBuilder: (context, index) {
-              final notification = widget.viewModel.notification[index];
-              final userProfile = widget.viewModel.userProfiles[notification.sourceUserId];
+                  ? Center(
+                      child: Text('Error: ${widget.viewModel.errorMessage}'))
+                  : widget.viewModel.notification.isEmpty
+                      ? const Center(child: Text('No requests found.'))
+                      : ListView.builder(
+                          itemCount: widget.viewModel.notification.length,
+                          itemBuilder: (context, index) {
+                            final notification =
+                                widget.viewModel.notification[index];
+                            final userProfile = widget.viewModel
+                                .userProfiles[notification.sourceUserId];
 
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RequestScreen(
-                        viewModel: RequestViewModel(
-                          notificationData: notification,
-                          userprofile: userProfile,
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => ChangeNotifierProvider<
+                                              RequestViewModel>(
+                                            create: (_) => RequestViewModel(
+                                              notificationData: notification,
+                                              userprofile: userProfile,
+                                            ),
+                                            child: const RequestScreen(),
+                                          )),
+                                );
+                              },
+                              child: NotificationCard(
+                                notification: notification,
+                                userprofile: userProfile!,
+                              ),
+                            );
+                          },
                         ),
-                      ),
-                    ),
-                  );
-                },
-                child: NotificationCard(
-                  notification: notification,
-                  userprofile: userProfile!,
-                ),
-              );
-            },
-          ),
         );
       },
     );

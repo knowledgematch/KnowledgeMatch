@@ -1,21 +1,23 @@
 import 'dart:convert';
-import 'package:flutter/services.dart';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:knowledgematch/data/services/api_db_connection.dart';
-import 'package:knowledgematch/ui/login/login_screen.dart';
-import 'package:knowledgematch/ui/main/main_screen.dart';
-import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
-import 'package:knowledgematch/ui/request/widgets/request_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/data/services/matching_algorithm.dart';
 import 'package:knowledgematch/data/services/notification_service.dart';
 import 'package:knowledgematch/data/services/user_service.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
+import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:knowledgematch/firebase_options.dart';
+import 'package:knowledgematch/ui/login/login_screen.dart';
+import 'package:knowledgematch/ui/main/main_screen.dart';
+import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
+import 'package:knowledgematch/ui/request/widgets/request_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -156,11 +158,13 @@ class SplashScreenState extends State<SplashScreen> {
                   body: Center(child: Text('Error: ${snapshot.error}')),
                 );
               } else {
-                return RequestScreen(
-                  viewModel: RequestViewModel(
-                      userprofile: snapshot.data!,
-                      notificationData: NotificationData.fromMessage(message)),
-                );
+                return ChangeNotifierProvider<RequestViewModel>(
+                    create: (_) => RequestViewModel(
+                          userprofile: snapshot.data!,
+                          notificationData:
+                              NotificationData.fromMessage(message),
+                        ),
+                    child: RequestScreen());
               }
             },
           ),
@@ -193,11 +197,11 @@ class SplashScreenState extends State<SplashScreen> {
                   body: Center(child: Text('Error: ${snapshot.error}')),
                 );
               } else {
-                return RequestScreen(
-                  viewModel: RequestViewModel(
-                      userprofile: snapshot.data!,
-                      notificationData: NotificationData.fromMessage(message)),
-                );
+                return ChangeNotifierProvider<RequestViewModel>(
+                    create: (_) => RequestViewModel(
+                        notificationData: NotificationData.fromMessage(message),
+                        userprofile: snapshot.data!),
+                    child: RequestScreen());
               }
             },
           ),

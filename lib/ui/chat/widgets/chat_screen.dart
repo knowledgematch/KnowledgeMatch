@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../../confirmed_meetups/view_model/confirmed_meetup_view_model.dart';
 import '../../confirmed_meetups/widgets/confirmed_meetup_screen.dart';
@@ -39,7 +40,9 @@ class ChatScreenState extends State<ChatScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ConfirmedMeetupsScreen(viewModel: ConfirmedMeetupViewModel(),),
+                      builder: (context) => ConfirmedMeetupsScreen(
+                        viewModel: ConfirmedMeetupViewModel(),
+                      ),
                     ),
                   );
                 },
@@ -50,38 +53,42 @@ class ChatScreenState extends State<ChatScreen> {
           body: widget.viewModel.isLoading
               ? const Center(child: CircularProgressIndicator())
               : widget.viewModel.errorMessage != null
-              ? Center(child: Text('Error: ${widget.viewModel.errorMessage}'))
-              : widget.viewModel.notification.isEmpty
-              ? const Center(child: Text('No requests found.'))
-              : ListView.builder(
-            itemCount: widget.viewModel.notification.length,
-            itemBuilder: (context, index) {
-              final notification =
-              widget.viewModel.notification[index];
-              final userProfile = widget
-                  .viewModel.userProfiles[notification.sourceUserId];
+                  ? Center(
+                      child: Text('Error: ${widget.viewModel.errorMessage}'))
+                  : widget.viewModel.notification.isEmpty
+                      ? const Center(child: Text('No requests found.'))
+                      : ListView.builder(
+                          itemCount: widget.viewModel.notification.length,
+                          itemBuilder: (context, index) {
+                            final notification =
+                                widget.viewModel.notification[index];
+                            final userProfile = widget.viewModel
+                                .userProfiles[notification.sourceUserId];
 
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RequestScreen(
-                        viewModel: RequestViewModel(
-                          notificationData: notification,
-                          userprofile: userProfile,
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ChangeNotifierProvider<
+                                                RequestViewModel>(
+                                            create: (_) => RequestViewModel(
+                                                  notificationData:
+                                                      notification,
+                                                  userprofile: userProfile,
+                                                ),
+                                            child: RequestScreen()),
+                                  ),
+                                );
+                              },
+                              child: NotificationCard(
+                                notification: notification,
+                                userprofile: userProfile!,
+                              ),
+                            );
+                          },
                         ),
-                      ),
-                    ),
-                  );
-                },
-                child: NotificationCard(
-                  notification: notification,
-                  userprofile: userProfile!,
-                ),
-              );
-            },
-          ),
         );
       },
     );

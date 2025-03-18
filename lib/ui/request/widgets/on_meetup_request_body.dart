@@ -140,7 +140,9 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
                                   insetPadding: EdgeInsets.zero,
                                   child: Column(
                                     children: [
-                                      MultiDateTimePicker(),
+                                      ChangeNotifierProvider.value(
+                                          value: viewModel,
+                                          child: const MultiDateTimePicker()),
                                       Spacer(),
                                       // Confirm Button for Sending the Notification
                                       ElevatedButton(

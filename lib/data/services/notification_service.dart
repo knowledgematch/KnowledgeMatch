@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
+import 'package:provider/provider.dart';
 
 import '../../ui/request/view_model/request_view_model.dart';
 import '../../ui/request/widgets/request_screen.dart';
@@ -18,9 +19,11 @@ class NotificationService {
   GlobalKey<NavigatorState>? navigatorKey;
   static final NotificationService _notificationService =
       NotificationService._internal();
+
   factory NotificationService() {
     return _notificationService;
   }
+
   NotificationService._internal();
 
   /// Instance of FlutterLocalNotificationsPlugin
@@ -101,10 +104,12 @@ class NotificationService {
                   body: Center(child: Text('Error: ${snapshot.error}')),
                 );
               } else {
-                return RequestScreen(
-                  viewModel: RequestViewModel(
-                    userprofile: snapshot.data!,
-                    notificationData: NotificationData.fromFirestoreData(data)),
+                return ChangeNotifierProvider<RequestViewModel>(
+                  create: (_) => RequestViewModel(
+                      userprofile: snapshot.data!,
+                      notificationData:
+                          NotificationData.fromFirestoreData(data)),
+                  child: RequestScreen(),
                 );
               }
             },
