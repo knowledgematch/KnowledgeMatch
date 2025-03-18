@@ -19,7 +19,7 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
   /// It combines the selected date and time into a `DateTime` object and adds it to the `selectedTimeFrames` list.
   /// Once a valid date-time is selected, it calls the `onDatesSelected` callback with the updated list.
   void _addDateTime() async {
-    final viewModel = context.watch<RequestViewModel>();
+    final viewModel = context.read<RequestViewModel>();
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -49,16 +49,16 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<RequestViewModel>();
-    List<Reachability> elligibleReachability = <Reachability>[];
+    List<Reachability> eligibleReachability = <Reachability>[];
     switch (viewModel.state.searchCriteria.reachability) {
       case Reachability.online:
-        elligibleReachability.add(Reachability.online);
+        eligibleReachability.add(Reachability.online);
       case Reachability.inPerson:
-        elligibleReachability.add(Reachability.inPerson);
+        eligibleReachability.add(Reachability.inPerson);
       case Reachability.onlineOrInPerson:
-        elligibleReachability.addAll(Reachability.values);
+        eligibleReachability.addAll(Reachability.values);
       case null:
-        elligibleReachability.addAll(Reachability.values);
+        eligibleReachability.addAll(Reachability.values);
     }
     return Column(
       children: [
@@ -95,7 +95,7 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                         value:
                             viewModel.state.selectedDates[index].reachability ??
                                 viewModel.state.searchCriteria.reachability,
-                        items: elligibleReachability.map((Reachability value) {
+                        items: eligibleReachability.map((Reachability value) {
                           return DropdownMenuItem<Reachability>(
                             value: value,
                             child: Text(value.toString()),
