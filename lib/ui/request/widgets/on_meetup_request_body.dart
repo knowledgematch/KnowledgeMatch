@@ -134,39 +134,46 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
                           // Request different dates
                           showDialog(
                             context: context,
-                            builder: (context) => StatefulBuilder(
-                              builder: (context, setState) {
-                                return Dialog(
-                                  insetPadding: EdgeInsets.zero,
-                                  child: Column(
-                                    children: [
-                                      ChangeNotifierProvider.value(
-                                          value: viewModel,
-                                          child: const MultiDateTimePicker()),
-                                      Spacer(),
-                                      // Confirm Button for Sending the Notification
-                                      ElevatedButton(
-                                        onPressed: viewModel
-                                                .state.newDates.isEmpty
-                                            ? null
-                                            : () async {
-                                                if (context.mounted) {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                        content: Text(
-                                                            "New dates proposed successfully!")),
-                                                  );
-                                                  Navigator.pop(context);
-                                                }
-                                                viewModel.proposeNewDates();
-                                              },
-                                        child: Text('Send New Dates'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
+                            builder: (_) =>
+                                ChangeNotifierProvider<RequestViewModel>.value(
+                              value: viewModel,
+                              child: Dialog(
+                                insetPadding: EdgeInsets.zero,
+                                child: Builder(
+                                  builder: (dialogContext) {
+                                    final viewModelWatch =
+                                        dialogContext.watch<RequestViewModel>();
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        MultiDateTimePicker(),
+                                        Spacer(),
+                                        // Confirm Button for Sending the Notification
+                                        ElevatedButton(
+                                          onPressed: viewModelWatch
+                                                  .state.selectedDates.isEmpty
+                                              ? null
+                                              : () async {
+                                                  if (context.mounted) {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                          content: Text(
+                                                              "New dates proposed successfully!")),
+                                                    );
+                                                    Navigator.pop(context);
+                                                  }
+                                                  viewModelWatch
+                                                      .proposeSelectedDates();
+                                                },
+                                          child: Text('Send New Dates'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
                             ),
                           );
                         }
