@@ -41,7 +41,7 @@ class OnRequestBody extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              viewModel.searchCriteria.issue,
+              viewModel.state.searchCriteria.issue,
               style: TextStyle(
                 fontSize: 16,
               ),

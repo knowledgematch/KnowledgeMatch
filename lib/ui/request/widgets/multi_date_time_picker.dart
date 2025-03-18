@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/reachability.dart';
 import 'package:knowledgematch/domain/models/request_date_data.dart';
+import 'package:provider/provider.dart';
 
 import '../view_model/request_view_model.dart';
 
 class MultiDateTimePicker extends StatefulWidget {
-  final RequestViewModel viewModel;
-  const MultiDateTimePicker({super.key, required this.viewModel});
+  const MultiDateTimePicker({super.key});
 
   @override
   MultiDateTimePickerState createState() => MultiDateTimePickerState();
 }
 
 class MultiDateTimePickerState extends State<MultiDateTimePicker> {
-  List<RequestDateData> selectedTimeFrames = [];
+  // List<RequestDateData> selectedTimeFrames = [];
 
   /// Opens a date and time picker to allow the user to select a specific date and time.
   ///
@@ -21,6 +21,7 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
   /// It combines the selected date and time into a `DateTime` object and adds it to the `selectedTimeFrames` list.
   /// Once a valid date-time is selected, it calls the `onDatesSelected` callback with the updated list.
   void _addDateTime() async {
+    final viewModel = context.read<RequestViewModel>();
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -42,30 +43,16 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
           pickedTime.hour,
           pickedTime.minute,
         );
-        setState(() {
-          selectedTimeFrames.add(
-            RequestDateData(dateTime: combinedDateTime),
-          );
-        });
+        viewModel.addSelectedDate(RequestDateData(dateTime: combinedDateTime));
       }
-      widget.viewModel.selectedDates = selectedTimeFrames;
-      //widget.onDatesSelected(selectedTimeFrames);
     }
-  }
-
-  /// Removes a selected date-time at the specified [index] from the [selectedTimeFrames] list.
-  void _removeDateTime(int index) {
-    setState(() {
-      selectedTimeFrames.removeAt(index);
-    });
-    widget.viewModel.selectedDates;
-    //widget.onDatesSelected(selectedTimeFrames);
   }
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<RequestViewModel>();
     List<Reachability> elligibleReachability = <Reachability>[];
-    switch (widget.viewModel.searchCriteria.reachability) {
+    switch (viewModel.state.searchCriteria.reachability) {
       case Reachability.online:
         elligibleReachability.add(Reachability.online);
       case Reachability.inPerson:
@@ -84,10 +71,12 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
         SizedBox(
           height: 300,
           child: ListView.builder(
-            itemCount: selectedTimeFrames.length,
+            itemCount: viewModel.state.selectedDates.length,
             itemBuilder: (context, index) {
-              final date = selectedTimeFrames[index].getFormattedDate();
-              final time = selectedTimeFrames[index].getFormattedTime();
+              final date =
+                  viewModel.state.selectedDates[index].getFormattedDate();
+              final time =
+                  viewModel.state.selectedDates[index].getFormattedTime();
               return Card(
                 child: ListTile(
                   title: Row(children: [
@@ -105,8 +94,9 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       DropdownButton<Reachability>(
-                        value: selectedTimeFrames[index].reachability ??
-                            widget.viewModel.searchCriteria.reachability,
+                        value:
+                            viewModel.state.selectedDates[index].reachability ??
+                                viewModel.state.searchCriteria.reachability,
                         items: elligibleReachability.map((Reachability value) {
                           return DropdownMenuItem<Reachability>(
                             value: value,
@@ -114,15 +104,14 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                           );
                         }).toList(),
                         onChanged: (Reachability? newValue) {
-                          setState(() {
-                            selectedTimeFrames[index].reachability = newValue;
-                          });
+                          viewModel.changeReachabilityOnSelectedDate(
+                              index, newValue);
                         },
                       ),
                       SizedBox(width: 8),
                       IconButton(
                         icon: Icon(Icons.delete),
-                        onPressed: () => _removeDateTime(index),
+                        onPressed: () => viewModel.removeSelectedDate(index),
                       ),
                     ],
                   ),

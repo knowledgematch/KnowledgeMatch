@@ -28,8 +28,7 @@ class NotificationBodyState extends State<NotificationBody> {
         OnDeclineBody(viewModel: widget.viewModel),
       NotificationType.requestAccepted =>
         OnAcceptBody(viewModel: widget.viewModel),
-      NotificationType.meetupRequest =>
-        OnMeetupRequestBody(viewModel: widget.viewModel),
+      NotificationType.meetupRequest => OnMeetupRequestBody(),
       NotificationType.meetupConfirmation =>
         OnMeetupConfirmationBody(viewModel: widget.viewModel),
     };

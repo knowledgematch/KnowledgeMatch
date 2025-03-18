@@ -5,6 +5,7 @@ import 'multi_date_time_picker.dart';
 
 class OnAcceptBody extends StatefulWidget {
   const OnAcceptBody({super.key, required this.viewModel});
+
   final RequestViewModel viewModel;
 
   @override
@@ -39,7 +40,7 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
           ),
         ),
         SizedBox(height: 8),
-        MultiDateTimePicker(viewModel: widget.viewModel),
+        MultiDateTimePicker(),
         Spacer(),
         // Action Buttons
         Row(
@@ -48,7 +49,7 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
             ElevatedButton(
               onPressed: widget.viewModel.notificationData.isOpen == true
                   ? () async {
-                      if (widget.viewModel.selectedDates.isEmpty) {
+                      if (widget.viewModel.state.selectedDates.isEmpty) {
                         // Show error if no dates are selected
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

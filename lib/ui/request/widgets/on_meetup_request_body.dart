@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../../../domain/models/request_date_data.dart';
 import 'multi_date_time_picker.dart';
 
 class OnMeetupRequestBody extends StatefulWidget {
-  final RequestViewModel viewModel;
-  const OnMeetupRequestBody({super.key, required this.viewModel});
+  const OnMeetupRequestBody({super.key});
 
   @override
   OnMeetupRequestBodyState createState() => OnMeetupRequestBodyState();
@@ -16,14 +16,13 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
   @override
   void initState() {
     super.initState();
-    widget.viewModel.parseIncomingDates();
+    final viewModel = context.read<RequestViewModel>();
+    viewModel.parseIncomingDates();
   }
 
   @override
   Widget build(BuildContext context) {
-    //RequestDateData? selectedDate; // To track the selected date
-     //SearchCriteria? searchCriteria;
-    //print(widget.viewModel.searchCriteria);
+    final viewModel = context.watch<RequestViewModel>();
     return StatefulBuilder(
       builder: (context, setState) {
         return Column(
@@ -44,7 +43,7 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
                       Icon(Icons.date_range, color: Colors.orange, size: 40)),
             ),
             SizedBox(height: 8),
-            if (widget.viewModel.incomingDates.isNotEmpty)
+            if (viewModel.state.incomingDates.isNotEmpty)
               Text(
                 'Select a proposed date and time:',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -52,8 +51,8 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
             SizedBox(height: 8),
 
             // Display incoming dates
-            if (widget.viewModel.incomingDates.isNotEmpty)
-              ...widget.viewModel.incomingDates
+            if (viewModel.state.incomingDates.isNotEmpty)
+              ...viewModel.state.incomingDates
                   .map((RequestDateData requestedDate) {
                 String date = requestedDate.getFormattedDate();
                 String time = requestedDate.getFormattedTime();
@@ -73,11 +72,9 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
                     ],
                   ),
                   value: requestedDate,
-                  groupValue: widget.viewModel.selectedDate,
+                  groupValue: viewModel.state.selectedDate,
                   onChanged: (value) {
-                    setState(() {
-                      widget.viewModel.selectedDate = value;
-                    });
+                    viewModel.setSelectedDate(value);
                   },
                   secondary: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -90,7 +87,7 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
                 );
               }),
 
-            if (widget.viewModel.incomingDates.isEmpty)
+            if (viewModel.state.incomingDates.isEmpty)
               Text(
                 'No dates proposed. Please suggest new dates.',
                 style: TextStyle(fontSize: 16, color: Colors.red),
@@ -103,8 +100,8 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: widget.viewModel.selectedDate == null ||
-                          widget.viewModel.notificationData.isOpen == false
+                  onPressed: viewModel.state.selectedDate == null ||
+                          viewModel.notificationData.isOpen == false
                       ? null
                       : () async {
                           if (context.mounted) {
@@ -115,10 +112,10 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
                             );
                             Navigator.pop(context);
                           }
-                          widget.viewModel.confirmDate();
+                          viewModel.confirmDate();
                         },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: widget.viewModel.selectedDate == null
+                    backgroundColor: viewModel.state.selectedDate == null
                         ? Colors.grey
                         : Colors.black,
                     shape: RoundedRectangleBorder(
@@ -132,7 +129,7 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: widget.viewModel.notificationData.isOpen == true
+                  onPressed: viewModel.notificationData.isOpen == true
                       ? () {
                           // Request different dates
                           showDialog(
@@ -143,13 +140,12 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
                                   insetPadding: EdgeInsets.zero,
                                   child: Column(
                                     children: [
-                                      MultiDateTimePicker(viewModel: widget.viewModel
-                                      ),
+                                      MultiDateTimePicker(),
                                       Spacer(),
                                       // Confirm Button for Sending the Notification
                                       ElevatedButton(
-                                        onPressed: widget
-                                                .viewModel.newDates.isEmpty
+                                        onPressed: viewModel
+                                                .state.newDates.isEmpty
                                             ? null
                                             : () async {
                                                 if (context.mounted) {
@@ -161,8 +157,7 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
                                                   );
                                                   Navigator.pop(context);
                                                 }
-                                                widget.viewModel
-                                                    .proposeNewDates();
+                                                viewModel.proposeNewDates();
                                               },
                                         child: Text('Send New Dates'),
                                       ),

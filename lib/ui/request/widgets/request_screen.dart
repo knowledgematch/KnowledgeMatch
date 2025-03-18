@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
+import 'package:provider/provider.dart';
 
 import '../view_model/request_view_model.dart';
 import 'notification_body.dart';
@@ -13,25 +14,28 @@ class RequestScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('UserProfile ID: ${viewModel.userprofile.name}');
-    return Scaffold(
-        appBar: AppBar(
-          title: _buildTitle(),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          elevation: 0,
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-        ),
-        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          UserProfileCard(
-            viewModel: viewModel,
-          ),
-          Expanded(child: NotificationBody(viewModel: viewModel))
-        ]));
+    return ChangeNotifierProvider.value(
+        value: viewModel,
+        child: Scaffold(
+            appBar: AppBar(
+              title: _buildTitle(),
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              elevation: 0,
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+            ),
+            body:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              UserProfileCard(
+                viewModel: viewModel,
+              ),
+              Expanded(child: NotificationBody(viewModel: viewModel))
+            ])));
   }
 
   Widget _buildTitle() {
