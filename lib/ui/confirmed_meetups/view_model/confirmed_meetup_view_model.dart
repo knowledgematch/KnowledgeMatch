@@ -29,6 +29,7 @@ class ConfirmedMeetupViewModel extends ChangeNotifier{
   ///   loaded and the UI state has been updated.
   Future<void> loadNotificationsAndProfiles() async {
     _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
 
     try {

@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:knowledgematch/data/services/user_service.dart';
 import '../create_profile/create_profile_screen.dart';
-import '../main/main_screen.dart';
+import '../main/widgets/main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

@@ -26,7 +26,8 @@ class RequestViewModel extends ChangeNotifier {
                     notificationData.payload['search_criteria'] is Map
                 ? SearchCriteria.fromJSON(
                     notificationData.payload['search_criteria'])
-                : SearchCriteria.fromJSON(notificationData.payload));
+                : SearchCriteria.fromJSON(notificationData.payload)
+      );
 
   void acceptRequest() async {
     var notification = NotificationData(

@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:knowledgematch/ui/chat/chat_state.dart';
 
 import '../../../data/services/firestore_service.dart';
 import '../../../data/services/matching_algorithm.dart';
@@ -8,10 +9,12 @@ import '../../../domain/models/userprofile.dart';
 
 class ChatViewModel extends ChangeNotifier {
   final FirestoreService _firestoreService = FirestoreService();
-  final Map<int, Userprofile?> _userProfiles = {};
-  List<NotificationData> _notification = [];
-  String? _errorMessage;
-  bool _isLoading = true;
+
+  ChatState _state;
+
+  ChatState get state => _state;
+
+  ChatViewModel() : _state = ChatState();
 
   /// Loads notifications and user profiles asynchronously.
   ///
@@ -28,9 +31,6 @@ class ChatViewModel extends ChangeNotifier {
   /// - A [Future] that completes when notifications and user profiles have been
   ///   loaded and the UI state has been updated.
   Future<void> loadNotificationsAndProfiles() async {
-    _isLoading = true;
-    notifyListeners();
-
     try {
       final notifications = await _firestoreService.fetchNotifications(
         userID: User.instance.id ?? 0,
@@ -39,26 +39,21 @@ class ChatViewModel extends ChangeNotifier {
 
       final limitedNotifications = notifications.take(20).toList();
 
+      Map<int, Userprofile?> userProfiles = {};
       for (final notification in limitedNotifications) {
         final userProfile = await MatchingAlgorithm()
             .getUserProfileById(notification.sourceUserId);
-        _userProfiles[notification.sourceUserId] = userProfile;
+        userProfiles[notification.sourceUserId] = userProfile;
       }
-
-      _notification = limitedNotifications;
+      _state = state.copyWith(
+        userProfiles: userProfiles,
+        notifications: limitedNotifications,
+      );
     } catch (error) {
-      _errorMessage = error.toString();
+      _state = state.copyWith(errorMessage: error.toString());
     } finally {
-      _isLoading = false;
+      _state = state.copyWith(isLoading: false);
       notifyListeners();
     }
   }
-
-  bool get isLoading => _isLoading;
-
-  String? get errorMessage => _errorMessage;
-
-  List<NotificationData> get notification => _notification;
-
-  Map<int, Userprofile?> get userProfiles => _userProfiles;
 }
