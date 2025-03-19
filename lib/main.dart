@@ -13,7 +13,8 @@ import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/firebase_options.dart';
 import 'package:knowledgematch/ui/login/login_screen.dart';
-import 'package:knowledgematch/ui/main/main_screen.dart';
+import 'package:knowledgematch/ui/main/view_model/main_screen_view_model.dart';
+import 'package:knowledgematch/ui/main/widgets/main_screen.dart';
 import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
 import 'package:knowledgematch/ui/request/widgets/request_screen.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,14 @@ Future<void> main() async {
     print('Firebase initialization error: $e');
   }
 
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => MainScreenViewModel()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

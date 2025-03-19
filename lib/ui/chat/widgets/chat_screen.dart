@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../confirmed_meetups/view_model/confirmed_meetup_view_model.dart';
 import '../../confirmed_meetups/widgets/confirmed_meetup_screen.dart';
 import '../../request/view_model/request_view_model.dart';
 import '../../request/widgets/notification_card.dart';
 import '../../request/widgets/request_screen.dart';
 
 class ChatScreen extends StatefulWidget {
-  final ChatViewModel viewModel;
 
-  const ChatScreen({super.key, required this.viewModel});
+  const ChatScreen({super.key});
 
   @override
   ChatScreenState createState() => ChatScreenState();
@@ -19,17 +17,11 @@ class ChatScreen extends StatefulWidget {
 
 class ChatScreenState extends State<ChatScreen> {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.viewModel.loadNotificationsAndProfiles();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<ChatViewModel>();
+
     return ListenableBuilder(
-      listenable: widget.viewModel,
+      listenable: viewModel,
       builder: (context, _) {
         return Scaffold(
           appBar: AppBar(
@@ -41,7 +33,6 @@ class ChatScreenState extends State<ChatScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ConfirmedMeetupsScreen(
-                        viewModel: ConfirmedMeetupViewModel(),
                       ),
                     ),
                   );
@@ -50,20 +41,20 @@ class ChatScreenState extends State<ChatScreen> {
               ),
             ],
           ),
-          body: widget.viewModel.isLoading
+          body: viewModel.state.isLoading
               ? const Center(child: CircularProgressIndicator())
-              : widget.viewModel.errorMessage != null
+              : viewModel.state.errorMessage != null
                   ? Center(
-                      child: Text('Error: ${widget.viewModel.errorMessage}'))
-                  : widget.viewModel.notification.isEmpty
+                      child: Text('Error: ${viewModel.state.errorMessage}'))
+                  : viewModel.state.notification.isEmpty
                       ? const Center(child: Text('No requests found.'))
                       : ListView.builder(
-                          itemCount: widget.viewModel.notification.length,
+                          itemCount: viewModel.state.notification.length,
                           itemBuilder: (context, index) {
                             final notification =
-                                widget.viewModel.notification[index];
-                            final userProfile = widget.viewModel
-                                .userProfiles[notification.sourceUserId];
+                                viewModel.state.notification[index];
+                            final userProfile = viewModel
+                                .state.userProfiles[notification.sourceUserId];
 
                             return GestureDetector(
                               onTap: () {
