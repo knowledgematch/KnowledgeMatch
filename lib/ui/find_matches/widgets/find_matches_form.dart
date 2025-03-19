@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_model.dart';
 import 'package:provider/provider.dart';
@@ -9,13 +8,10 @@ import '../../../widgets/app_drawer.dart';
 import '../../swipe/view_model/swipe_view_model.dart';
 import '../../swipe/widgets/swipe_screen.dart';
 
-class FindMatchesForm extends StatelessWidget{
-
+class FindMatchesForm extends StatelessWidget {
   FindMatchesForm({super.key});
 
   final _formKey = GlobalKey<FormState>();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +60,7 @@ class FindMatchesForm extends StatelessWidget{
                 maxLines: 7,
                 decoration: const InputDecoration(
                   hintText:
-                  'For example: How does one proceed in a curve discussion?',
+                      'For example: How does one proceed in a curve discussion?',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
@@ -120,8 +116,8 @@ class FindMatchesForm extends StatelessWidget{
                       MaterialPageRoute(
                         builder: (context) => SwipeScreen(
                             viewModel: SwipeViewModel(
-                              searchCriteria: searchCriteria,
-                            )),
+                          searchCriteria: searchCriteria,
+                        )),
                       ),
                     );
                   }
@@ -138,5 +134,4 @@ class FindMatchesForm extends StatelessWidget{
       ),
     );
   }
-
 }
