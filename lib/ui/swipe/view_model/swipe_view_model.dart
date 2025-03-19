@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:knowledgematch/data/services/matching_algorithm.dart';
 
 import '../../../data/services/notification_service.dart';
@@ -8,9 +9,15 @@ import '../../../domain/models/user.dart';
 import '../../../domain/models/userprofile.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
+import '../swipe_state.dart';
+
 class SwipeViewModel extends ChangeNotifier {
   final SearchCriteria searchCriteria;
   late final Future<List<Userprofile>> profilesFuture;
+
+  SwipeState _state = SwipeState(shouldShowGlow: false);
+
+  SwipeState get state => _state;
 
   final SwipableStackController controller = SwipableStackController();
 
@@ -24,6 +31,12 @@ class SwipeViewModel extends ChangeNotifier {
 
   void setProfiles(List<Userprofile> loadedProfiles) {
     profiles = loadedProfiles;
+    updateTitle();
+  }
+
+  void updateTitle(){
+    _state = _state.copyWith(title:"Matches (${profiles.length})" );
+    notifyListeners();
   }
 
   /// Use the NotificationService to send a [NotificationType.knowledgeRequest] request.
@@ -60,9 +73,21 @@ class SwipeViewModel extends ChangeNotifier {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       sendSwipeRightNotification();
       controller.currentIndex--;
+      updateTitle();
+      notifyListeners();
     }
     if (controller.currentIndex == profiles.length - 1) {
       controller.currentIndex = -1;
+    }
+  }
+
+  void checkSwipeDirection(double swipeDistance) {
+    bool newShouldShowGlow = swipeDistance > 0.8;
+    if (_state.shouldShowGlow != newShouldShowGlow) {
+      _state = state.copyWith(shouldShowGlow: newShouldShowGlow);
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        notifyListeners();
+      });
     }
   }
 }
