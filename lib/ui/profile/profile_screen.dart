@@ -11,7 +11,7 @@ import 'package:knowledgematch/widgets/app_drawer.dart';
 
 import '../change_pw/view_model/change_pw_view_model.dart';
 import '../change_pw/widgets/change_pw_screen.dart';
-import '../keyword_selection/keyword_selection_screen.dart';
+import '../keyword_selection/widgets/keyword_selection_screen.dart';
 import '../login/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
