@@ -135,29 +135,6 @@ class RequestViewModel extends ChangeNotifier {
     FirestoreService().closeRequest(notificationData.requestID);
   }
 
-  // void proposeNewDates() async {
-  //   final dates = RequestDateData.buildDatesMap(state.newDates);
-  //   Map<String, dynamic> combineJson = {
-  //     "dates": dates,
-  //     "search_criteria": state.searchCriteria.toJSON(),
-  //   };
-  //
-  //   var notification = NotificationData(
-  //     type: NotificationType.meetupRequest,
-  //     title: "Request for New Dates",
-  //     body: "${User.instance.name} requested new dates!",
-  //     payload: combineJson,
-  //     targetUserId: userprofile.id,
-  //     sourceUserId: User.instance.id!,
-  //   );
-  //
-  //   //close previous request and send new notification
-  //   FirestoreService()
-  //       .notificationStatusUpdate(false, notificationData.documentID);
-  //   await NotificationService()
-  //       .sendMessageToDevice(notification, userprofile.tokens ?? []);
-  // }
-
   void closeRequestDelegate() async {
     FirestoreService().closeRequest(notificationData.requestID);
   }
