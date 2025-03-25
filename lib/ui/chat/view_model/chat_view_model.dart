@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:knowledgematch/ui/chat/chat_state.dart';
 
@@ -47,7 +48,7 @@ class ChatViewModel extends ChangeNotifier {
       }
       _state = state.copyWith(
         userProfiles: userProfiles,
-        notifications: limitedNotifications,
+        notification: limitedNotifications,
       );
     } catch (error) {
       _state = state.copyWith(errorMessage: error.toString());

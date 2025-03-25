@@ -17,13 +17,13 @@ class ChatState {
   ChatState copyWith({
     bool? isLoading,
     Map<int, Userprofile?>? userProfiles,
-    List<NotificationData>? notifications,
+    List<NotificationData>? notification,
     String? errorMessage,
   }) {
     return ChatState(
       isLoading: isLoading ?? this.isLoading,
       userProfiles: userProfiles ?? this.userProfiles,
-      notification: notifications ?? this.notification,
+      notification: notification ?? this.notification,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }

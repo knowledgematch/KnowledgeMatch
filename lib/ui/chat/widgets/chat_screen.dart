@@ -8,7 +8,6 @@ import '../../request/widgets/notification_card.dart';
 import '../../request/widgets/request_screen.dart';
 
 class ChatScreen extends StatefulWidget {
-
   const ChatScreen({super.key});
 
   @override
@@ -16,6 +15,12 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ChatViewModel>().loadNotificationsAndProfiles();
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<ChatViewModel>();
@@ -32,8 +37,7 @@ class ChatScreenState extends State<ChatScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ConfirmedMeetupsScreen(
-                      ),
+                      builder: (context) => ConfirmedMeetupsScreen(),
                     ),
                   );
                 },

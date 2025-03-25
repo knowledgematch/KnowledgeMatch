@@ -12,6 +12,7 @@ import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/firebase_options.dart';
+import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
 import 'package:knowledgematch/ui/login/login_screen.dart';
 import 'package:knowledgematch/ui/main/view_model/main_screen_view_model.dart';
 import 'package:knowledgematch/ui/main/widgets/main_screen.dart';
@@ -42,6 +43,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MainScreenViewModel()),
+        ChangeNotifierProvider(create: (_) => ChatViewModel()),
       ],
       child: MyApp(),
     ),
