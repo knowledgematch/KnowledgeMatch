@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/keyword_selection/keyword_selection_state.dart';
 
@@ -93,17 +92,23 @@ class KeywordSelectionViewModel extends ChangeNotifier {
     _changeIsSaving(false);
 
     if (!allSuccess) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to update keyword selection'),
-        ),
-      );
+      if(context.mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to update keyword selection'),
+          ),
+        );
+      }
+
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Keyword selection updated successfully'),
-        ),
-      );
+      if(context.mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Keyword selection updated successfully'),
+          ),
+        );
+      }
+
 
       // Update the initial state to reflect the new saved selection.
       _state.copyWith(
