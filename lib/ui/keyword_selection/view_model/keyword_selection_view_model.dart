@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/keyword_selection/keyword_selection_state.dart';
 
