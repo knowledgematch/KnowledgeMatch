@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/reachability.dart';
+import 'package:knowledgematch/ui/keyword_selection/view_model/keyword_selection_view_model.dart';
+import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knowledgematch/widgets/app_drawer.dart';
@@ -281,8 +283,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ChangePasswordScreen(
-                            viewModel: ChangePwViewModel(),
-                          )),
+                                viewModel: ChangePwViewModel(),
+                              )),
                     );
                   },
                   child: const Text('Change Password'),
@@ -291,10 +293,12 @@ class ProfileScreenState extends State<ProfileScreen> {
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const KeywordSelectionScreen()),
-                    );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChangeNotifierProvider(
+                                create: (BuildContext context) =>
+                                    KeywordSelectionViewModel(),
+                                child: KeywordSelectionScreen())));
                   },
                   child: const Text('Edit Keywords'),
                 ),

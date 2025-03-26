@@ -27,11 +27,10 @@ class SwipeViewModel extends ChangeNotifier {
     required this.searchCriteria,
   }){
     profilesFuture = MatchingAlgorithm().getMatchingUserProfiles(searchCriteria);
-  }
-
-  void setProfiles(List<Userprofile> loadedProfiles) {
-    profiles = loadedProfiles;
-    updateTitle();
+    profilesFuture.then((loadedProfiles) {
+      profiles = loadedProfiles;
+      updateTitle();
+    });
   }
 
   void updateTitle(){
