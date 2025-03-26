@@ -47,15 +47,15 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ChatViewModel()),
         ChangeNotifierProvider(create: (_) => FindMatchesViewModel())
       ],
-      child: MyApp(),
+      child: RunApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class RunApp extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  MyApp({super.key});
+  RunApp({super.key});
 
   @override
   Widget build(BuildContext context) {
