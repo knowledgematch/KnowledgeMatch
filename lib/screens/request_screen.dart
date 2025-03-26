@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/models/notification_data.dart';
+import 'package:knowledgematch/theme/colors.dart';
 import 'package:knowledgematch/widgets/notification_body.dart';
 
 import '../models/userprofile.dart';
@@ -27,8 +28,8 @@ class RequestScreen extends StatelessWidget {
             },
           ),
           elevation: 0,
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          backgroundColor: AppColors.whiteLight,
+          foregroundColor: AppColors.blackLight,
         ),
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           _userProfileCard(userprofile),
@@ -87,7 +88,7 @@ class RequestScreen extends StatelessWidget {
                     userprofile.description,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[700],
+                      color: AppColors.grey7Light,
                     ),
                   ),
                   SizedBox(height: 4),
@@ -95,7 +96,7 @@ class RequestScreen extends StatelessWidget {
                     'Location: ${userprofile.reachability}',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[700],
+                      color: AppColors.grey7Light,
                     ),
                   ),
                 ],

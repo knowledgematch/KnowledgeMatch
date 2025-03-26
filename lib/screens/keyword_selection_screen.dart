@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
 import 'package:knowledgematch/models/user.dart';
+import 'package:knowledgematch/theme/colors.dart';
 
 /// Screen for selecting keywords.
 ///
@@ -139,8 +140,8 @@ class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
           IconButton(
             icon: _isSaving
                 ? const CircularProgressIndicator(
-              color: Colors.white,
-            )
+                    color: AppColors.whiteLight,
+                  )
                 : const Icon(Icons.save),
             onPressed: _isSaving ? null : _saveKeywordChanges,
             tooltip: 'Save changes',

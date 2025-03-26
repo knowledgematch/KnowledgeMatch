@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
+import 'package:knowledgematch/theme.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knowledgematch/models/user.dart';
 import 'package:knowledgematch/screens/login_screen.dart';
@@ -15,6 +17,7 @@ import 'package:knowledgematch/models/userprofile.dart';
 import 'package:knowledgematch/screens/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:knowledgematch/firebase_options.dart';
+import 'package:knowledgematch/theme/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,8 +36,19 @@ Future<void> main() async {
   } catch (e) {
     print('Firebase initialization error: $e');
   }
+  final prefs = await SharedPreferences.getInstance();
 
-  runApp(MyApp());
+  return runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+            create: (context) => ThemeProvider(
+                  isDarkMode: prefs.getBool('isDark') ?? false,
+                )),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -44,98 +58,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     appContext = context;
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      title: 'KnowledgeMatch',
-      theme: ThemeData(
-          textSelectionTheme: TextSelectionThemeData(
-            cursorColor: Colors.black,
-            selectionColor: Colors.grey,
-            selectionHandleColor: Colors.black,
-          ),
-          iconTheme: IconThemeData(color: Colors.black),
-          primarySwatch: Colors.grey,
-          primaryColor: Color(0xFFbcb9b0),
-          hintColor: Color(0xFFbcb9b0),
-          scaffoldBackgroundColor: Color(0xFFbcb9b0),
-          progressIndicatorTheme: ProgressIndicatorThemeData(
-            color: Colors.white,
-          ),
-          dropdownMenuTheme: DropdownMenuThemeData(
-              inputDecorationTheme: InputDecorationTheme(
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              textStyle: TextStyle(color: Colors.black),
-              menuStyle: MenuStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.grey[300]),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              )),
-          menuTheme: MenuThemeData(
-            style: MenuStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.grey[300]),
-              shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-          ),
-          textTheme: TextTheme(
-            bodyLarge: TextStyle(color: Colors.black),
-            bodyMedium: TextStyle(color: Colors.black),
-            titleMedium: TextStyle(color: Colors.black),
-            labelMedium: TextStyle(color: Colors.black),
-            labelLarge: TextStyle(color: Colors.black),
-            labelSmall: TextStyle(color: Colors.black),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            focusColor: Colors.black,
-            labelStyle: TextStyle(color: Colors.black),
-            outlineBorder: BorderSide(
-              color: Colors.black,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          appBarTheme: AppBarTheme(
-            color: Color(0xFFbcb9b0),
-            iconTheme: IconThemeData(color: Colors.black),
-          ),
-          buttonTheme: ButtonThemeData(
-            buttonColor: Color(0xFFbcb9b0),
-            textTheme: ButtonTextTheme.primary,
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              // side : BorderSide(color: Colors.black),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          )),
-      home: SplashScreen(navigatorKey: navigatorKey),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          navigatorKey: navigatorKey,
+          title: 'KnowledgeMatch',
+          theme: themeProvider.getTheme(),
+          home: SplashScreen(navigatorKey: navigatorKey),
+        );
+      },
     );
   }
 }

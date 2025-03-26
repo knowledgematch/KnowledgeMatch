@@ -1,73 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/screens/about_screen.dart';
 import 'package:knowledgematch/screens/contact_screen.dart';
+import 'package:knowledgematch/screens/profile_screen.dart';
+import 'package:knowledgematch/screens/settings_screen.dart';
+import 'package:knowledgematch/theme/colors.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: AppColors.primary),
+      title: Text(title, style: const TextStyle(color: AppColors.primary)),
+      onTap: onTap,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final drawerItems = [
+      {
+        'icon': Icons.person,
+        'title': 'Profile',
+        'screen': const ProfileScreen(),
+      },
+      {
+        'icon': Icons.info,
+        'title': 'About',
+        'screen': const AboutScreen(),
+      },
+      {
+        'icon': Icons.contact_mail,
+        'title': 'Contact',
+        'screen': const ContactScreen(),
+      },
+      {
+        'icon': Icons.settings,
+        'title': 'Settings',
+        'screen': SettingsScreen(),
+      },
+    ];
+
     return Drawer(
-      backgroundColor: Color(0xFFbcb9b0),
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-            ),
-            child: Center(
-                child: Row(
-              children: [
-                ClipOval(
-                  child: Image.asset('assets/images/logo.png', width: 50),
+            decoration: const BoxDecoration(color: AppColors.primary),
+            child: const Center(
+              child: Text(
+                'KnowledgeMatch',
+                style: TextStyle(
+                  color: AppColors.whiteLight,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 24,
                 ),
-                // Image.asset('assets/images/logo.png', width: 50),
-                const SizedBox(width: 10),
-                const Text(
-                  'KnowledgeMatch',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
-              ],
-            )),
+              ),
+            ),
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.info,
-              color: Colors.black,
-            ),
-            title: const Text(
-              'About',
-              style: TextStyle(color: Colors.black),
-            ),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AboutScreen()),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(
-              Icons.contact_mail,
-              color: Colors.black,
-            ),
-            title: const Text(
-              'Contact',
-              style: TextStyle(color: Colors.black),
-            ),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ContactScreen()),
-              );
-            },
-          ),
+          ...drawerItems.map((item) => _buildDrawerItem(
+                icon: item['icon'] as IconData,
+                title: item['title'] as String,
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => item['screen'] as Widget),
+                  );
+                },
+              )),
         ],
       ),
     );

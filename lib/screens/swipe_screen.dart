@@ -4,6 +4,7 @@ import 'package:knowledgematch/models/search_criteria.dart';
 import 'package:knowledgematch/models/user.dart';
 import 'package:knowledgematch/models/userprofile.dart';
 import 'package:knowledgematch/services/notification_service.dart';
+import 'package:knowledgematch/theme/colors.dart';
 import 'package:knowledgematch/widgets/flip_card.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
@@ -47,7 +48,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFbcb9b0),
+      // backgroundColor: const Color(0xFFbcb9b0),
       appBar: AppBar(
         title: FutureBuilder<List<Userprofile>>(
           future: widget.profiles,
@@ -59,16 +60,14 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
             } else if (snapshot.hasData) {
               final profiles = snapshot.data!;
               return Text("Matches (${profiles.length})",
-                  style: const TextStyle(color: Colors.black));
+                  style: const TextStyle(color: AppColors.blackLight));
             } else {
               return const Text("No Matches",
-                  style: TextStyle(color: Colors.black));
+                  style: TextStyle(color: AppColors.blackLight));
             }
           },
         ),
         centerTitle: true,
-        backgroundColor: const Color(0xFFbcb9b0),
-        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: FutureBuilder<List<Userprofile>>(
         future: widget.profiles,
@@ -99,8 +98,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: const Text('Request sent',
-                              style: TextStyle(color: Colors.white)),
-                          backgroundColor: Colors.black,
+                              style: TextStyle(color: AppColors.whiteLight)),
+                          backgroundColor: AppColors.blackLight,
                           duration: const Duration(milliseconds: 500),
                         ),
                       );
@@ -123,10 +122,10 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                         if (shouldShowGlow)
                           BoxShadow(
                             color: properties.direction == SwipeDirection.right
-                                ? Colors.green.withOpacity(0.6)
+                                ? AppColors.greenLight.withOpacity(0.6)
                                 : properties.direction == SwipeDirection.left
-                                    ? Colors.red.withOpacity(0.6)
-                                    : Colors.transparent,
+                                    ? AppColors.redLight.withOpacity(0.6)
+                                    : AppColors.transparent,
                             blurRadius: 35,
                             spreadRadius: 4,
                           ),
@@ -150,7 +149,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                         child: Text(
                           'REQUEST',
                           style: TextStyle(
-                            color: Colors.green,
+                            color: AppColors.greenLight,
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
                           ),
@@ -166,7 +165,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                         child: Text(
                           'DECLINE',
                           style: TextStyle(
-                            color: Colors.red,
+                            color: AppColors.redLight,
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
                           ),

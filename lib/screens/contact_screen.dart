@@ -1,3 +1,4 @@
+import 'package:knowledgematch/theme/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:mailer/mailer.dart';
@@ -79,7 +80,7 @@ class _ContactScreenState extends State<ContactScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to send message. Please try again later.'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.redLight,
           ),
         );
       }
@@ -89,7 +90,7 @@ class _ContactScreenState extends State<ContactScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('An error occurred. Please try again later.'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.redLight,
           ),
         );
       }
@@ -161,13 +162,13 @@ class _ContactScreenState extends State<ContactScreen> {
                               width: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    AppColors.whiteLight),
                               ),
                             )
                           : const Text(
                               'Send',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(color: AppColors.whiteLight),
                             ),
                     ),
                   ],

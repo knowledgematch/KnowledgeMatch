@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/models/reachability.dart';
 import 'package:knowledgematch/models/request_date_data.dart';
+import 'package:knowledgematch/theme/colors.dart';
 
 class MultiDateTimePicker extends StatefulWidget {
   final Function(List<RequestDateData>) onDatesSelected;
@@ -78,7 +79,7 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
       children: [
         ElevatedButton(
           onPressed: _addDateTime,
-          child: Text('Add Date & Time'),
+          child: Text('Add Date & Time' ,style: TextStyle(color: AppColors.white),),
         ),
         SizedBox(
           height: 300,

@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
 import 'package:knowledgematch/models/user.dart';
 import 'package:knowledgematch/models/reachability.dart';
+import 'package:knowledgematch/theme/colors.dart';
 import '../widgets/custom_drop_down.dart';
 import 'keyword_selection_screen.dart';
 import 'login_screen.dart';
@@ -205,7 +206,26 @@ class ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      drawer: const AppDrawer(),
+    floatingActionButton: ClipOval(
+      child: Builder(
+      builder: (context) {
+      final bool isDarkMode =
+      Theme.of(context).brightness == Brightness.dark;
+      return FloatingActionButton(
+      onPressed: () {
+      if (_formKey.currentState!.validate()) {
+      _saveProfile();
+      }
+      },
+      backgroundColor: AppColors.primary,
+      child: Icon(
+      Icons.save,
+      color: isDarkMode ? Colors.white : Colors.white,
+      ),
+      );
+      },
+      ),
+    ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -217,7 +237,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   onTap: _pickImage,
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundColor: Colors.grey[200],
+                    backgroundColor: AppColors.grey2Light,
                     backgroundImage: _pictureData != null
                         ? MemoryImage(_pictureData!)
                         : const AssetImage('assets/images/profile.png')
@@ -259,16 +279,6 @@ class ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _saveProfile();
-                    }
-                  },
-                  child: const Text('Save Changes',
-                      style: TextStyle(color: Colors.white)),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -276,7 +286,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                     );
                   },
                   child: const Text('Change Password',
-                      style: TextStyle(color: Colors.white)),
+                      style: TextStyle(color: AppColors.whiteLight)),
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
@@ -288,7 +298,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                     );
                   },
                   child: const Text('Edit Keywords',
-                      style: TextStyle(color: Colors.white)),
+                      style: TextStyle(color: AppColors.whiteLight)),
                 ),
               ],
             ),

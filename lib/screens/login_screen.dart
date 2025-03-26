@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:knowledgematch/models/user.dart';
 import 'package:knowledgematch/services/api_db_connection.dart';
+import 'package:knowledgematch/theme/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:knowledgematch/services/user_service.dart';
@@ -135,13 +136,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
               },
               child: Text('Create a new account',
-                  style: TextStyle(color: Colors.black)),
+                  style: TextStyle(color: AppColors.blackLight)),
             ),
             ElevatedButton(
               onPressed: _isLoading ? null : _login,
               child: _isLoading
                   ? CircularProgressIndicator()
-                  : Text('Login', style: TextStyle(color: Colors.white)),
+                  : Text('Login',
+                      style: TextStyle(color: AppColors.whiteLight)),
             ),
           ],
         ),

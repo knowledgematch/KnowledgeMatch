@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/models/userprofile.dart';
 import 'package:knowledgematch/screens/request_screen.dart';
 import 'package:knowledgematch/services/firestore_service.dart';
+import 'package:knowledgematch/theme/colors.dart';
 import 'package:knowledgematch/widgets/notification_card.dart';
 import 'package:knowledgematch/models/notification_data.dart';
 import 'package:knowledgematch/models/user.dart';
@@ -88,7 +89,7 @@ class ChatScreenState extends State<ChatScreen> {
                 );
               },
               child: const Text('Confirmed',
-                  style: TextStyle(color: Colors.white)),
+                  style: TextStyle(color: AppColors.whiteLight)),
             ),
           ),
         ],
