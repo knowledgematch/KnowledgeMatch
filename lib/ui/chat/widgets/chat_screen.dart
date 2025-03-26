@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../confirmed_meetups/widgets/confirmed_meetup_screen.dart';
 import '../../request/view_model/request_view_model.dart';
 import '../../request/widgets/notification_card.dart';
 import '../../request/widgets/request_screen.dart';
@@ -34,12 +33,7 @@ class ChatScreenState extends State<ChatScreen> {
             actions: [
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ConfirmedMeetupsScreen(),
-                    ),
-                  );
+                  viewModel.loadConfirmedNotificationsAndProfiles();
                 },
                 child: const Text('Confirmed'),
               ),
