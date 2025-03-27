@@ -20,8 +20,6 @@ class SplashViewModel extends ChangeNotifier {
 
   /// Initialize anything needed for the Splash flow.
   Future<void> init() async {
-    // Set up notifications for the app.
-    // NotificationService().init(navigatorKey);
     // Check if we have a valid session token.
     await _checkLoggedInStatus();
     // Request push notification permissions (especially relevant for iOS).
