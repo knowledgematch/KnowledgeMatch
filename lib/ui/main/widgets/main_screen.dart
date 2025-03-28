@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../chat/widgets/chat_screen.dart';
-import '../../profile/profile_screen.dart';
+import '../../profile/widget/profile_screen.dart';
 import '../../find_matches/widgets/find_matches_screen.dart';
 import '../view_model/main_screen_view_model.dart';
 

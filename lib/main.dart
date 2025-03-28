@@ -17,6 +17,7 @@ import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_mode
 import 'package:knowledgematch/ui/login/login_screen.dart';
 import 'package:knowledgematch/ui/main/view_model/main_screen_view_model.dart';
 import 'package:knowledgematch/ui/main/widgets/main_screen.dart';
+import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
 import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
 import 'package:knowledgematch/ui/request/widgets/request_screen.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +46,8 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => MainScreenViewModel()),
         ChangeNotifierProvider(create: (_) => ChatViewModel()),
-        ChangeNotifierProvider(create: (_) => FindMatchesViewModel())
+        ChangeNotifierProvider(create: (_) => FindMatchesViewModel()),
+        ChangeNotifierProvider(create: (_) => ProfileViewModel())
       ],
       child: RunApp(),
     ),
