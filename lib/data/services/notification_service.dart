@@ -13,8 +13,6 @@ import '../../ui/request/view_model/request_view_model.dart';
 import '../../ui/request/widgets/request_screen.dart';
 import 'matching_algorithm.dart';
 
-late BuildContext appContext;
-
 class NotificationService {
   GlobalKey<NavigatorState>? navigatorKey;
   static final NotificationService _notificationService =
