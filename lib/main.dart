@@ -6,8 +6,11 @@ import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
 import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_model.dart';
 import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
 import 'package:knowledgematch/ui/main/view_model/main_view_model.dart';
+import 'package:knowledgematch/ui/splash/view_model/splash_view_model.dart';
 import 'package:knowledgematch/ui/splash/widgets/splash_screen.dart';
 import 'package:provider/provider.dart';
+
+import 'data/services/notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +38,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => FindMatchesViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         Provider(create: (_) => GlobalKey<NavigatorState>()),
+        ChangeNotifierProvider(create: (_) => SplashViewModel()..init()),
       ],
       child: KnowledgeMatchApp(),
     ),
@@ -47,11 +51,12 @@ class KnowledgeMatchApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navigatorKey = context.read<GlobalKey<NavigatorState>>();
+    NotificationService().init(navigatorKey);
     return MaterialApp(
       navigatorKey: navigatorKey,
       title: 'KnowledgeMatch',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: SplashScreen(navigatorKey: navigatorKey),
+      home: SplashScreen(),
     );
   }
 }
