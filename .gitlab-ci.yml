@@ -1,21 +1,12 @@
-image: ghcr.io/cirruslabs/flutter # Flutter Docker image with required tools
+image: ghcr.io/cirruslabs/flutter:latest # Flutter Docker image with required tools
 stages:
   - build
   - test
   - lint
   - deploy
 
-variables:
-
 build-job:
   stage: build
-  before_script:
-    - apt-get update && apt-get install -y openjdk-17-jdk
-    - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-    - echo "JAVA_HOME is set to $JAVA_HOME"
-    - echo "Setting up dynamic Gradle properties..."
-    - echo "org.gradle.java.home=$JAVA_HOME" >> android/gradle.properties
-    - cat android/gradle.properties
   script:
     - echo "Building Flutter application..."
     - flutter build apk --release
