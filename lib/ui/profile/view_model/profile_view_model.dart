@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../data/services/api_db_connection.dart';
 import '../../../domain/models/reachability.dart';
 import '../../../domain/models/user.dart';
+import '../../login/login_screen.dart';
 import '../profile_state.dart';
 
 class ProfileViewModel extends ChangeNotifier{
@@ -32,6 +33,11 @@ class ProfileViewModel extends ChangeNotifier{
 
   void changeSemester(int semester){
     _state = _state.copyWith(semester: semester);
+    notifyListeners();
+  }
+
+  void changeReachability(Reachability reachability){
+    _state = _state.copyWith(reachability: reachability);
     notifyListeners();
   }
 
@@ -177,6 +183,29 @@ class ProfileViewModel extends ChangeNotifier{
            SnackBar(content: Text('Error:')),
          );
        }
+    }
+  }
+
+  /// Logs out the user by clearing the session data and navigating to the login screen.
+  ///
+  /// This method deletes the user's FCM token from the server, clears all data stored in shared preferences,
+  /// resets the user instance, and navigates the user to the login screen.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters.
+  ///
+  /// Returns:
+  /// - This method does not return anything.
+  Future<void> logout(BuildContext context) async {
+    ApiDbConnection().deleteFcmToken(User.instance.id ?? 0);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    User.instance.reset();
+    if (context.mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
     }
   }
 }

@@ -5,14 +5,11 @@ import 'package:provider/provider.dart';
 import '../../../domain/models/reachability.dart';
 import '../../../domain/models/search_criteria.dart';
 import '../../../widgets/app_drawer.dart';
+import '../../../widgets/custom_drop_down.dart';
 import '../../swipe/view_model/swipe_view_model.dart';
 import '../../swipe/widgets/swipe_screen.dart';
 
-import '../widgets/custom_drop_down.dart';
-import 'swipe_screen.dart';
-
 class FindMatchesScreen extends StatefulWidget {
-
   const FindMatchesScreen({
     super.key,
   });
@@ -22,7 +19,6 @@ class FindMatchesScreen extends StatefulWidget {
 }
 
 class FindMatchesScreenState extends State<FindMatchesScreen> {
-
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -43,19 +39,9 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
             children: <Widget>[
               // Topics dropdown
               const Text("What is the topic you are having problems with?"),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  hintText: 'Select a topic',
-                ),
-                items: viewModel.state.keywords.map((topic) {
-                  return DropdownMenuItem<String>(
-                    value: topic,
-                    child: Text(topic),
-                  );
-                }).toList(),
               CustomDropdown<String>(
-                items: keywords,
-                selectedItem: keyword,
+                items: viewModel.state.keywords,
+                selectedItem: viewModel.state.keyword,
                 hintText: 'Select a topic',
                 onChanged: (value) {
                   viewModel.updateKeyword(value);
@@ -71,7 +57,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                 maxLines: 7,
                 decoration: const InputDecoration(
                   hintText:
-                  'For example: How does one proceed in a curve discussion?',
+                      'For example: How does one proceed in a curve discussion?',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
@@ -88,19 +74,9 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
 
               // Connection dropdown
               const Text("How do you want to connect?"),
-              DropdownButtonFormField<Reachability>(
-                decoration: const InputDecoration(
-                  hintText: 'Select an option',
-                ),
-                items: viewModel.state.reachabilities.map((reachability) {
-                  return DropdownMenuItem<Reachability>(
-                    value: reachability,
-                    child: Text(reachability.toString()),
-                  );
-                }).toList(),
               CustomDropdown<Reachability>(
-                items: reachabilities,
-                selectedItem: reachability,
+                items: viewModel.state.reachabilities,
+                selectedItem: viewModel.state.reachability,
                 onChanged: (value) {
                   viewModel.updateReachability(value);
                 },
@@ -144,6 +120,5 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
         ),
       ),
     );
-
   }
 }

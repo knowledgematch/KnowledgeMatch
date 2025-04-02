@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/data/services/api_db_connection.dart';
-import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/reachability.dart';
 import 'package:knowledgematch/ui/keyword_selection/view_model/keyword_selection_view_model.dart';
 import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knowledgematch/widgets/app_drawer.dart';
 
 import '../../change_pw/view_model/change_pw_view_model.dart';
 import '../../change_pw/widgets/change_pw_screen.dart';
 import '../../keyword_selection/widgets/keyword_selection_screen.dart';
-import '../../login/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -44,7 +40,9 @@ class ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: _logout,
+            onPressed: () => {
+              viewModel.logout(context)
+            },
           ),
         ],
       ),
@@ -74,9 +72,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 DropdownButtonFormField<Reachability>(
                   value: viewModel.state.reachability,
                   onChanged: (Reachability? newValue) {
-                    setState(() {
-                      viewModel.state.reachability = newValue!;
-                    });
+                      viewModel.changeReachability(newValue!);
                   },
                   items: Reachability.values.map((Reachability reachability) {
                     return DropdownMenuItem<Reachability>(
@@ -103,7 +99,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                       DropdownMenuItem(value: i, child: Text('Semester $i')),
                     const DropdownMenuItem(value: -1, child: Text('Professor')),
                   ],
-                  onChanged: (value) => setState(() => viewModel.changeSemester(value!)),
+                  onChanged: (value) =>
+                     viewModel.changeSemester(value!),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(viewModel.descriptionController, 'Description'),
@@ -158,28 +155,5 @@ class ProfileScreenState extends State<ProfileScreen> {
         border: const OutlineInputBorder(),
       ),
     );
-  }
-
-  /// Logs out the user by clearing the session data and navigating to the login screen.
-  ///
-  /// This method deletes the user's FCM token from the server, clears all data stored in shared preferences,
-  /// resets the user instance, and navigates the user to the login screen.
-  ///
-  /// Parameters:
-  /// - This method does not take any parameters.
-  ///
-  /// Returns:
-  /// - This method does not return anything.
-  Future<void> _logout() async {
-    ApiDbConnection().deleteFcmToken(User.instance.id ?? 0);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    User.instance.reset();
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-    }
   }
 }
