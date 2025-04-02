@@ -23,11 +23,11 @@ class BackCard extends StatelessWidget {
       height: height,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey[200],
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -36,10 +36,10 @@ class BackCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           CircleAvatar(
             radius: 60,
-            backgroundColor: const Color(0xFF722334).withOpacity(0.2),
+            backgroundColor: Colors.grey.withOpacity(0.2),
             child: CircleAvatar(
               radius: 50,
               backgroundImage: profilePicture != null
@@ -65,15 +65,15 @@ class BackCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: const Color(0xFF722334).withOpacity(0.1),
+              color: Colors.grey[300],
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Text(
+            child: const Text(
               "No qualifications are provided about this expert yet",
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
-                color: Color(0xFF722334),
+                color: Colors.black87,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -103,12 +103,13 @@ class BackCard extends StatelessWidget {
                   flipCardState.toggleCard();
                 }
               },
-              icon: const Icon(Icons.touch_app),
-              label: const Text(
-                "See detailed information",
+              icon: const Icon(
+                Icons.touch_app,
+                color: Colors.white,
               ),
+              label: const Text("See detailed information"),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF722334),
+                backgroundColor: Colors.black87,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

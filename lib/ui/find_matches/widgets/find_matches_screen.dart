@@ -8,6 +8,8 @@ import '../../../widgets/app_drawer.dart';
 import '../../swipe/view_model/swipe_view_model.dart';
 import '../../swipe/widgets/swipe_screen.dart';
 
+import '../widgets/custom_drop_down.dart';
+import 'swipe_screen.dart';
 
 class FindMatchesScreen extends StatefulWidget {
 
@@ -51,17 +53,16 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                     child: Text(topic),
                   );
                 }).toList(),
+              CustomDropdown<String>(
+                items: keywords,
+                selectedItem: keyword,
+                hintText: 'Select a topic',
                 onChanged: (value) {
                   viewModel.updateKeyword(value);
                 },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a topic';
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    value == null ? 'Please select a topic' : null,
               ),
-
               const SizedBox(height: 24),
 
               // Issue field
@@ -97,17 +98,15 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                     child: Text(reachability.toString()),
                   );
                 }).toList(),
+              CustomDropdown<Reachability>(
+                items: reachabilities,
+                selectedItem: reachability,
                 onChanged: (value) {
                   viewModel.updateReachability(value);
                 },
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select a connection type';
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    value == null ? 'Please select a connection type' : null,
               ),
-
               const SizedBox(height: 24),
 
               ElevatedButton(
@@ -137,7 +136,8 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                   minimumSize: const Size(double.infinity, 50),
                   textStyle: const TextStyle(fontSize: 18),
                 ),
-                child: const Text('Search helpers'),
+                child: const Text('Search helpers',
+                    style: TextStyle(color: Colors.white)),
               ),
             ],
           ),

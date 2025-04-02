@@ -132,7 +132,7 @@ class ProfileCard extends StatelessWidget {
           label,
           style: const TextStyle(
             fontSize: 16,
-            color: Color(0xFF722334),
+            color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),

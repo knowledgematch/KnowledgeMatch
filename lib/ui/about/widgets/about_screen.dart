@@ -70,6 +70,12 @@ class AboutScreen extends StatelessWidget {
                   fontSize: 12,
                 ),
               ),
+              const SizedBox(height: 24),
+              Center(
+                child: ClipOval(
+                  child: Image.asset('assets/images/logo.png', width: 90),
+                ),
+              ),
             ],
           ),
         ),

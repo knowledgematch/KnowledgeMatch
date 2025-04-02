@@ -77,21 +77,23 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                   viewModel.state.selectedDates[index].getFormattedTime();
               return Card(
                 child: ListTile(
-                  title: Row(children: [
-                    Text("Date: ",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(date)
-                  ]),
-                  subtitle: Row(children: [
-                    Text("Time: ",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(time)
-                  ]),
+                  title: Row(
+                    children: [
+                      Text("Date: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Expanded(child: Text(date)),  // Wrap date text with Expanded
+                    ],
+                  ),
+                  subtitle: Row(
+                    children: [
+                      Text("Time: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Expanded(child: Text(time)),  // Wrap time text with Expanded
+                    ],
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      DropdownButton<Reachability>(
+                      Flexible(
+                        child: DropdownButton<Reachability>(
                         value:
                             viewModel.state.selectedDates[index].reachability ??
                                 viewModel.state.searchCriteria.reachability,
@@ -105,6 +107,7 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                           viewModel.changeReachabilityOnSelectedDate(
                               index, newValue);
                         },
+                      ),
                       ),
                       SizedBox(width: 8),
                       IconButton(
