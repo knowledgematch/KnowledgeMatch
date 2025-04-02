@@ -6,7 +6,7 @@ import 'package:knowledgematch/domain/models/user.dart';
 Future<void> initializeUser(int userId) async {
   try {
     final response =
-        await http.get(Uri.parse('http://86.119.45.62/users/$userId'));
+        await http.get(Uri.parse('http://86.119.47.241/users/$userId'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
