@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class ApiDbConnection {
-  var host = '86.119.45.62';
+  var host = '86.119.47.241';
   var port = 3000;
 
   Uri get baseUri => Uri.parse('http://$host:$port');
