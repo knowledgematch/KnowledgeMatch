@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:knowledgematch/firebase_options.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
+import 'package:knowledgematch/ui/core/themes/app_theme.dart';
 import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_model.dart';
-import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
 import 'package:knowledgematch/ui/main/view_model/main_view_model.dart';
+import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
 import 'package:knowledgematch/ui/splash/view_model/splash_view_model.dart';
 import 'package:knowledgematch/ui/splash/widgets/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +56,7 @@ class KnowledgeMatchApp extends StatelessWidget {
     return MaterialApp(
       navigatorKey: navigatorKey,
       title: 'KnowledgeMatch',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: AppTheme.lightTheme, //ThemeData(primarySwatch: Colors.blue),`
       home: SplashScreen(),
     );
   }
