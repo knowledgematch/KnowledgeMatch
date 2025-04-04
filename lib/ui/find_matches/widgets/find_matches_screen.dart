@@ -73,18 +73,21 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Connection dropdown
-              const Text("How do you want to connect?"),
-              CustomDropdown<Reachability>(
-                items: viewModel.state.reachabilities,
-                selectedItem: viewModel.state.reachability,
-                onChanged: (value) {
-                  viewModel.updateReachability(value);
-                },
-                validator: (value) =>
-                    value == null ? 'Please select a connection type' : null,
-              ),
-              const SizedBox(height: 24),
+              ///Connection
+
+              // // Connection dropdown
+              // const Text("How do you want to connect?"),
+              // CustomDropdown<Reachability>(
+              //   items: viewModel.state.reachabilities,
+              //   selectedItem: viewModel.state.reachability,
+              //   onChanged: (value) {
+              //     viewModel.updateReachability(value);
+              //   },
+              //   validator: (value) =>
+              //       value == null ? 'Please select a connection type' : null,
+              // ),
+              // const SizedBox(height: 24),
+              _locationSelection(context),
 
               ElevatedButton(
                 onPressed: () {
@@ -122,4 +125,57 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
       ),
     );
   }
+}
+
+Column _locationSelection(BuildContext context) {
+  final viewModel = context.watch<FindMatchesViewModel>();
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text("How do you want to connect?"),
+      const SizedBox(height: 8),
+      Wrap(
+        spacing: 8,
+        children: [
+          // In Person Chip
+          ChoiceChip(
+            label: const Text("In Person"),
+            selected: viewModel.state.reachability == Reachability.inPerson,
+            onSelected: (bool selected) {
+              viewModel.updateReachability(Reachability.inPerson);
+            },
+          ),
+          // Online Chip
+          ChoiceChip(
+            label: const Text("Online"),
+            selected: viewModel.state.reachability == Reachability.online,
+            onSelected: (bool selected) {
+              viewModel.updateReachability(Reachability.online);
+            },
+          ),
+          // In Person / Online Chip
+          ChoiceChip(
+            label: const Text("In Person / Online"),
+            selected:
+                viewModel.state.reachability == Reachability.onlineOrInPerson,
+            onSelected: (bool selected) {
+              viewModel.updateReachability(Reachability.onlineOrInPerson);
+            },
+          ),
+        ],
+      ),
+      // Display error text if validation fails.
+      if (viewModel.state.reachability == null)
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(
+            "Please select a location option",
+            style: const TextStyle(
+              color: Colors.red,
+              fontSize: 13,
+            ),
+          ),
+        ),
+    ],
+  );
 }
