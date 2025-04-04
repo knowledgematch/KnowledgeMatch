@@ -135,13 +135,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
               },
               child: Text('Create a new account',
-                  style: TextStyle(color: Colors.black)),
+                  style: TextStyle(color: AppColors.blackLight)),
             ),
             ElevatedButton(
               onPressed: _isLoading ? null : _login,
               child: _isLoading
                   ? CircularProgressIndicator()
-                  : Text('Login', style: TextStyle(color: Colors.white)),
+                  : Text('Login',
+                      style: TextStyle(color: AppColors.whiteLight)),
             ),
           ],
         ),

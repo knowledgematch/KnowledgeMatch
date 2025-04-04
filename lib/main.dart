@@ -30,10 +30,15 @@ Future<void> main() async {
   } catch (e) {
     print('Firebase initialization error: $e');
   }
+  final prefs = await SharedPreferences.getInstance();
 
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(
+            isDarkMode: prefs.getBool('isDark') ?? false,
+          )),
         ChangeNotifierProvider(create: (_) => MainScreenViewModel()),
         ChangeNotifierProvider(create: (_) => ChatViewModel()),
         ChangeNotifierProvider(create: (_) => FindMatchesViewModel()),
@@ -56,7 +61,7 @@ class KnowledgeMatchApp extends StatelessWidget {
     return MaterialApp(
       navigatorKey: navigatorKey,
       title: 'KnowledgeMatch',
-      theme: AppTheme.lightTheme, //ThemeData(primarySwatch: Colors.blue),`
+      theme: themeProvider.getTheme()//AppTheme.lightTheme, //ThemeData(primarySwatch: Colors.blue),`
       home: SplashScreen(),
     );
   }

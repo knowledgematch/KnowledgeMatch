@@ -32,7 +32,7 @@ class NotificationCard extends StatelessWidget {
               SizedBox(height: 4),
               Text(
                 notification.timestamp!.toLocal().toString(),
-                style: TextStyle(fontSize: 15, color: Colors.grey),
+                style: TextStyle(fontSize: 15, color: AppColors.greyLight),
               ),
             ],
           ),
@@ -46,9 +46,11 @@ class NotificationCard extends StatelessWidget {
         return Text("New Request",
             style: TextStyle(fontWeight: FontWeight.bold));
       case NotificationType.requestDeclined:
-        return Text("Declined Request", style: TextStyle(color: Colors.red));
+        return Text("Declined Request",
+            style: TextStyle(color: AppColors.redLight));
       case NotificationType.requestAccepted:
-        return Text("Accepted Request", style: TextStyle(color: Colors.green));
+        return Text("Accepted Request",
+            style: TextStyle(color: AppColors.greenLight));
       case NotificationType.meetupRequest:
         return Text("New Meetup Request",
             style: TextStyle(fontStyle: FontStyle.italic));
@@ -76,15 +78,15 @@ class NotificationCard extends StatelessWidget {
   Widget _buildTrailingWidget(NotificationType type) {
     switch (type) {
       case NotificationType.knowledgeRequest:
-        return Icon(Icons.question_mark, color: Colors.blue);
+        return Icon(Icons.question_mark, color: AppColors.blueLight);
       case NotificationType.requestDeclined:
-        return Icon(Icons.cancel, color: Colors.red);
+        return Icon(Icons.cancel, color: AppColors.redLight);
       case NotificationType.requestAccepted:
-        return Icon(Icons.check_circle, color: Colors.green);
+        return Icon(Icons.check_circle, color: AppColors.greenLight);
       case NotificationType.meetupRequest:
-        return Icon(Icons.date_range, color: Colors.orange);
+        return Icon(Icons.date_range, color: AppColors.orangeLight);
       case NotificationType.meetupConfirmation:
-        return Icon(Icons.fact_check_outlined, color: Colors.green);
+        return Icon(Icons.fact_check_outlined, color: AppColors.greenLight);
     }
   }
 }

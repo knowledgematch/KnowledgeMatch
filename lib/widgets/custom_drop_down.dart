@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/theme/colors.dart';
+import 'package:knowledgematch/theme/constants.dart';
 
 class CustomDropdown<T> extends StatelessWidget {
   final List<T> items;
@@ -19,10 +21,10 @@ class CustomDropdown<T> extends StatelessWidget {
     this.onChanged,
     this.hintText = "Select an option",
     this.labelText,
-    this.borderColor = Colors.black,
-    this.dropdownColor = Colors.white,
-    this.textColor = Colors.black,
-    this.menuTextColor = Colors.black,
+    this.borderColor = AppColors.blue,
+    this.dropdownColor = AppColors.whiteLight,
+    this.textColor = AppColors.primary,
+    this.menuTextColor = AppColors.primary,
     this.validator,
   });
 
@@ -34,13 +36,19 @@ class CustomDropdown<T> extends StatelessWidget {
         labelStyle: TextStyle(color: textColor, fontSize: 16),
         hintText: hintText,
         hintStyle: TextStyle(color: textColor.withOpacity(0.7)),
+        focusColor: AppColors.blackLight,
+        floatingLabelStyle: TextStyle(color: AppColors.blue),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.blue),
+          borderRadius: AppConstants.borderRadius,
+        ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: borderColor),
+          borderSide: BorderSide(color: AppColors.blue),
+          borderRadius: AppConstants.borderRadius,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: borderColor, width: 1),
+          borderSide: BorderSide(color: AppColors.blue),
+          borderRadius: AppConstants.borderRadius,
         ),
       ),
       dropdownColor: dropdownColor,

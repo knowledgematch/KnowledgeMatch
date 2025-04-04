@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_model.dart';
-import 'package:provider/provider.dart';
+import 'package:knowledgematch/models/reachability.dart';
+import 'package:knowledgematch/models/search_criteria.dart';
+import 'package:knowledgematch/models/userprofile.dart';
+import 'package:knowledgematch/services/matching_algorithm.dart';
+import 'package:knowledgematch/widgets/app_drawer.dart';
 
 import '../../../domain/models/reachability.dart';
 import '../../../domain/models/search_criteria.dart';
@@ -47,7 +50,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                   viewModel.updateKeyword(value);
                 },
                 validator: (value) =>
-                    value == null ? 'Please select a topic' : null,
+                value == null ? 'Please select a topic' : null,
               ),
               const SizedBox(height: 24),
 
@@ -72,13 +75,83 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Connection dropdown
+              // Connection CHOICE CHIPS
               const Text("How do you want to connect?"),
               CustomDropdown<Reachability>(
                 items: viewModel.state.reachabilities,
                 selectedItem: viewModel.state.reachability,
                 onChanged: (value) {
                   viewModel.updateReachability(value);
+              FormField<Reachability>(
+                validator: (value) {
+                  if (reachability == null) {
+                    return 'Please select a connection type';
+                  }
+                  return null;
+                },
+                builder: (fieldState) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        spacing: 8,
+                        children: [
+                          // --- In Person ---
+                          ChoiceChip(
+                            label: const Text("In Person"),
+                            selected: reachability == Reachability.inPerson,
+                            onSelected: (bool selected) {
+                              setState(() {
+                                reachability =
+                                selected ? Reachability.inPerson : null;
+                              });
+                              fieldState.validate();
+                            },
+                          ),
+
+                          // --- Online ---
+                          ChoiceChip(
+                            label: const Text("Online"),
+                            selected: reachability == Reachability.online,
+                            onSelected: (bool selected) {
+                              setState(() {
+                                reachability =
+                                selected ? Reachability.online : null;
+                              });
+                              fieldState.validate();
+                            },
+                          ),
+
+                          // --- Online/In Person ---
+                          ChoiceChip(
+                            label: const Text("In Person / Online"),
+                            selected: reachability ==
+                                Reachability.onlineOrInPerson,
+                            onSelected: (bool selected) {
+                              setState(() {
+                                reachability =
+                                selected ? Reachability.onlineOrInPerson : null;
+                              });
+                              fieldState.validate();
+                            },
+                          ),
+                        ],
+                      ),
+
+                      // Validierungs-Fehlermeldung (falls vorhanden)
+                      if (fieldState.hasError)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            fieldState.errorText!,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
                 },
                 validator: (value) =>
                     value == null ? 'Please select a connection type' : null,
@@ -112,8 +185,12 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                   minimumSize: const Size(double.infinity, 50),
                   textStyle: const TextStyle(fontSize: 18),
                 ),
-                child: const Text('Search helpers',
-                    style: TextStyle(color: Colors.white)),
+                child: Text(
+                  'Search helpers',
+                  style: TextStyle(
+                    color: AppColors.whiteLight,
+                  ),
+                ),
               ),
             ],
           ),

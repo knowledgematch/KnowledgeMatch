@@ -64,7 +64,7 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
       children: [
         ElevatedButton(
           onPressed: _addDateTime,
-          child: Text('Add Date & Time'),
+          child: Text('Add Date & Time' ,style: TextStyle(color: AppColors.white),),
         ),
         SizedBox(
           height: 300,

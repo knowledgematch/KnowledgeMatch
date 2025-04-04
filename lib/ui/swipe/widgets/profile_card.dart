@@ -23,11 +23,11 @@ class ProfileCard extends StatelessWidget {
         height: height,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.whiteLight,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
+              color: AppColors.greyShadow3Light,
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -132,7 +132,7 @@ class ProfileCard extends StatelessWidget {
           label,
           style: const TextStyle(
             fontSize: 16,
-            color: Colors.black,
+            color: AppColors.blackLight,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -141,7 +141,7 @@ class ProfileCard extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.grey[300],
+            color: AppColors.grey3Light,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
