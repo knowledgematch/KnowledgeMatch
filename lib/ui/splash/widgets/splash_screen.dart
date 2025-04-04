@@ -23,7 +23,7 @@ class SplashScreenState extends State<SplashScreen> {
     final viewModel = context.watch<SplashViewModel>();
     final loginState = viewModel.state.isLoggedIn;
 
-    // Use a post frame callback to navigate only once when the state is updated.
+    /// Use a post frame callback to navigate only once when the state is updated.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (loginState == true) {
         Navigator.pushReplacement(
