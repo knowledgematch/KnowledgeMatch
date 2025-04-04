@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
 
-import 'core/themes/app_colors.dart';
+import '../../core/themes/app_colors.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,9 +24,7 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                // Add navigation or functionality here
-              },
+              onPressed: () {}, //TODO add navigation to find matches
               child: Text(
                 'Get Started',
                 style: TextStyle(color: AppColors.whiteLight),

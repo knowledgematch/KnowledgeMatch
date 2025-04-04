@@ -8,7 +8,7 @@ import '../../../domain/models/notification_data.dart';
 import '../../../domain/models/userprofile.dart';
 import '../../chat/widgets/chat_screen.dart';
 import '../../find_matches/widgets/find_matches_screen.dart';
-import '../../home_screen.dart';
+import '../../home/widgets/home_screen.dart';
 import '../../request/view_model/request_view_model.dart';
 import '../../request/widgets/request_screen.dart';
 import '../view_model/main_view_model.dart';
