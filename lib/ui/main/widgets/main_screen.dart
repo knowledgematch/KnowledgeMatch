@@ -8,7 +8,7 @@ import '../../../domain/models/notification_data.dart';
 import '../../../domain/models/userprofile.dart';
 import '../../chat/widgets/chat_screen.dart';
 import '../../find_matches/widgets/find_matches_screen.dart';
-import '../../profile/widget/profile_screen.dart';
+import '../../home_screen.dart';
 import '../../request/view_model/request_view_model.dart';
 import '../../request/widgets/request_screen.dart';
 import '../view_model/main_view_model.dart';
@@ -22,7 +22,7 @@ class MainScreen extends StatefulWidget {
 
 class MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
-    ProfileScreen(),
+    HomeScreen(),
     FindMatchesScreen(),
     ChatScreen(),
   ];
@@ -32,9 +32,6 @@ class MainScreenState extends State<MainScreen> {
     super.initState();
     _initializeFCM();
   }
-
-  /// Updates the state with the new tab [index]
-  //void onTabTapped(int index) {}
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +50,9 @@ class MainScreenState extends State<MainScreen> {
               currentIndex: viewModel.state.currentIndex,
               onTap: viewModel.updateIndex,
               items: const [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.person), label: 'Profile'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.search), label: 'Search'),
-                BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+                BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
+                BottomNavigationBarItem(icon: Icon(Icons.chat), label: ''),
               ],
             ),
           ),
