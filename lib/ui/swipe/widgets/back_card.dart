@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/models/userprofile.dart';
-import '../../../theme/colors.dart';
-import '../../../theme/constants.dart';
+import '../../core/themes/app_colors.dart';
+import '../../core/themes/app_constants.dart';
 import 'flip_card.dart';
 
 class BackCard extends StatelessWidget {

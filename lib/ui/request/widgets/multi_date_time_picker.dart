@@ -3,7 +3,7 @@ import 'package:knowledgematch/domain/models/reachability.dart';
 import 'package:knowledgematch/domain/models/request_date_data.dart';
 import 'package:provider/provider.dart';
 
-import '../../../theme/colors.dart';
+import '../../core/themes/app_colors.dart';
 import '../view_model/request_view_model.dart';
 
 class MultiDateTimePicker extends StatefulWidget {

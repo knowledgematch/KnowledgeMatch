@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/theme/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'app_theme.dart';
 
 class ThemeProvider with ChangeNotifier {
   late ThemeData _selectedTheme;

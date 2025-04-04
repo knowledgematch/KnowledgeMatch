@@ -124,4 +124,8 @@ class AppTheme {
       ),
     );
   }
+
+  static ThemeData get darkTheme {
+    return ThemeData();
+  }
 }

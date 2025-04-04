@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/reachability.dart';
 import '../../../domain/models/search_criteria.dart';
-import '../../../theme/colors.dart';
+import '../../core/themes/app_colors.dart';
 import '../../core/ui/app_drawer.dart';
 import '../../core/ui/custom_drop_down.dart';
 import '../../swipe/view_model/swipe_view_model.dart';

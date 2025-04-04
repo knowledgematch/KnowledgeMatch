@@ -5,7 +5,7 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../theme/colors.dart';
+import '../core/themes/app_colors.dart';
 import '../thank/widget/thank_screen.dart';
 
 class ContactScreen extends StatefulWidget {

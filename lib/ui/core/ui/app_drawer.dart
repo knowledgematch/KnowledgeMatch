@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../screens/settings_screen.dart';
-import '../../../theme/colors.dart';
 import '../../about/widgets/about_screen.dart';
 import '../../contact_information/contact_screen.dart';
 import '../../profile/widget/profile_screen.dart';
+import '../../settings_screen.dart';
+import '../themes/app_colors.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});

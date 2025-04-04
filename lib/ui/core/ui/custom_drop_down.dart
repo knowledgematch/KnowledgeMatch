@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/theme/colors.dart';
-import 'package:knowledgematch/theme/constants.dart';
+
+import '../themes/app_colors.dart';
+import '../themes/app_constants.dart';
 
 class CustomDropdown<T> extends StatelessWidget {
   final List<T> items;

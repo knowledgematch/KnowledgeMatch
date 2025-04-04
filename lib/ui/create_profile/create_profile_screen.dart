@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:knowledgematch/domain/models/reachability.dart';
 
-import '../../theme/colors.dart';
+import '../core/themes/app_colors.dart';
 import '../login/login_screen.dart';
 
 class CreateProfileScreen extends StatefulWidget {

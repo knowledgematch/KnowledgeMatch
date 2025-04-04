@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/theme/colors.dart';
 import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
 
+import 'core/themes/app_colors.dart';
+
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
