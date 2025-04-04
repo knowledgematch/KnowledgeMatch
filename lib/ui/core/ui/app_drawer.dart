@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/screens/about_screen.dart';
-import 'package:knowledgematch/screens/contact_screen.dart';
+
+import '../../../screens/settings_screen.dart';
+import '../../../theme/colors.dart';
+import '../../about/widgets/about_screen.dart';
+import '../../contact_information/contact_screen.dart';
+import '../../profile/widget/profile_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});

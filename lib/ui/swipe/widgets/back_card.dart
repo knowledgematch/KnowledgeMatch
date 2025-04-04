@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/models/userprofile.dart';
 
+import '../../../domain/models/userprofile.dart';
+import '../../../theme/colors.dart';
+import '../../../theme/constants.dart';
 import 'flip_card.dart';
 
 class BackCard extends StatelessWidget {

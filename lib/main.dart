@@ -2,14 +2,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:knowledgematch/firebase_options.dart';
+import 'package:knowledgematch/theme.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
-import 'package:knowledgematch/ui/core/themes/app_theme.dart';
 import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_model.dart';
 import 'package:knowledgematch/ui/main/view_model/main_view_model.dart';
 import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
 import 'package:knowledgematch/ui/splash/view_model/splash_view_model.dart';
 import 'package:knowledgematch/ui/splash/widgets/splash_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/services/notification_service.dart';
 
@@ -36,9 +37,9 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => ThemeProvider(
-            isDarkMode: prefs.getBool('isDark') ?? false,
-          )),
+            create: (_) => ThemeProvider(
+                  isDarkMode: prefs.getBool('isDark') ?? false,
+                )),
         ChangeNotifierProvider(create: (_) => MainScreenViewModel()),
         ChangeNotifierProvider(create: (_) => ChatViewModel()),
         ChangeNotifierProvider(create: (_) => FindMatchesViewModel()),
@@ -57,11 +58,13 @@ class KnowledgeMatchApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navigatorKey = context.read<GlobalKey<NavigatorState>>();
+    final themeProvider = context.watch<ThemeProvider>();
     NotificationService().init(navigatorKey);
     return MaterialApp(
       navigatorKey: navigatorKey,
       title: 'KnowledgeMatch',
-      theme: themeProvider.getTheme()//AppTheme.lightTheme, //ThemeData(primarySwatch: Colors.blue),`
+      theme: themeProvider.getTheme(),
+      //AppTheme.lightTheme, //ThemeData(primarySwatch: Colors.blue),`
       home: SplashScreen(),
     );
   }

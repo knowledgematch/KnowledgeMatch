@@ -3,6 +3,7 @@ import 'package:knowledgematch/domain/models/reachability.dart';
 import 'package:knowledgematch/domain/models/request_date_data.dart';
 import 'package:provider/provider.dart';
 
+import '../../../theme/colors.dart';
 import '../view_model/request_view_model.dart';
 
 class MultiDateTimePicker extends StatefulWidget {
@@ -64,7 +65,10 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
       children: [
         ElevatedButton(
           onPressed: _addDateTime,
-          child: Text('Add Date & Time' ,style: TextStyle(color: AppColors.white),),
+          child: Text(
+            'Add Date & Time',
+            style: TextStyle(color: AppColors.white),
+          ),
         ),
         SizedBox(
           height: 300,
@@ -79,14 +83,18 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                 child: ListTile(
                   title: Row(
                     children: [
-                      Text("Date: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                      Expanded(child: Text(date)),  // Wrap date text with Expanded
+                      Text("Date: ",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Expanded(child: Text(date)),
+                      // Wrap date text with Expanded
                     ],
                   ),
                   subtitle: Row(
                     children: [
-                      Text("Time: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                      Expanded(child: Text(time)),  // Wrap time text with Expanded
+                      Text("Time: ",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Expanded(child: Text(time)),
+                      // Wrap time text with Expanded
                     ],
                   ),
                   trailing: Row(
@@ -94,20 +102,20 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                     children: [
                       Flexible(
                         child: DropdownButton<Reachability>(
-                        value:
-                            viewModel.state.selectedDates[index].reachability ??
-                                viewModel.state.searchCriteria.reachability,
-                        items: eligibleReachability.map((Reachability value) {
-                          return DropdownMenuItem<Reachability>(
-                            value: value,
-                            child: Text(value.toString()),
-                          );
-                        }).toList(),
-                        onChanged: (Reachability? newValue) {
-                          viewModel.changeReachabilityOnSelectedDate(
-                              index, newValue);
-                        },
-                      ),
+                          value: viewModel
+                                  .state.selectedDates[index].reachability ??
+                              viewModel.state.searchCriteria.reachability,
+                          items: eligibleReachability.map((Reachability value) {
+                            return DropdownMenuItem<Reachability>(
+                              value: value,
+                              child: Text(value.toString()),
+                            );
+                          }).toList(),
+                          onChanged: (Reachability? newValue) {
+                            viewModel.changeReachabilityOnSelectedDate(
+                                index, newValue);
+                          },
+                        ),
                       ),
                       SizedBox(width: 8),
                       IconButton(

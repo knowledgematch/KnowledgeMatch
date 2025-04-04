@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/reachability.dart';
+import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
 import 'package:knowledgematch/ui/keyword_selection/view_model/keyword_selection_view_model.dart';
 import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
 import 'package:provider/provider.dart';
-import 'package:knowledgematch/widgets/app_drawer.dart';
 
 import '../../change_pw/view_model/change_pw_view_model.dart';
 import '../../change_pw/widgets/change_pw_screen.dart';
@@ -18,15 +18,15 @@ class ProfileScreen extends StatefulWidget {
 
 class ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      if(mounted){
+      if (mounted) {
         final viewModel = context.read<ProfileViewModel>();
         viewModel.loadUserData();
       }
-
     });
   }
 
@@ -40,9 +40,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => {
-              viewModel.logout(context)
-            },
+            onPressed: () => {viewModel.logout(context)},
           ),
         ],
       ),
@@ -72,7 +70,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 DropdownButtonFormField<Reachability>(
                   value: viewModel.state.reachability,
                   onChanged: (Reachability? newValue) {
-                      viewModel.changeReachability(newValue!);
+                    viewModel.changeReachability(newValue!);
                   },
                   items: Reachability.values.map((Reachability reachability) {
                     return DropdownMenuItem<Reachability>(
@@ -99,8 +97,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       DropdownMenuItem(value: i, child: Text('Semester $i')),
                     const DropdownMenuItem(value: -1, child: Text('Professor')),
                   ],
-                  onChanged: (value) =>
-                     viewModel.changeSemester(value!),
+                  onChanged: (value) => viewModel.changeSemester(value!),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(viewModel.descriptionController, 'Description'),

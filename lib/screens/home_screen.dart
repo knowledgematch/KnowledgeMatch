@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/theme/colors.dart';
-import 'package:knowledgematch/widgets/app_drawer.dart';
+import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
   @override

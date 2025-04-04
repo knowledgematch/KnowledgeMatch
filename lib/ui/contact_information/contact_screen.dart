@@ -1,10 +1,11 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../theme/colors.dart';
 import '../thank/widget/thank_screen.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -26,7 +27,8 @@ class _ContactScreenState extends State<ContactScreen> {
   }
 
   Future<void> _sendEmail() async {
-    String username = 'sender.knowledge.app@gmail.com'; //TODO hide login data & pw
+    String username =
+        'sender.knowledge.app@gmail.com'; //TODO hide login data & pw
     String password = "plwl drkb ymfa smpn";
     String name = "KnowledgeMatch Contact Form";
     String email = username;
