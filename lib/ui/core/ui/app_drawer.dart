@@ -30,11 +30,6 @@ class AppDrawer extends StatelessWidget {
         'screen': const ProfileScreen(),
       },
       {
-        'icon': Icons.info,
-        'title': 'About',
-        'screen': const AboutScreen(),
-      },
-      {
         'icon': Icons.contact_mail,
         'title': 'Contact',
         'screen': const ContactScreen(),
@@ -44,6 +39,11 @@ class AppDrawer extends StatelessWidget {
         'title': 'Settings',
         'screen': SettingsScreen(),
       },
+      {
+        'icon': Icons.info,
+        'title': 'About',
+        'screen': const AboutScreen(),
+      }
     ];
 
     return Drawer(
