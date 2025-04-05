@@ -98,6 +98,10 @@ class AppTheme {
           ),
         ),
       ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.whiteLight,
+      ),
       drawerTheme: DrawerThemeData(
         backgroundColor: AppColors.background,
       ),

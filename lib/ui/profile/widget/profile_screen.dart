@@ -45,6 +45,25 @@ class ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
       drawer: const AppDrawer(),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 10, right: 20),
+        child: ClipOval(
+          child: Builder(
+            builder: (context) {
+              return FloatingActionButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    viewModel.saveProfile(context);
+                  }
+                },
+                child: Icon(
+                  Icons.save,
+                ),
+              );
+            },
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -101,15 +120,6 @@ class ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(viewModel.descriptionController, 'Description'),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      viewModel.saveProfile(context);
-                    }
-                  },
-                  child: const Text('Save Changes'),
-                ),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
