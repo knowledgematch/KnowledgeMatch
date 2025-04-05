@@ -1,9 +1,11 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/data/services/api_db_connection.dart';
-
 import 'package:knowledgematch/domain/models/reachability.dart';
+
+import '../core/themes/app_colors.dart';
 import '../login/login_screen.dart';
 
 class CreateProfileScreen extends StatefulWidget {
@@ -128,13 +130,14 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                   onTap: _pickImage,
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundColor: Colors.grey[200],
+                    backgroundColor: AppColors.grey2Light,
                     backgroundImage: _selectedImage != null
                         ? FileImage(_selectedImage!)
                         : AssetImage('assets/images/profile.png')
                             as ImageProvider,
                     child: _selectedImage == null
-                        ? Icon(Icons.camera_alt, size: 50, color: Colors.grey)
+                        ? Icon(Icons.camera_alt,
+                            size: 50, color: AppColors.greyLight)
                         : null,
                   ),
                 ),
@@ -211,13 +214,13 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                 ElevatedButton(
                   onPressed: _createAccount,
                   child: Text('Create Account',
-                      style: TextStyle(color: Colors.white)),
+                      style: TextStyle(color: AppColors.whiteLight)),
                 ),
                 SizedBox(height: 20),
                 TextButton(
                   onPressed: _goToLoginScreen,
                   child: Text('Already have an account? Log in',
-                      style: TextStyle(color: Colors.black)),
+                      style: TextStyle(color: AppColors.blackLight)),
                 ),
               ],
             ),

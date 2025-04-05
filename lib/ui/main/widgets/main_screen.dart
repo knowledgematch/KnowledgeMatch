@@ -7,8 +7,8 @@ import '../../../data/services/notification_service.dart';
 import '../../../domain/models/notification_data.dart';
 import '../../../domain/models/userprofile.dart';
 import '../../chat/widgets/chat_screen.dart';
-import '../../profile/widget/profile_screen.dart';
 import '../../find_matches/widgets/find_matches_screen.dart';
+import '../../home/widgets/home_screen.dart';
 import '../../request/view_model/request_view_model.dart';
 import '../../request/widgets/request_screen.dart';
 import '../view_model/main_view_model.dart';
@@ -22,7 +22,7 @@ class MainScreen extends StatefulWidget {
 
 class MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
-    ProfileScreen(),
+    HomeScreen(),
     FindMatchesScreen(),
     ChatScreen(),
   ];
@@ -33,28 +33,27 @@ class MainScreenState extends State<MainScreen> {
     _initializeFCM();
   }
 
-  /// Updates the state with the new tab [index]
-  //void onTabTapped(int index) {}
-
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<MainScreenViewModel>();
 
     return Scaffold(
-      body: _screens[viewModel.state.currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: viewModel.state.currentIndex,
-        onTap: viewModel.updateIndex,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-        ],
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.black87,
-      ),
-    );
+        body: _screens[viewModel.state.currentIndex],
+        bottomNavigationBar: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+          child: BottomNavigationBar(
+            currentIndex: viewModel.state.currentIndex,
+            onTap: viewModel.updateIndex,
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+              BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
+              BottomNavigationBarItem(icon: Icon(Icons.chat), label: ''),
+            ],
+          ),
+        ));
   }
 
   // Initialize Firebase Messaging
@@ -77,36 +76,34 @@ class MainScreenState extends State<MainScreen> {
       );
       navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder:
-              (context) => FutureBuilder<Userprofile>(
-                future: MatchingAlgorithm().getUserProfileById(
-                  int.tryParse(message.data['source_user_id']) ?? 0,
-                ),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Scaffold(
-                      appBar: AppBar(title: Text('Loading...')),
-                      body: Center(child: CircularProgressIndicator()),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Scaffold(
-                      appBar: AppBar(title: Text('Error')),
-                      body: Center(child: Text('Error: ${snapshot.error}')),
-                    );
-                  } else {
-                    return ChangeNotifierProvider<RequestViewModel>(
-                      create:
-                          (_) => RequestViewModel(
-                            userprofile: snapshot.data!,
-                            notificationData: NotificationData.fromMessage(
-                              message,
-                            ),
-                          ),
-                      child: RequestScreen(),
-                    );
-                  }
-                },
-              ),
+          builder: (context) => FutureBuilder<Userprofile>(
+            future: MatchingAlgorithm().getUserProfileById(
+              int.tryParse(message.data['source_user_id']) ?? 0,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Scaffold(
+                  appBar: AppBar(title: Text('Loading...')),
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              } else if (snapshot.hasError) {
+                return Scaffold(
+                  appBar: AppBar(title: Text('Error')),
+                  body: Center(child: Text('Error: ${snapshot.error}')),
+                );
+              } else {
+                return ChangeNotifierProvider<RequestViewModel>(
+                  create: (_) => RequestViewModel(
+                    userprofile: snapshot.data!,
+                    notificationData: NotificationData.fromMessage(
+                      message,
+                    ),
+                  ),
+                  child: RequestScreen(),
+                );
+              }
+            },
+          ),
         ),
       );
     });
@@ -123,36 +120,34 @@ class MainScreenState extends State<MainScreen> {
       );
       navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder:
-              (context) => FutureBuilder<Userprofile>(
-                future: MatchingAlgorithm().getUserProfileById(
-                  int.parse(message.data['source_user_id'] ?? 0),
-                ),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Scaffold(
-                      appBar: AppBar(title: Text('Loading...')),
-                      body: Center(child: CircularProgressIndicator()),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Scaffold(
-                      appBar: AppBar(title: Text('Error')),
-                      body: Center(child: Text('Error: ${snapshot.error}')),
-                    );
-                  } else {
-                    return ChangeNotifierProvider<RequestViewModel>(
-                      create:
-                          (_) => RequestViewModel(
-                            notificationData: NotificationData.fromMessage(
-                              message,
-                            ),
-                            userprofile: snapshot.data!,
-                          ),
-                      child: RequestScreen(),
-                    );
-                  }
-                },
-              ),
+          builder: (context) => FutureBuilder<Userprofile>(
+            future: MatchingAlgorithm().getUserProfileById(
+              int.parse(message.data['source_user_id'] ?? 0),
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Scaffold(
+                  appBar: AppBar(title: Text('Loading...')),
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              } else if (snapshot.hasError) {
+                return Scaffold(
+                  appBar: AppBar(title: Text('Error')),
+                  body: Center(child: Text('Error: ${snapshot.error}')),
+                );
+              } else {
+                return ChangeNotifierProvider<RequestViewModel>(
+                  create: (_) => RequestViewModel(
+                    notificationData: NotificationData.fromMessage(
+                      message,
+                    ),
+                    userprofile: snapshot.data!,
+                  ),
+                  child: RequestScreen(),
+                );
+              }
+            },
+          ),
         ),
       );
     }

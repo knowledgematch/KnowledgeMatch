@@ -1,10 +1,11 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../core/themes/app_colors.dart';
 import '../thank/widget/thank_screen.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -26,7 +27,8 @@ class _ContactScreenState extends State<ContactScreen> {
   }
 
   Future<void> _sendEmail() async {
-    String username = 'sender.knowledge.app@gmail.com'; //TODO hide login data & pw
+    String username =
+        'sender.knowledge.app@gmail.com'; //TODO hide login data & pw
     String password = "plwl drkb ymfa smpn";
     String name = "KnowledgeMatch Contact Form";
     String email = username;
@@ -81,7 +83,7 @@ class _ContactScreenState extends State<ContactScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to send message. Please try again later.'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.redLight,
           ),
         );
       }
@@ -91,7 +93,7 @@ class _ContactScreenState extends State<ContactScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('An error occurred. Please try again later.'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.redLight,
           ),
         );
       }
@@ -163,13 +165,13 @@ class _ContactScreenState extends State<ContactScreen> {
                               width: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    AppColors.whiteLight),
                               ),
                             )
                           : const Text(
                               'Send',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(color: AppColors.whiteLight),
                             ),
                     ),
                   ],

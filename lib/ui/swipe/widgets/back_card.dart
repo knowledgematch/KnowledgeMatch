@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/domain/models/userprofile.dart';
 
+import '../../../domain/models/userprofile.dart';
+import '../../core/themes/app_colors.dart';
+import '../../core/themes/app_constants.dart';
 import 'flip_card.dart';
 
 class BackCard extends StatelessWidget {
@@ -23,11 +25,11 @@ class BackCard extends StatelessWidget {
       height: height,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: AppColors.grey2Light,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: AppColors.blackShadowLight,
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -39,7 +41,7 @@ class BackCard extends StatelessWidget {
           const SizedBox(height: 50),
           CircleAvatar(
             radius: 60,
-            backgroundColor: Colors.grey.withOpacity(0.2),
+            backgroundColor: AppColors.greyShadowLight,
             child: CircleAvatar(
               radius: 50,
               backgroundImage: profilePicture != null
@@ -57,7 +59,7 @@ class BackCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: AppColors.black87Light,
             ),
           ),
           const SizedBox(height: 8),
@@ -65,7 +67,7 @@ class BackCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: AppColors.grey3Light,
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Text(
@@ -73,7 +75,7 @@ class BackCard extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.black87,
+                color: AppColors.black87Light,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -88,7 +90,7 @@ class BackCard extends StatelessWidget {
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 16,
-                color: Colors.grey,
+                color: AppColors.greyLight,
               ),
             ),
           ),
@@ -105,14 +107,14 @@ class BackCard extends StatelessWidget {
               },
               icon: const Icon(
                 Icons.touch_app,
-                color: Colors.white,
+                color: AppColors.whiteLight,
               ),
               label: const Text("See detailed information"),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black87,
-                foregroundColor: Colors.white,
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.whiteLight,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppConstants.borderRadiusLarge,
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
@@ -124,7 +126,7 @@ class BackCard extends StatelessWidget {
               "Or simply click anywhere on the page!",
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey,
+                color: AppColors.greyLight,
               ),
               textAlign: TextAlign.center,
             ),
