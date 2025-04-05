@@ -30,7 +30,7 @@ class AppTheme {
               borderRadius: AppConstants.borderRadius,
             ),
           ),
-          textStyle: TextStyle(color: AppColors.blackLight),
+          textStyle: TextStyle(color: AppColors.whiteLight),
           menuStyle: MenuStyle(
             backgroundColor: MaterialStateProperty.all(AppColors.grey3Light),
             shape: MaterialStateProperty.all(
@@ -84,11 +84,13 @@ class AppTheme {
         iconTheme: IconThemeData(color: AppColors.primary),
       ),
       buttonTheme: ButtonThemeData(
-        buttonColor: AppColors.primaryLight,
-        textTheme: ButtonTextTheme.primary,
+        buttonColor: AppColors.whiteLight,
+        textTheme: ButtonTextTheme.normal,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
+          foregroundColor: AppColors.whiteLight,
+          textStyle: TextStyle(color: AppColors.whiteLight),
           backgroundColor: AppColors.primary,
           // side : BorderSide(color: AppColors.blackLight),
           shape: RoundedRectangleBorder(

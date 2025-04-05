@@ -44,17 +44,14 @@ class MainScreenState extends State<MainScreen> {
             topLeft: Radius.circular(12),
             topRight: Radius.circular(12),
           ),
-          child: Material(
-            color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-            child: BottomNavigationBar(
-              currentIndex: viewModel.state.currentIndex,
-              onTap: viewModel.updateIndex,
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-                BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
-                BottomNavigationBarItem(icon: Icon(Icons.chat), label: ''),
-              ],
-            ),
+          child: BottomNavigationBar(
+            currentIndex: viewModel.state.currentIndex,
+            onTap: viewModel.updateIndex,
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+              BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
+              BottomNavigationBarItem(icon: Icon(Icons.chat), label: ''),
+            ],
           ),
         ));
   }
