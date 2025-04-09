@@ -42,13 +42,17 @@ deploy_to_firebase:
     - apt-get update && apt-get install -y openjdk-17-jdk unzip
     - gem install bundler
     - mkdir -p android/secrets
+    # hopefully move apk into android directory so fastlane finally finds it
+    - mkdir -p androidbuild/app/outputs/flutter-apk
+    - mv ../build/app/outputs/flutter-apk/app-release.apk android/build/app/outputs/flutter-apk/
     # Download the secure files tool
     - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
     # Use the tool to download the secure file
     - download-secure-files
     # Move the secure file to the secrets directory inside android
     - mv .secure_files/knowledgematch-3a567-dbdf90621acd.json android/secrets/
-    - bundle install --gemfile=android/Gemfile
+    - cd android
+    - bundle install
   script:
     - bundle exec fastlane --gemfile android/Gemfile --cwd android beta # Run your Fastlane lane for distributing
   only:
