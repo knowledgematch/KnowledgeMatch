@@ -4,22 +4,22 @@ stages:
   - test
   - lint
   - deploy
-#
-#lint-test-job: # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
-#  stage: lint
-#  script:
-#    - echo "Analyzing code quality..."
-#    - flutter analyze
-#    - echo "Code analysis completed."
-#  allow_failure: false
-#
-#unit-test-job:
-#  stage: test
-#  script:
-#    - echo "Running Flutter tests..."
-#    - flutter test
-#    - echo "Testing done."
-#  allow_failure: false
+
+lint-test-job: # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
+  stage: lint
+  script:
+    - echo "Analyzing code quality..."
+    - flutter analyze
+    - echo "Code analysis completed."
+  allow_failure: false
+
+unit-test-job:
+  stage: test
+  script:
+    - echo "Running Flutter tests..."
+    - flutter test
+    - echo "Testing done."
+  allow_failure: false
 
 build-job:
   stage: build
@@ -35,16 +35,12 @@ build-job:
 
 deploy_to_firebase:
   stage: deploy
-  #image: ruby:3.1
   dependencies:
     - build-job
   before_script:
     - apt-get update && apt-get install -y openjdk-17-jdk unzip
     - gem install bundler
     - mkdir -p android/secrets
-    # hopefully move apk into android directory so fastlane finally finds it
-    #- mkdir -p android/build/app/outputs/flutter-apk
-    #- mv ../build/app/outputs/flutter-apk/app-release.apk android/build/app/outputs/flutter-apk/
     # Download the secure files tool
     - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
     # Use the tool to download the secure file
@@ -54,6 +50,6 @@ deploy_to_firebase:
     - cd android
     - bundle install
   script:
-    - bundle exec fastlane beta # Run your Fastlane lane for distributing
+    - bundle exec fastlane beta
   only:
-    - deployment # Or specify the branch to trigger this job
+    - deployment

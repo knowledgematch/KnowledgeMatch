@@ -22,7 +22,7 @@ platform :android do
     firebase_app_distribution(
       app: "1:124179968487:android:1aa51b8f5fe9cdadef8d42", # You’ll get this from Firebase project settings
       service_credentials_file: "secrets/knowledgematch-3a567-dbdf90621acd.json",
-      testers: "sven.christen@students.fhmw.ch",
+      testers: "sven.christen@students.fhnw.ch",
       release_notes: "Fastlane Test",
       apk_path: "../build/app/outputs/flutter-apk/app-release.apk",
       debug: true
