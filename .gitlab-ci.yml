@@ -39,3 +39,20 @@ deploy-job: # Placeholder for future deployment tasks
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
+
+deploy_to_firebase:
+  stage: deploy
+  image: ruby:3.1
+  before_script:
+    - apt-get update && apt-get install -y openjdk-17-jdk unzip
+    - gem install bundler
+    - bundle install
+    # Create a directory for the secure file
+    - mkdir -p secrets
+    # Download the secure file
+    - cp $CI_PROJECT_DIR/knowledgematch-3a567-dbdf90621acd.json secrets/
+  script:
+    - cd android
+    - bundle exec fastlane beta # Run your Fastlane lane for distributing
+  only:
+    - deployment # Or specify the branch to trigger this job
