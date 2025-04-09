@@ -54,6 +54,6 @@ deploy_to_firebase:
     - cd android
     - bundle install
   script:
-    - bundle exec fastlane --gemfile android/Gemfile --cwd android beta # Run your Fastlane lane for distributing
+    - bundle exec fastlane beta # Run your Fastlane lane for distributing
   only:
     - deployment # Or specify the branch to trigger this job
