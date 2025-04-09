@@ -18,10 +18,6 @@ default_platform(:android)
 platform :android do
   desc "Build and distribute to Firebase"
   lane :beta do
-    gradle(
-      task: "assemble",
-      build_type: "Release"
-    )
 
     firebase_app_distribution(
       app: "1:124179968487:android:1aa51b8f5fe9cdadef8d42", # You’ll get this from Firebase project settings

@@ -21,21 +21,23 @@ stages:
 #    - echo "Testing done."
 #  allow_failure: false
 
-#build-job:
-#  stage: build
-#  script:
-#    - echo "Building Flutter application..."
-#    - flutter build apk --release
-#    - echo "Build complete."
-#  artifacts:
-#    paths:
-#      - build/app/outputs/flutter-apk/app-release.apk
-#  tags:
-#    - csrunner2
+build-job:
+  stage: build
+  script:
+    - echo "Building Flutter application..."
+    - flutter build apk --release
+    - echo "Build complete."
+  artifacts:
+    paths:
+      - build/app/outputs/flutter-apk/app-release.apk
+  tags:
+    - csrunner2
 
 deploy_to_firebase:
   stage: deploy
   image: ruby:3.1
+  dependencies:
+    - build-job
   before_script:
     - apt-get update && apt-get install -y openjdk-17-jdk unzip
     - gem install bundler
