@@ -1,8 +1,8 @@
 image: ghcr.io/cirruslabs/flutter:latest # Flutter Docker image with required tools
 stages:
-  - build
-  - test
   - lint
+  - test
+  - build
   - deploy
 
 lint-test-job: # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)

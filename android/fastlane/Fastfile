@@ -23,7 +23,7 @@ platform :android do
       app: "1:124179968487:android:1aa51b8f5fe9cdadef8d42", # You’ll get this from Firebase project settings
       service_credentials_file: "secrets/knowledgematch-3a567-dbdf90621acd.json",
       testers: "sven.christen@students.fhnw.ch, daniel.zimmerli@students.fhnw.ch, robin.hartmann@students.fhnw.ch, dario.mueller@students.fhnw.ch, baris.tulgar@students.fhnw.ch",
-      release_notes: "Fastlane Test",
+      release_notes: "New release available!",
       apk_path: "../build/app/outputs/flutter-apk/app-release.apk",
       debug: true
     )
