@@ -44,7 +44,7 @@ deploy_to_firebase:
     # Create a directory for the secure file
     - mkdir -p secrets
     # Download the secure file
-    - cp $CI_PROJECT_DIR/knowledgematch-3a567-dbdf90621acd.json secrets/
+    - cp $CI_PROJECT_DIR/../knowledgematch-3a567-dbdf90621acd.json secrets/
   script:
     - cd android
     - bundle exec fastlane beta # Run your Fastlane lane for distributing
