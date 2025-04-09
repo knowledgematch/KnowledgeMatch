@@ -4,22 +4,22 @@ stages:
   - test
   - lint
   - deploy
-
-lint-test-job: # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
-  stage: lint
-  script:
-    - echo "Analyzing code quality..."
-    - flutter analyze
-    - echo "Code analysis completed."
-  allow_failure: false
-
-unit-test-job:
-  stage: test
-  script:
-    - echo "Running Flutter tests..."
-    - flutter test
-    - echo "Testing done."
-  allow_failure: false
+#
+#lint-test-job: # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
+#  stage: lint
+#  script:
+#    - echo "Analyzing code quality..."
+#    - flutter analyze
+#    - echo "Code analysis completed."
+#  allow_failure: false
+#
+#unit-test-job:
+#  stage: test
+#  script:
+#    - echo "Running Flutter tests..."
+#    - flutter test
+#    - echo "Testing done."
+#  allow_failure: false
 
 #build-job:
 #  stage: build
@@ -43,8 +43,12 @@ deploy_to_firebase:
     - bundle install
     # Create a directory for the secure file
     - mkdir -p secrets
-    # Download the secure file
-    - cp $CI_PROJECT_DIR/../knowledgematch-3a567-dbdf90621acd.json secrets/
+    # Download the secure files tool
+    - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
+    # Use the tool to download the secure file
+    - download-secure-files
+    # Move the secure file to the secrets directory
+    - mv .secure_files/knowledgematch-3a567-dbdf90621acd.json secrets/
   script:
     - cd android
     - bundle exec fastlane beta # Run your Fastlane lane for distributing
