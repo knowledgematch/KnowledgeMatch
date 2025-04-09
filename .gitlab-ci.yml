@@ -43,7 +43,7 @@ deploy_to_firebase:
     - gem install bundler
     - mkdir -p android/secrets
     # hopefully move apk into android directory so fastlane finally finds it
-    - mkdir -p androidbuild/app/outputs/flutter-apk
+    - mkdir -p android/build/app/outputs/flutter-apk
     - mv ../build/app/outputs/flutter-apk/app-release.apk android/build/app/outputs/flutter-apk/
     # Download the secure files tool
     - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
