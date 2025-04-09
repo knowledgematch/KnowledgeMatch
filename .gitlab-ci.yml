@@ -5,17 +5,13 @@ stages:
   - lint
   - deploy
 
-build-job:
-  stage: build
+lint-test-job: # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
+  stage: lint
   script:
-    - echo "Building Flutter application..."
-    - flutter build apk --release
-    - echo "Build complete."
-  artifacts:
-    paths:
-      - build/app/outputs/flutter-apk/app-release.apk
-  tags:
-    - csrunner2
+    - echo "Analyzing code quality..."
+    - flutter analyze
+    - echo "Code analysis completed."
+  allow_failure: false
 
 unit-test-job:
   stage: test
@@ -25,20 +21,17 @@ unit-test-job:
     - echo "Testing done."
   allow_failure: false
 
-lint-test-job: # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
-  stage: lint
-  script:
-    - echo "Analyzing code quality..."
-    - flutter analyze
-    - echo "Code analysis completed."
-  allow_failure: false
-
-deploy-job: # Placeholder for future deployment tasks
-  stage: deploy
-  environment: production
-  script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+#build-job:
+#  stage: build
+#  script:
+#    - echo "Building Flutter application..."
+#    - flutter build apk --release
+#    - echo "Build complete."
+#  artifacts:
+#    paths:
+#      - build/app/outputs/flutter-apk/app-release.apk
+#  tags:
+#    - csrunner2
 
 deploy_to_firebase:
   stage: deploy
@@ -46,6 +39,7 @@ deploy_to_firebase:
   before_script:
     - apt-get update && apt-get install -y openjdk-17-jdk unzip
     - gem install bundler
+    - cd android
     - bundle install
     # Create a directory for the secure file
     - mkdir -p secrets
