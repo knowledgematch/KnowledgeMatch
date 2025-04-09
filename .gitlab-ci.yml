@@ -48,7 +48,7 @@ deploy_to_firebase:
     - download-secure-files
     # Move the secure file to the secrets directory inside android
     - mv .secure_files/knowledgematch-3a567-dbdf90621acd.json android/secrets/
-    - bundle install
+    - bundle install --gemfile=android/Gemfile
   script:
     - bundle exec fastlane --gemfile android/Gemfile --cwd android beta # Run your Fastlane lane for distributing
   only:
