@@ -24,7 +24,8 @@ platform :android do
       service_credentials_file: "secrets/knowledgematch-3a567-dbdf90621acd.json",
       testers: "sven.christen@students.fhmw.ch",
       release_notes: "Fastlane Test",
-      apk_path: "build/app/outputs/flutter-apk/app-release.apk"
+      apk_path: "../build/app/outputs/flutter-apk/app-release.apk",
+      debug: true
     )
   end
 end
