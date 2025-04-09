@@ -14,6 +14,8 @@ build-job:
   artifacts:
     paths:
       - build/app/outputs/flutter-apk/app-release.apk
+  tags:
+    - csrunner2
 
 unit-test-job:
   stage: test
