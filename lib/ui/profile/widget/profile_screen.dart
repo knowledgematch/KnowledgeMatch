@@ -126,9 +126,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ChangePasswordScreen(
-                                viewModel: ChangePwViewModel(),
-                              )),
+                          builder: (context) => ChangeNotifierProvider(
+                              create: (_) => ChangePwViewModel(),
+                              child: ChangePasswordScreen())),
                     );
                   },
                   child: const Text('Change Password'),

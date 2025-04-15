@@ -1,18 +1,15 @@
-
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/services/api_db_connection.dart';
+import '../change_pw_state.dart';
 
-class ChangePwViewModel {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _oldPasswordController = TextEditingController();
-  final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmNewPasswordController =
-  TextEditingController();
-  String _email = '';
+class ChangePwViewModel extends ChangeNotifier {
+  ChangePWState _state = ChangePWState();
+
+  get state => _state;
 
   /// Loads the user ID and email from shared preferences.
   ///
@@ -25,12 +22,15 @@ class ChangePwViewModel {
   ///
   /// Returns a [Future] that completes when the user data has been loaded and the
   /// state has been updated.
-  Future<void> loadUserId()  async {
+  Future<void> loadUserId() async {
     final prefs = await SharedPreferences.getInstance();
     final userDataString = prefs.getString('userData');
     if (userDataString != null) {
       final userData = jsonDecode(userDataString);
-      _email = userData['Email'].toString();
+      String userEmail = userData['Email'].toString();
+      //_state.email = userEmail;
+      _state = ChangePWState().copyWith(email: userEmail);
+      notifyListeners();
     }
   }
 
@@ -49,26 +49,17 @@ class ChangePwViewModel {
   /// Returns:
   /// - This method does not return a value. It updates the UI based on the response from the API.
   Future<bool> changePassword() async {
-    if (_formKey.currentState!.validate()) {
-      final email = _email;
-      final oldPassword = _oldPasswordController.text;
-      final newPassword = _newPasswordController.text;
+    if (state.formKey.currentState!.validate()) {
+      final email = state.email;
+      final oldPassword = state.oldPasswordController.text;
+      final newPassword = state.newPasswordController.text;
 
       final response = await ApiDbConnection()
           .changePassword(email, oldPassword, newPassword);
-      if(response == 200) {
+      if (response == 200) {
         return true;
       }
     }
     return false;
   }
-
-  TextEditingController get confirmNewPasswordController =>
-      _confirmNewPasswordController;
-
-  TextEditingController get newPasswordController => _newPasswordController;
-
-  TextEditingController get oldPasswordController => _oldPasswordController;
-
-  get formKey => _formKey;
 }

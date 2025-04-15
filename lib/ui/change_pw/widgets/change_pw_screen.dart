@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/change_pw/view_model/change_pw_view_model.dart';
+import 'package:provider/provider.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
-  final ChangePwViewModel viewModel;
-  const ChangePasswordScreen({super.key, required this.viewModel});
+  const ChangePasswordScreen({super.key});
 
   @override
   ChangePasswordScreenState createState() => ChangePasswordScreenState();
@@ -13,11 +13,17 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   void initState() {
     super.initState();
-    widget.viewModel.loadUserId();
+    Future.microtask(() {
+      if (mounted) {
+        final viewModel = context.read<ChangePwViewModel>();
+        viewModel.loadUserId();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<ChangePwViewModel>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Change Password'),
@@ -25,11 +31,11 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: widget.viewModel.formKey,
+          key: viewModel.state.formKey,
           child: Column(
             children: [
               TextFormField(
-                controller: widget.viewModel.oldPasswordController,
+                controller: viewModel.state.oldPasswordController,
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Old Password',
@@ -44,7 +50,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: widget.viewModel.newPasswordController,
+                controller: viewModel.state.newPasswordController,
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'New Password',
@@ -62,7 +68,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: widget.viewModel.confirmNewPasswordController,
+                controller: viewModel.state.confirmNewPasswordController,
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Confirm New Password',
@@ -72,7 +78,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   if (value == null || value.isEmpty) {
                     return 'Please confirm your new password';
                   }
-                  if (value != widget.viewModel.newPasswordController.text) {
+                  if (value != viewModel.state.newPasswordController.text) {
                     return 'Passwords do not match';
                   }
                   return null;
@@ -81,11 +87,12 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  var changed = await widget.viewModel.changePassword();
-                  if(context.mounted) {
-                    if(changed) {
+                  var changed = await viewModel.changePassword();
+                  if (context.mounted) {
+                    if (changed) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Password changed successfully!')),
+                        const SnackBar(
+                            content: Text('Password changed successfully!')),
                       );
                       Navigator.pop(context);
                     } else {
