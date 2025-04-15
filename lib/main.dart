@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:knowledgematch/firebase_options.dart';
+import 'package:knowledgematch/ui/admin/view_model/admin_view_model.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
 import 'package:knowledgematch/ui/core/themes/theme_provider.dart';
 import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_model.dart';
@@ -44,6 +45,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ChatViewModel()),
         ChangeNotifierProvider(create: (_) => FindMatchesViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => AdminViewModel()),
         Provider(create: (_) => GlobalKey<NavigatorState>()),
         ChangeNotifierProvider(create: (_) => SplashViewModel()..init()),
       ],
