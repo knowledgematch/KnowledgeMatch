@@ -31,11 +31,14 @@ class ChatScreenState extends State<ChatScreen> {
           appBar: AppBar(
             title: const Text('Requests'),
             actions: [
-              ElevatedButton(
-                onPressed: () {
-                  viewModel.loadConfirmedNotificationsAndProfiles();
-                },
-                child: const Text('Confirmed'),
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: ElevatedButton(
+                  onPressed: () {
+                    viewModel.loadConfirmedNotificationsAndProfiles();
+                  },
+                  child: const Text('Confirmed'),
+                ),
               ),
             ],
           ),

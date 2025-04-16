@@ -28,11 +28,14 @@ class OnRequestBody extends StatelessWidget {
         ),
 
         SizedBox(height: 24),
-        Text(
-          'Problem description:',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+        Padding(
+          padding: const EdgeInsets.only(left: 4.0),
+          child: Text(
+            'Problem description:',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         SizedBox(height: 8),
@@ -66,17 +69,7 @@ class OnRequestBody extends StatelessWidget {
                       viewModel.acceptRequest();
                     }
                   : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: Text(
-                'Accept',
-                style: TextStyle(color: Colors.white),
-              ),
+              child: Text('Accept'),
             ),
             ElevatedButton(
               onPressed: viewModel.notificationData.isOpen == true
@@ -89,17 +82,7 @@ class OnRequestBody extends StatelessWidget {
                       viewModel.declineRequest();
                     }
                   : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: Text(
-                'Decline',
-                style: TextStyle(color: Colors.white),
-              ),
+              child: Text('Decline'),
             ),
           ],
         ),

@@ -77,13 +77,6 @@ class OnMeetupConfirmationBody extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context); // Return to the previous screen
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
               child: Text(
                 'Exit',
                 style: TextStyle(color: Colors.white),

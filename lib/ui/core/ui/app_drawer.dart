@@ -47,34 +47,48 @@ class AppDrawer extends StatelessWidget {
     ];
 
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(color: AppColors.primary),
-            child: const Center(
-              child: Text(
-                'KnowledgeMatch',
-                style: TextStyle(
-                  color: AppColors.whiteLight,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 24,
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                DrawerHeader(
+                  decoration: const BoxDecoration(color: AppColors.primary),
+                  child: const Center(
+                    child: Text(
+                      'KnowledgeMatch',
+                      style: TextStyle(
+                        color: AppColors.whiteLight,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                ...drawerItems.map((item) => _buildDrawerItem(
+                      icon: item['icon'] as IconData,
+                      title: item['title'] as String,
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => item['screen'] as Widget),
+                        );
+                      },
+                    )),
+              ],
             ),
           ),
-          ...drawerItems.map((item) => _buildDrawerItem(
-                icon: item['icon'] as IconData,
-                title: item['title'] as String,
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => item['screen'] as Widget),
-                  );
-                },
-              )),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 120,
+            ),
+          ),
         ],
       ),
     );

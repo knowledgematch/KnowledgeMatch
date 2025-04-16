@@ -14,6 +14,7 @@ class CustomDropdown<T> extends StatelessWidget {
   final Color textColor;
   final Color menuTextColor;
   final String? Function(T?)? validator;
+  final DropdownMenuItem<T> Function(T item)? dropdownMenuItemBuilder;
 
   const CustomDropdown({
     super.key,
@@ -27,6 +28,7 @@ class CustomDropdown<T> extends StatelessWidget {
     this.textColor = AppColors.primary,
     this.menuTextColor = AppColors.primary,
     this.validator,
+    this.dropdownMenuItemBuilder,
   });
 
   @override
@@ -38,7 +40,7 @@ class CustomDropdown<T> extends StatelessWidget {
         hintText: hintText,
         hintStyle: TextStyle(color: textColor.withOpacity(0.7)),
         focusColor: AppColors.blackLight,
-        floatingLabelStyle: TextStyle(color: AppColors.blue),
+        floatingLabelStyle: TextStyle(color: textColor),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.blue),
           borderRadius: AppConstants.borderRadius,
@@ -55,15 +57,17 @@ class CustomDropdown<T> extends StatelessWidget {
       dropdownColor: dropdownColor,
       style: TextStyle(color: textColor, fontSize: 16),
       value: selectedItem,
-      items: items.map((item) {
-        return DropdownMenuItem<T>(
-          value: item,
-          child: Text(
-            item.toString(),
-            style: TextStyle(color: menuTextColor),
-          ),
-        );
-      }).toList(),
+      items: dropdownMenuItemBuilder != null
+          ? items.map((item) => dropdownMenuItemBuilder!(item)).toList()
+          : items.map((item) {
+              return DropdownMenuItem<T>(
+                value: item,
+                child: Text(
+                  item.toString(),
+                  style: TextStyle(color: menuTextColor),
+                ),
+              );
+            }).toList(),
       onChanged: onChanged,
       validator: validator,
     );

@@ -128,6 +128,23 @@ class AppTheme {
         thumbColor: MaterialStateProperty.all(Color(0xFF0055CC)),
         trackColor: MaterialStateProperty.all(Color(0xFFDCE1E4)),
       ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.all(AppColors.white),
+        checkColor: MaterialStateProperty.all(AppColors.primary),
+        side: BorderSide(color: AppColors.primary),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.grey2,
+        selectedColor: AppColors.primary,
+        disabledColor: AppColors.grey2,
+        secondarySelectedColor: AppColors.primary,
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        labelStyle: TextStyle(color: AppColors.blackLight),
+        secondaryLabelStyle: TextStyle(color: AppColors.whiteLight),
+        shape: RoundedRectangleBorder(
+          borderRadius: AppConstants.borderRadius,
+        ),
+      ),
     );
   }
 

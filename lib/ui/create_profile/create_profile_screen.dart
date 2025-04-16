@@ -6,6 +6,7 @@ import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:knowledgematch/domain/models/reachability.dart';
 
 import '../core/themes/app_colors.dart';
+import '../core/ui/custom_drop_down.dart';
 import '../login/login_screen.dart';
 
 class CreateProfileScreen extends StatefulWidget {
@@ -195,20 +196,18 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                   },
                 ),
                 SizedBox(height: 16),
-                DropdownButtonFormField<Reachability>(
-                  value: ReachabilityValue.fromValue(int.parse(_reachability)),
+                CustomDropdown<Reachability>(
+                  items: Reachability.values.map((Reachability reachability) {
+                    return reachability;
+                  }).toList(),
+                  selectedItem:
+                      ReachabilityValue.fromValue(int.parse(_reachability)),
+                  labelText: 'Reachability',
                   onChanged: (Reachability? newValue) {
                     setState(() {
                       _reachability = newValue!.value.toString();
                     });
                   },
-                  items: Reachability.values.map((Reachability reachability) {
-                    return DropdownMenuItem<Reachability>(
-                      value: reachability,
-                      child: Text(reachability.description),
-                    );
-                  }).toList(),
-                  decoration: InputDecoration(labelText: 'Reachability'),
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(

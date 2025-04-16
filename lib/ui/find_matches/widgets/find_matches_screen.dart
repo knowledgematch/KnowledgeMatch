@@ -114,40 +114,46 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
 
 Column _locationSelection(BuildContext context) {
   final viewModel = context.watch<FindMatchesViewModel>();
+  const List<Map<String, dynamic>> choises = [
+    {
+      "text": "In Person",
+      "value": Reachability.inPerson,
+    },
+    {
+      "text": "Online",
+      "value": Reachability.online,
+    },
+    {
+      "text": "In Person / Online",
+      "value": Reachability.onlineOrInPerson,
+    },
+  ];
   return Column(
-    crossAxisAlignment: CrossAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       const Text("How do you want to connect?"),
       // const SizedBox(height: 8),
-      Wrap(
-        spacing: 8,
-        children: [
-          // In Person Chip
-          ChoiceChip(
-            label: const Text("In Person"),
-            selected: viewModel.state.reachability == Reachability.inPerson,
-            onSelected: (bool selected) {
-              viewModel.updateReachability(Reachability.inPerson);
-            },
+      Center(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            spacing: 8,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              for (var choice in choises)
+                ChoiceChip(
+                  showCheckmark: false,
+                  label: Text(choice["text"]!),
+                  selected: viewModel.state.reachability == choice["value"],
+                  onSelected: (bool selected) {
+                    viewModel.updateReachability(choice["value"]);
+                  },
+                )
+            ],
           ),
-          // Online Chip
-          ChoiceChip(
-            label: const Text("Online"),
-            selected: viewModel.state.reachability == Reachability.online,
-            onSelected: (bool selected) {
-              viewModel.updateReachability(Reachability.online);
-            },
-          ),
-          // In Person / Online Chip
-          ChoiceChip(
-            label: const Text("In Person / Online"),
-            selected:
-                viewModel.state.reachability == Reachability.onlineOrInPerson,
-            onSelected: (bool selected) {
-              viewModel.updateReachability(Reachability.onlineOrInPerson);
-            },
-          ),
-        ],
+        ),
       ),
       // Display error text if validation fails.
       if (viewModel.state.reachability == null)
