@@ -1,0 +1,31 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Build and distribute to Firebase"
+  lane :beta do
+
+    firebase_app_distribution(
+      app: "1:124179968487:android:1aa51b8f5fe9cdadef8d42", # You’ll get this from Firebase project settings
+      service_credentials_file: "secrets/knowledgematch-3a567-dbdf90621acd.json",
+      testers: "sven.christen@students.fhnw.ch, daniel.zimmerli@students.fhnw.ch, robin.hartmann@students.fhnw.ch, dario.mueller@students.fhnw.ch, baris.tulgar@students.fhnw.ch",
+      release_notes: "New release available!",
+      apk_path: "../build/app/outputs/flutter-apk/app-release.apk",
+      debug: true
+    )
+  end
+end
