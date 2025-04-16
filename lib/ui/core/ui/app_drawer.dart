@@ -15,8 +15,8 @@ class AppDrawer extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: AppColors.primary),
-      title: Text(title, style: const TextStyle(color: AppColors.primary)),
+      leading: Icon(icon),
+      title: Text(title),
       onTap: onTap,
     );
   }

@@ -6,12 +6,25 @@ import './app_constants.dart';
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
+      listTileTheme: ListTileThemeData(
+          textColor: AppColors.black,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+          titleTextStyle: TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.w500,
+            fontSize: 20,
+          ),
+          subtitleTextStyle: TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.w300,
+            fontSize: 20,
+          )),
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: AppColors.blackLight,
         selectionColor: AppColors.greyLight,
         selectionHandleColor: AppColors.blackLight,
       ),
-      iconTheme: IconThemeData(color: AppColors.blackLight),
+      iconTheme: IconThemeData(color: AppColors.primary),
       primarySwatch: AppColors.greyLight,
       primaryColor: AppColors.primaryLight,
       hintColor: AppColors.primaryLight,
