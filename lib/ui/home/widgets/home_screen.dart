@@ -1,29 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
-import '../../../domain/models/reachability.dart';
-import '../../../domain/models/user.dart';
-import '../../../domain/models/request_date_data.dart';
+import 'package:knowledgematch/ui/home/view_model/home_view_model.dart';
+import 'package:provider/provider.dart';
+
+import '../../../domain/models/notification_data.dart';
 import '../../core/themes/app_colors.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
-
-  final List<RequestDateData> allRequests = [
-    RequestDateData(
-        dateTime: DateTime.now().subtract(const Duration(days: 1)),
-        reachability: Reachability.inPerson),
-    RequestDateData(
-        dateTime: DateTime.now().add(const Duration(days: 1)),
-        reachability: Reachability.online),
-  ];
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
+  HomeScreenState createState() => HomeScreenState();
+}
+
+class HomeScreenState extends State<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
-    final String userName = User.instance.name ?? 'there';
-    final openRequests =
-        allRequests.where((r) => r.dateTime.isBefore(DateTime.now())).toList();
-    final plannedRequests =
-        allRequests.where((r) => r.dateTime.isAfter(DateTime.now())).toList();
+    final HomeViewModel viewModel = context.watch<HomeViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +51,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "$userName 👋",
+                        "$viewModel.userName 👋",
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -70,8 +63,8 @@ class HomeScreen extends StatelessWidget {
                   const Spacer(),
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: AssetImage(
-                        User.instance.picture ?? 'assets/images/profile.png'),
+                    backgroundImage: AssetImage(viewModel.state.profilePicture),
+                    // User.instance.picture ?? 'assets/images/profile.png'),
                   ),
                 ],
               ),
@@ -80,11 +73,11 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 18),
           _buildSectionTitle("Open Requests", Icons.pending_actions),
           const SizedBox(height: 8),
-          _buildHorizontalList(openRequests),
+          _buildHorizontalList(viewModel.state.openRequests),
           const SizedBox(height: 18),
           _buildSectionTitle("Planned Requests", Icons.event_available),
           const SizedBox(height: 8),
-          _buildHorizontalList(plannedRequests),
+          _buildHorizontalList(viewModel.state.plannedRequests),
         ],
       ),
     );
@@ -110,7 +103,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHorizontalList(List<RequestDateData> requests) {
+  Widget _buildHorizontalList(List<NotificationData> requests) {
     if (requests.isEmpty) {
       return const Center(
         child: Text(
@@ -130,8 +123,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCard(RequestDateData request) {
-    bool isPlanned = request.dateTime.isAfter(DateTime.now());
+  Widget _buildCard(NotificationData request) {
+    bool isPlanned = true;
     return Container(
       margin: const EdgeInsets.only(right: 16),
       width: 300,
@@ -139,15 +132,10 @@ class HomeScreen extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: isPlanned
-              ? [
-                  AppColors.primary,
-                  AppColors.primary.withOpacity(0.8),
-                ]
-              : [
-                  AppColors.blueLight,
-                  AppColors.blueLight.withOpacity(0.8),
-                ],
+          colors:
+              isPlanned
+                  ? [AppColors.primary, AppColors.primary.withOpacity(0.8)]
+                  : [AppColors.blueLight, AppColors.blueLight.withOpacity(0.8)],
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
@@ -164,14 +152,10 @@ class HomeScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.calendar_today,
-                color: Colors.white,
-                size: 20,
-              ),
+              const Icon(Icons.calendar_today, color: Colors.white, size: 20),
               const SizedBox(width: 8),
               Text(
-                request.getFormattedDate(),
+                request.payload.toString(),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -183,36 +167,22 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Row(
             children: [
-              const Icon(
-                Icons.access_time,
-                color: Colors.white,
-                size: 20,
-              ),
+              const Icon(Icons.access_time, color: Colors.white, size: 20),
               const SizedBox(width: 8),
               Text(
-                request.getFormattedTime(),
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
+                request.requestID.toString(),
+                style: const TextStyle(fontSize: 16, color: Colors.white),
               ),
             ],
           ),
           const SizedBox(height: 16),
           Row(
             children: [
-              const Icon(
-                Icons.location_on,
-                color: Colors.white,
-                size: 20,
-              ),
+              const Icon(Icons.location_on, color: Colors.white, size: 20),
               const SizedBox(width: 8),
               Text(
-                "Location: ${request.reachability != null ? "Online" : "In Person"}",
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
+                "Location: Online : In Person",
+                style: const TextStyle(fontSize: 16, color: Colors.white),
               ),
             ],
           ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/reachability.dart';
 import '../../../domain/models/search_criteria.dart';
 import '../../core/ui/app_drawer.dart';
 import '../../core/ui/custom_drop_down.dart';
@@ -114,20 +113,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
 
 Column _locationSelection(BuildContext context) {
   final viewModel = context.watch<FindMatchesViewModel>();
-  const List<Map<String, dynamic>> choises = [
-    {
-      "text": "In Person",
-      "value": Reachability.inPerson,
-    },
-    {
-      "text": "Online",
-      "value": Reachability.online,
-    },
-    {
-      "text": "In Person / Online",
-      "value": Reachability.onlineOrInPerson,
-    },
-  ];
+
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -142,7 +128,7 @@ Column _locationSelection(BuildContext context) {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              for (var choice in choises)
+              for (var choice in FindMatchesViewModel.choices)
                 ChoiceChip(
                   showCheckmark: false,
                   label: Text(choice["text"]!),
