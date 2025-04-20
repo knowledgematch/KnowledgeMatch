@@ -1,10 +1,14 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
 import 'package:knowledgematch/ui/home/view_model/home_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/notification_data.dart';
+import '../../../domain/models/userprofile.dart';
 import '../../core/themes/app_colors.dart';
+import '../../request/widgets/notification_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -51,7 +55,7 @@ class HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        "$viewModel.userName 👋",
+                        "${viewModel.state.userName} 👋",
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -103,7 +107,7 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHorizontalList(List<NotificationData> requests) {
+  Widget _buildHorizontalList(HashMap<NotificationData, Userprofile> requests) {
     if (requests.isEmpty) {
       return const Center(
         child: Text(
@@ -111,83 +115,28 @@ class HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontSize: 16, color: Colors.grey),
         ),
       );
-    }
-    return SizedBox(
-      height: 180,
-      child: ListView.builder(
-        padding: EdgeInsets.all(8),
-        scrollDirection: Axis.horizontal,
-        itemCount: requests.length,
-        itemBuilder: (context, index) => _buildCard(requests[index]),
-      ),
-    );
-  }
-
-  Widget _buildCard(NotificationData request) {
-    bool isPlanned = true;
-    return Container(
-      margin: const EdgeInsets.only(right: 16),
-      width: 300,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors:
-              isPlanned
-                  ? [AppColors.primary, AppColors.primary.withOpacity(0.8)]
-                  : [AppColors.blueLight, AppColors.blueLight.withOpacity(0.8)],
+    } else {
+      final notifications = requests.entries.toList();
+      return SizedBox(
+        height: 180,
+        child: ListView.builder(
+          padding: EdgeInsets.all(8),
+          scrollDirection: Axis.horizontal,
+          itemCount: notifications.length,
+          itemBuilder: (context, index) {
+            final entry = notifications[index];
+            return SizedBox(
+              width: 350,
+              height: 160,
+              child: NotificationCard(
+                userprofile: entry.value,
+                notification: entry.key,
+              ),
+            );
+          },
+          // _buildCard(requests[index]),
         ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.calendar_today, color: Colors.white, size: 20),
-              const SizedBox(width: 8),
-              Text(
-                request.payload.toString(),
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              const Icon(Icons.access_time, color: Colors.white, size: 20),
-              const SizedBox(width: 8),
-              Text(
-                request.requestID.toString(),
-                style: const TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              const Icon(Icons.location_on, color: Colors.white, size: 20),
-              const SizedBox(width: 8),
-              Text(
-                "Location: Online : In Person",
-                style: const TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+      );
+    }
   }
 }
