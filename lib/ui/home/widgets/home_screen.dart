@@ -8,7 +8,9 @@ import 'package:provider/provider.dart';
 import '../../../domain/models/notification_data.dart';
 import '../../../domain/models/userprofile.dart';
 import '../../core/themes/app_colors.dart';
+import '../../request/view_model/request_view_model.dart';
 import '../../request/widgets/notification_card.dart';
+import '../../request/widgets/request_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -79,7 +81,7 @@ class HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 8),
           _buildHorizontalList(viewModel.state.openRequests),
           const SizedBox(height: 18),
-          _buildSectionTitle("Planned Requests", Icons.event_available),
+          _buildSectionTitle("Planned meetings", Icons.event_available),
           const SizedBox(height: 8),
           _buildHorizontalList(viewModel.state.plannedRequests),
         ],
@@ -125,12 +127,30 @@ class HomeScreenState extends State<HomeScreen> {
           itemCount: notifications.length,
           itemBuilder: (context, index) {
             final entry = notifications[index];
-            return SizedBox(
-              width: 350,
-              height: 160,
-              child: NotificationCard(
-                userprofile: entry.value,
-                notification: entry.key,
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => ChangeNotifierProvider<RequestViewModel>(
+                          create:
+                              (_) => RequestViewModel(
+                                notificationData: entry.key,
+                                userprofile: entry.value,
+                              ),
+                          child: RequestScreen(),
+                        ),
+                  ),
+                );
+              },
+              child: SizedBox(
+                width: 350,
+                height: 160,
+                child: NotificationCard(
+                  userprofile: entry.value,
+                  notification: entry.key,
+                ),
               ),
             );
           },
