@@ -23,7 +23,7 @@ class HomeViewModel extends ChangeNotifier {
     _loadData();
   }
 
-  /// Loadas open and planned requests for current user
+  /// Loads open and planned requests for current user
   Future<void> _loadData() async {
     await getOpenRequests();
     await getPlannedRequests();
