@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../request/view_model/request_view_model.dart';
-import '../../request/widgets/notification_card.dart';
-import '../../request/widgets/request_screen.dart';
+import 'feed_widget.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -52,33 +50,7 @@ class ChatScreenState extends State<ChatScreen> {
                       : ListView.builder(
                           itemCount: viewModel.state.notification.length,
                           itemBuilder: (context, index) {
-                            final notification =
-                                viewModel.state.notification[index];
-                            final userProfile = viewModel
-                                .state.userProfiles[notification.sourceUserId];
-
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChangeNotifierProvider<
-                                                RequestViewModel>(
-                                            create: (_) => RequestViewModel(
-                                                  notificationData:
-                                                      notification,
-                                                  userprofile: userProfile,
-                                                ),
-                                            child: RequestScreen()),
-                                  ),
-                                );
-                              },
-                              child: NotificationCard(
-                                notification: notification,
-                                userprofile: userProfile!,
-                              ),
-                            );
+                            return FeedWidget();
                           },
                         ),
         );
