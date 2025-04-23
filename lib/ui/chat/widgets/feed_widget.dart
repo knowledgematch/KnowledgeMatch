@@ -18,8 +18,6 @@ class FeedWidgetState extends State<FeedWidget> {
   Widget build(BuildContext context) {
     final viewModel = context.watch<ChatViewModel>();
 
-    bool temp = false;
-
     final conversationList = viewModel.state.notification.entries.map((entry) {
       final feed = entry.value;
       final latest = entry.value.first;
@@ -27,8 +25,7 @@ class FeedWidgetState extends State<FeedWidget> {
       return Card(
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: ExpansionTile(
-          initiallyExpanded: temp, //viewModel.state.feedIsExpanded,
-          onExpansionChanged: (open) => setState(() => temp = open),
+          initiallyExpanded: false,
           title: NotificationCard(
             notification: latest,
             userprofile: profile,
