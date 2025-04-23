@@ -31,24 +31,54 @@ class ChatViewModel extends ChangeNotifier {
   /// Returns:
   /// - A [Future] that completes when notifications and user profiles have been
   ///   loaded and the UI state has been updated.
-  Future<void> loadNotificationsAndProfiles() async {
+  // Future<void> loadNotificationsAndProfiles() async {
+  //   try {
+  //     final notifications = await _firestoreService.fetchNotifications(
+  //       userID: User.instance.id ?? 0,
+  //       type: NotificationType.knowledgeRequest,
+  //     );
+  //
+  //     final limitedNotifications = notifications.take(20).toList();
+  //
+  //     Map<int, Userprofile?> userProfiles = {};
+  //     for (final notification in limitedNotifications) {
+  //       final userProfile = await MatchingAlgorithm()
+  //           .getUserProfileById(notification.sourceUserId);
+  //       userProfiles[notification.sourceUserId] = userProfile;
+  //     }
+  //     _state = state.copyWith(
+  //       userProfiles: userProfiles,
+  //       notification: limitedNotifications,
+  //     );
+  //   } catch (error) {
+  //     _state = state.copyWith(errorMessage: error.toString());
+  //   } finally {
+  //     _state = state.copyWith(isLoading: false);
+  //     notifyListeners();
+  //   }
+  // }
+
+  Future<void> loadNotificationsPerRequestID() async {
     try {
-      final notifications = await _firestoreService.fetchNotifications(
+      final notifications = await _firestoreService.fetchAllNotifications(
         userID: User.instance.id ?? 0,
-        type: NotificationType.knowledgeRequest,
       );
 
-      final limitedNotifications = notifications.take(20).toList();
-
+      final Map<String, List<NotificationData>> feedMap = {};
+      for (var n in notifications) {
+        feedMap
+            .putIfAbsent(n.requestID ?? "", () => <NotificationData>[])
+            .add(n);
+      }
       Map<int, Userprofile?> userProfiles = {};
-      for (final notification in limitedNotifications) {
+      for (final notification in notifications) {
         final userProfile = await MatchingAlgorithm()
             .getUserProfileById(notification.sourceUserId);
         userProfiles[notification.sourceUserId] = userProfile;
       }
       _state = state.copyWith(
         userProfiles: userProfiles,
-        notification: limitedNotifications,
+        notification: feedMap,
       );
     } catch (error) {
       _state = state.copyWith(errorMessage: error.toString());
@@ -91,7 +121,7 @@ class ChatViewModel extends ChangeNotifier {
       }
       _state = state.copyWith(
         userProfiles: userProfiles,
-        notification: limitedNotifications,
+        //TODO: notification: limitedNotifications,
       );
     } catch (error) {
       _state = state.copyWith(errorMessage: error.toString());

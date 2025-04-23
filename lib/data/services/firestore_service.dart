@@ -5,34 +5,62 @@ class FirestoreService {
   /// Fetches notifications for a specific user with an optional filter for request type.
   ///
   /// Queries the `notifications` collection for notifications where the
-  /// `target_user_id` matches the given user ID and `is_open` is true.
+  /// `target_user_id` matches the given user ID.
   /// Results are ordered by timestamp in descending order.
   ///
   /// Parameters:
   /// - `userID`: The ID of the user whose notifications are being fetched.
-  /// - `type` (optional): The type of notifications to filter by.
+  /// - 'isOpen?': Optional, If it should return only notifications with status isOpen
   ///
   /// Returns:
   /// A future that resolves to a list of `NotificationData` objects.
   Future<List<NotificationData>> fetchNotifications({
     required int userID,
-    NotificationType? type,
     bool? isOpen,
   }) async {
     try {
-      QuerySnapshot targetSnapshot =
-          await FirebaseFirestore.instance
-              .collection('notifications')
-              .where(
-                isOpen == true
-                    ? Filter.and(
-                      Filter('target_user_id', isEqualTo: userID.toString()),
-                      Filter('is_open', isEqualTo: true.toString()),
-                    )
-                    : Filter('target_user_id', isEqualTo: userID.toString()),
-              )
-              .orderBy('timestamp', descending: true)
-              .get();
+      QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
+          .collection('notifications')
+          .where(
+            isOpen == true
+                ? Filter.and(
+                    Filter('target_user_id', isEqualTo: userID.toString()),
+                    Filter('is_open', isEqualTo: true.toString()),
+                  )
+                : Filter('target_user_id', isEqualTo: userID.toString()),
+          )
+          .orderBy('timestamp', descending: true)
+          .get();
+
+      return _buildList(targetSnapshot: targetSnapshot);
+    } catch (error) {
+      print('Error fetching notifications: $error');
+      rethrow;
+    }
+  }
+
+  /// Fetches notifications for a specific user with an optional filter for request type.
+  ///
+  /// Queries the `notifications` collection for notifications where the
+  /// `target_user_id` or the 'source_user_id' matches the given user ID.
+  /// Results are ordered by timestamp in descending order.
+  ///
+  /// Parameters:
+  /// - `userID`: The ID of the user whose notifications are being fetched.
+  ///
+  /// Returns:
+  /// A future that resolves to a list of `NotificationData` objects.
+  Future<List<NotificationData>> fetchAllNotifications({
+    required int userID,
+  }) async {
+    try {
+      QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
+          .collection('notifications')
+          .where(Filter.or(
+              Filter('target_user_id', isEqualTo: userID.toString()),
+              Filter('source_user_id', isEqualTo: userID.toString())))
+          .orderBy('timestamp', descending: true)
+          .get();
 
       return _buildList(targetSnapshot: targetSnapshot);
     } catch (error) {
@@ -54,21 +82,19 @@ class FirestoreService {
   /// A future that resolves to a list of `NotificationData` objects.
   Future<List<NotificationData>> fetchConfirmed({required int userID}) async {
     try {
-      QuerySnapshot targetSnapshot =
-          await FirebaseFirestore.instance
-              .collection('notifications')
-              .where(
-                Filter.and(
-                  Filter('target_user_id', isEqualTo: userID.toString()),
-                  Filter(
-                    'notification_type',
-                    isEqualTo:
-                        NotificationType.meetupConfirmation.toShortString(),
-                  ),
-                ),
-              )
-              .orderBy('timestamp', descending: true)
-              .get();
+      QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
+          .collection('notifications')
+          .where(
+            Filter.and(
+              Filter('target_user_id', isEqualTo: userID.toString()),
+              Filter(
+                'notification_type',
+                isEqualTo: NotificationType.meetupConfirmation.toShortString(),
+              ),
+            ),
+          )
+          .orderBy('timestamp', descending: true)
+          .get();
 
       return _buildList(targetSnapshot: targetSnapshot);
     } catch (error) {
@@ -92,15 +118,13 @@ class FirestoreService {
     required QuerySnapshot targetSnapshot,
   }) async {
     List<QueryDocumentSnapshot> allDocs = [...targetSnapshot.docs];
-    List<Map<String, dynamic>> firestoreData =
-        allDocs.map((doc) {
-          return {'id': doc.id, ...doc.data() as Map<String, dynamic>};
-        }).toList();
+    List<Map<String, dynamic>> firestoreData = allDocs.map((doc) {
+      return {'id': doc.id, ...doc.data() as Map<String, dynamic>};
+    }).toList();
 
-    List<NotificationData> notifications =
-        firestoreData.map((map) {
-          return NotificationData.fromFirestoreData(map);
-        }).toList();
+    List<NotificationData> notifications = firestoreData.map((map) {
+      return NotificationData.fromFirestoreData(map);
+    }).toList();
 
     return notifications;
   }
@@ -111,11 +135,10 @@ class FirestoreService {
   ///
   /// [requestID] : request_id field of documents to close
   Future<void> closeRequest(String? requestID) async {
-    final querySnapshot =
-        await FirebaseFirestore.instance
-            .collection('notifications')
-            .where('request_id', isEqualTo: requestID)
-            .get();
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('notifications')
+        .where('request_id', isEqualTo: requestID)
+        .get();
 
     for (final doc in querySnapshot.docs) {
       await doc.reference.update({'is_open': false.toString()});
@@ -135,7 +158,7 @@ class FirestoreService {
         .update({'is_open': isOpen.toString()});
   }
 
-  /// Adds a confirmation notificaiton document to Firestore
+  /// Adds a confirmation notification document to Firestore
   ///
   /// Takes the provided [notificationData], swaps the sourceUserId and the targetUserId
   /// as a copy for the user that sends the confirmation
@@ -148,9 +171,8 @@ class FirestoreService {
       'notification_type': notificationData.type.toShortString(),
       'payload': notificationData.payload,
       'request_id': notificationData.requestID.toString(),
-      'target_user_id':
-          notificationData.sourceUserId
-              .toString(), //Swap source and target user intentionally
+      'target_user_id': notificationData.sourceUserId
+          .toString(), //Swap source and target user intentionally
       'source_user_id': notificationData.targetUserId.toString(), //Swap target
       'title': notificationData.title,
       'timestamp': DateTime.now().toUtc().toIso8601String(),
