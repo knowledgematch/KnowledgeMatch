@@ -1,35 +1,44 @@
+import 'package:knowledgematch/domain/models/keyword2topic.dart';
+
+import '../../domain/models/keyword.dart';
+import '../../domain/models/topic.dart';
+
 class AdminState {
-  List<String> keywords = [];
-  List<String> topics = [];
-  String selectedKeyword = '';
-  String selectedTopic = '';
-  String? editingKeyword;
-  String? editingTopic;
+  List<Keyword> keywords;
+  List<Topic> topics;
+  List<Keyword2Topic> keyword2topic;
+  Keyword? editingKeyword;
+  Topic? editingTopic;
+  Keyword? selectedKeyword;
+  Topic? selectedTopic;
 
   AdminState({
     required this.keywords,
     required this.topics,
-    required this.selectedKeyword,
-    required this.selectedTopic,
+    required this.keyword2topic,
     this.editingKeyword,
-    this.editingTopic
+    this.editingTopic,
+    this.selectedKeyword,
+    this.selectedTopic,
   });
 
   AdminState copyWith({
-    List<String>? keywords,
-    List<String>? topics,
-    String? selectedKeyword,
-    String? selectedTopic,
-    String? editingKeyword,
-    String? editingTopic,
+    List<Keyword>? keywords,
+    List<Topic>? topics,
+    List<Keyword2Topic>? keyword2topic,
+    Keyword? editingKeyword,
+    Topic? editingTopic,
+    Keyword? selectedKeyword,
+    Topic? selectedTopic,
   }) {
     return AdminState(
       keywords: keywords ?? this.keywords,
       topics: topics ?? this.topics,
-      selectedKeyword: selectedKeyword ?? this.selectedKeyword,
-      selectedTopic: selectedTopic ?? this.selectedTopic,
+      keyword2topic: keyword2topic ?? this.keyword2topic,
       editingKeyword: editingKeyword,
       editingTopic: editingTopic,
+      selectedKeyword: selectedKeyword ?? this.selectedKeyword,
+      selectedTopic: selectedTopic ?? this.selectedTopic,
     );
   }
 }
