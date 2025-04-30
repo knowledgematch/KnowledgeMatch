@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/ui/admin/widgets/admin_screen.dart';
 
+import '../../../domain/models/user.dart';
 import '../../about/widgets/about_screen.dart';
 import '../../contact_information/contact_screen.dart';
 import '../../profile/widget/profile_screen.dart';
@@ -43,7 +45,13 @@ class AppDrawer extends StatelessWidget {
         'icon': Icons.info,
         'title': 'About',
         'screen': const AboutScreen(),
-      }
+      },
+      if (User.instance.isAdmin ?? false)
+        {
+          'icon': Icons.admin_panel_settings,
+          'title': 'Admin',
+          'screen': const AdminScreen(),
+        },
     ];
 
     return Drawer(
