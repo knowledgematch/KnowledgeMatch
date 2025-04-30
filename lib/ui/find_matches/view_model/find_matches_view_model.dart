@@ -7,7 +7,22 @@ import '../../../domain/models/reachability.dart';
 class FindMatchesViewModel extends ChangeNotifier {
   FindMatchesState _state = FindMatchesState(keywords: [], reachabilities: []);
 
-  FindMatchesViewModel(){
+  static const List<Map<String, dynamic>> choices = [
+    {
+      "text": "In Person",
+      "value": Reachability.inPerson,
+    },
+    {
+      "text": "Online",
+      "value": Reachability.online,
+    },
+    {
+      "text": "In Person / Online",
+      "value": Reachability.onlineOrInPerson,
+    },
+  ];
+
+  FindMatchesViewModel() {
     loadData();
   }
 
@@ -31,7 +46,7 @@ class FindMatchesViewModel extends ChangeNotifier {
   Future<void> loadData() async {
     _state = _state.copyWith(
         keywords: await MatchingAlgorithm().getKeywords(),
-        reachabilities:await MatchingAlgorithm().getReachabilities());
+        reachabilities: await MatchingAlgorithm().getReachabilities());
     notifyListeners();
   }
 }

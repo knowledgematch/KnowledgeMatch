@@ -39,15 +39,28 @@ class BackCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 50),
-          CircleAvatar(
-            radius: 60,
-            backgroundColor: AppColors.greyShadowLight,
-            child: CircleAvatar(
-              radius: 50,
-              backgroundImage: profilePicture != null
-                  ? MemoryImage(profilePicture)
-                  : const AssetImage('assets/images/profile.png')
-                      as ImageProvider,
+          Container(
+            height: 450,
+            width: 380,
+            decoration: BoxDecoration(
+              color: AppColors.greyShadowLight,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: AppColors.greyShadowLight,
+                width: 2,
+              ),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: profilePicture != null
+                  ? Image.memory(
+                      profilePicture,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset(
+                      'assets/images/profile.png',
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
 

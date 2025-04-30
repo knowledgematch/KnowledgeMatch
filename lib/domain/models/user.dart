@@ -20,6 +20,7 @@ class User {
   String? picture;
   int? seniority;
   String? description;
+  bool? isAdmin = false;
 
   /// Populates the [User] instance's fields using data from a JSON map.
   ///
@@ -52,6 +53,9 @@ class User {
 
     seniority = json['Seniority'] as int?;
     description = json['Description'] as String?;
+    if(json['isAdmin'] > 0){
+      isAdmin = true;
+    }
   }
 
   /// Returns the decoded [Uint8List] of the [picture] if available
@@ -81,6 +85,7 @@ class User {
     picture = null;
     seniority = null;
     description = null;
+    isAdmin = null;
   }
 
   @override

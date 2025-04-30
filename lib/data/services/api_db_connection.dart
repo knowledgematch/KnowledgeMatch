@@ -43,6 +43,194 @@ class ApiDbConnection {
     return await _fetcher(finalUri);
   }
 
+  Future<int> addKeywordEntry(
+      {required int levels,
+      required String keyword,
+      required String description}) async {
+    var finalUri = baseUri.replace(
+      path: '/keywords',
+    );
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'Levels': levels,
+      'Keyword': keyword,
+      'Description': description,
+    });
+
+    try {
+      final response = await http.post(finalUri, headers: headers, body: body);
+      return response.statusCode;
+    } catch (error) {
+      return -1;
+    }
+  }
+
+  Future<bool> updateKeywordEntry({
+    required int id,
+    required int levels,
+    required String keyword,
+    required String description}) async {
+    var finalUri = Uri.parse('$baseUri/keywords/$id');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'Levels': levels,
+      'Keyword': keyword,
+      'Description': description,
+    });
+    try {
+      final response = await http.put(finalUri, headers: headers, body: body);
+      if (response.statusCode == 204) {
+        return true;
+      } else {
+        print('Failed to delete Keyword entry: ${response.body}');
+        return false;
+      }
+
+    } catch (e) {
+      print('Error updating Keyword: $e');
+      return false;
+    }
+  }
+
+  Future<bool> removeKeywordEntry(int id) async{
+    var finalUri = Uri.parse('$baseUri/keywords/$id');
+    try {
+      final response = await http.delete(finalUri);
+
+      if (response.statusCode == 204) {
+        return true;
+      } else {
+        print('Failed to delete Keyword entry: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('Error during DELETE request: $e');
+      return false;
+    }
+  }
+
+  Future<bool> removeTopicEntry(int id) async{
+    var finalUri = Uri.parse('$baseUri/topics/$id');
+    try {
+      final response = await http.delete(finalUri);
+
+      if (response.statusCode == 204) {
+        return true;
+      } else {
+        print('Failed to delete Topic entry: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('Error during DELETE request: $e');
+      return false;
+    }
+  }
+
+  Future<bool> updateTopicEntry({
+    required int id,
+    required int levels,
+    required String topic,
+    required String description}) async {
+    var finalUri = Uri.parse('$baseUri/topics/$id');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'Levels': levels,
+      'Topic': topic,
+      'Description': description,
+    });
+    try {
+      final response = await http.put(finalUri, headers: headers, body: body);
+      if (response.statusCode == 204) {
+        return true;
+      } else {
+        print('Failed to delete Topic entry: ${response.body}');
+        return false;
+      }
+
+    } catch (e) {
+      print('Error updating Topic: $e');
+      return false;
+    }
+  }
+
+
+  Future<int> addTopicEntry(
+      {required int levels,
+        required String topic,
+        required String description}) async {
+    var finalUri = baseUri.replace(
+      path: '/topics',
+    );
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'Levels': levels,
+      'Topic': topic,
+      'Description': description,
+    });
+
+    try {
+      final response = await http.post(finalUri, headers: headers, body: body);
+      return response.statusCode;
+    } catch (error) {
+      return -1;
+    }
+  }
+
+  Future<bool> addKeyword2TopicsEntry(int kid, int tid) async {
+    var finalUri = Uri.parse('$baseUri/topics/$kid/$tid');
+    try {
+      final response = await http.post(finalUri);
+
+      if (response.statusCode == 201) {
+        return true;
+      } else {
+        print(
+            'Failed to add Keyword2Topics entry. Status: ${response.statusCode}, Body: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('Error during POST request: $e');
+      return false;
+    }
+  }
+
+  Future<bool> removeKeyword2TopicEntry(int kid, int tid) async {
+    var finalUri = Uri.parse('$baseUri/topics/$kid/$tid');
+    try {
+      final response = await http.delete(finalUri);
+
+      if (response.statusCode == 204) {
+        return true;
+      } else {
+        print('Failed to delete Keyword2Topic entry: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('Error during DELETE request: $e');
+      return false;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchKeyword2Topic() async {
+    var finalUri = Uri.parse('$baseUri/keyword2topic');
+    return await _fetcher(finalUri);
+  }
+
+  /// Fetches a list of topics from the server.
+  ///
+  /// This method constructs a URI for the topics endpoint and calls the [_fetcher] method to retrieve
+  /// the topics data from the server. It returns the data as a list of maps if successful.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with a list of maps containing the fetched topics.
+  Future<List<Map<String, dynamic>>> fetchTopics() async {
+    var finalUri = Uri.parse('$baseUri/topics');
+    return await _fetcher(finalUri);
+  }
+
   /// Fetches the list of keywords associated with a specific user.
   ///
   /// This method constructs a URI using the provided user ID, then calls the [_fetcher] method to retrieve

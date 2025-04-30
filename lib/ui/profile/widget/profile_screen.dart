@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../change_pw/view_model/change_pw_view_model.dart';
 import '../../change_pw/widgets/change_pw_screen.dart';
+import '../../core/ui/custom_drop_down.dart';
 import '../../keyword_selection/widgets/keyword_selection_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -86,37 +87,28 @@ class ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 16),
                 _buildTextField(viewModel.surnameController, 'Surname'),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<Reachability>(
-                  value: viewModel.state.reachability,
+                CustomDropdown<Reachability>(
+                  items: Reachability.values.map((Reachability reachability) {
+                    return reachability;
+                  }).toList(),
+                  selectedItem: viewModel.state.reachability,
+                  labelText: 'Reachability',
                   onChanged: (Reachability? newValue) {
                     viewModel.changeReachability(newValue!);
                   },
-                  items: Reachability.values.map((Reachability reachability) {
-                    return DropdownMenuItem<Reachability>(
-                      value: reachability,
-                      child: Text(reachability.description),
-                    );
-                  }).toList(),
-                  decoration: const InputDecoration(
-                    labelText: 'Reachability',
-                    border: OutlineInputBorder(),
-                  ),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(viewModel.emailController, 'Email'),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<int>(
-                  value: viewModel.state.semester,
-                  decoration: const InputDecoration(
-                    labelText: 'Semester',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: [
-                    for (var i = 0; i <= 12; i++)
-                      DropdownMenuItem(value: i, child: Text('Semester $i')),
-                    const DropdownMenuItem(value: -1, child: Text('Professor')),
-                  ],
+                CustomDropdown<int>(
+                  items: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1],
+                  selectedItem: viewModel.state.semester,
+                  labelText: 'Semester',
                   onChanged: (value) => viewModel.changeSemester(value!),
+                  dropdownMenuItemBuilder: (int v) => DropdownMenuItem(
+                    value: v,
+                    child: Text(v == -1 ? 'Professor' : 'Semester $v'),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(viewModel.descriptionController, 'Description'),
@@ -126,9 +118,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ChangePasswordScreen(
-                                viewModel: ChangePwViewModel(),
-                              )),
+                          builder: (context) => ChangeNotifierProvider(
+                              create: (_) => ChangePwViewModel(),
+                              child: ChangePasswordScreen())),
                     );
                   },
                   child: const Text('Change Password'),

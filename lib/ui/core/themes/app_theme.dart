@@ -6,12 +6,25 @@ import './app_constants.dart';
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
+      listTileTheme: ListTileThemeData(
+          textColor: AppColors.black,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+          titleTextStyle: TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.w500,
+            fontSize: 20,
+          ),
+          subtitleTextStyle: TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.w300,
+            fontSize: 20,
+          )),
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: AppColors.blackLight,
         selectionColor: AppColors.greyLight,
         selectionHandleColor: AppColors.blackLight,
       ),
-      iconTheme: IconThemeData(color: AppColors.blackLight),
+      iconTheme: IconThemeData(color: AppColors.primary),
       primarySwatch: AppColors.greyLight,
       primaryColor: AppColors.primaryLight,
       hintColor: AppColors.primaryLight,
@@ -127,6 +140,23 @@ class AppTheme {
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.all(Color(0xFF0055CC)),
         trackColor: MaterialStateProperty.all(Color(0xFFDCE1E4)),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.all(AppColors.white),
+        checkColor: MaterialStateProperty.all(AppColors.primary),
+        side: BorderSide(color: AppColors.primary),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.grey2,
+        selectedColor: AppColors.primary,
+        disabledColor: AppColors.grey2,
+        secondarySelectedColor: AppColors.primary,
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        labelStyle: TextStyle(color: AppColors.blackLight),
+        secondaryLabelStyle: TextStyle(color: AppColors.whiteLight),
+        shape: RoundedRectangleBorder(
+          borderRadius: AppConstants.borderRadius,
+        ),
       ),
     );
   }
