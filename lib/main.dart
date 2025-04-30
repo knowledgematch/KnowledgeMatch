@@ -6,6 +6,7 @@ import 'package:knowledgematch/ui/admin/view_model/admin_view_model.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
 import 'package:knowledgematch/ui/core/themes/theme_provider.dart';
 import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_model.dart';
+import 'package:knowledgematch/ui/home/view_model/home_view_model.dart';
 import 'package:knowledgematch/ui/main/view_model/main_view_model.dart';
 import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
 import 'package:knowledgematch/ui/splash/view_model/splash_view_model.dart';
