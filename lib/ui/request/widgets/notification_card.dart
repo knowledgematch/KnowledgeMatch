@@ -8,56 +8,74 @@ class NotificationCard extends StatelessWidget {
   final NotificationData notification;
   final Userprofile userprofile;
 
-  const NotificationCard(
-      {super.key, required this.notification, required this.userprofile});
+  const NotificationCard({
+    super.key,
+    required this.notification,
+    required this.userprofile,
+  });
 
   @override
   Widget build(BuildContext context) {
     var profilePicture = userprofile.getPicture();
+
+    final avatarImage =
+        (profilePicture != null && profilePicture.isNotEmpty)
+            ? MemoryImage(profilePicture)
+            : const AssetImage('assets/images/profile.png') as ImageProvider;
+
+    final timeStamp =
+        notification.timestamp != null
+            ? notification.timestamp!.toLocal().toString()
+            : 'Unknown time';
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
-          leading: CircleAvatar(
-            radius: 50,
-            backgroundImage: profilePicture != null
-                ? MemoryImage(profilePicture)
-                : const AssetImage('assets/images/profile.png')
-                    as ImageProvider,
-          ),
-          isThreeLine: true,
-          title: _buildTitle(notification.type),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSubtitle(notification.type, notification.title),
-              SizedBox(height: 4),
-              Text(
-                notification.timestamp!.toLocal().toString(),
-                style: TextStyle(fontSize: 15, color: AppColors.greyLight),
-              ),
-            ],
-          ),
-          trailing: _buildTrailingWidget(notification.type)),
+        leading: CircleAvatar(radius: 50, backgroundImage: avatarImage),
+        isThreeLine: true,
+        title: _buildTitle(notification.type),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSubtitle(notification.type, notification.title),
+            SizedBox(height: 4),
+            Text(
+              timeStamp,
+              style: TextStyle(fontSize: 15, color: AppColors.greyLight),
+            ),
+          ],
+        ),
+        trailing: _buildTrailingWidget(notification.type),
+      ),
     );
   }
 
   Widget _buildTitle(NotificationType type) {
     switch (type) {
       case NotificationType.knowledgeRequest:
-        return Text("New Request",
-            style: TextStyle(fontWeight: FontWeight.bold));
+        return Text(
+          "New Request",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        );
       case NotificationType.requestDeclined:
-        return Text("Declined Request",
-            style: TextStyle(color: AppColors.redLight));
+        return Text(
+          "Declined Request",
+          style: TextStyle(color: AppColors.redLight),
+        );
       case NotificationType.requestAccepted:
-        return Text("Accepted Request",
-            style: TextStyle(color: AppColors.greenLight));
+        return Text(
+          "Accepted Request",
+          style: TextStyle(color: AppColors.greenLight),
+        );
       case NotificationType.meetupRequest:
-        return Text("New Meetup Request",
-            style: TextStyle(fontStyle: FontStyle.italic));
+        return Text(
+          "New Meetup Request",
+          style: TextStyle(fontStyle: FontStyle.italic),
+        );
       case NotificationType.meetupConfirmation:
-        return Text("Meetup Confirmation",
-            style: TextStyle(decoration: TextDecoration.underline));
+        return Text(
+          "Meetup Confirmation",
+          style: TextStyle(decoration: TextDecoration.underline),
+        );
     }
   }
 

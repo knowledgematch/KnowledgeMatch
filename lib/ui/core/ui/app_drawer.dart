@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/ui/admin/widgets/admin_screen.dart';
 
+import '../../../domain/models/user.dart';
 import '../../about/widgets/about_screen.dart';
 import '../../contact_information/contact_screen.dart';
 import '../../profile/widget/profile_screen.dart';
@@ -15,8 +17,8 @@ class AppDrawer extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: AppColors.primary),
-      title: Text(title, style: const TextStyle(color: AppColors.primary)),
+      leading: Icon(icon),
+      title: Text(title),
       onTap: onTap,
     );
   }
@@ -43,38 +45,58 @@ class AppDrawer extends StatelessWidget {
         'icon': Icons.info,
         'title': 'About',
         'screen': const AboutScreen(),
-      }
+      },
+      if (User.instance.isAdmin ?? false)
+        {
+          'icon': Icons.admin_panel_settings,
+          'title': 'Admin',
+          'screen': const AdminScreen(),
+        },
     ];
 
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(color: AppColors.primary),
-            child: const Center(
-              child: Text(
-                'KnowledgeMatch',
-                style: TextStyle(
-                  color: AppColors.whiteLight,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 24,
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                DrawerHeader(
+                  decoration: const BoxDecoration(color: AppColors.primary),
+                  child: const Center(
+                    child: Text(
+                      'KnowledgeMatch',
+                      style: TextStyle(
+                        color: AppColors.whiteLight,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                ...drawerItems.map((item) => _buildDrawerItem(
+                      icon: item['icon'] as IconData,
+                      title: item['title'] as String,
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => item['screen'] as Widget),
+                        );
+                      },
+                    )),
+              ],
             ),
           ),
-          ...drawerItems.map((item) => _buildDrawerItem(
-                icon: item['icon'] as IconData,
-                title: item['title'] as String,
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => item['screen'] as Widget),
-                  );
-                },
-              )),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 120,
+            ),
+          ),
         ],
       ),
     );
