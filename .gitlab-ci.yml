@@ -1,9 +1,25 @@
 image: ghcr.io/cirruslabs/flutter:latest # Flutter Docker image with required tools
 stages:
-  - build
-  - test
   - lint
+  - test
+  - build
   - deploy
+
+lint-test-job: # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
+  stage: lint
+  script:
+    - echo "Analyzing code quality..."
+    - flutter analyze
+    - echo "Code analysis completed."
+  allow_failure: false
+
+unit-test-job:
+  stage: test
+  script:
+    - echo "Running Flutter tests..."
+    - flutter test
+    - echo "Testing done."
+  allow_failure: false
 
 build-job:
   stage: build
@@ -17,25 +33,24 @@ build-job:
   tags:
     - csrunner2
 
-unit-test-job:
-  stage: test
-  script:
-    - echo "Running Flutter tests..."
-    - flutter test
-    - echo "Testing done."
-  allow_failure: false
-
-lint-test-job: # This job runs code quality checks (analyzes code for errors, style violations, and potential issues)
-  stage: lint
-  script:
-    - echo "Analyzing code quality..."
-    - flutter analyze
-    - echo "Code analysis completed."
-  allow_failure: false
-
-deploy-job: # Placeholder for future deployment tasks
+deploy_to_firebase:
   stage: deploy
-  environment: production
+  dependencies:
+    - build-job
+  before_script:
+    - apt-get update && apt-get install -y openjdk-17-jdk unzip
+    - gem install bundler
+    - mkdir -p android/secrets
+    # Download the secure files tool
+    - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
+    # Use the tool to download the secure file
+    - download-secure-files
+    # Move the secure file to the secrets directory inside android
+    - mv .secure_files/knowledgematch-3a567-dbdf90621acd.json android/secrets/
+    - cd android
+    - bundle install
   script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - bundle exec fastlane beta
+  only:
+    - main
+    - dev
