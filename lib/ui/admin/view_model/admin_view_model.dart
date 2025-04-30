@@ -168,11 +168,14 @@ class AdminViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void mapKeywordToTopic() {
+  Future<void> mapKeywordToTopic() async {
     if (_state.selectedKeyword != null && _state.selectedTopic != null) {
-      api.addKeyword2TopicsEntry(
+      bool res = await api.addKeyword2TopicsEntry(
           _state.selectedKeyword!.id, _state.selectedTopic!.id);
-      _state.keyword2topic.add(Keyword2Topic(keyword: _state.selectedKeyword!, topic: _state.selectedTopic!));
+      if (res) {
+        _state.keyword2topic.add(Keyword2Topic(
+            keyword: _state.selectedKeyword!, topic: _state.selectedTopic!));
+      }
     }
     notifyListeners();
   }
