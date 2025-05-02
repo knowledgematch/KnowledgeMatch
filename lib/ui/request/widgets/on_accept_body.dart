@@ -32,14 +32,17 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
                   Icon(Icons.check_circle, color: Colors.green, size: 40)),
         ),
         SizedBox(height: 8),
-        Text(
-          'Create a meetup request:',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+        Padding(
+          padding: const EdgeInsets.only(left: 6.0),
+          child: Text(
+            'Create a meetup request:',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 6),
         ChangeNotifierProvider.value(
             value: viewModel, child: const MultiDateTimePicker()),
         Spacer(),
@@ -69,17 +72,7 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
                       viewModel.proposeSelectedDates();
                     }
                   : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: Text(
-                'Send',
-                style: TextStyle(color: Colors.white),
-              ),
+              child: Text('Send'),
             ),
           ],
         ),

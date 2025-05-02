@@ -4,20 +4,20 @@ import '../../domain/models/userprofile.dart';
 class ChatState {
   final bool isLoading;
   final Map<int, Userprofile?> userProfiles;
-  final List<NotificationData> notification;
+  final Map<String, List<NotificationData>> notification;
   final String? errorMessage;
 
   ChatState({
     this.isLoading = true,
     this.userProfiles = const {},
-    this.notification = const [],
+    this.notification = const {},
     this.errorMessage,
   });
 
   ChatState copyWith({
     bool? isLoading,
     Map<int, Userprofile?>? userProfiles,
-    List<NotificationData>? notification,
+    Map<String, List<NotificationData>>? notification,
     String? errorMessage,
   }) {
     return ChatState(

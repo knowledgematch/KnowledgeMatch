@@ -24,17 +24,18 @@ class RequestScreen extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
-              elevation: 0,
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
             ),
-            body:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              UserProfileCard(
-                viewModel: viewModel,
-              ),
-              Expanded(child: NotificationBody())
-            ])));
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    UserProfileCard(
+                      viewModel: viewModel,
+                    ),
+                    Expanded(child: NotificationBody())
+                  ]),
+            )));
   }
 
   Widget _buildTitle(RequestViewModel viewModel) {
