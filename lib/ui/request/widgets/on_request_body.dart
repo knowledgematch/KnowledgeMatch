@@ -16,15 +16,16 @@ class OnRequestBody extends StatelessWidget {
         Card(
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: ListTile(
-              title: Text(
-                "New Knowledge request",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              trailing: Icon(Icons.question_mark_rounded,
-                  color: Colors.orange, size: 40)),
+            title: Text(
+              "New Knowledge request",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            trailing: Icon(
+              Icons.question_mark_rounded,
+              color: Colors.orange,
+              size: 40,
+            ),
+          ),
         ),
 
         SizedBox(height: 24),
@@ -32,10 +33,7 @@ class OnRequestBody extends StatelessWidget {
           padding: const EdgeInsets.only(left: 4.0),
           child: Text(
             'Problem description:',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
         SizedBox(height: 8),
@@ -45,43 +43,44 @@ class OnRequestBody extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               viewModel.state.searchCriteria.issue,
-              style: TextStyle(
-                fontSize: 16,
-              ),
+              style: TextStyle(fontSize: 16),
             ),
           ),
         ),
-        Spacer(),
-
+        SizedBox(height: 16),
         // Action Buttons
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: viewModel.notificationData.isOpen ==
-                      true //Check if the notificaion is still Open -> null if 'false' or null, which disables button
-                  ? () async {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Request accepted.")));
-                        Navigator.pop(context);
+              onPressed:
+                  viewModel.notificationData.isOpen ==
+                          true //Check if the notificaion is still Open -> null if 'false' or null, which disables button
+                      ? () async {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Request accepted.")),
+                          );
+                          Navigator.pop(context);
+                        }
+                        viewModel.acceptRequest();
                       }
-                      viewModel.acceptRequest();
-                    }
-                  : null,
+                      : null,
               child: Text('Accept'),
             ),
             ElevatedButton(
-              onPressed: viewModel.notificationData.isOpen == true
-                  ? () async {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Request declined.")));
-                        Navigator.pop(context);
+              onPressed:
+                  viewModel.notificationData.isOpen == true
+                      ? () async {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Request declined.")),
+                          );
+                          Navigator.pop(context);
+                        }
+                        viewModel.declineRequest();
                       }
-                      viewModel.declineRequest();
-                    }
-                  : null,
+                      : null,
               child: Text('Decline'),
             ),
           ],

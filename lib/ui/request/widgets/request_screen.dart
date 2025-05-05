@@ -14,28 +14,34 @@ class RequestScreen extends StatelessWidget {
     final viewModel = context.watch<RequestViewModel>();
     print('UserProfile ID: ${viewModel.userprofile.name}');
     return ChangeNotifierProvider.value(
-        value: viewModel,
-        child: Scaffold(
-            appBar: AppBar(
-              title: _buildTitle(viewModel),
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+      value: viewModel,
+      child: Scaffold(
+        appBar: AppBar(
+          title: _buildTitle(viewModel),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              UserProfileCard(viewModel: viewModel),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: [NotificationBody()],
+                ),
               ),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    UserProfileCard(
-                      viewModel: viewModel,
-                    ),
-                    Expanded(child: NotificationBody())
-                  ]),
-            )));
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildTitle(RequestViewModel viewModel) {
