@@ -79,11 +79,10 @@ class HomeScreenState extends State<HomeScreen> {
                   const Spacer(),
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage:
-                        viewModel.state.profilePicture != null
-                            ? MemoryImage(User.instance.getDecodedPicture()!)
-                            : const AssetImage('assets/images/profile.png')
-                                as ImageProvider,
+                    backgroundImage: User.instance.getDecodedPicture() != null
+                        ? MemoryImage(User.instance.getDecodedPicture()!)
+                        : const AssetImage('assets/images/profile.png')
+                            as ImageProvider,
                     // User.instance.picture ?? 'assets/images/profile.png'),
                   ),
                 ],
@@ -146,15 +145,14 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (context) => ChangeNotifierProvider<RequestViewModel>(
-                          create:
-                              (_) => RequestViewModel(
-                                notificationData: entry.key,
-                                userprofile: entry.value,
-                              ),
-                          child: RequestScreen(),
-                        ),
+                    builder: (context) =>
+                        ChangeNotifierProvider<RequestViewModel>(
+                      create: (_) => RequestViewModel(
+                        notificationData: entry.key,
+                        userprofile: entry.value,
+                      ),
+                      child: RequestScreen(),
+                    ),
                   ),
                 );
               },
