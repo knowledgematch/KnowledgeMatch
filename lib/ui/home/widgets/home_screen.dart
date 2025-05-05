@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
 import 'package:knowledgematch/ui/home/view_model/home_view_model.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (!mounted) return;
+      context.read<HomeViewModel>().refresh();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final HomeViewModel viewModel = context.watch<HomeViewModel>();
@@ -57,7 +67,7 @@ class HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        "${viewModel.state.userName} 👋",
+                        "${User.instance.name} 👋",
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -69,11 +79,11 @@ class HomeScreenState extends State<HomeScreen> {
                   const Spacer(),
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: viewModel.state.profilePicture !=
-                            null //TODO check if profile picture is shown correctly
-                        ? MemoryImage(viewModel.state.profilePicture!)
-                        : const AssetImage('assets/images/profile.png')
-                            as ImageProvider,
+                    backgroundImage:
+                        viewModel.state.profilePicture != null
+                            ? MemoryImage(User.instance.getDecodedPicture()!)
+                            : const AssetImage('assets/images/profile.png')
+                                as ImageProvider,
                     // User.instance.picture ?? 'assets/images/profile.png'),
                   ),
                 ],
@@ -136,14 +146,15 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        ChangeNotifierProvider<RequestViewModel>(
-                      create: (_) => RequestViewModel(
-                        notificationData: entry.key,
-                        userprofile: entry.value,
-                      ),
-                      child: RequestScreen(),
-                    ),
+                    builder:
+                        (context) => ChangeNotifierProvider<RequestViewModel>(
+                          create:
+                              (_) => RequestViewModel(
+                                notificationData: entry.key,
+                                userprofile: entry.value,
+                              ),
+                          child: RequestScreen(),
+                        ),
                   ),
                 );
               },

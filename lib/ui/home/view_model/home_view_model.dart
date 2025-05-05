@@ -21,12 +21,22 @@ class HomeViewModel extends ChangeNotifier {
   /// Creates a [HomeViewModel] and begins loading the [NotificationData] for the request
   HomeViewModel() {
     _loadData();
+    User.instance.addListener(_onUserChanged);
+  }
+
+  void refresh() {
+    _loadData();
+    notifyListeners();
   }
 
   /// Loads open and planned requests for current user
   Future<void> _loadData() async {
     await getOpenRequests();
     await getPlannedRequests();
+    notifyListeners();
+  }
+
+  void _onUserChanged() {
     notifyListeners();
   }
 
