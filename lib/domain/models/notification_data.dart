@@ -41,48 +41,54 @@ class NotificationData {
   final int sourceUserId;
   final DateTime? timestamp;
 
-  NotificationData(
-      {required this.type,
-      required this.title,
-      required this.body,
-      required this.payload,
-      required this.targetUserId,
-      required this.sourceUserId,
-      this.timestamp,
-      this.requestID,
-      this.isOpen,
-      this.documentID});
+  NotificationData({
+    required this.type,
+    required this.title,
+    required this.body,
+    required this.payload,
+    required this.targetUserId,
+    required this.sourceUserId,
+    this.timestamp,
+    this.requestID,
+    this.isOpen,
+    this.documentID,
+  });
 
   /// A factory constructor that creates a [NotificationData] instance from a Firestore data map.
-  factory NotificationData.fromFirestoreData(Map<String, dynamic> map) {
-    String fireStoreTimestamp = map['timestamp'];
+  factory NotificationData.fromFirestoreData({
+    required Map<String, dynamic> jsonMap,
+    String? documentID = '',
+  }) {
+    String fireStoreTimestamp = jsonMap['timestamp'];
     return NotificationData(
-        type: NotificationType.fromString(map['notification_type'] ?? ''),
-        title: map['title'] ?? '',
-        body: map['body'] ?? '',
-        payload: map['payload'] ?? '',
-        targetUserId: int.parse(map['target_user_id'] ?? ''),
-        sourceUserId: int.parse(map['source_user_id'] ?? ''),
-        timestamp: DateTime.parse(fireStoreTimestamp).toLocal(),
-        requestID: map['request_id'] ?? '',
-        isOpen: bool.tryParse(map['is_open'] ?? true),
-        documentID: map['document_id'] ?? '');
+      type: NotificationType.fromString(jsonMap['notification_type'] ?? ''),
+      title: jsonMap['title'] ?? '',
+      body: jsonMap['body'] ?? '',
+      payload: jsonMap['payload'] ?? '',
+      targetUserId: int.parse(jsonMap['target_user_id'] ?? ''),
+      sourceUserId: int.parse(jsonMap['source_user_id'] ?? ''),
+      timestamp: DateTime.parse(fireStoreTimestamp).toLocal(),
+      requestID: jsonMap['request_id'] ?? '',
+      isOpen: bool.tryParse(jsonMap['is_open'] ?? true),
+      documentID: documentID,
+    );
   }
 
   /// A factory constructor that creates a [NotificationData] instance from a [RemoteMessage].
   factory NotificationData.fromMessage(RemoteMessage message) {
     String fireStoreTimestamp = message.data['timestamp'];
     return NotificationData(
-        type: NotificationType.fromString(message.data['notification_type']),
-        title: message.notification?.title ?? '',
-        body: message.notification?.body ?? '',
-        payload: jsonDecode(message.data['payload'] ?? ''),
-        targetUserId: int.tryParse(message.data['target_user_id']) ?? 0,
-        sourceUserId: int.tryParse(message.data['source_user_id']) ?? 0,
-        timestamp: DateTime.parse(fireStoreTimestamp).toLocal(),
-        requestID: message.data['request_id'] ?? '',
-        isOpen: bool.tryParse(message.data['is_open']),
-        documentID: message.data['document_id'] ?? '');
+      type: NotificationType.fromString(message.data['notification_type']),
+      title: message.notification?.title ?? '',
+      body: message.notification?.body ?? '',
+      payload: jsonDecode(message.data['payload'] ?? ''),
+      targetUserId: int.tryParse(message.data['target_user_id']) ?? 0,
+      sourceUserId: int.tryParse(message.data['source_user_id']) ?? 0,
+      timestamp: DateTime.parse(fireStoreTimestamp).toLocal(),
+      requestID: message.data['request_id'] ?? '',
+      isOpen: bool.tryParse(message.data['is_open']),
+      documentID: message.data['document_id'] ?? '',
+    );
   }
 
   /// Converts this NotificationData object into a [json]-serializable Map.
@@ -100,4 +106,13 @@ class NotificationData {
       'document_id': documentID,
     };
   }
+
+  ///For using NotificationData in Maps
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NotificationData && other.documentID == documentID;
+
+  @override
+  int get hashCode => documentID.hashCode;
 }

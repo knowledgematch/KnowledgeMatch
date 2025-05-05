@@ -40,25 +40,51 @@ class FirestoreService {
     }
   }
 
+  /// Opens a Stream of open Notifications from Firestore
   ///
-
+  /// Listens to Firestore documents in the `notifications` collection where:
+  /// - `target_user_id` matches the provided [userID]
+  /// - `is_open` matches the provided [isOpen] flag
+  ///
+  /// Maps Documents to [NotificationData] -> (see[NotificationData.fromFirestoreData])
+  ///
+  /// Returns:
+  /// A stream of lists of [NotificationData].
   Stream<List<NotificationData>> openNotificationsStream({
     required int userID,
     required bool isOpen,
   }) {
     return FirebaseFirestore.instance
         .collection('notifications')
-        .where('target_user_id', isEqualTo: userID.toString())
-        .where('is_open', isEqualTo: isOpen.toString())
+        .where(
+          Filter.and(
+            Filter('target_user_id', isEqualTo: userID.toString()),
+            Filter('is_open', isEqualTo: isOpen.toString()),
+          ),
+        )
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) {
           return snapshot.docs.map((doc) {
-            return NotificationData.fromFirestoreData(doc.data());
+            final data = doc.data();
+            return NotificationData.fromFirestoreData(
+              jsonMap: data,
+              documentID: doc.id,
+            );
           }).toList();
         });
   }
 
+  /// Opens a Stream of confirmed Notifications from Firestore
+  ///
+  /// Listens to Firestore documents in the `notifications` collection where:
+  /// - `target_user_id` matches the provided [userID]
+  /// - `notification_type` matches the provided [NotificationType.meetupConfirmation]
+  ///
+  /// Maps Documents to [NotificationData] -> (see[NotificationData.fromFirestoreData])
+  ///
+  /// Returns:
+  /// A stream of lists of [NotificationData].
   Stream<List<NotificationData>> confirmedNotificationsStream({
     required int userID,
   }) {
@@ -77,7 +103,11 @@ class FirestoreService {
         .snapshots()
         .map((snapshot) {
           return snapshot.docs.map((doc) {
-            return NotificationData.fromFirestoreData(doc.data());
+            final data = doc.data();
+            return NotificationData.fromFirestoreData(
+              jsonMap: data,
+              documentID: doc.id,
+            );
           }).toList();
         });
   }
@@ -174,7 +204,7 @@ class FirestoreService {
 
     List<NotificationData> notifications =
         firestoreData.map((map) {
-          return NotificationData.fromFirestoreData(map);
+          return NotificationData.fromFirestoreData(jsonMap: map);
         }).toList();
 
     return notifications;
