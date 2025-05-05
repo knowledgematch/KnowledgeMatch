@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
@@ -18,12 +19,18 @@ class HomeViewModel extends ChangeNotifier {
 
   get state => _state;
 
+  StreamSubscription? _openRequestSub;
+  StreamSubscription? _plannedRequestSub;
+
   /// Creates a [HomeViewModel] and begins loading the [NotificationData] for the request
+  ///
+  /// Registers a Listener on the ChangeNotifier[User.instance] to rebuild the HomeScreen.
   HomeViewModel() {
     _loadData();
-    User.instance.addListener(_onUserChanged);
+    User.instance.addListener(() => notifyListeners());
   }
 
+  /// Loads the data and rebuilds HomeScreen
   void refresh() {
     _loadData();
     notifyListeners();
@@ -31,37 +38,45 @@ class HomeViewModel extends ChangeNotifier {
 
   /// Loads open and planned requests for current user
   Future<void> _loadData() async {
-    await getOpenRequests();
-    await getPlannedRequests();
+    await getAndListenForOpenRequests();
+    await getAndListenForPlannedRequests();
     notifyListeners();
   }
 
-  void _onUserChanged() {
-    notifyListeners();
-  }
-
-  /// Loads all open (unconfirmed) requests for the current user.
+  /// Cancel the StreamSubscription
   ///
-  /// Uses [FirestoreService.fetchNotifications] to retrieve
-  /// [NotificationData], then looks up each source user via
-  /// [ApiDbConnection.fetchUserByInput], and updates [_state].
-  getOpenRequests() async {
-    HashMap<NotificationData, Userprofile> notifications = HashMap();
-    List<NotificationData> list = await FirestoreService().fetchNotifications(
-      userID: User.instance.id ?? 0,
-      isOpen: true,
-    );
+  /// Manually close [_openRequestSub] and [_plannedRequestSub] StreamSubscription
+  /// To prevent memory leaks.
+  @override
+  void dispose() {
+    _openRequestSub?.cancel();
+    _plannedRequestSub?.cancel();
+    super.dispose();
+  }
 
-    for (var notification in list) {
-      final usersList = await ApiDbConnection().fetchUserByInput(
-        uId: notification.sourceUserId.toString(),
-      );
-      final userJson = usersList.first;
-      Userprofile source = Userprofile.fromJson(userJson);
-      notifications.putIfAbsent(notification, () => source);
-    }
+  /// Loads all open requests for the current user.
+  ///
+  /// Opens a [FirestoreService.openNotificationsStream] to retrieve all open
+  /// [NotificationData] and listen for updates on Firestore. Looks up each source user via
+  /// [ApiDbConnection.fetchUserByInput], and updates [_state]. Then nofies the listeners;
+  getAndListenForOpenRequests() async {
+    _openRequestSub = FirestoreService()
+        .openNotificationsStream(userID: User.instance.id ?? 0, isOpen: true)
+        .listen((list) async {
+          final HashMap<NotificationData, Userprofile> notifications =
+              HashMap();
 
-    _state = state.copyWith(openRequests: notifications);
+          for (var notification in list) {
+            final usersList = await ApiDbConnection().fetchUserByInput(
+              uId: notification.sourceUserId.toString(),
+            );
+            final userJson = usersList.first;
+            Userprofile source = Userprofile.fromJson(userJson);
+            notifications.putIfAbsent(notification, () => source);
+          }
+          _state = _state.copyWith(openRequests: notifications);
+          notifyListeners();
+        });
   }
 
   /// Loads all confirmed (planned) requests up to now for the current user.
@@ -70,34 +85,32 @@ class HomeViewModel extends ChangeNotifier {
   /// [NotificationData], filters out future [RequestDateData], then
   /// looks up each source user via [ApiDbConnection.fetchUserByInput],
   /// and updates [_state].
-  getPlannedRequests() async {
-    HashMap<NotificationData, Userprofile> notifications = HashMap();
-    List<NotificationData> list = await FirestoreService().fetchConfirmed(
-      userID: User.instance.id ?? 0,
-    );
+  getAndListenForPlannedRequests() async {
+    _plannedRequestSub = FirestoreService()
+        .confirmedNotificationsStream(userID: User.instance.id ?? 0)
+        .listen((list) async {
+          HashMap<NotificationData, Userprofile> notifications = HashMap();
+          if (list.isNotEmpty) {
+            list.removeWhere(
+              (element) => DateTime.now().isAfter(
+                RequestDateData.fromConfirmationJson(
+                  element.payload,
+                ).dateTime.toLocal(),
+              ),
+            );
+          }
 
-    for (var element in list) {
-      print(element.payload.toString());
-    }
-    if (list.isNotEmpty) {
-      list.removeWhere(
-        (element) => DateTime.now().isAfter(
-          RequestDateData.fromConfirmationJson(
-            element.payload,
-          ).dateTime.toLocal(),
-        ),
-      );
-    }
+          for (var notification in list) {
+            final usersList = await ApiDbConnection().fetchUserByInput(
+              uId: notification.sourceUserId.toString(),
+            );
+            final userJson = usersList.first;
+            Userprofile source = Userprofile.fromJson(userJson);
+            notifications.putIfAbsent(notification, () => source);
+          }
 
-    for (var notification in list) {
-      final usersList = await ApiDbConnection().fetchUserByInput(
-        uId: notification.sourceUserId.toString(),
-      );
-      final userJson = usersList.first;
-      Userprofile source = Userprofile.fromJson(userJson);
-      notifications.putIfAbsent(notification, () => source);
-    }
-
-    _state = state.copyWith(plannedRequests: notifications);
+          _state = state.copyWith(plannedRequests: notifications);
+          notifyListeners();
+        });
   }
 }
