@@ -32,6 +32,7 @@ class RequestViewModel extends ChangeNotifier {
       );
 
   void acceptRequest() async {
+    notificationData.isOpen = false;
     var notification = NotificationData(
       type: NotificationType.requestAccepted,
       title: "Accepted request",
@@ -53,6 +54,7 @@ class RequestViewModel extends ChangeNotifier {
   }
 
   void declineRequest() async {
+    notificationData.isOpen = false;
     var notification = NotificationData(
       type: NotificationType.requestDeclined,
       title: "Declined request",
@@ -71,6 +73,8 @@ class RequestViewModel extends ChangeNotifier {
   }
 
   void proposeSelectedDates() async {
+    notificationData.isOpen = false;
+
     var dates = RequestDateData.buildDatesMap(state.selectedDates);
     Map<String, dynamic> combineJson = {
       "dates": dates,
@@ -97,6 +101,7 @@ class RequestViewModel extends ChangeNotifier {
       notification,
       userprofile.tokens ?? [],
     );
+    notifyListeners();
   }
 
   void parseIncomingDates() {
@@ -124,6 +129,7 @@ class RequestViewModel extends ChangeNotifier {
   }
 
   void confirmDate() async {
+    notificationData.isOpen = false;
     Map<String, dynamic> combineJson = {
       "dates": state.selectedDate?.toJson(),
       "search_criteria": state.searchCriteria.toJSON(),

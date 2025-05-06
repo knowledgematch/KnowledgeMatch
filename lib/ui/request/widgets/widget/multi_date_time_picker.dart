@@ -81,6 +81,7 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                 viewModel.state.selectedDates[index].getFormattedTime();
             return Card(
               child: ListTile(
+                isThreeLine: true,
                 title: Row(
                   children: [
                     Text(
@@ -91,45 +92,44 @@ class MultiDateTimePickerState extends State<MultiDateTimePicker> {
                     // Wrap date text with Expanded
                   ],
                 ),
-                subtitle: Row(
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Time: ",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    Row(
+                      children: [
+                        Text(
+                          "Time: ",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Expanded(child: Text(time)),
+                      ],
                     ),
-                    Expanded(child: Text(time)),
-                    // Wrap time text with Expanded
+                    DropdownButton<Reachability>(
+                      value:
+                          viewModel.state.selectedDates[index].reachability ??
+                          viewModel.state.searchCriteria.reachability,
+                      items:
+                          eligibleReachability.map((value) {
+                            return DropdownMenuItem(
+                              value: value,
+                              child: Text(
+                                value.toString(),
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            );
+                          }).toList(),
+                      onChanged: (newVal) {
+                        viewModel.changeReachabilityOnSelectedDate(
+                          index,
+                          newVal,
+                        );
+                      },
+                    ),
                   ],
                 ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: DropdownButton<Reachability>(
-                        value:
-                            viewModel.state.selectedDates[index].reachability ??
-                            viewModel.state.searchCriteria.reachability,
-                        items:
-                            eligibleReachability.map((Reachability value) {
-                              return DropdownMenuItem<Reachability>(
-                                value: value,
-                                child: Text(value.toString()),
-                              );
-                            }).toList(),
-                        onChanged: (Reachability? newValue) {
-                          viewModel.changeReachabilityOnSelectedDate(
-                            index,
-                            newValue,
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () => viewModel.removeSelectedDate(index),
-                    ),
-                  ],
+                trailing: IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () => viewModel.removeSelectedDate(index),
                 ),
               ),
             );

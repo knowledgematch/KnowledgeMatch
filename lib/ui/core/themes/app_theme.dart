@@ -12,12 +12,12 @@ class AppTheme {
         titleTextStyle: TextStyle(
           color: AppColors.primary,
           fontWeight: FontWeight.w500,
-          fontSize: 20,
+          fontSize: 16,
         ),
         subtitleTextStyle: TextStyle(
           color: AppColors.primary,
           fontWeight: FontWeight.w300,
-          fontSize: 20,
+          fontSize: 14,
         ),
       ),
       textSelectionTheme: TextSelectionThemeData(

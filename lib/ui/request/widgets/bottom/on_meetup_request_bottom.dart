@@ -40,42 +40,80 @@ class OnMeetupRequestBottom extends StatelessWidget {
                           (_) => ChangeNotifierProvider<RequestViewModel>.value(
                             value: viewModel,
                             child: Dialog(
-                              insetPadding: EdgeInsets.zero,
+                              insetPadding: EdgeInsets.all(24),
                               child: Builder(
                                 builder: (dialogContext) {
                                   final viewModelWatch =
                                       dialogContext.watch<RequestViewModel>();
-                                  return Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      MultiDateTimePicker(),
-                                      Spacer(),
-                                      ElevatedButton(
-                                        onPressed:
-                                            viewModelWatch
-                                                    .state
-                                                    .selectedDates
-                                                    .isEmpty
-                                                ? null
-                                                : () async {
-                                                  if (context.mounted) {
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          "New dates proposed successfully!",
-                                                        ),
-                                                      ),
-                                                    );
-                                                    Navigator.pop(context);
-                                                  }
-                                                  viewModelWatch
-                                                      .proposeSelectedDates();
-                                                },
-                                        child: Text('Send New Dates'),
-                                      ),
-                                    ],
+
+                                  return SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.height *
+                                        0.8,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Scrollbar(
+                                            controller: ScrollController(),
+                                            thumbVisibility: true,
+                                            thickness: 6,
+                                            radius: Radius.circular(3),
+                                            child: SingleChildScrollView(
+                                              padding: EdgeInsets.all(16),
+                                              child: MultiDateTimePicker(),
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(16),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              ElevatedButton(
+                                                onPressed:
+                                                    viewModelWatch
+                                                                .state
+                                                                .selectedDates
+                                                                .isEmpty ||
+                                                            viewModelWatch
+                                                                    .notificationData
+                                                                    .isOpen ==
+                                                                false
+                                                        ? null
+                                                        : () async {
+                                                          if (context.mounted) {
+                                                            ScaffoldMessenger.of(
+                                                              context,
+                                                            ).showSnackBar(
+                                                              SnackBar(
+                                                                content: Text(
+                                                                  "New dates proposed successfully!",
+                                                                ),
+                                                              ),
+                                                            );
+                                                            Navigator.pop(
+                                                              context,
+                                                            );
+                                                          }
+                                                          viewModelWatch
+                                                              .proposeSelectedDates();
+                                                        },
+                                                child: Text('Send New Dates'),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed:
+                                                    () =>
+                                                        Navigator.pop(context),
+                                                child: Text('Cancel'),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   );
                                 },
                               ),

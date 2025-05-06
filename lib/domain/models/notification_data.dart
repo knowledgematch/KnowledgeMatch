@@ -32,7 +32,6 @@ enum NotificationType {
 class NotificationData {
   final String? documentID;
   final String? requestID;
-  final bool? isOpen;
   final NotificationType type;
   final String title;
   final String body;
@@ -40,6 +39,7 @@ class NotificationData {
   final int targetUserId;
   final int sourceUserId;
   final DateTime? timestamp;
+  bool? isOpen;
 
   NotificationData({
     required this.type,

@@ -65,9 +65,7 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Expanded(
-                        child: Text(date, style: TextStyle(fontSize: 16)),
-                      ),
+                      Expanded(child: Text(date)),
                     ],
                   ),
                   // ),
@@ -75,12 +73,9 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
                     children: [
                       Text(
                         'Time: ',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Text(time, style: TextStyle(fontSize: 14)),
+                      Text(time),
                     ],
                   ),
                   value: requestedDate,
