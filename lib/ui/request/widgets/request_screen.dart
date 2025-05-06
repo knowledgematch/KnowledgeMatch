@@ -6,8 +6,26 @@ import '../view_model/request_view_model.dart';
 import 'notification_body.dart';
 import 'user_profile_card.dart';
 
-class RequestScreen extends StatelessWidget {
+class RequestScreen extends StatefulWidget {
   const RequestScreen({super.key});
+
+  @override
+  RequestScreenState createState() => RequestScreenState();
+}
+
+class RequestScreenState extends State<RequestScreen> {
+  late final ScrollController _scrollController;
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +50,23 @@ class RequestScreen extends StatelessWidget {
             children: [
               UserProfileCard(viewModel: viewModel),
               Expanded(
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: [NotificationBody()],
+                child: Scrollbar(
+                  controller: _scrollController,
+                  thumbVisibility: true, // always show the thumb
+                  thickness: 6, // makes the thumb a bit more obvious
+                  radius: Radius.circular(3),
+                  child: ListView(
+                    controller: _scrollController,
+                    padding: EdgeInsets.zero,
+                    children: [NotificationBody()],
+                  ),
                 ),
               ),
             ],
           ),
+        ),
+        bottomNavigationBar: SafeArea(
+          child: ElevatedButton(onPressed: (() => ()), child: Text("Test")),
         ),
       ),
     );
