@@ -7,10 +7,10 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class ApiDbConnection {
-  var host = '86.119.47.241';
+  var host = 'fl-13-105.zhdk.cloud.switch.ch';
   var port = 3000;
 
-  Uri get baseUri => Uri.parse('http://$host:$port');
+  Uri get baseUri => Uri.parse('https://$host:$port');
 
   /// Fetches distinct data for a specific key from the user.
   ///
@@ -65,11 +65,11 @@ class ApiDbConnection {
     }
   }
 
-  Future<bool> updateKeywordEntry({
-    required int id,
-    required int levels,
-    required String keyword,
-    required String description}) async {
+  Future<bool> updateKeywordEntry(
+      {required int id,
+      required int levels,
+      required String keyword,
+      required String description}) async {
     var finalUri = Uri.parse('$baseUri/keywords/$id');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
@@ -85,14 +85,13 @@ class ApiDbConnection {
         print('Failed to delete Keyword entry: ${response.body}');
         return false;
       }
-
     } catch (e) {
       print('Error updating Keyword: $e');
       return false;
     }
   }
 
-  Future<bool> removeKeywordEntry(int id) async{
+  Future<bool> removeKeywordEntry(int id) async {
     var finalUri = Uri.parse('$baseUri/keywords/$id');
     try {
       final response = await http.delete(finalUri);
@@ -109,7 +108,7 @@ class ApiDbConnection {
     }
   }
 
-  Future<bool> removeTopicEntry(int id) async{
+  Future<bool> removeTopicEntry(int id) async {
     var finalUri = Uri.parse('$baseUri/topics/$id');
     try {
       final response = await http.delete(finalUri);
@@ -126,11 +125,11 @@ class ApiDbConnection {
     }
   }
 
-  Future<bool> updateTopicEntry({
-    required int id,
-    required int levels,
-    required String topic,
-    required String description}) async {
+  Future<bool> updateTopicEntry(
+      {required int id,
+      required int levels,
+      required String topic,
+      required String description}) async {
     var finalUri = Uri.parse('$baseUri/topics/$id');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
@@ -146,18 +145,16 @@ class ApiDbConnection {
         print('Failed to delete Topic entry: ${response.body}');
         return false;
       }
-
     } catch (e) {
       print('Error updating Topic: $e');
       return false;
     }
   }
 
-
   Future<int> addTopicEntry(
       {required int levels,
-        required String topic,
-        required String description}) async {
+      required String topic,
+      required String description}) async {
     var finalUri = baseUri.replace(
       path: '/topics',
     );
