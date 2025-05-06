@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
-
-import '../../core/themes/app_colors.dart';
+import 'package:knowledgematch/ui/core/themes/app_colors.dart';
 
 class NotificationCard extends StatelessWidget {
   final NotificationData notification;

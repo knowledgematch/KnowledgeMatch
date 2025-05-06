@@ -10,8 +10,8 @@ import '../../../domain/models/notification_data.dart';
 import '../../../domain/models/userprofile.dart';
 import '../../core/themes/app_colors.dart';
 import '../../request/view_model/request_view_model.dart';
-import '../../request/widgets/notification_card.dart';
 import '../../request/widgets/request_screen.dart';
+import '../../request/widgets/widget/notification_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

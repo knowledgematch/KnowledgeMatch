@@ -3,8 +3,9 @@ import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:provider/provider.dart';
 
 import '../view_model/request_view_model.dart';
-import 'notification_body.dart';
-import 'user_profile_card.dart';
+import 'body/notification_body.dart';
+import 'bottom/notification_bottom.dart';
+import 'widget/user_profile_card.dart';
 
 class RequestScreen extends StatefulWidget {
   const RequestScreen({super.key});
@@ -65,9 +66,7 @@ class RequestScreenState extends State<RequestScreen> {
             ],
           ),
         ),
-        bottomNavigationBar: SafeArea(
-          child: ElevatedButton(onPressed: (() => ()), child: Text("Test")),
-        ),
+        bottomNavigationBar: SafeArea(child: NotificationBottom()),
       ),
     );
   }

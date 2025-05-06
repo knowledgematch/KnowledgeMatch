@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
 import 'package:provider/provider.dart';
-
-import '../view_model/request_view_model.dart';
 
 class OnMeetupConfirmationBody extends StatelessWidget {
   const OnMeetupConfirmationBody({super.key});
@@ -60,18 +59,6 @@ class OnMeetupConfirmationBody extends StatelessWidget {
             ),
           ),
           SizedBox(height: 16),
-          // Action Buttons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context); // Return to the previous screen
-                },
-                child: Text('Exit', style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          ),
         ],
       ),
     );
