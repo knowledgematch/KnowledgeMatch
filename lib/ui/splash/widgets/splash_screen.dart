@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../login/login_screen.dart';
+import '../../login/view_model/login_view_model.dart';
 import '../../main/widgets/main_screen.dart';
 import '../view_model/splash_view_model.dart';
 
@@ -33,7 +34,12 @@ class SplashScreenState extends State<SplashScreen> {
       } else if (loginState == false) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          MaterialPageRoute(
+            builder: (_) => ChangeNotifierProvider(
+              create: (_) => LoginViewModel(),
+              child: const LoginScreen(),
+            ),
+          ),
         );
       }
     });

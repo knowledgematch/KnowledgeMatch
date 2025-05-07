@@ -1,169 +1,73 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:knowledgematch/data/services/api_db_connection.dart';
-import 'package:knowledgematch/data/services/user_service.dart';
-import 'package:knowledgematch/domain/models/user.dart';
+import 'package:knowledgematch/ui/create_profile/create_profile_screen.dart';
+import 'package:knowledgematch/ui/login/view_model/login_view_model.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/themes/app_colors.dart';
-import '../create_profile/create_profile_screen.dart';
-import '../main/widgets/main_screen.dart';
 import '../two_fa/view_model/two_fa_view_model.dart';
 import '../two_fa/widgets/two_fa_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _isLoading = false;
-
-  Future<void> _login() async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
-
-    if (email.isEmpty || password.isEmpty) {
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      final response = await http.post(
-        Uri.parse('https://fl-13-105.zhdk.cloud.switch.ch:3000/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'password': password}),
-      );
-
-      if (response.statusCode == 200) {
-        // final data = jsonDecode(response.body);
-        // final token = data['token'];
-        // final user = data['user'];
-        //
-        // // Save the logged-in user persistently
-        // await storeLoggedInUser(token, user);
-        // //update fcmToken
-        // ApiDbConnection().updateFcmToken(User.instance.id.toString());
-        //
-        // // Navigate to the main screen
-        // if (mounted) {
-        //   Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => MainScreen()),
-        //   );
-        // }
-
-        final data = jsonDecode(response.body);
-
-        // Extract what you need to pass to the 2FA screen
-        final String email = _emailController.text;
-
-        if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => ChangeNotifierProvider(
-                create: (_) => TwoFAViewModel(),
-                child: TwoFAScreen(email: email),
-              ),
-            ),
-          );
-        }
-      } else {
-        final data = jsonDecode(response.body);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(data['message']),
-          ));
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error: $e'),
-        ));
-      }
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  //TODO move to service class
-  /// Stores the logged-in user's token and data in shared preferences.
-  ///
-  /// This method saves the user's authentication token and associated user data in the
-  /// shared preferences. After storing the data, it retrieves and decodes the user data,
-  /// initializing the user based on the stored user ID.
-  ///
-  /// Parameters:
-  /// - [token]: The authentication token to store.
-  /// - [user]: A map containing the user's data to store.
-  ///
-  /// Returns:
-  /// - This method does not return anything.
-  Future<void> storeLoggedInUser(
-      String token, Map<String, dynamic> user) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
-    await prefs.setString('userData', jsonEncode(user));
-
-    // Retrieve and decode the saved user data
-    final userDataString = prefs.getString('userData');
-    if (userDataString != null) {
-      final userData = jsonDecode(userDataString);
-      int uId = int.tryParse(userData['U_ID'].toString()) ?? 0;
-      await initializeUser(uId);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<LoginViewModel>();
+
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(title: const Text('Login')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-              ),
+              controller: viewModel.emailController,
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              controller: viewModel.passwordController,
+              decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CreateProfileScreen()),
+                      builder: (_) => const CreateProfileScreen()),
                 );
               },
-              child: Text('Create a new account',
+              child: const Text('Create a new account',
                   style: TextStyle(color: AppColors.blackLight)),
             ),
             ElevatedButton(
-              onPressed: _isLoading ? null : _login,
-              child: _isLoading
-                  ? CircularProgressIndicator()
-                  : Text('Login',
+              onPressed: viewModel.state.isLoading
+                  ? null
+                  : () async {
+                      await viewModel.login();
+                      if (viewModel.state.loginSuccess == true) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ChangeNotifierProvider(
+                              create: (_) => TwoFAViewModel(),
+                              child: TwoFAScreen(
+                                  email: viewModel.emailController.text),
+                            ),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(viewModel.state.errorMessage!)),
+                        );
+                      }
+                    },
+              child: viewModel.state.isLoading
+                  ? const CircularProgressIndicator()
+                  : const Text('Login',
                       style: TextStyle(color: AppColors.whiteLight)),
             ),
           ],

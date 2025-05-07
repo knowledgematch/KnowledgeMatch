@@ -475,6 +475,30 @@ class ApiDbConnection {
     }
   }
 
+  Future<String> login(String email, String password) async {
+    var finalUri = Uri.parse('$baseUri/login');
+
+    try {
+      final response = await http.post(
+        finalUri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': password}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final token = data['token'];
+        final user = data['user'];
+
+        return '$token;$user';
+      } else {
+        return "Error logging in.";
+      }
+    } catch (e) {
+      return "Error logging in.";
+    }
+  }
+
   /// Updates the FCM token for the user with the provided user ID.
   ///
   /// This method retrieves the current Firebase Cloud Messaging (FCM) token for the device and
