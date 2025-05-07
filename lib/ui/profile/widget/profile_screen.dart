@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/reachability.dart';
-import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
 import 'package:knowledgematch/ui/keyword_selection/view_model/keyword_selection_view_model.dart';
 import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +44,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      drawer: const AppDrawer(),
+
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 10, right: 20),
         child: ClipOval(

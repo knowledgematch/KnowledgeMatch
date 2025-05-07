@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/ui/profile/widget/profile_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/services/matching_algorithm.dart';
@@ -25,6 +26,7 @@ class MainScreenState extends State<MainScreen> {
     HomeScreen(),
     FindMatchesScreen(),
     ChatScreen(),
+    ProfileScreen()
   ];
 
   @override
@@ -45,12 +47,14 @@ class MainScreenState extends State<MainScreen> {
             topRight: Radius.circular(12),
           ),
           child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
             currentIndex: viewModel.state.currentIndex,
             onTap: viewModel.updateIndex,
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
               BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
               BottomNavigationBarItem(icon: Icon(Icons.chat), label: ''),
+              BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
             ],
           ),
         ));

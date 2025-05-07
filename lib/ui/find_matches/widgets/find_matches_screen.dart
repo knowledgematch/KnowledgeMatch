@@ -3,7 +3,6 @@ import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_mode
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/search_criteria.dart';
-import '../../core/ui/app_drawer.dart';
 import '../../core/ui/custom_drop_down.dart';
 import '../../swipe/view_model/swipe_view_model.dart';
 import '../../swipe/widgets/swipe_screen.dart';
@@ -29,7 +28,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
         title: const Text('KnowledgeMatch'),
         centerTitle: true,
       ),
-      drawer: const AppDrawer(),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

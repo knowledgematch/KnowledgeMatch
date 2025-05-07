@@ -66,10 +66,10 @@ class KnowledgeMatchApp extends StatelessWidget {
     final themeProvider = context.watch<ThemeProvider>();
     NotificationService().init(navigatorKey);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       title: 'KnowledgeMatch',
       theme: themeProvider.getTheme(),
-      //AppTheme.lightTheme, //ThemeData(primarySwatch: Colors.blue),`
       home: SplashScreen(),
     );
   }

@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../core/themes/app_colors.dart';
 import '../create_profile/create_profile_screen.dart';
 import '../main/widgets/main_screen.dart';
+import 'reset_password_screen.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -128,6 +130,25 @@ class _LoginScreenState extends State<LoginScreen> {
               obscureText: true,
             ),
             SizedBox(height: 20),
+
+
+
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
+                  );
+                },
+                child: Text('Forgot Password?',
+                    style: TextStyle(color: AppColors.blackLight)),
+              ),
+            ),
+
+
+
             TextButton(
               onPressed: () {
                 Navigator.push(
