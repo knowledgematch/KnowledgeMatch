@@ -2,15 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:knowledgematch/data/services/user_service.dart';
-import 'package:knowledgematch/domain/models/user.dart';
+import 'package:knowledgematch/ui/login/reset_password_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/themes/app_colors.dart';
 import '../create_profile/create_profile_screen.dart';
-import '../main/widgets/main_screen.dart';
 import '../two_fa/view_model/two_fa_view_model.dart';
 import '../two_fa/widgets/two_fa_screen.dart';
 
@@ -62,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
         //   );
         // }
 
-        final data = jsonDecode(response.body);
+        // final data = jsonDecode(response.body);
 
         // Extract what you need to pass to the 2FA screen
         final String email = _emailController.text;
@@ -148,25 +146,20 @@ class _LoginScreenState extends State<LoginScreen> {
               obscureText: true,
             ),
             SizedBox(height: 20),
-
-
-
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const ResetPasswordScreen()),
                   );
                 },
                 child: Text('Forgot Password?',
                     style: TextStyle(color: AppColors.blackLight)),
               ),
             ),
-
-
-
             TextButton(
               onPressed: () {
                 Navigator.push(
