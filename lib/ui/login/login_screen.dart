@@ -61,8 +61,6 @@ class _LoginScreenState extends State<LoginScreen> {
         //   );
         // }
 
-        final data = jsonDecode(response.body);
-
         // Extract what you need to pass to the 2FA screen
         final String email = _emailController.text;
 
