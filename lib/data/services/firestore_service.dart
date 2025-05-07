@@ -112,6 +112,28 @@ class FirestoreService {
         });
   }
 
+  Stream<List<NotificationData>> allNotificationsStream({required int userID}) {
+    return FirebaseFirestore.instance
+        .collection('notifications')
+        .where(
+          Filter.or(
+            Filter('target_user_id', isEqualTo: userID.toString()),
+            Filter('source_user_id', isEqualTo: userID.toString()),
+          ),
+        )
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            return NotificationData.fromFirestoreData(
+              jsonMap: data,
+              documentID: doc.id,
+            );
+          }).toList();
+        });
+  }
+
   /// Fetches notifications for a specific user with an optional filter for request type.
   ///
   /// Queries the `notifications` collection for notifications where the

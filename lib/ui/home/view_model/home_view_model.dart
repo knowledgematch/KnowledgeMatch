@@ -3,6 +3,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/data/services/api_db_connection.dart';
+import 'package:knowledgematch/data/services/matching_algorithm.dart';
 
 import '../../../data/services/firestore_service.dart';
 import '../../../domain/models/notification_data.dart';
@@ -23,7 +24,7 @@ class HomeViewModel extends ChangeNotifier {
   StreamSubscription? _plannedRequestSub;
 
   /// Creates a [HomeViewModel] and begins loading the [NotificationData] for the request
-  ///
+  //
   /// Registers a Listener on the ChangeNotifier[User.instance] to rebuild the HomeScreen.
   HomeViewModel() {
     _loadData();
@@ -101,12 +102,10 @@ class HomeViewModel extends ChangeNotifier {
           }
 
           for (var notification in list) {
-            final usersList = await ApiDbConnection().fetchUserByInput(
-              uId: notification.sourceUserId.toString(),
+            final user = await MatchingAlgorithm().getUserProfileById(
+              notification.sourceUserId,
             );
-            final userJson = usersList.first;
-            Userprofile source = Userprofile.fromJson(userJson);
-            notifications.putIfAbsent(notification, () => source);
+            notifications.putIfAbsent(notification, () => user);
           }
 
           _state = state.copyWith(plannedRequests: notifications);

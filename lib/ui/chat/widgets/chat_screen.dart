@@ -26,28 +26,18 @@ class ChatScreenState extends State<ChatScreen> {
       listenable: viewModel,
       builder: (context, _) {
         return Scaffold(
-            appBar: AppBar(
-              title: const Text('Requests'),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      viewModel.loadConfirmedNotificationsAndProfiles();
-                    },
-                    child: const Text('Confirmed'),
-                  ),
-                ),
-              ],
-            ),
-            body: viewModel.state.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : viewModel.state.errorMessage != null
-                    ? Center(
-                        child: Text('Error: ${viewModel.state.errorMessage}'))
-                    : viewModel.state.notification.isEmpty
-                        ? const Center(child: Text('No requests found.'))
-                        : FeedWidget());
+          appBar: AppBar(title: const Text('Requests')),
+          body: FeedWidget(),
+          // viewModel.state.isLoading
+          //     ? const Center(child: CircularProgressIndicator())
+          //     : viewModel.state.errorMessage != null
+          //     ? Center(
+          //       child: Text('Error: ${viewModel.state.errorMessage}'),
+          //     )
+          //     : viewModel.state.notification.isEmpty
+          //     ? const Center(child: Text('No requests found.'))
+          //     : FeedWidget(),
+        );
       },
     );
   }

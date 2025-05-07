@@ -69,26 +69,27 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (_) => ChangeNotifierProvider(
-                create: (_) => TwoFAViewModel(),
-                child: TwoFAScreen(email: email),
-              ),
+              builder:
+                  (_) => ChangeNotifierProvider(
+                    create: (_) => TwoFAViewModel(),
+                    child: TwoFAScreen(email: email),
+                  ),
             ),
           );
         }
       } else {
         final data = jsonDecode(response.body);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(data['message']),
-          ));
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(data['message'])));
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error: $e'),
-        ));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     } finally {
       setState(() {
@@ -111,7 +112,9 @@ class _LoginScreenState extends State<LoginScreen> {
   /// Returns:
   /// - This method does not return anything.
   Future<void> storeLoggedInUser(
-      String token, Map<String, dynamic> user) async {
+    String token,
+    Map<String, dynamic> user,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
     await prefs.setString('userData', jsonEncode(user));
@@ -135,9 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-              ),
+              decoration: InputDecoration(labelText: 'Email'),
             ),
             SizedBox(height: 20),
             TextField(
@@ -153,11 +154,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const ResetPasswordScreen()),
+                      builder: (context) => const ResetPasswordScreen(),
+                    ),
                   );
                 },
-                child: Text('Forgot Password?',
-                    style: TextStyle(color: AppColors.blackLight)),
+                child: Text(
+                  'Forgot Password?',
+                  style: TextStyle(color: AppColors.blackLight),
+                ),
               ),
             ),
             TextButton(
@@ -165,18 +169,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CreateProfileScreen()),
+                    builder: (context) => CreateProfileScreen(),
+                  ),
                 );
               },
-              child: Text('Create a new account',
-                  style: TextStyle(color: AppColors.blackLight)),
+              child: Text(
+                'Create a new account',
+                style: TextStyle(color: AppColors.blackLight),
+              ),
             ),
             ElevatedButton(
               onPressed: _isLoading ? null : _login,
-              child: _isLoading
-                  ? CircularProgressIndicator()
-                  : Text('Login',
-                      style: TextStyle(color: AppColors.whiteLight)),
+              child:
+                  _isLoading
+                      ? CircularProgressIndicator()
+                      : Text(
+                        'Login',
+                        style: TextStyle(color: AppColors.whiteLight),
+                      ),
             ),
           ],
         ),
