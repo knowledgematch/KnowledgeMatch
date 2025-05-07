@@ -2,9 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:knowledgematch/data/services/user_service.dart';
-import 'package:knowledgematch/domain/models/user.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,7 +10,6 @@ import '../core/themes/app_colors.dart';
 import '../create_profile/create_profile_screen.dart';
 import '../forgot_pw/view_model/forgot_pw_view_model.dart';
 import '../forgot_pw/widgets/forgot_pw_screen.dart';
-import '../main/widgets/main_screen.dart';
 import '../two_fa/view_model/two_fa_view_model.dart';
 import '../two_fa/widgets/two_fa_screen.dart';
 
@@ -184,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: _isLoading
                   ? CircularProgressIndicator()
                   : Text('Login',
-                  style: TextStyle(color: AppColors.whiteLight)),
+                      style: TextStyle(color: AppColors.whiteLight)),
             ),
           ],
         ),
