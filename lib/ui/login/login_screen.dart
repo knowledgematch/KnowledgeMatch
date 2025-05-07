@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/themes/app_colors.dart';
 import '../create_profile/create_profile_screen.dart';
+import '../forgot_pw/view_model/forgot_pw_view_model.dart';
+import '../forgot_pw/widgets/forgot_pw_screen.dart';
 import '../main/widgets/main_screen.dart';
 import '../two_fa/view_model/two_fa_view_model.dart';
 import '../two_fa/widgets/two_fa_screen.dart';
@@ -147,7 +149,25 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChangeNotifierProvider(
+                        create: (_) => ForgotPwViewModel(),
+                        child: ForgotPwScreen(),
+                      ),
+                    ),
+                  );
+                },
+                child: Text('Forgot Password?',
+                    style: TextStyle(color: AppColors.blackLight)),
+              ),
+            ),
+            SizedBox(height: 10),
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -164,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: _isLoading
                   ? CircularProgressIndicator()
                   : Text('Login',
-                      style: TextStyle(color: AppColors.whiteLight)),
+                  style: TextStyle(color: AppColors.whiteLight)),
             ),
           ],
         ),
