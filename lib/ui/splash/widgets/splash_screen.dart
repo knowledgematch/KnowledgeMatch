@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../login/login_screen.dart';
 import '../../login/view_model/login_view_model.dart';
+import '../../login/widgets/login_screen.dart';
 import '../../main/widgets/main_screen.dart';
 import '../view_model/splash_view_model.dart';
 

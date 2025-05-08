@@ -3,9 +3,9 @@ import 'package:knowledgematch/ui/create_profile/create_profile_screen.dart';
 import 'package:knowledgematch/ui/login/view_model/login_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../core/themes/app_colors.dart';
-import '../two_fa/view_model/two_fa_view_model.dart';
-import '../two_fa/widgets/two_fa_screen.dart';
+import '../../core/themes/app_colors.dart';
+import '../../two_fa/view_model/two_fa_view_model.dart';
+import '../../two_fa/widgets/two_fa_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});

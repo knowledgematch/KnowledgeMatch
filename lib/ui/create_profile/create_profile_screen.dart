@@ -7,7 +7,7 @@ import 'package:knowledgematch/domain/models/reachability.dart';
 
 import '../core/themes/app_colors.dart';
 import '../core/ui/custom_drop_down.dart';
-import '../login/login_screen.dart';
+import '../login/widgets/login_screen.dart';
 
 class CreateProfileScreen extends StatefulWidget {
   const CreateProfileScreen({super.key});
