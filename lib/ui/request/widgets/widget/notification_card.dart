@@ -4,6 +4,7 @@ import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/ui/core/themes/app_colors.dart';
 import 'package:knowledgematch/ui/core/themes/app_constants.dart';
+import 'package:knowledgematch/ui/core/ui/themed_container.dart';
 
 class NotificationCard extends StatelessWidget {
   final NotificationData notification;
@@ -31,20 +32,7 @@ class NotificationCard extends StatelessWidget {
             ).format(notification.timestamp!.toLocal()).toString()
             : 'Unknown time';
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: AppConstants.borderRadiusLarge,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.blue.withOpacity(0.3),
-            spreadRadius: 1, // how big the shadow grows
-            blurRadius: 10, // how soft the shadow edge is
-            offset: const Offset(4, 4), // negative Y pushes shadow above
-          ),
-        ],
-      ),
+    return ThemedContainer(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
         child: Column(

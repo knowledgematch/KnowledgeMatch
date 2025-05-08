@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/ui/core/ui/decorations.dart';
 import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -21,8 +22,9 @@ class OnMeetupConfirmationBody extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8),
-          Card(
-            elevation: 2,
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: Decorations.container,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListTile(
@@ -41,8 +43,9 @@ class OnMeetupConfirmationBody extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8),
-          Card(
-            elevation: 2,
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: Decorations.container,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListTile(

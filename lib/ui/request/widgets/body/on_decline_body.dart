@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/ui/core/ui/decorations.dart';
 import 'package:provider/provider.dart';
 
 import '../../view_model/request_view_model.dart';
@@ -13,8 +14,9 @@ class OnDeclineBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 24),
-        Card(
+        Container(
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: Decorations.container,
           child: ListTile(
             title: Text(
               viewModel.notificationData.body,

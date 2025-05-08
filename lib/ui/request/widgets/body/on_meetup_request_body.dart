@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/request_date_data.dart';
+import 'package:knowledgematch/ui/core/ui/decorations.dart';
 import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -27,8 +28,9 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 24),
-            Card(
+            Container(
               margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: Decorations.container,
               child: ListTile(
                 title: Text(
                   'Meetup Request:',
