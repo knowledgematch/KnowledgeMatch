@@ -53,4 +53,3 @@ deploy_to_firebase:
     - bundle exec fastlane beta
   only:
     - main
-    - dev
