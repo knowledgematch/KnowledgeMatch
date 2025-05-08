@@ -1,16 +1,24 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class ApiDbConnection {
-  var host = 'fl-13-105.zhdk.cloud.switch.ch';
+  String host = "";
   var port = 3000;
 
   Uri get baseUri => Uri.parse('https://$host:$port');
+
+  ApiDbConnection() {
+    if (kReleaseMode) {
+      host = '86.119.47.241';
+    } else {
+      host = 'fl-13-105.zhdk.cloud.switch.ch';
+    }
+  }
 
   /// Fetches distinct data for a specific key from the user.
   ///

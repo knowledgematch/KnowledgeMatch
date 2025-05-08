@@ -201,7 +201,7 @@ class ProfileViewModel extends ChangeNotifier {
     await prefs.clear();
     User.instance.reset();
     if (context.mounted) {
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SplashScreen()),
       );
