@@ -623,4 +623,29 @@ class ApiDbConnection {
       return [];
     }
   }
+
+  /// Requests a password reset for the user with the provided email address.
+  ///
+  /// This method sends a POST request to the `/forgot-password` endpoint with the user's email.
+  /// If the request is successful (HTTP 200), the method returns `true`.
+  /// Otherwise, it returns `false`.
+  ///
+  /// Parameters:
+  /// - [email]: The email address for which to request a password reset.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with `true` if the request was successful, or `false` otherwise.
+  Future<bool> requestPasswordReset(String email) async {
+    final finalUri = baseUri.replace(path: '/forgot-password');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({'email': email});
+
+    try {
+      final response = await http.post(finalUri, headers: headers, body: body);
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Error during password reset request: $e');
+      return false;
+    }
+  }
 }
