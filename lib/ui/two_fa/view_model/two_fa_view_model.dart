@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:knowledgematch/ui/two_fa/two_fa_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,16 +20,11 @@ class TwoFAViewModel extends ChangeNotifier {
     if (code.isEmpty || state.email.isEmpty) return false;
 
     try {
-      final response = await http.post(
-        Uri.parse('https://fl-13-105.zhdk.cloud.switch.ch:3000/verify-2fa'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': state.email, 'code': code}),
-      );
+      final response = await ApiDbConnection().twoFA(state.email, code);
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final String token = data['token'];
-        final Map<String, dynamic> user = data['user'];
+      if (response != null) {
+        final String token = response['token'];
+        final Map<String, dynamic> user = response['user'];
 
         // Save the logged-in user persistently
         await storeLoggedInUser(token, user);
@@ -41,7 +35,7 @@ class TwoFAViewModel extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      print('Error during 2FA verification: $e');
+      print('Error during 2FA verification.');
       return false;
     }
   }

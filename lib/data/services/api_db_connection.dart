@@ -499,6 +499,29 @@ class ApiDbConnection {
     }
   }
 
+  Future<Map<String, dynamic>?> twoFA(String email, String code) async {
+    var finalUri = Uri.parse('$baseUri/verify-2fa');
+
+    try {
+      final response = await http.post(
+        finalUri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'code': code}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final token = data['token'];
+        final Map<String, dynamic> user = data['user'];
+
+        return {'token': token, 'user': user};
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
+  }
+
   /// Updates the FCM token for the user with the provided user ID.
   ///
   /// This method retrieves the current Firebase Cloud Messaging (FCM) token for the device and
