@@ -38,7 +38,7 @@ class FeedCard extends StatelessWidget {
         borderRadius: AppConstants.borderRadiusLarge,
         boxShadow: [
           BoxShadow(
-            color: AppColors.blue,
+            color: AppColors.blueLight,
             spreadRadius: 1,
             blurRadius: 4,
             offset: const Offset(0, 4),

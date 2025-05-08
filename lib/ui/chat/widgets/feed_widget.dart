@@ -25,8 +25,9 @@ class FeedWidgetState extends State<FeedWidget> {
           final feed = entry.value;
           final latest = entry.value.first;
           final profile =
-              latest.sourceUserId != User.instance.id
-                  ? viewModel.state.userProfiles[latest.targetUserId]!
+              latest.sourceUserId == User.instance.id
+                  ? viewModel.state.userProfiles[latest.targetUserId] ??
+                      viewModel.state.userProfiles[User.instance.id]!
                   : viewModel.state.userProfiles[latest.sourceUserId]!;
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
