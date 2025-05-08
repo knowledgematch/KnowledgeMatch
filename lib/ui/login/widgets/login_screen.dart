@@ -67,6 +67,9 @@ class LoginScreen extends StatelessWidget {
                   ? null
                   : () async {
                       await viewModel.login();
+
+                      if (!context.mounted) return;
+
                       if (viewModel.state.loginSuccess == true) {
                         Navigator.pushReplacement(
                           context,
