@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/ui/core/themes/app_colors.dart';
 import 'package:knowledgematch/ui/profile/widget/profile_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -50,10 +51,12 @@ class MainScreenState extends State<MainScreen> {
             type: BottomNavigationBarType.fixed,
             currentIndex: viewModel.state.currentIndex,
             onTap: viewModel.updateIndex,
+            unselectedItemColor: AppColors.grey6Light,
+
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
               BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
-              BottomNavigationBarItem(icon: Icon(Icons.chat), label: ''),
+              BottomNavigationBarItem(icon: Icon(Icons.checklist), label: ''),
               BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
             ],
           ),

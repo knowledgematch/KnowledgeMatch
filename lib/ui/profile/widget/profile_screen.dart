@@ -37,16 +37,10 @@ class ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: const Text('Profile'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => {viewModel.logout(context)},
-          ),
-        ],
       ),
 
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 10, right: 20),
+        padding: const EdgeInsets.only(right: 20),
         child: ClipOval(
           child: Builder(
             builder: (context) {
@@ -112,30 +106,36 @@ class ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 16),
                 _buildTextField(viewModel.descriptionController, 'Description'),
                 const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ChangeNotifierProvider(
-                              create: (_) => ChangePwViewModel(),
-                              child: ChangePasswordScreen())),
-                    );
-                  },
-                  child: const Text('Change Password'),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChangeNotifierProvider(
-                                create: (BuildContext context) =>
-                                    KeywordSelectionViewModel(),
-                                child: KeywordSelectionScreen())));
-                  },
-                  child: const Text('Edit Keywords'),
+                                create: (_) => ChangePwViewModel(),
+                                child: ChangePasswordScreen())),
+                      );
+                    },
+                    child: const Text('Change Password'),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChangeNotifierProvider(
+                                  create: (BuildContext context) =>
+                                      KeywordSelectionViewModel(),
+                                  child: KeywordSelectionScreen())));
+                    },
+                    child: const Text('Edit Keywords'),
+                  ),
                 ),
               ],
             ),

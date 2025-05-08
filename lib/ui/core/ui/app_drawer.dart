@@ -111,13 +111,16 @@ class AppDrawer extends StatelessWidget {
                     );
                   },
                 )),
-                const Divider(),
-                _buildDrawerItem(
-                  icon: Icons.logout,
-                  title: 'Logout',
-                  onTap: () => logout(context),
-                ),
               ],
+            ),
+          ),
+          const Divider(thickness: 1, indent: 0, endIndent: 0),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: _buildDrawerItem(
+              icon: Icons.exit_to_app,
+              title: 'Logout',
+              onTap: () => logout(context),
             ),
           ),
         ],

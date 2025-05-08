@@ -67,7 +67,8 @@ class HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        "${User.instance.name} 👋",
+                        "${_formatName(User.instance.name ?? '')} 👋",
+
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -80,10 +81,10 @@ class HomeScreenState extends State<HomeScreen> {
                   CircleAvatar(
                     radius: 30,
                     backgroundImage:
-                        User.instance.getDecodedPicture() != null
-                            ? MemoryImage(User.instance.getDecodedPicture()!)
-                            : const AssetImage('assets/images/profile.png')
-                                as ImageProvider,
+                    User.instance.getDecodedPicture() != null
+                        ? MemoryImage(User.instance.getDecodedPicture()!)
+                        : const AssetImage('assets/images/profile.png')
+                    as ImageProvider,
                     // User.instance.picture ?? 'assets/images/profile.png'),
                   ),
                 ],
@@ -148,13 +149,13 @@ class HomeScreenState extends State<HomeScreen> {
                   MaterialPageRoute(
                     builder:
                         (context) => ChangeNotifierProvider<RequestViewModel>(
-                          create:
-                              (_) => RequestViewModel(
-                                notificationData: entry.key,
-                                userprofile: entry.value,
-                              ),
-                          child: RequestScreen(),
-                        ),
+                      create:
+                          (_) => RequestViewModel(
+                        notificationData: entry.key,
+                        userprofile: entry.value,
+                      ),
+                      child: RequestScreen(),
+                    ),
                   ),
                 );
               },
@@ -173,4 +174,13 @@ class HomeScreenState extends State<HomeScreen> {
       );
     }
   }
+
+  String _formatName(String name) {
+    const int maxLength = 15;
+    if (name.length > maxLength) {
+      return '${name.substring(0, maxLength)}...';
+    }
+    return name;
+  }
 }
+

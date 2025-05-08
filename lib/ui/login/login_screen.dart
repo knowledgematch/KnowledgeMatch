@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:knowledgematch/data/services/user_service.dart';
+import 'package:knowledgematch/ui/core/ui/custom_page.dart';
 import 'package:knowledgematch/ui/login/reset_password_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
         final String email = _emailController.text;
 
         if (mounted) {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder:
@@ -131,66 +132,88 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
-      body: Padding(
+
+      body: CustomPage(child: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ResetPasswordScreen(),
-                    ),
-                  );
-                },
-                child: Text(
-                  'Forgot Password?',
-                  style: TextStyle(color: AppColors.blackLight),
+            Image.asset("assets/images/Loginpicture_1.png"),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Login",style: TextStyle(
+                  fontSize: 24,
+                  color: AppColors.primary,
+                ),),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: _emailController,
+                  decoration: InputDecoration(labelText: 'Email'),
                 ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CreateProfileScreen(),
+                SizedBox(height: 20),
+                TextField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                ),
+                SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ResetPasswordScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Forgot Password?',
+                      style: TextStyle(color: AppColors.blackLight),
+                    ),
                   ),
-                );
-              },
-              child: Text(
-                'Create a new account',
-                style: TextStyle(color: AppColors.blackLight),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _login,
-              child:
-                  _isLoading
-                      ? CircularProgressIndicator()
-                      : Text(
-                        'Login',
-                        style: TextStyle(color: AppColors.whiteLight),
-                      ),
+                ),
+               Center(
+                 child: Column(
+                   crossAxisAlignment: CrossAxisAlignment.center,
+                   children: [
+                     TextButton(
+                       onPressed: () {
+                         Navigator.push(
+                           context,
+                           MaterialPageRoute(
+                             builder: (context) => CreateProfileScreen(),
+                           ),
+                         );
+                       },
+                       child: Text(
+                         'Create a new account',
+                         style: TextStyle(color: AppColors.blackLight),
+                       ),
+                     ),
+                     SizedBox(
+                       width: double.infinity,
+                       child: ElevatedButton(
+                         onPressed: _isLoading ? null : _login,
+                         child:
+                         _isLoading
+                             ? CircularProgressIndicator()
+                             : Text(
+                           'Login',
+                           style: TextStyle(color: AppColors.whiteLight),
+                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+               )
+              ],
             ),
           ],
         ),
-      ),
+      ),),
     );
   }
 }
