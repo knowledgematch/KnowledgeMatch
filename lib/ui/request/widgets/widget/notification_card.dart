@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/ui/core/themes/app_colors.dart';
@@ -24,26 +25,52 @@ class NotificationCard extends StatelessWidget {
 
     final timeStamp =
         notification.timestamp != null
-            ? notification.timestamp!.toLocal().toString()
+            ? DateFormat(
+              'HH:mm dd/MM',
+            ).format(notification.timestamp!.toLocal()).toString()
             : 'Unknown time';
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: ListTile(
-        leading: CircleAvatar(radius: 50, backgroundImage: avatarImage),
-        isThreeLine: true,
-        title: _buildTitle(notification.type),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildSubtitle(notification.type, notification.title),
-            SizedBox(height: 4),
-            Text(
-              timeStamp,
-              style: TextStyle(fontSize: 15, color: AppColors.greyLight),
+            Spacer(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(radius: 50, backgroundImage: avatarImage),
+                SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildTitle(notification.type),
+                      _buildSubtitle(notification.type, notification.title),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 12),
+                _buildTrailingWidget(notification.type),
+              ],
+            ),
+            Spacer(),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                timeStamp,
+                style: TextStyle(fontSize: 15, color: AppColors.greyLight),
+                textAlign: TextAlign.end,
+              ),
             ),
           ],
         ),
-        trailing: _buildTrailingWidget(notification.type),
       ),
     );
   }
@@ -52,6 +79,7 @@ class NotificationCard extends StatelessWidget {
     switch (type) {
       case NotificationType.knowledgeRequest:
         return Text(
+          textAlign: TextAlign.start,
           "New Request",
           style: TextStyle(fontWeight: FontWeight.bold),
         );
@@ -67,7 +95,7 @@ class NotificationCard extends StatelessWidget {
         );
       case NotificationType.meetupRequest:
         return Text(
-          "New Meetup Request",
+          "Meetup Request",
           style: TextStyle(fontStyle: FontStyle.italic),
         );
       case NotificationType.meetupConfirmation:
@@ -79,32 +107,53 @@ class NotificationCard extends StatelessWidget {
   }
 
   Widget _buildSubtitle(NotificationType type, String body) {
+    String str = "";
     switch (type) {
       case NotificationType.knowledgeRequest:
-        return Text(notification.body);
+        str = notification.body;
       case NotificationType.requestDeclined:
-        return Text("Your request has been declined");
+        str = "Your request has been declined";
       case NotificationType.requestAccepted:
-        return Text("Your request was accepted");
+        str = "Your request was accepted";
       case NotificationType.meetupRequest:
-        return Text(notification.body);
+        str = notification.body;
       case NotificationType.meetupConfirmation:
-        return Text(notification.body);
+        str = notification.body;
     }
+    return Text(
+      textAlign: TextAlign.start,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      softWrap: false,
+      str,
+    );
   }
 
   Widget _buildTrailingWidget(NotificationType type) {
+    double iconSize = 25.0;
     switch (type) {
       case NotificationType.knowledgeRequest:
-        return Icon(Icons.question_mark, color: AppColors.blueLight);
+        return Icon(
+          size: iconSize,
+          Icons.question_mark,
+          color: AppColors.blueLight,
+        );
       case NotificationType.requestDeclined:
-        return Icon(Icons.cancel, color: AppColors.redLight);
+        return Icon(size: 15.0, Icons.cancel, color: AppColors.redLight);
       case NotificationType.requestAccepted:
-        return Icon(Icons.check_circle, color: AppColors.greenLight);
+        return Icon(
+          size: iconSize,
+          Icons.check_circle,
+          color: AppColors.greenLight,
+        );
       case NotificationType.meetupRequest:
-        return Icon(Icons.date_range, color: AppColors.orangeLight);
+        return Icon(size: 15.0, Icons.date_range, color: AppColors.orangeLight);
       case NotificationType.meetupConfirmation:
-        return Icon(Icons.fact_check_outlined, color: AppColors.greenLight);
+        return Icon(
+          size: iconSize,
+          Icons.fact_check_outlined,
+          color: AppColors.greenLight,
+        );
     }
   }
 }
