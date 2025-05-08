@@ -4,6 +4,8 @@ import 'package:knowledgematch/ui/login/view_model/login_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/themes/app_colors.dart';
+import '../../forgot_pw/view_model/forgot_pw_view_model.dart';
+import '../../forgot_pw/widgets/forgot_pw_screen.dart';
 import '../../two_fa/view_model/two_fa_view_model.dart';
 import '../../two_fa/widgets/two_fa_screen.dart';
 
@@ -30,16 +32,34 @@ class LoginScreen extends StatelessWidget {
               decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            const SizedBox(height: 20),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChangeNotifierProvider(
+                        create: (_) => ForgotPwViewModel(),
+                        child: ForgotPwScreen(),
+                      ),
+                    ),
+                  );
+                },
+                child: Text('Forgot Password?',
+                    style: TextStyle(color: AppColors.blackLight)),
+              ),
+            ),
+            SizedBox(height: 10),
             TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (_) => const CreateProfileScreen()),
+                      builder: (context) => CreateProfileScreen()),
                 );
               },
-              child: const Text('Create a new account',
+              child: Text('Create a new account',
                   style: TextStyle(color: AppColors.blackLight)),
             ),
             ElevatedButton(
