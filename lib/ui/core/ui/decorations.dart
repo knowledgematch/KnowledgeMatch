@@ -10,9 +10,9 @@ class Decorations {
     boxShadow: [
       BoxShadow(
         color: AppColors.blue.withOpacity(0.3),
-        spreadRadius: 1,
-        blurRadius: 10,
-        offset: const Offset(4, 4),
+        spreadRadius: 2,
+        blurRadius: 8,
+        offset: const Offset(0, 4),
       ),
     ],
   );

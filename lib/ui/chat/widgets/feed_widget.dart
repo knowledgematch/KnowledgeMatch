@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/domain/models/user.dart';
+import 'package:knowledgematch/ui/request/widgets/widget/feed_card.dart';
 import 'package:provider/provider.dart';
 
 import '../../request/view_model/request_view_model.dart';
@@ -22,15 +24,15 @@ class FeedWidgetState extends State<FeedWidget> {
         viewModel.state.notification.entries.map((entry) {
           final feed = entry.value;
           final latest = entry.value.first;
-          final profile = viewModel.state.userProfiles[latest.sourceUserId]!;
+          final profile =
+              latest.sourceUserId != User.instance.id
+                  ? viewModel.state.userProfiles[latest.targetUserId]!
+                  : viewModel.state.userProfiles[latest.sourceUserId]!;
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: ExpansionTile(
               initiallyExpanded: false,
-              title: NotificationCard(
-                notification: latest,
-                userprofile: profile,
-              ),
+              title: FeedCard(notification: latest, userprofile: profile),
               children:
                   feed.map((n) {
                     final userProfile =

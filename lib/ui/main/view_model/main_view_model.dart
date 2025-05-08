@@ -6,7 +6,7 @@ class MainScreenViewModel extends ChangeNotifier {
 
   MainState get state => _state;
 
-  MainScreenViewModel() : _state = MainState(currentIndex: 3);
+  MainScreenViewModel() : _state = MainState(currentIndex: 0);
 
   void updateIndex(int index) {
     _state = state.copyWith(currentIndex: index);

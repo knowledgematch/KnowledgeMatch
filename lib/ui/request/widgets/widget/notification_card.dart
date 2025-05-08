@@ -53,7 +53,7 @@ class NotificationCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTitle(notification.type),
+                      _buildTitle(notification.type, context),
                       _buildSubtitle(notification.type, notification.title),
                     ],
                   ),
@@ -77,7 +77,7 @@ class NotificationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildTitle(NotificationType type) {
+  Widget _buildTitle(NotificationType type, BuildContext context) {
     String title = "";
     switch (type) {
       case NotificationType.knowledgeRequest:
@@ -93,19 +93,13 @@ class NotificationCard extends StatelessWidget {
     }
     return Padding(
       padding: EdgeInsets.only(bottom: 4),
-      child: Text(
-        title,
-        style: TextStyle(
-          color: AppColors.primary,
-          fontSize: 17,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      child: Text(title, style: Theme.of(context).textTheme.titleSmall),
     );
   }
 
   Widget _buildSubtitle(NotificationType type, String body) {
     final String name = userprofile.name.split(" ")[0];
+    String descriptor0 = "From: ";
     String from = "";
     String descriptor1 = "";
     String text1 = "";
@@ -131,6 +125,7 @@ class NotificationCard extends StatelessWidget {
         text2 = "New meetup suggestions!";
       case NotificationType.meetupConfirmation:
         var str = notification.body.split(" ");
+        descriptor0 = "With: ";
         from = name;
         descriptor1 = str[2];
         text1 = "";
@@ -141,7 +136,7 @@ class NotificationCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(style: TextStyle(fontWeight: FontWeight.bold), "From: "),
+            Text(style: TextStyle(fontWeight: FontWeight.bold), descriptor0),
             Expanded(
               child: Text(
                 maxLines: 1,
@@ -157,7 +152,7 @@ class NotificationCard extends StatelessWidget {
             Text(style: TextStyle(fontWeight: FontWeight.bold), descriptor1),
             Expanded(
               child: Text(
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.start,
                 softWrap: false,
@@ -194,7 +189,7 @@ class NotificationCard extends StatelessWidget {
           color: AppColors.blueLight,
         );
       case NotificationType.requestDeclined:
-        return Icon(size: 15.0, Icons.cancel, color: AppColors.redLight);
+        return Icon(size: iconSize, Icons.cancel, color: AppColors.redLight);
       case NotificationType.requestAccepted:
         return Icon(
           size: iconSize,
@@ -202,7 +197,11 @@ class NotificationCard extends StatelessWidget {
           color: AppColors.greenLight,
         );
       case NotificationType.meetupRequest:
-        return Icon(size: 15.0, Icons.date_range, color: AppColors.orangeLight);
+        return Icon(
+          size: iconSize,
+          Icons.date_range,
+          color: AppColors.orangeLight,
+        );
       case NotificationType.meetupConfirmation:
         return Icon(
           size: iconSize,

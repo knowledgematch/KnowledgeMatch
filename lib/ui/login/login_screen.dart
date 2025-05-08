@@ -44,26 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (response.statusCode == 200) {
-        // final data = jsonDecode(response.body);
-        // final token = data['token'];
-        // final user = data['user'];
-        //
-        // // Save the logged-in user persistently
-        // await storeLoggedInUser(token, user);
-        // //update fcmToken
-        // ApiDbConnection().updateFcmToken(User.instance.id.toString());
-        //
-        // // Navigate to the main screen
-        // if (mounted) {
-        //   Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => MainScreen()),
-        //   );
-        // }
-
-        // final data = jsonDecode(response.body);
-
-        // Extract what you need to pass to the 2FA screen
         final String email = _emailController.text;
 
         if (mounted) {
@@ -132,88 +112,96 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      body: CustomPage(child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Image.asset("assets/images/Loginpicture_1.png"),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Login",style: TextStyle(
-                  fontSize: 24,
-                  color: AppColors.primary,
-                ),),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
+      body: CustomPage(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Flexible(
+                child: Image.asset(
+                  "assets/images/Loginpicture_1.png",
+                  fit: BoxFit.contain,
                 ),
-                SizedBox(height: 20),
-                TextField(
-                  controller: _passwordController,
-                  decoration: InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                ),
-                SizedBox(height: 20),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ResetPasswordScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Forgot Password?',
-                      style: TextStyle(color: AppColors.blackLight),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    "Login",
+                    style: TextStyle(fontSize: 24, color: AppColors.primary),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(labelText: 'Email'),
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(labelText: 'Password'),
+                    obscureText: true,
+                  ),
+                  SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ResetPasswordScreen(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Forgot Password?',
+                        style: TextStyle(color: AppColors.blackLight),
+                      ),
                     ),
                   ),
-                ),
-               Center(
-                 child: Column(
-                   crossAxisAlignment: CrossAxisAlignment.center,
-                   children: [
-                     TextButton(
-                       onPressed: () {
-                         Navigator.push(
-                           context,
-                           MaterialPageRoute(
-                             builder: (context) => CreateProfileScreen(),
-                           ),
-                         );
-                       },
-                       child: Text(
-                         'Create a new account',
-                         style: TextStyle(color: AppColors.blackLight),
-                       ),
-                     ),
-                     SizedBox(
-                       width: double.infinity,
-                       child: ElevatedButton(
-                         onPressed: _isLoading ? null : _login,
-                         child:
-                         _isLoading
-                             ? CircularProgressIndicator()
-                             : Text(
-                           'Login',
-                           style: TextStyle(color: AppColors.whiteLight),
-                         ),
-                       ),
-                     ),
-                   ],
-                 ),
-               )
-              ],
-            ),
-          ],
+                  Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CreateProfileScreen(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Create a new account',
+                            style: TextStyle(color: AppColors.blackLight),
+                          ),
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _isLoading ? null : _login,
+                            child:
+                                _isLoading
+                                    ? CircularProgressIndicator()
+                                    : Text(
+                                      'Login',
+                                      style: TextStyle(
+                                        color: AppColors.whiteLight,
+                                      ),
+                                    ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),),
+      ),
     );
   }
 }

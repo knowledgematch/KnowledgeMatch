@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/ui/core/themes/app_colors.dart';
 import 'package:knowledgematch/ui/core/ui/decorations.dart';
 import 'package:provider/provider.dart';
 
@@ -20,12 +21,12 @@ class OnRequestBody extends StatelessWidget {
           child: ListTile(
             title: Text(
               "New Knowledge request",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             trailing: Icon(
               Icons.question_mark_rounded,
-              color: Colors.orange,
-              size: 40,
+              color: AppColors.blueLight,
+              size: 30,
             ),
           ),
         ),
