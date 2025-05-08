@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/ui/core/themes/app_colors.dart';
+import 'package:knowledgematch/ui/core/themes/app_constants.dart';
 
 class NotificationCard extends StatelessWidget {
   final NotificationData notification;
@@ -30,16 +31,28 @@ class NotificationCard extends StatelessWidget {
             ).format(notification.timestamp!.toLocal()).toString()
             : 'Unknown time';
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: AppConstants.borderRadiusLarge,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.blue.withOpacity(0.3),
+            spreadRadius: 1, // how big the shadow grows
+            blurRadius: 10, // how soft the shadow edge is
+            offset: const Offset(4, 4), // negative Y pushes shadow above
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Spacer(),
+            SizedBox(width: 20),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -60,7 +73,7 @@ class NotificationCard extends StatelessWidget {
                 _buildTrailingWidget(notification.type),
               ],
             ),
-            Spacer(),
+            SizedBox(width: 30),
             Align(
               alignment: Alignment.bottomRight,
               child: Text(
@@ -76,56 +89,109 @@ class NotificationCard extends StatelessWidget {
   }
 
   Widget _buildTitle(NotificationType type) {
+    String title = "";
     switch (type) {
       case NotificationType.knowledgeRequest:
-        return Text(
-          textAlign: TextAlign.start,
-          "New Request",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        );
+        title = "New Request";
       case NotificationType.requestDeclined:
-        return Text(
-          "Declined Request",
-          style: TextStyle(color: AppColors.redLight),
-        );
+        title = "Declined Request";
       case NotificationType.requestAccepted:
-        return Text(
-          "Accepted Request",
-          style: TextStyle(color: AppColors.greenLight),
-        );
+        title = "Accepted Request";
       case NotificationType.meetupRequest:
-        return Text(
-          "Meetup Request",
-          style: TextStyle(fontStyle: FontStyle.italic),
-        );
+        title = "Meetup Request";
       case NotificationType.meetupConfirmation:
-        return Text(
-          "Meetup Confirmation",
-          style: TextStyle(decoration: TextDecoration.underline),
-        );
+        title = "Meetup Confirmed";
     }
+    return Padding(
+      padding: EdgeInsets.only(bottom: 4),
+      child: Text(
+        title,
+        style: TextStyle(
+          color: AppColors.primary,
+          fontSize: 17,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
   }
 
   Widget _buildSubtitle(NotificationType type, String body) {
-    String str = "";
+    final String name = userprofile.name.split(" ")[0];
+    String from = "";
+    String descriptor1 = "";
+    String text1 = "";
+    String descriptor2 = "";
+    String text2 = "";
     switch (type) {
       case NotificationType.knowledgeRequest:
-        str = notification.body;
+        from = name;
+        descriptor1 = "Keyword: ";
+        text1 = notification.payload["keyword"];
       case NotificationType.requestDeclined:
-        str = "Your request has been declined";
+        from = name;
+        descriptor1 = "Keyword: ";
+        text1 = notification.payload["keyword"];
+        text2 = "Your request has been declined";
       case NotificationType.requestAccepted:
-        str = "Your request was accepted";
+        from = name;
+        descriptor1 = "Keyword: ";
+        text1 = notification.payload["keyword"];
+        text2 = "Your request was accepted";
       case NotificationType.meetupRequest:
-        str = notification.body;
+        from = name;
+        text2 = "New meetup suggestions!";
       case NotificationType.meetupConfirmation:
-        str = notification.body;
+        var str = notification.body.split(" ");
+        from = name;
+        descriptor1 = str[2];
+        text1 = "";
+        descriptor2 = "";
+        text2 = str[0] + str[1];
     }
-    return Text(
-      textAlign: TextAlign.start,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      softWrap: false,
-      str,
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text(style: TextStyle(fontWeight: FontWeight.bold), "From: "),
+            Expanded(
+              child: Text(
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                from,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Text(style: TextStyle(fontWeight: FontWeight.bold), descriptor1),
+            Expanded(
+              child: Text(
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.start,
+                softWrap: false,
+                text1,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Text(style: TextStyle(fontWeight: FontWeight.bold), descriptor2),
+            Expanded(
+              child: Text(
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.start,
+                softWrap: false,
+                text2,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
