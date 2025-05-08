@@ -67,4 +67,9 @@ class FindMatchesViewModel extends ChangeNotifier {
         reachabilities: await MatchingAlgorithm().getReachabilities());
     notifyListeners();
   }
+
+  void cancelKeyword() {
+    _state = _state.cancelKeyword();
+    notifyListeners();
+  }
 }

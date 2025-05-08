@@ -46,6 +46,14 @@ class FindMatchesState {
       reachabilities: reachabilities ?? this.reachabilities,
     );
   }
+  FindMatchesState cancelKeyword(){
+    return FindMatchesState(
+        keyword: null,
+        keywords: keywords,
+        topics: topics,
+        keyword2Topics: keyword2Topics,
+        reachabilities: reachabilities);
+  }
 
 
 }

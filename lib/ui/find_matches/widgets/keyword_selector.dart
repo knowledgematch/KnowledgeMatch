@@ -131,8 +131,15 @@ class KeywordSelectionDialog extends StatelessWidget {
       ),
       actions: [
         TextButton(
+          onPressed: () => {
+            Navigator.pop(context),
+            viewModel.cancelKeyword(),
+          },
+          child: const Text("Cancel"),
+        ),
+        TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text("Close"),
+          child: const Text("Confirm"),
         ),
       ],
     );
