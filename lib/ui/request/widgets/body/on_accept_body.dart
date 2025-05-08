@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/core/ui/decorations.dart';
-import 'package:knowledgematch/ui/core/ui/themed_container.dart';
 import 'package:provider/provider.dart';
 
 import '../../view_model/request_view_model.dart';

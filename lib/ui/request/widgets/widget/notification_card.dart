@@ -3,8 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/ui/core/themes/app_colors.dart';
-import 'package:knowledgematch/ui/core/themes/app_constants.dart';
-import 'package:knowledgematch/ui/core/ui/themed_container.dart';
+import 'package:knowledgematch/ui/core/ui/decorations.dart';
 
 class NotificationCard extends StatelessWidget {
   final NotificationData notification;
@@ -32,7 +31,9 @@ class NotificationCard extends StatelessWidget {
             ).format(notification.timestamp!.toLocal()).toString()
             : 'Unknown time';
 
-    return ThemedContainer(
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: Decorations.container,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
         child: Column(
