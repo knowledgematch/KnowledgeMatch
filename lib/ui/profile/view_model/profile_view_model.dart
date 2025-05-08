@@ -4,16 +4,15 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:knowledgematch/ui/splash/widgets/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/services/api_db_connection.dart';
 import '../../../domain/models/reachability.dart';
 import '../../../domain/models/user.dart';
-import '../../login/login_screen.dart';
 import '../profile_state.dart';
 
-class ProfileViewModel extends ChangeNotifier{
-
+class ProfileViewModel extends ChangeNotifier {
   final user = User.instance;
 
   final ImagePicker _picker = ImagePicker();
@@ -26,17 +25,16 @@ class ProfileViewModel extends ChangeNotifier{
 
   ProfileState get state => _state;
 
-
   ProfileViewModel()
-      :_state = ProfileState(uId: "", reachability: Reachability.inPerson, semester: 1);
+      : _state = ProfileState(
+            uId: "", reachability: Reachability.inPerson, semester: 1);
 
-
-  void changeSemester(int semester){
+  void changeSemester(int semester) {
     _state = _state.copyWith(semester: semester);
     notifyListeners();
   }
 
-  void changeReachability(Reachability reachability){
+  void changeReachability(Reachability reachability) {
     _state = _state.copyWith(reachability: reachability);
     notifyListeners();
   }
@@ -59,7 +57,7 @@ class ProfileViewModel extends ChangeNotifier{
       final fileBytes = await pickedFile.readAsBytes();
       const targetSizeInKB = 100;
       final compressedBytes =
-      await compressImageToTargetSize(fileBytes, targetSizeInKB * 1024);
+          await compressImageToTargetSize(fileBytes, targetSizeInKB * 1024);
       _state = _state.copyWith(pictureData: compressedBytes);
       notifyListeners();
     }
@@ -109,16 +107,17 @@ class ProfileViewModel extends ChangeNotifier{
 
     if (userDataString != null) {
       final userData = jsonDecode(userDataString);
-      _state =_state.copyWith(uId: userData['U_ID'].toString());
+      _state = _state.copyWith(uId: userData['U_ID'].toString());
 
-        nameController.text = user.name!;
-        surnameController.text = user.surname!;
-        _state = _state.copyWith(reachability: ReachabilityValue.fromValue(user.reachability ?? 0));
-        emailController.text = user.email!;
-        _state.copyWith(semester: user.seniority);
-        descriptionController.text = user.description ?? '';
-        _state = _state.copyWith(pictureData: user.getDecodedPicture());
-        notifyListeners();
+      nameController.text = user.name!;
+      surnameController.text = user.surname!;
+      _state = _state.copyWith(
+          reachability: ReachabilityValue.fromValue(user.reachability ?? 0));
+      emailController.text = user.email!;
+      _state.copyWith(semester: user.seniority);
+      descriptionController.text = user.description ?? '';
+      _state = _state.copyWith(pictureData: user.getDecodedPicture());
+      notifyListeners();
     }
   }
 
@@ -145,11 +144,11 @@ class ProfileViewModel extends ChangeNotifier{
           descriptionController.text,
           _state.pictureData);
       if (response == 204) {
-       if (context.mounted) {
-         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile saved successfully!')),
-         );
-       }
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Profile saved successfully!')),
+          );
+        }
 
         user.name = nameController.text;
         user.surname = surnameController.text;
@@ -179,10 +178,10 @@ class ProfileViewModel extends ChangeNotifier{
       }
     } catch (error) {
       if (context.mounted) {
-         ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text('Error:')),
-         );
-       }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error:')),
+        );
+      }
     }
   }
 
@@ -204,7 +203,7 @@ class ProfileViewModel extends ChangeNotifier{
     if (context.mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => SplashScreen()),
       );
     }
   }
