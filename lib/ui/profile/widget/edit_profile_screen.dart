@@ -1,0 +1,62 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
+
+import '../../core/themes/app_colors.dart';
+
+class EditProfileScreen extends StatelessWidget {
+  const EditProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = context.read<ProfileViewModel>();
+    final nameController = viewModel.nameController;
+    final surnameController = viewModel.surnameController;
+    final emailController = viewModel.emailController;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Edit Profile'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {
+          viewModel.saveProfile(context),
+          Navigator.pop(context),
+        },
+        child: const Icon(Icons.save),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'First Name'),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: surnameController,
+              decoration: const InputDecoration(labelText: 'Last Name'),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: emailController,
+              enabled: false,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                suffixIcon: const Icon(Icons.lock, size: 20),
+                filled: true,
+                fillColor: AppColors.grey,
+                disabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.grey2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+            const Spacer(),
+          ],
+        ),
+      ),
+    );
+  }
+}
