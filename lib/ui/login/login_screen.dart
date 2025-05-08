@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/themes/app_colors.dart';
-import '../create_profile/create_profile_screen.dart';
+import '../create_profile/view_model/create_profile_view_model.dart';
+import '../create_profile/widgets/create_profile_screen.dart';
 import '../forgot_pw/view_model/forgot_pw_view_model.dart';
 import '../forgot_pw/widgets/forgot_pw_screen.dart';
 import '../two_fa/view_model/two_fa_view_model.dart';
@@ -168,7 +169,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CreateProfileScreen()),
+                    builder: (_) => ChangeNotifierProvider(
+                      create: (_) => CreateProfileViewModel(),
+                      // <-- your ViewModel
+                      child: CreateProfileScreen(),
+                    ),
+                  ),
                 );
               },
               child: Text('Create a new account',
