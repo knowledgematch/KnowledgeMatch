@@ -5,6 +5,7 @@ import 'package:knowledgematch/ui/find_matches/find_matches_state.dart';
 import '../../../data/services/matching_algorithm.dart';
 import '../../../domain/models/keyword.dart';
 import '../../../domain/models/reachability.dart';
+import '../../../domain/models/topic.dart';
 
 class FindMatchesViewModel extends ChangeNotifier {
   FindMatchesState _state = FindMatchesState(keywords: [], reachabilities: [],
@@ -38,6 +39,11 @@ class FindMatchesViewModel extends ChangeNotifier {
   }
   void updateKeyword(Keyword? newKeyword) {
     _state = _state.copyWith(keyword: newKeyword);
+    notifyListeners();
+  }
+
+  void updateSelectedTopic(Topic? selectedTopic) {
+    _state = _state.copyWith(selectedTopic: selectedTopic);
     notifyListeners();
   }
 

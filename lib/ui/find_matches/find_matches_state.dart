@@ -6,6 +6,7 @@ import '../../domain/models/topic.dart';
 
 class FindMatchesState {
   Keyword? keyword;
+  Topic? selectedTopic;
   String? description;
   Reachability? reachability;
   late List<Keyword> keywords = [];
@@ -15,6 +16,7 @@ class FindMatchesState {
 
   FindMatchesState({
     this.keyword,
+    this.selectedTopic,
     this.description,
     this.reachability,
     required this.keywords,
@@ -35,6 +37,7 @@ class FindMatchesState {
   }) {
     return FindMatchesState(
       keyword: keyword ?? this.keyword,
+      selectedTopic: selectedTopic ?? this.selectedTopic,
       description: description ?? this.description,
       reachability: reachability ?? this.reachability,
       keywords: keywords ?? this.keywords,
