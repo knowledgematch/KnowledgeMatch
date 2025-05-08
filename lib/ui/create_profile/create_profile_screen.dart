@@ -58,6 +58,30 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
   //TODO move methods to a service/model class
   void _createAccount() async {
     if (_formKey.currentState!.validate()) {
+      // First, validate the email domain
+      final isValidDomain = await ApiDbConnection().isEmailDomainValid(_email);
+      if (!isValidDomain) {
+        // If the domain is invalid, show an error message
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Invalid Email Domain'),
+            content: Text(
+                'The email domain does not match any valid organisation domains.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+        return; // Exit the function early if domain is invalid
+      }
+
+      // Proceed to create the account if the domain is valid
       final response = await ApiDbConnection().createAccount(
         _name,
         _surname,

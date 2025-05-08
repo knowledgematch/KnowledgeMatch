@@ -678,4 +678,25 @@ class ApiDbConnection {
       return [];
     }
   }
+
+  Future<bool> isEmailDomainValid(String email) async {
+    try {
+      final organisations = await getAllOrganisations();
+
+      final emailDomain = email.split('@').last.trim().toLowerCase();
+      final organisationDomains =
+          organisations.map((org) => org.domain.trim().toLowerCase()).toList();
+
+      print('Email domain: $emailDomain');
+      print('Organisation domains: $organisationDomains');
+
+      final isValid = organisationDomains.contains(emailDomain);
+      print('Is email domain valid? $isValid');
+
+      return isValid;
+    } catch (e) {
+      print('Error validating email domain: $e');
+      return false;
+    }
+  }
 }
