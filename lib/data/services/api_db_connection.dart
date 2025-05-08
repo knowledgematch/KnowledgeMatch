@@ -216,6 +216,20 @@ class ApiDbConnection {
     }
   }
 
+  Future<List<dynamic>?> initUser(int userId) async {
+    var finalUri = Uri.parse('$baseUri/users/$userId');
+
+    try {
+      final response = await http.get(finalUri);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<List<Map<String, dynamic>>> fetchKeyword2Topic() async {
     var finalUri = Uri.parse('$baseUri/keyword2topic');
     return await _fetcher(finalUri);
