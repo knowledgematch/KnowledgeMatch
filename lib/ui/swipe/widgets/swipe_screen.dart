@@ -16,19 +16,6 @@ class SwipeScreen extends StatefulWidget {
 }
 
 class ProfileSwipeScreenState extends State<SwipeScreen> {
-  late final ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +44,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
           );
         }
 
-        return Expanded(
-          child: Scrollbar(
-            controller: _scrollController,
-            thumbVisibility: true,
-            // always show the thumb
-            thickness: 6,
-            // makes the thumb a bit more obvious
-            radius: Radius.circular(3),
+        return Column(children: [
+          Expanded(
             child: Scaffold(
               backgroundColor: AppColors.primary,
               resizeToAvoidBottomInset: false,
@@ -169,7 +150,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
               ),
             ),
           ),
-        );
+        ]);
       },
     );
   }

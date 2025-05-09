@@ -58,10 +58,10 @@ class BackCard extends StatelessWidget {
             ),
             Text(
               profile.name,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppColors.black87Light,
               ),
             ),
             const SizedBox(height: 8),
