@@ -127,10 +127,10 @@ class HomeScreenState extends State<HomeScreen> {
                   CircleAvatar(
                     radius: 30,
                     backgroundImage:
-                    User.instance.getDecodedPicture() != null
-                        ? MemoryImage(User.instance.getDecodedPicture()!)
-                        : const AssetImage('assets/images/profile.png')
-                    as ImageProvider,
+                        User.instance.getDecodedPicture() != null
+                            ? MemoryImage(User.instance.getDecodedPicture()!)
+                            : const AssetImage('assets/images/profile.png')
+                                as ImageProvider,
                   ),
                 ],
               ),
