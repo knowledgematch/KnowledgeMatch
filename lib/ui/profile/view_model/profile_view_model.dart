@@ -4,12 +4,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:knowledgematch/ui/splash/widgets/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/services/api_db_connection.dart';
 import '../../../domain/models/reachability.dart';
 import '../../../domain/models/user.dart';
-import '../../login/login_screen.dart';
 import '../profile_state.dart';
 
 class ProfileViewModel extends ChangeNotifier {
@@ -211,9 +211,9 @@ class ProfileViewModel extends ChangeNotifier {
     await prefs.clear();
     User.instance.reset();
     if (context.mounted) {
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => SplashScreen()),
       );
     }
   }

@@ -23,6 +23,7 @@ class AdminScreenState extends State<AdminScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Manage Keywords
             Text('Manage Keywords',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             TextField(
@@ -44,8 +45,7 @@ class AdminScreenState extends State<AdminScreen> {
                 ),
                 ElevatedButton(
                     onPressed: viewModel.loadKeywords,
-                    child: Icon(Icons.refresh)
-                ),
+                    child: Icon(Icons.refresh)),
               ],
             ),
             SingleChildScrollView(
@@ -80,6 +80,8 @@ class AdminScreenState extends State<AdminScreen> {
               ),
             ),
             SizedBox(height: 20),
+
+            // Manage Topics
             Text('Manage Topics',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             TextField(
@@ -101,8 +103,7 @@ class AdminScreenState extends State<AdminScreen> {
                 ),
                 ElevatedButton(
                     onPressed: viewModel.loadTopics,
-                    child: Icon(Icons.refresh)
-                ),
+                    child: Icon(Icons.refresh)),
               ],
             ),
             SingleChildScrollView(
@@ -136,6 +137,68 @@ class AdminScreenState extends State<AdminScreen> {
               ),
             ),
             SizedBox(height: 20),
+
+            // Manage Organisations
+            Text('Manage Organisations',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            TextField(
+              controller: viewModel.organisationController,
+              decoration: InputDecoration(labelText: 'Enter new Organisation'),
+            ),
+            SizedBox(height: 12),
+            TextField(
+              controller: viewModel.domainController,
+              decoration: InputDecoration(labelText: 'Enter Domain'),
+            ),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: viewModel.addOrganisation,
+                  child: Text(viewModel.state.editingOrganisation == null
+                      ? 'Add Organisation'
+                      : 'Update Organisation'),
+                ),
+                ElevatedButton(
+                    onPressed: viewModel.loadOrganisations,
+                    child: Icon(Icons.refresh)),
+              ],
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: [
+                  DataColumn(label: Text('ID')),
+                  DataColumn(label: Text('Organisation')),
+                  DataColumn(label: Text('Domain')),
+                  DataColumn(label: Text('Actions')),
+                ],
+                rows:
+                    viewModel.state.organisations.map<DataRow>((organisation) {
+                  return DataRow(cells: [
+                    DataCell(Text(organisation.id.toString())),
+                    DataCell(Text(organisation.organisation)),
+                    DataCell(Text(organisation.domain)),
+                    DataCell(Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () =>
+                              viewModel.startEditingOrganisation(organisation),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () =>
+                              viewModel.deleteOrganisation(organisation),
+                        ),
+                      ],
+                    )),
+                  ]);
+                }).toList(),
+              ),
+            ),
+            SizedBox(height: 20),
+
+            // Map Keyword to Topic
             Text('Map Keyword to Topic',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             DropdownButton<Keyword>(
@@ -201,5 +264,4 @@ class AdminScreenState extends State<AdminScreen> {
       ),
     );
   }
-
 }

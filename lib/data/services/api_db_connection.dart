@@ -1,16 +1,28 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
+import '../../domain/models/organisation.dart';
+
 class ApiDbConnection {
-  var host = '86.119.47.241';
+  String host = "";
   var port = 3000;
 
-  Uri get baseUri => Uri.parse('http://$host:$port');
+  Uri get baseUri => Uri.parse('$host:$port');
+
+  ApiDbConnection() {
+    if (kReleaseMode) {
+      // Live server
+      host = 'http://86.119.47.241';
+    } else {
+      // Test server
+      host = 'https://fl-13-105.zhdk.cloud.switch.ch';
+    }
+  }
 
   /// Fetches distinct data for a specific key from the user.
   ///
@@ -65,11 +77,11 @@ class ApiDbConnection {
     }
   }
 
-  Future<bool> updateKeywordEntry({
-    required int id,
-    required int levels,
-    required String keyword,
-    required String description}) async {
+  Future<bool> updateKeywordEntry(
+      {required int id,
+      required int levels,
+      required String keyword,
+      required String description}) async {
     var finalUri = Uri.parse('$baseUri/keywords/$id');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
@@ -85,14 +97,13 @@ class ApiDbConnection {
         print('Failed to delete Keyword entry: ${response.body}');
         return false;
       }
-
     } catch (e) {
       print('Error updating Keyword: $e');
       return false;
     }
   }
 
-  Future<bool> removeKeywordEntry(int id) async{
+  Future<bool> removeKeywordEntry(int id) async {
     var finalUri = Uri.parse('$baseUri/keywords/$id');
     try {
       final response = await http.delete(finalUri);
@@ -109,7 +120,7 @@ class ApiDbConnection {
     }
   }
 
-  Future<bool> removeTopicEntry(int id) async{
+  Future<bool> removeTopicEntry(int id) async {
     var finalUri = Uri.parse('$baseUri/topics/$id');
     try {
       final response = await http.delete(finalUri);
@@ -126,11 +137,11 @@ class ApiDbConnection {
     }
   }
 
-  Future<bool> updateTopicEntry({
-    required int id,
-    required int levels,
-    required String topic,
-    required String description}) async {
+  Future<bool> updateTopicEntry(
+      {required int id,
+      required int levels,
+      required String topic,
+      required String description}) async {
     var finalUri = Uri.parse('$baseUri/topics/$id');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
@@ -146,18 +157,16 @@ class ApiDbConnection {
         print('Failed to delete Topic entry: ${response.body}');
         return false;
       }
-
     } catch (e) {
       print('Error updating Topic: $e');
       return false;
     }
   }
 
-
   Future<int> addTopicEntry(
       {required int levels,
-        required String topic,
-        required String description}) async {
+      required String topic,
+      required String description}) async {
     var finalUri = baseUri.replace(
       path: '/topics',
     );
@@ -208,6 +217,20 @@ class ApiDbConnection {
     } catch (e) {
       print('Error during DELETE request: $e');
       return false;
+    }
+  }
+
+  Future<List<dynamic>?> initUser(int userId) async {
+    var finalUri = Uri.parse('$baseUri/users/$userId');
+
+    try {
+      final response = await http.get(finalUri);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
   }
 
@@ -478,6 +501,53 @@ class ApiDbConnection {
     }
   }
 
+  Future<String> login(String email, String password) async {
+    var finalUri = Uri.parse('$baseUri/login');
+
+    try {
+      final response = await http.post(
+        finalUri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': password}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final token = data['token'];
+        final user = data['user'];
+
+        return '$token;$user';
+      } else {
+        return "Error logging in.";
+      }
+    } catch (e) {
+      return "Error logging in.";
+    }
+  }
+
+  Future<Map<String, dynamic>?> twoFA(String email, String code) async {
+    var finalUri = Uri.parse('$baseUri/verify-2fa');
+
+    try {
+      final response = await http.post(
+        finalUri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'code': code}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final token = data['token'];
+        final Map<String, dynamic> user = data['user'];
+
+        return {'token': token, 'user': user};
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
+  }
+
   /// Updates the FCM token for the user with the provided user ID.
   ///
   /// This method retrieves the current Firebase Cloud Messaging (FCM) token for the device and
@@ -601,6 +671,102 @@ class ApiDbConnection {
       return response.statusCode == 200;
     } catch (e) {
       print('Error during password reset request: $e');
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> createOrganisation({
+    required String organisation,
+    required String domain,
+  }) async {
+    final finalUri = baseUri.replace(path: '/organisations');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'organisation': organisation,
+      'domain': domain,
+    });
+
+    try {
+      final response = await http.post(finalUri, headers: headers, body: body);
+      if (response.statusCode == 201) {
+        return jsonDecode(response.body);
+      }
+      print('Failed to create organisation: ${response.body}');
+      return null;
+    } catch (e) {
+      print('Error creating organisation: $e');
+      return null;
+    }
+  }
+
+  Future<bool> updateOrganisation({
+    required int id,
+    required String organisation,
+    required String domain,
+  }) async {
+    final finalUri = baseUri.replace(path: '/organisations/$id');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'organisation': organisation,
+      'domain': domain,
+    });
+
+    try {
+      final response = await http.put(finalUri, headers: headers, body: body);
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Error updating organisation: $e');
+      return false;
+    }
+  }
+
+  Future<bool> deleteOrganisation(int id) async {
+    final finalUri = baseUri.replace(path: '/organisations/$id');
+
+    try {
+      final response = await http.delete(finalUri);
+      return response.statusCode == 204;
+    } catch (e) {
+      print('Error deleting organisation: $e');
+      return false;
+    }
+  }
+
+  Future<List<Organisation>> getAllOrganisations() async {
+    final finalUri = baseUri.replace(path: '/organisations');
+
+    try {
+      final response = await http.get(finalUri);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.map((item) => Organisation.fromJson(item)).toList();
+      } else {
+        print('Failed to fetch organisations: ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('Error fetching organisations: $e');
+      return [];
+    }
+  }
+
+  Future<bool> isEmailDomainValid(String email) async {
+    try {
+      final organisations = await getAllOrganisations();
+
+      final emailDomain = email.split('@').last.trim().toLowerCase();
+      final organisationDomains =
+          organisations.map((org) => org.domain.trim().toLowerCase()).toList();
+
+      print('Email domain: $emailDomain');
+      print('Organisation domains: $organisationDomains');
+
+      final isValid = organisationDomains.contains(emailDomain);
+      print('Is email domain valid? $isValid');
+
+      return isValid;
+    } catch (e) {
+      print('Error validating email domain: $e');
       return false;
     }
   }
