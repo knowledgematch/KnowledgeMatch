@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/data/services/api_db_connection.dart';
+import 'package:knowledgematch/data/services/keyword_topic_service.dart';
 import 'package:knowledgematch/domain/models/keyword2topic.dart';
 
 import '../../../domain/models/keyword.dart';
@@ -11,7 +12,8 @@ class AdminViewModel extends ChangeNotifier {
   final TextEditingController topicController = TextEditingController();
   final TextEditingController keywordDescController = TextEditingController();
   final TextEditingController topicDescController = TextEditingController();
-  final ApiDbConnection api = ApiDbConnection();
+  final api = ApiDbConnection();
+  final keywordTopicService = KeywordTopicService();
   AdminState _state = AdminState(
       keywords: [],
       topics: [],
@@ -28,41 +30,23 @@ class AdminViewModel extends ChangeNotifier {
   }
 
   Future<void> loadKeywords() async {
-    var resKeyw = await api.fetchKeywords();
-    var keywords = resKeyw
-        .map<Keyword>((json) => Keyword(
-            id: json['K_ID'] as int,
-            levels: json['Levels'] ?? 0,
-            name: json['Keyword'],
-            description: json['Description']))
-        .toList();
-
+    var keywords = await keywordTopicService.fetchKeywords();
     _state = _state.copyWith(keywords: keywords);
     notifyListeners();
   }
 
   Future<void> loadTopics() async {
-    var resTop = await api.fetchTopics();
-    var topics = resTop
-        .map<Topic>((json) => Topic(
-            id: json['T_ID'] as int,
-            levels: json['Levels'] ?? 0,
-            name: json['Topic'],
-            description: json['Description']))
-        .toList();
+    var topics = await keywordTopicService.fetchTopics();
     _state = _state.copyWith(topics: topics);
     notifyListeners();
   }
 
   Future<void> loadKeyword2Topic() async {
-    var res = await api.fetchKeyword2Topic();
-    var keywords = res
-        .map<Keyword2Topic>((json) => Keyword2Topic(
-            keyword: _state.keywords.firstWhere((k) => k.id == json['K_ID']),
-            topic: _state.topics.firstWhere((t) => t.id == json['T_ID'])))
-        .toList();
+    var keyword2topics = await keywordTopicService.fetchKeyword2Topic(
+        keywords: _state.keywords, topics: _state.topics);
 
-    _state = _state.copyWith(keyword2topic: keywords);
+
+    _state = _state.copyWith(keyword2topic: keyword2topics);
     notifyListeners();
   }
 
