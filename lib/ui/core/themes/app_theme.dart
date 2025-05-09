@@ -176,6 +176,18 @@ class AppTheme {
         secondaryLabelStyle: TextStyle(color: AppColors.whiteLight),
         shape: RoundedRectangleBorder(borderRadius: AppConstants.borderRadius),
       ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: AppColors.primary,
+        contentTextStyle: TextStyle(
+          color: AppColors.grey2Light,
+          fontWeight: FontWeight.bold,
+        ),
+        elevation: 6.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 
