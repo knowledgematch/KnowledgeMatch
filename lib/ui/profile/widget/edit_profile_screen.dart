@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
 
+import '../../change_pw/view_model/change_pw_view_model.dart';
+import '../../change_pw/widgets/change_pw_screen.dart';
 import '../../core/themes/app_colors.dart';
 
 class EditProfileScreen extends StatelessWidget {
@@ -53,7 +55,20 @@ class EditProfileScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const Spacer(),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider(
+                          create: (_) => ChangePwViewModel(),
+                          child: ChangePasswordScreen())),
+                );
+              },
+              child: const Text('Change Password'),
+            ),
+
           ],
         ),
       ),
