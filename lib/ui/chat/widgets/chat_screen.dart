@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/ui/app_drawer.dart';
 import 'feed_widget.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -27,6 +28,7 @@ class ChatScreenState extends State<ChatScreen> {
       builder: (context, _) {
         return Scaffold(
           appBar: AppBar(title: const Text('Requests')),
+          drawer: const AppDrawer(),
           body: FeedWidget(),
           // viewModel.state.isLoading
           //     ? const Center(child: CircularProgressIndicator())
