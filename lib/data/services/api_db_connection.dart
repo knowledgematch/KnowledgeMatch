@@ -10,13 +10,15 @@ class ApiDbConnection {
   String host = "";
   var port = 3000;
 
-  Uri get baseUri => Uri.parse('https://$host:$port');
+  Uri get baseUri => Uri.parse('$host:$port');
 
   ApiDbConnection() {
     if (kReleaseMode) {
-      host = '86.119.47.241';
+      // Live server
+      host = 'http://86.119.47.241';
     } else {
-      host = 'fl-13-105.zhdk.cloud.switch.ch';
+      // Test server
+      host = 'https://fl-13-105.zhdk.cloud.switch.ch';
     }
   }
 
