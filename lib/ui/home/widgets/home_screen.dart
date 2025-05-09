@@ -6,8 +6,10 @@ import 'package:knowledgematch/ui/home/view_model/home_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/notification_data.dart';
+import '../../../domain/models/user.dart';
 import '../../../domain/models/userprofile.dart';
 import '../../core/themes/app_colors.dart';
+import '../../profile/widget/profile_screen.dart';
 import '../../request/view_model/request_view_model.dart';
 import '../../request/widgets/notification_card.dart';
 import '../../request/widgets/request_screen.dart';
@@ -20,6 +22,34 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  bool _showIncompleteProfileBanner = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = User.instance;
+      final isProfileIncomplete = user.description == null ||
+          user.description!.trim().isEmpty ||
+          user.seniority == null ||
+          user.picture == null;
+
+      if (isProfileIncomplete) {
+        setState(() {
+          _showIncompleteProfileBanner = true;
+        });
+      }
+    });
+  }
+
+  void _navigateToEditProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ProfileScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final HomeViewModel viewModel = context.watch<HomeViewModel>();
@@ -69,17 +99,43 @@ class HomeScreenState extends State<HomeScreen> {
                   const Spacer(),
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: viewModel.state.profilePicture !=
-                            null //TODO check if profile picture is shown correctly
+                    backgroundImage: viewModel.state.profilePicture != null
                         ? MemoryImage(viewModel.state.profilePicture!)
                         : const AssetImage('assets/images/profile.png')
                             as ImageProvider,
-                    // User.instance.picture ?? 'assets/images/profile.png'),
                   ),
                 ],
               ),
             ),
           ),
+          // Show profile completion banner conditionally
+          if (_showIncompleteProfileBanner)
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.blueLight.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.primary.withOpacity(0.8)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.info_outline, color: AppColors.primary),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      "Your profile’s incomplete—add info to stand out.",
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  TextButton(
+                    onPressed: _navigateToEditProfile,
+                    child: const Text("Edit"),
+                  ),
+                ],
+              ),
+            ),
+
           const SizedBox(height: 18),
           _buildSectionTitle("Open Requests", Icons.pending_actions),
           const SizedBox(height: 8),
