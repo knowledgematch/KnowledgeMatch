@@ -22,9 +22,9 @@ class BackCard extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      // padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.grey2Light,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -35,33 +35,26 @@ class BackCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
             height: 450,
-            width: 380,
+            width: double.infinity,
             decoration: BoxDecoration(
               color: AppColors.greyShadowLight,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.greyShadowLight, width: 2),
+              borderRadius: AppConstants.borderRadiusLarge,
             ),
             child: ClipRRect(
               borderRadius: AppConstants.borderRadiusLarge,
-              child: Flexible(
-                child:
-                    profilePicture != null
-                        ? Image.memory(profilePicture, fit: BoxFit.cover)
-                        : Image.asset(
-                          'assets/images/profile.png',
-                          fit: BoxFit.cover,
-                        ),
-              ),
+              child:
+                  profilePicture != null
+                      ? Image.memory(profilePicture, fit: BoxFit.cover)
+                      : Image.asset(
+                        'assets/images/profile.png',
+                        fit: BoxFit.cover,
+                      ),
             ),
           ),
-
-          const SizedBox(height: 16),
-
-          // Name
           Text(
             profile.name,
             style: const TextStyle(
@@ -71,7 +64,6 @@ class BackCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-
           Expanded(
             child: Text(
               profile.description == "null"
@@ -81,7 +73,6 @@ class BackCard extends StatelessWidget {
               style: const TextStyle(fontSize: 16, color: AppColors.greyLight),
             ),
           ),
-
           const Padding(
             padding: EdgeInsets.only(top: 8),
             child: Text(
