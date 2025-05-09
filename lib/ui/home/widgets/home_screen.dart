@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../domain/models/notification_data.dart';
 import '../../../domain/models/userprofile.dart';
 import '../../core/themes/app_colors.dart';
+import '../../core/ui/decorations.dart';
 import '../../profile/widget/profile_screen.dart';
 import '../../request/view_model/request_view_model.dart';
 import '../../request/widgets/request_screen.dart';
@@ -47,7 +48,6 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
-
   void _navigateToEditProfile() {
     Navigator.push(
       context,
@@ -70,25 +70,7 @@ class HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.blue.withOpacity(0.3),
-                    spreadRadius: 2,
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    AppColors.blue.withOpacity(0.1),
-                    AppColors.primary.withOpacity(0.6),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(20),
-              ),
+              decoration: Decorations.container,
               child: Row(
                 children: [
                   Column(
@@ -126,11 +108,10 @@ class HomeScreenState extends State<HomeScreen> {
                   const Spacer(),
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage:
-                        User.instance.getDecodedPicture() != null
-                            ? MemoryImage(User.instance.getDecodedPicture()!)
-                            : const AssetImage('assets/images/profile.png')
-                                as ImageProvider,
+                    backgroundImage: User.instance.getDecodedPicture() != null
+                        ? MemoryImage(User.instance.getDecodedPicture()!)
+                        : const AssetImage('assets/images/profile.png')
+                            as ImageProvider,
                   ),
                 ],
               ),
@@ -220,15 +201,14 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (context) => ChangeNotifierProvider<RequestViewModel>(
-                          create:
-                              (_) => RequestViewModel(
-                                notificationData: entry.key,
-                                userprofile: entry.value,
-                              ),
-                          child: RequestScreen(),
-                        ),
+                    builder: (context) =>
+                        ChangeNotifierProvider<RequestViewModel>(
+                      create: (_) => RequestViewModel(
+                        notificationData: entry.key,
+                        userprofile: entry.value,
+                      ),
+                      child: RequestScreen(),
+                    ),
                   ),
                 );
               },
