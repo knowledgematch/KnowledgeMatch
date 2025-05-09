@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
+import 'package:knowledgematch/ui/core/ui/decorations.dart';
 import 'package:knowledgematch/ui/home/view_model/home_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -51,12 +52,20 @@ class HomeScreenState extends State<HomeScreen> {
             child: Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.blue.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
                 gradient: LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                   colors: [
-                    AppColors.blue.withOpacity(0.2),
-                    AppColors.primary.withOpacity(0.8),
+                    AppColors.blue.withOpacity(0.1),
+                    AppColors.primary.withOpacity(0.6),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(20),
