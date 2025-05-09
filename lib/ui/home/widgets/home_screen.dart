@@ -61,7 +61,6 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
                 borderRadius: BorderRadius.circular(20),
               ),
-
               child: Row(
                 children: [
                   Column(
@@ -79,17 +78,13 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                             TextSpan(
                               text: "👋",
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
+                              style: TextStyle(fontSize: 20),
                             ),
                           ],
                         ),
                       ),
-
                       Text(
-                        "${_formatName(User.instance.name ?? '')}",
-
+                        _formatName(User.instance.name ?? ''),
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -102,10 +97,10 @@ class HomeScreenState extends State<HomeScreen> {
                   CircleAvatar(
                     radius: 30,
                     backgroundImage:
-                    User.instance.getDecodedPicture() != null
-                        ? MemoryImage(User.instance.getDecodedPicture()!)
-                        : const AssetImage('assets/images/profile.png')
-                    as ImageProvider,
+                        User.instance.getDecodedPicture() != null
+                            ? MemoryImage(User.instance.getDecodedPicture()!)
+                            : const AssetImage('assets/images/profile.png')
+                                as ImageProvider,
                     // User.instance.picture ?? 'assets/images/profile.png'),
                   ),
                 ],
@@ -170,13 +165,13 @@ class HomeScreenState extends State<HomeScreen> {
                   MaterialPageRoute(
                     builder:
                         (context) => ChangeNotifierProvider<RequestViewModel>(
-                      create:
-                          (_) => RequestViewModel(
-                        notificationData: entry.key,
-                        userprofile: entry.value,
-                      ),
-                      child: RequestScreen(),
-                    ),
+                          create:
+                              (_) => RequestViewModel(
+                                notificationData: entry.key,
+                                userprofile: entry.value,
+                              ),
+                          child: RequestScreen(),
+                        ),
                   ),
                 );
               },
@@ -204,4 +199,3 @@ class HomeScreenState extends State<HomeScreen> {
     return name;
   }
 }
-
