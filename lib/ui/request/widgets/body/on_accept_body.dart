@@ -29,7 +29,7 @@ class OnAcceptBodyState extends State<OnAcceptBody> {
             child: ListTile(
               title: Text(
                 viewModel.notificationData.body,
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               trailing: Icon(Icons.check_circle, color: Colors.green, size: 40),
             ),

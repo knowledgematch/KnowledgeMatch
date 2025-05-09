@@ -61,17 +61,20 @@ class AppTheme {
         ),
       ),
       textTheme: TextTheme(
-        headlineLarge: TextStyle(color: AppColors.primary),
+        headlineLarge: TextStyle(
+            color: AppColors.primary,
+            fontSize: 25,
+            fontWeight: FontWeight.bold),
         headlineMedium: TextStyle(color: AppColors.primary),
         headlineSmall: TextStyle(color: AppColors.primary),
         bodyLarge: TextStyle(color: AppColors.primary),
         bodyMedium: TextStyle(color: AppColors.primary),
         bodySmall: TextStyle(color: AppColors.primary),
-        titleLarge: TextStyle(color: AppColors.primary),
+        titleLarge:
+            TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
         titleMedium: TextStyle(
           color: AppColors.primary,
           fontSize: 20,
-          fontWeight: FontWeight.bold,
         ),
         titleSmall: TextStyle(
           color: AppColors.primary,
@@ -102,9 +105,15 @@ class AppTheme {
         ),
       ),
       appBarTheme: AppBarTheme(
-        titleTextStyle: TextStyle(color: AppColors.primary, fontSize: 20),
-        color: AppColors.white,
-        iconTheme: IconThemeData(color: AppColors.primary),
+        titleTextStyle: TextStyle(
+            color: AppColors.grey2Light,
+            fontSize: 25,
+            fontWeight: FontWeight.bold),
+        //backgroundColor: AppColors.primary,
+        color: AppColors.primary,
+        iconTheme: IconThemeData(color: AppColors.grey2Light),
+        centerTitle: true,
+        elevation: 0,
       ),
       buttonTheme: ButtonThemeData(
         buttonColor: AppColors.whiteLight,

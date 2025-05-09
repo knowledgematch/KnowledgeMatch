@@ -36,12 +36,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Home',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        elevation: 0,
+        title: const Text('Home'),
       ),
       drawer: const AppDrawer(),
       body: ListView(
@@ -86,7 +81,9 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                             TextSpan(
                               text: "👋",
-                              style: TextStyle(fontSize: 20),
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
                             ),
                           ],
                         ),
