@@ -4,6 +4,7 @@ import 'package:knowledgematch/data/services/keyword_topic_service.dart';
 import 'package:knowledgematch/domain/models/keyword2topic.dart';
 
 import '../../../domain/models/keyword.dart';
+import '../../../domain/models/organisation.dart';
 import '../../../domain/models/topic.dart';
 import '../admin_state.dart';
 
@@ -12,14 +13,18 @@ class AdminViewModel extends ChangeNotifier {
   final TextEditingController topicController = TextEditingController();
   final TextEditingController keywordDescController = TextEditingController();
   final TextEditingController topicDescController = TextEditingController();
+  final TextEditingController organisationController = TextEditingController();
+  final TextEditingController domainController = TextEditingController();
   final api = ApiDbConnection();
   final keywordTopicService = KeywordTopicService();
   AdminState _state = AdminState(
       keywords: [],
       topics: [],
       keyword2topic: [],
+      organisations: [],
       selectedTopic: null,
-      selectedKeyword: null);
+      selectedKeyword: null,
+      selectedOrganisation: null);
 
   AdminState get state => _state;
 
@@ -27,6 +32,7 @@ class AdminViewModel extends ChangeNotifier {
     loadKeywords();
     loadTopics();
     loadKeyword2Topic();
+    loadOrganisations();
   }
 
   Future<void> loadKeywords() async {
@@ -44,7 +50,6 @@ class AdminViewModel extends ChangeNotifier {
   Future<void> loadKeyword2Topic() async {
     var keyword2topics = await keywordTopicService.fetchKeyword2Topic(
         keywords: _state.keywords, topics: _state.topics);
-
 
     _state = _state.copyWith(keyword2topic: keyword2topics);
     notifyListeners();
@@ -161,6 +166,58 @@ class AdminViewModel extends ChangeNotifier {
             keyword: _state.selectedKeyword!, topic: _state.selectedTopic!));
       }
     }
+    notifyListeners();
+  }
+
+  Future<void> loadOrganisations() async {
+    var resOrgs = await api.getAllOrganisations();
+    _state = _state.copyWith(organisations: resOrgs);
+
+    notifyListeners();
+  }
+
+  Future<void> addOrganisation() async {
+    if (_state.editingOrganisation == null) {
+      await api.createOrganisation(
+        organisation: organisationController.text,
+        domain: domainController.text,
+      );
+    } else {
+      int index = _state.organisations
+          .indexWhere((o) => o.id == _state.editingOrganisation!.id);
+      var org = _state.organisations[index];
+      bool res = await api.updateOrganisation(
+        id: org.id,
+        organisation: organisationController.text,
+        domain: domainController.text,
+      );
+
+      if (res) {
+        _state.organisations[index] = _state.organisations[index].copyWith(
+          organisation: organisationController.text,
+          domain: domainController.text,
+        );
+      }
+      _state = _state.copyWith(editingOrganisation: null);
+    }
+
+    organisationController.clear();
+    domainController.clear();
+    notifyListeners();
+  }
+
+  Future<void> deleteOrganisation(Organisation org) async {
+    bool res = await api.deleteOrganisation(org.id);
+    if (res) {
+      _state.organisations.remove(org);
+      notifyListeners();
+    }
+  }
+
+  void startEditingOrganisation(Organisation org) {
+    _state = _state.copyWith(editingOrganisation: org);
+    organisationController.text = org.organisation;
+    domainController.text = org.domain;
     notifyListeners();
   }
 }

@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
+import '../../domain/models/organisation.dart';
+
 class ApiDbConnection {
   String host = "";
   var port = 3000;
@@ -669,6 +671,102 @@ class ApiDbConnection {
       return response.statusCode == 200;
     } catch (e) {
       print('Error during password reset request: $e');
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> createOrganisation({
+    required String organisation,
+    required String domain,
+  }) async {
+    final finalUri = baseUri.replace(path: '/organisations');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'organisation': organisation,
+      'domain': domain,
+    });
+
+    try {
+      final response = await http.post(finalUri, headers: headers, body: body);
+      if (response.statusCode == 201) {
+        return jsonDecode(response.body);
+      }
+      print('Failed to create organisation: ${response.body}');
+      return null;
+    } catch (e) {
+      print('Error creating organisation: $e');
+      return null;
+    }
+  }
+
+  Future<bool> updateOrganisation({
+    required int id,
+    required String organisation,
+    required String domain,
+  }) async {
+    final finalUri = baseUri.replace(path: '/organisations/$id');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'organisation': organisation,
+      'domain': domain,
+    });
+
+    try {
+      final response = await http.put(finalUri, headers: headers, body: body);
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Error updating organisation: $e');
+      return false;
+    }
+  }
+
+  Future<bool> deleteOrganisation(int id) async {
+    final finalUri = baseUri.replace(path: '/organisations/$id');
+
+    try {
+      final response = await http.delete(finalUri);
+      return response.statusCode == 204;
+    } catch (e) {
+      print('Error deleting organisation: $e');
+      return false;
+    }
+  }
+
+  Future<List<Organisation>> getAllOrganisations() async {
+    final finalUri = baseUri.replace(path: '/organisations');
+
+    try {
+      final response = await http.get(finalUri);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.map((item) => Organisation.fromJson(item)).toList();
+      } else {
+        print('Failed to fetch organisations: ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('Error fetching organisations: $e');
+      return [];
+    }
+  }
+
+  Future<bool> isEmailDomainValid(String email) async {
+    try {
+      final organisations = await getAllOrganisations();
+
+      final emailDomain = email.split('@').last.trim().toLowerCase();
+      final organisationDomains =
+          organisations.map((org) => org.domain.trim().toLowerCase()).toList();
+
+      print('Email domain: $emailDomain');
+      print('Organisation domains: $organisationDomains');
+
+      final isValid = organisationDomains.contains(emailDomain);
+      print('Is email domain valid? $isValid');
+
+      return isValid;
+    } catch (e) {
+      print('Error validating email domain: $e');
       return false;
     }
   }
