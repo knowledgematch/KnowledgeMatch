@@ -3,6 +3,7 @@ import 'package:knowledgematch/domain/models/reachability.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 
 import '../../core/themes/app_colors.dart';
+import '../../core/ui/decorations.dart';
 import '../../core/ui/info_card.dart';
 
 class ProfileCard extends StatelessWidget {
@@ -102,13 +103,6 @@ class ProfileCard extends StatelessWidget {
                 icon: Icons.label,
                 iconColor: AppColors.primary,
               ),
-              const SizedBox(height: 16),
-              InfoCard(
-                title: 'Email',
-                value: profile.email,
-                icon: Icons.email,
-                iconColor: AppColors.primary,
-              ),
               const SizedBox(height: 24),
               Align(
                 alignment: Alignment.centerLeft,
@@ -121,14 +115,10 @@ class ProfileCard extends StatelessWidget {
               Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
+                  decoration: Decorations.container,
                   child: Text(
                     profile.description.isEmpty
-                        ? 'No bio added yet.'
+                        ? 'No description added yet.'
                         : profile.description,
                     maxLines: 5,
                     overflow: TextOverflow.ellipsis,
