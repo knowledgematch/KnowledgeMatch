@@ -3,7 +3,7 @@ import 'package:knowledgematch/domain/models/user.dart';
 
 Future<void> initializeUser(int userId) async {
   try {
-    List<dynamic> response = ApiDbConnection().initUser(userId) as List;
+    List<dynamic> response = await ApiDbConnection().initUser(userId) as List;
 
     if (response.isNotEmpty) {
       User.instance.populateFromJson(response.first);

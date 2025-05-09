@@ -143,8 +143,6 @@ class AppTheme {
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(AppColors.transparent),
-          iconColor: MaterialStateProperty.all(AppColors.primary),
-          // foregroundColor: MaterialStateProperty.all(AppColors.blackLight),
         ),
       ),
       cardTheme: CardTheme(
