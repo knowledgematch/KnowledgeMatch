@@ -9,24 +9,43 @@ import 'package:provider/provider.dart';
 import '../../../domain/models/notification_data.dart';
 import '../../../domain/models/userprofile.dart';
 import '../../core/themes/app_colors.dart';
+import '../../core/ui/decorations.dart';
+import '../../main/view_model/main_view_model.dart';
 import '../../request/view_model/request_view_model.dart';
-import '../../request/widgets/notification_card.dart';
 import '../../request/widgets/request_screen.dart';
+import '../../request/widgets/widget/notification_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final MainScreenViewModel mainViewModel;
+  const HomeScreen({required this.mainViewModel, super.key});
 
   @override
   HomeScreenState createState() => HomeScreenState();
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  bool _showIncompleteProfileBanner = false;
+
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
       if (!mounted) return;
       context.read<HomeViewModel>().refresh();
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = User.instance;
+      final isProfileIncomplete = user.description == null ||
+          user.description!.trim().isEmpty ||
+          user.seniority == null ||
+          user.picture == null;
+
+      if (isProfileIncomplete) {
+        setState(() {
+          _showIncompleteProfileBanner = true;
+        });
+      }
     });
   }
 
@@ -36,12 +55,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Home',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        elevation: 0,
+        title: const Text('Home'),
       ),
       drawer: const AppDrawer(),
       body: ListView(
@@ -50,24 +64,33 @@ class HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-              ),
+              decoration: Decorations.container,
               child: Row(
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Welcome back,",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.primary.withOpacity(0.8),
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "Welcome back ",
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: AppColors.primary.withOpacity(0.8),
+                              ),
+                            ),
+                            TextSpan(
+                              text: "👋",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Text(
-                        "${User.instance.name} 👋",
+                        _formatName(User.instance.name ?? ''),
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -83,12 +106,41 @@ class HomeScreenState extends State<HomeScreen> {
                         ? MemoryImage(User.instance.getDecodedPicture()!)
                         : const AssetImage('assets/images/profile.png')
                             as ImageProvider,
-                    // User.instance.picture ?? 'assets/images/profile.png'),
                   ),
                 ],
               ),
             ),
           ),
+          // Show profile completion banner conditionally
+          if (_showIncompleteProfileBanner)
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.blueLight.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.primary.withOpacity(0.8)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.info_outline, color: AppColors.primary),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      "Your profile’s incomplete—add info to stand out.",
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  TextButton(
+                    onPressed: () =>{
+                      widget.mainViewModel.updateIndex(3),
+                    },
+                    child: const Text("Edit"),
+                  ),
+                ],
+              ),
+            ),
+
           const SizedBox(height: 18),
           _buildSectionTitle("Open Requests", Icons.pending_actions),
           const SizedBox(height: 8),
@@ -170,5 +222,13 @@ class HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
+  }
+
+  String _formatName(String name) {
+    const int maxLength = 17;
+    if (name.length > maxLength) {
+      return '${name.substring(0, maxLength)}...';
+    }
+    return name;
   }
 }

@@ -85,24 +85,27 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 },
               ),
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () async {
-                  var changed = await viewModel.changePassword();
-                  if (context.mounted) {
-                    if (changed) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Password changed successfully!')),
-                      );
-                      Navigator.pop(context);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error')),
-                      );
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    var changed = await viewModel.changePassword();
+                    if (context.mounted) {
+                      if (changed) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Password changed successfully!')),
+                        );
+                        Navigator.pop(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error')),
+                        );
+                      }
                     }
-                  }
-                },
-                child: const Text('Confirm'),
+                  },
+                  child: const Text('Confirm'),
+                ),
               ),
             ],
           ),

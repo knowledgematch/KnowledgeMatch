@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_model.dart';
+import 'package:knowledgematch/ui/find_matches/widgets/keyword_selector.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/search_criteria.dart';
 import '../../core/ui/app_drawer.dart';
-import '../../core/ui/custom_drop_down.dart';
 import '../../swipe/view_model/swipe_view_model.dart';
 import '../../swipe/widgets/swipe_screen.dart';
 
@@ -38,16 +38,8 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
             children: <Widget>[
               // Topics dropdown
               const Text("What is the topic you are having problems with?"),
-              CustomDropdown<String>(
-                items: viewModel.state.keywords,
-                selectedItem: viewModel.state.keyword,
-                hintText: 'Select a topic',
-                onChanged: (value) {
-                  viewModel.updateKeyword(value);
-                },
-                validator: (value) =>
-                    value == null ? 'Please select a topic' : null,
-              ),
+              KeywordSelector(),
+
               const SizedBox(height: 24),
 
               // Issue field
@@ -80,7 +72,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     SearchCriteria searchCriteria = SearchCriteria(
-                      keyword: viewModel.state.keyword!,
+                      keyword: viewModel.state.keyword!.name,
                       issue: viewModel.state.description!,
                       reachability: viewModel.state.reachability,
                     );
@@ -97,10 +89,6 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                     );
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                  textStyle: const TextStyle(fontSize: 18),
-                ),
                 child: const Text('Search helpers'),
               ),
             ],

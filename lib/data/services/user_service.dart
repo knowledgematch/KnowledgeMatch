@@ -1,25 +1,17 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
+import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 
 Future<void> initializeUser(int userId) async {
   try {
-    final response =
-        await http.get(Uri.parse('http://86.119.47.241/users/$userId'));
+    List<dynamic> response = await ApiDbConnection().initUser(userId) as List;
 
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonData = jsonDecode(response.body);
-      if (jsonData.isNotEmpty) {
-        User.instance.populateFromJson(jsonData.first);
-        print('User initialized: ${User.instance}');
-      } else {
-        print('No user data found.');
-      }
+    if (response.isNotEmpty) {
+      User.instance.populateFromJson(response.first);
+      print('User initialized: ${User.instance}');
     } else {
-      print('Failed to fetch user data: ${response.statusCode}');
+      print('No user data found.');
     }
   } catch (e) {
-    print('Error fetching user data: $e');
+    print('Error fetching user data.');
   }
 }

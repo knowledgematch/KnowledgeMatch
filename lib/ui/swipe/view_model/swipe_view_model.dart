@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:knowledgematch/data/services/matching_algorithm.dart';
+import 'package:swipable_stack/swipable_stack.dart';
 
 import '../../../data/services/notification_service.dart';
 import '../../../domain/models/notification_data.dart';
 import '../../../domain/models/search_criteria.dart';
 import '../../../domain/models/user.dart';
 import '../../../domain/models/userprofile.dart';
-import 'package:swipable_stack/swipable_stack.dart';
-
 import '../swipe_state.dart';
 
 class SwipeViewModel extends ChangeNotifier {
@@ -23,18 +22,18 @@ class SwipeViewModel extends ChangeNotifier {
 
   List<Userprofile> profiles = [];
 
-  SwipeViewModel({
-    required this.searchCriteria,
-  }){
-    profilesFuture = MatchingAlgorithm().getMatchingUserProfiles(searchCriteria);
+  SwipeViewModel({required this.searchCriteria}) {
+    profilesFuture = MatchingAlgorithm().getMatchingUserProfiles(
+      searchCriteria,
+    );
     profilesFuture.then((loadedProfiles) {
       profiles = loadedProfiles;
       updateTitle();
     });
   }
 
-  void updateTitle(){
-    _state = _state.copyWith(title:"Matches (${profiles.length})" );
+  void updateTitle() {
+    _state = _state.copyWith(title: "Matches (${profiles.length})");
     notifyListeners();
   }
 
@@ -51,18 +50,19 @@ class SwipeViewModel extends ChangeNotifier {
     var notificationData = NotificationData(
       type: NotificationType.knowledgeRequest,
       title: "Your knowledge has been requested!",
-      body:
-      "From: ${User.instance.name} ${User.instance.surname}, Topic: $topic",
+      body: "From: ${User.instance.name},on Topic: $topic",
       payload: searchCriteria.toJSON(),
       targetUserId: profile.id,
       sourceUserId: User.instance.id ?? 0,
     );
     profiles.removeAt(controller.currentIndex);
-    await NotificationService()
-        .sendMessageToDevice(notificationData, profile.tokens ?? []);
+    await NotificationService().sendMessageToDevice(
+      notificationData,
+      profile.tokens ?? [],
+    );
   }
 
-  void handleSwipe(SwipeDirection direction, BuildContext context){
+  void handleSwipe(SwipeDirection direction, BuildContext context) {
     if (direction == SwipeDirection.right) {
       //send request
       final snackBar = SnackBar(
@@ -81,7 +81,7 @@ class SwipeViewModel extends ChangeNotifier {
   }
 
   void checkSwipeDirection(double swipeDistance) {
-    bool newShouldShowGlow = swipeDistance > 0.8;
+    bool newShouldShowGlow = swipeDistance > 0.3;
     if (_state.shouldShowGlow != newShouldShowGlow) {
       _state = state.copyWith(shouldShowGlow: newShouldShowGlow);
       SchedulerBinding.instance.addPostFrameCallback((_) {

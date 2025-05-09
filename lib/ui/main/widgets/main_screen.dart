@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/ui/profile/widget/profile_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/services/matching_algorithm.dart';
@@ -21,12 +22,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> {
-  final List<Widget> _screens = [
-    HomeScreen(),
-    FindMatchesScreen(),
-    ChatScreen(),
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -36,24 +31,34 @@ class MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<MainScreenViewModel>();
-
+    final List<Widget> screens = [
+      HomeScreen(mainViewModel: viewModel),
+      FindMatchesScreen(),
+      ChatScreen(),
+      ProfileScreen(),
+    ];
     return Scaffold(
-        body: _screens[viewModel.state.currentIndex],
-        bottomNavigationBar: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(12),
-            topRight: Radius.circular(12),
-          ),
-          child: BottomNavigationBar(
-            currentIndex: viewModel.state.currentIndex,
-            onTap: viewModel.updateIndex,
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-              BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
-              BottomNavigationBarItem(icon: Icon(Icons.chat), label: ''),
-            ],
-          ),
-        ));
+      body: screens[viewModel.state.currentIndex],
+      bottomNavigationBar: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+        ),
+        child: BottomNavigationBar(
+          currentIndex: viewModel.state.currentIndex,
+          onTap: viewModel.updateIndex,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'HOME'),
+            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'FIND'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.checklist),
+              label: 'REQUESTS',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'PROFILE'),
+          ],
+        ),
+      ),
+    );
   }
 
   // Initialize Firebase Messaging
@@ -76,34 +81,36 @@ class MainScreenState extends State<MainScreen> {
       );
       navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder: (context) => FutureBuilder<Userprofile>(
-            future: MatchingAlgorithm().getUserProfileById(
-              int.tryParse(message.data['source_user_id']) ?? 0,
-            ),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Scaffold(
-                  appBar: AppBar(title: Text('Loading...')),
-                  body: Center(child: CircularProgressIndicator()),
-                );
-              } else if (snapshot.hasError) {
-                return Scaffold(
-                  appBar: AppBar(title: Text('Error')),
-                  body: Center(child: Text('Error: ${snapshot.error}')),
-                );
-              } else {
-                return ChangeNotifierProvider<RequestViewModel>(
-                  create: (_) => RequestViewModel(
-                    userprofile: snapshot.data!,
-                    notificationData: NotificationData.fromMessage(
-                      message,
-                    ),
-                  ),
-                  child: RequestScreen(),
-                );
-              }
-            },
-          ),
+          builder:
+              (context) => FutureBuilder<Userprofile>(
+                future: MatchingAlgorithm().getUserProfileById(
+                  int.tryParse(message.data['source_user_id']) ?? 0,
+                ),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Loading...')),
+                      body: Center(child: CircularProgressIndicator()),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Error')),
+                      body: Center(child: Text('Error: ${snapshot.error}')),
+                    );
+                  } else {
+                    return ChangeNotifierProvider<RequestViewModel>(
+                      create:
+                          (_) => RequestViewModel(
+                            userprofile: snapshot.data!,
+                            notificationData: NotificationData.fromMessage(
+                              message,
+                            ),
+                          ),
+                      child: RequestScreen(),
+                    );
+                  }
+                },
+              ),
         ),
       );
     });
@@ -120,34 +127,36 @@ class MainScreenState extends State<MainScreen> {
       );
       navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder: (context) => FutureBuilder<Userprofile>(
-            future: MatchingAlgorithm().getUserProfileById(
-              int.parse(message.data['source_user_id'] ?? 0),
-            ),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Scaffold(
-                  appBar: AppBar(title: Text('Loading...')),
-                  body: Center(child: CircularProgressIndicator()),
-                );
-              } else if (snapshot.hasError) {
-                return Scaffold(
-                  appBar: AppBar(title: Text('Error')),
-                  body: Center(child: Text('Error: ${snapshot.error}')),
-                );
-              } else {
-                return ChangeNotifierProvider<RequestViewModel>(
-                  create: (_) => RequestViewModel(
-                    notificationData: NotificationData.fromMessage(
-                      message,
-                    ),
-                    userprofile: snapshot.data!,
-                  ),
-                  child: RequestScreen(),
-                );
-              }
-            },
-          ),
+          builder:
+              (context) => FutureBuilder<Userprofile>(
+                future: MatchingAlgorithm().getUserProfileById(
+                  int.parse(message.data['source_user_id'] ?? 0),
+                ),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Loading...')),
+                      body: Center(child: CircularProgressIndicator()),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Error')),
+                      body: Center(child: Text('Error: ${snapshot.error}')),
+                    );
+                  } else {
+                    return ChangeNotifierProvider<RequestViewModel>(
+                      create:
+                          (_) => RequestViewModel(
+                            notificationData: NotificationData.fromMessage(
+                              message,
+                            ),
+                            userprofile: snapshot.data!,
+                          ),
+                      child: RequestScreen(),
+                    );
+                  }
+                },
+              ),
         ),
       );
     }

@@ -4,12 +4,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:knowledgematch/ui/splash/widgets/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/services/api_db_connection.dart';
 import '../../../domain/models/reachability.dart';
 import '../../../domain/models/user.dart';
-import '../../login/login_screen.dart';
 import '../profile_state.dart';
 
 class ProfileViewModel extends ChangeNotifier {
@@ -19,26 +19,30 @@ class ProfileViewModel extends ChangeNotifier {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController surnameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
 
   ProfileState _state;
 
   ProfileState get state => _state;
 
   ProfileViewModel()
-    : _state = ProfileState(
-        uId: "",
-        reachability: Reachability.inPerson,
-        semester: 1,
-      );
+      : _state = ProfileState(
+            uId: "",
+            reachability: Reachability.inPerson,
+            semester: 1,
+            description: "");
 
-  void changeSemester(int semester) {
-    _state = _state.copyWith(semester: semester);
+  void updateSemester(int semester) {
+    _state = _state.copyWith(semester: semester, unsaved: true);
     notifyListeners();
   }
 
-  void changeReachability(Reachability reachability) {
-    _state = _state.copyWith(reachability: reachability);
+  void updateReachability(Reachability reachability) {
+    _state = _state.copyWith(reachability: reachability, unsaved: true);
+    notifyListeners();
+  }
+
+  void updateDescription(String description) {
+    _state = _state.copyWith(description: description, unsaved: true);
     notifyListeners();
   }
 
@@ -59,10 +63,8 @@ class ProfileViewModel extends ChangeNotifier {
     if (pickedFile != null) {
       final fileBytes = await pickedFile.readAsBytes();
       const targetSizeInKB = 100;
-      final compressedBytes = await compressImageToTargetSize(
-        fileBytes,
-        targetSizeInKB * 1024,
-      );
+      final compressedBytes =
+          await compressImageToTargetSize(fileBytes, targetSizeInKB * 1024);
       _state = _state.copyWith(pictureData: compressedBytes);
       notifyListeners();
     }
@@ -81,9 +83,7 @@ class ProfileViewModel extends ChangeNotifier {
   /// Returns:
   /// - A [Future] that completes with the compressed image byte data ([Uint8List]).
   Future<Uint8List> compressImageToTargetSize(
-    Uint8List fileBytes,
-    int targetSizeInBytes,
-  ) async {
+      Uint8List fileBytes, int targetSizeInBytes) async {
     int quality = 100;
     Uint8List compressedBytes = fileBytes;
     while (compressedBytes.length > targetSizeInBytes && quality > 10) {
@@ -119,12 +119,12 @@ class ProfileViewModel extends ChangeNotifier {
       nameController.text = user.name!;
       surnameController.text = user.surname!;
       _state = _state.copyWith(
-        reachability: ReachabilityValue.fromValue(user.reachability ?? 0),
+          reachability: ReachabilityValue.fromValue(user.reachability ?? 0),
+          semester: user.seniority,
+          description: user.description,
+          pictureData: user.getDecodedPicture()
       );
       emailController.text = user.email!;
-      _state.copyWith(semester: user.seniority);
-      descriptionController.text = user.description ?? '';
-      _state = _state.copyWith(pictureData: user.getDecodedPicture());
       notifyListeners();
     }
   }
@@ -143,15 +143,14 @@ class ProfileViewModel extends ChangeNotifier {
   Future<void> saveProfile(BuildContext context) async {
     try {
       final response = await ApiDbConnection().saveProfile(
-        _state.uId,
-        nameController.text,
-        surnameController.text,
-        _state.reachability.value.toString(),
-        emailController.text,
-        _state.semester.toString(),
-        descriptionController.text,
-        _state.pictureData,
-      );
+          _state.uId,
+          nameController.text,
+          surnameController.text,
+          _state.reachability.value.toString(),
+          emailController.text,
+          _state.semester.toString(),
+          _state.description,
+          _state.pictureData);
       if (response == 204) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -164,35 +163,36 @@ class ProfileViewModel extends ChangeNotifier {
         user.reachability = _state.reachability.value;
         user.email = emailController.text;
         user.seniority = _state.semester;
-        user.description = descriptionController.text;
+        user.description = _state.description;
         user.setPicture(_state.pictureData);
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString(
-          'userData',
-          jsonEncode({
-            'U_ID': _state.uId,
-            'Name': user.name,
-            'Surname': user.surname,
-            'Reachability': user.reachability,
-            'Email': user.email,
-            'Description': user.description,
-          }),
-        );
+            'userData',
+            jsonEncode({
+              'U_ID': _state.uId,
+              'Name': user.name,
+              'Surname': user.surname,
+              'Reachability': user.reachability,
+              'Email': user.email,
+              'Description': user.description,
+            }));
       } else {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Failed to save profile')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to save profile')),
+          );
         }
       }
     } catch (error) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error:')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error:')),
+        );
       }
     }
+    _state = _state.copyWith(unsaved: false);
+    notifyListeners();
   }
 
   /// Logs out the user by clearing the session data and navigating to the login screen.
@@ -211,9 +211,9 @@ class ProfileViewModel extends ChangeNotifier {
     await prefs.clear();
     User.instance.reset();
     if (context.mounted) {
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => SplashScreen()),
       );
     }
   }

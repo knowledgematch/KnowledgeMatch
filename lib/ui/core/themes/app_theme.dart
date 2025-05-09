@@ -7,18 +7,20 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       listTileTheme: ListTileThemeData(
-          textColor: AppColors.black,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16),
-          titleTextStyle: TextStyle(
-            color: AppColors.primary,
-            fontWeight: FontWeight.w500,
-            fontSize: 20,
-          ),
-          subtitleTextStyle: TextStyle(
-            color: AppColors.primary,
-            fontWeight: FontWeight.w300,
-            fontSize: 20,
-          )),
+        textColor: AppColors.primary,
+        iconColor: AppColors.primary,
+        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+        titleTextStyle: TextStyle(
+          color: AppColors.primary,
+          fontWeight: FontWeight.w500,
+          fontSize: 16,
+        ),
+        subtitleTextStyle: TextStyle(
+          color: AppColors.primary,
+          fontWeight: FontWeight.w300,
+          fontSize: 14,
+        ),
+      ),
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: AppColors.blackLight,
         selectionColor: AppColors.greyLight,
@@ -33,39 +35,53 @@ class AppTheme {
         color: AppColors.whiteLight,
       ),
       dropdownMenuTheme: DropdownMenuThemeData(
-          inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColors.blackLight),
-              borderRadius: AppConstants.borderRadius,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColors.blackLight),
-              borderRadius: AppConstants.borderRadius,
-            ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.blackLight),
+            borderRadius: AppConstants.borderRadius,
           ),
-          textStyle: TextStyle(color: AppColors.whiteLight),
-          menuStyle: MenuStyle(
-            backgroundColor: MaterialStateProperty.all(AppColors.grey3Light),
-            shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: AppConstants.borderRadius,
-              ),
-            ),
-          )),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.blackLight),
+            borderRadius: AppConstants.borderRadius,
+          ),
+        ),
+        textStyle: TextStyle(color: AppColors.whiteLight),
+        menuStyle: MenuStyle(
+          backgroundColor: MaterialStateProperty.all(AppColors.grey3Light),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: AppConstants.borderRadius),
+          ),
+        ),
+      ),
       menuTheme: MenuThemeData(
         style: MenuStyle(
           backgroundColor: MaterialStateProperty.all(AppColors.grey3Light),
           shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: AppConstants.borderRadius,
-            ),
+            RoundedRectangleBorder(borderRadius: AppConstants.borderRadius),
           ),
         ),
       ),
       textTheme: TextTheme(
+        headlineLarge: TextStyle(
+            color: AppColors.primary,
+            fontSize: 25,
+            fontWeight: FontWeight.bold),
+        headlineMedium: TextStyle(color: AppColors.primary),
+        headlineSmall: TextStyle(color: AppColors.primary),
         bodyLarge: TextStyle(color: AppColors.primary),
         bodyMedium: TextStyle(color: AppColors.primary),
-        titleMedium: TextStyle(color: AppColors.primary),
+        bodySmall: TextStyle(color: AppColors.primary),
+        titleLarge:
+            TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+        titleMedium: TextStyle(
+          color: AppColors.primary,
+          fontSize: 20,
+        ),
+        titleSmall: TextStyle(
+          color: AppColors.primary,
+          fontSize: 17,
+          fontWeight: FontWeight.bold,
+        ),
         labelMedium: TextStyle(color: AppColors.primary),
         labelLarge: TextStyle(color: AppColors.primary),
         labelSmall: TextStyle(color: AppColors.primary),
@@ -75,9 +91,7 @@ class AppTheme {
         labelStyle: TextStyle(color: AppColors.primary),
         floatingLabelStyle: TextStyle(color: AppColors.primary),
         hintStyle: TextStyle(color: AppColors.primary.withOpacity(0.7)),
-        outlineBorder: BorderSide(
-          color: AppColors.blue,
-        ),
+        outlineBorder: BorderSide(color: AppColors.blue),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.blue),
           borderRadius: AppConstants.borderRadius,
@@ -92,9 +106,15 @@ class AppTheme {
         ),
       ),
       appBarTheme: AppBarTheme(
-        titleTextStyle: TextStyle(color: AppColors.primary, fontSize: 20),
-        color: AppColors.white,
-        iconTheme: IconThemeData(color: AppColors.primary),
+        titleTextStyle: TextStyle(
+            color: AppColors.grey2Light,
+            fontSize: 25,
+            fontWeight: FontWeight.bold),
+        //backgroundColor: AppColors.primary,
+        color: AppColors.primary,
+        iconTheme: IconThemeData(color: AppColors.grey2Light),
+        centerTitle: true,
+        elevation: 0,
       ),
       buttonTheme: ButtonThemeData(
         buttonColor: AppColors.whiteLight,
@@ -119,23 +139,26 @@ class AppTheme {
         backgroundColor: AppColors.background,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: AppColors.grey,
-        selectedItemColor: AppColors.blue,
-        unselectedItemColor: AppColors.grey2,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: AppColors.grey2Light,
+        unselectedItemColor: AppColors.grey6Light,
+        selectedLabelStyle: TextStyle(
+          fontSize: 12,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontSize: 12,
+        ),
+        backgroundColor: AppColors.primary,
       ),
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(AppColors.transparent),
-          iconColor: MaterialStateProperty.all(AppColors.primary),
-          // foregroundColor: MaterialStateProperty.all(AppColors.blackLight),
         ),
       ),
       cardTheme: CardTheme(
         color: AppColors.white,
         elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: AppConstants.borderRadius,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppConstants.borderRadius),
       ),
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.all(Color(0xFF0055CC)),
@@ -154,9 +177,19 @@ class AppTheme {
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         labelStyle: TextStyle(color: AppColors.blackLight),
         secondaryLabelStyle: TextStyle(color: AppColors.whiteLight),
-        shape: RoundedRectangleBorder(
-          borderRadius: AppConstants.borderRadius,
+        shape: RoundedRectangleBorder(borderRadius: AppConstants.borderRadius),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: AppColors.primary,
+        contentTextStyle: TextStyle(
+          color: AppColors.grey2Light,
+          fontWeight: FontWeight.bold,
         ),
+        elevation: 6.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }

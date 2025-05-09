@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/ui/app_drawer.dart';
 import 'feed_widget.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -26,28 +27,19 @@ class ChatScreenState extends State<ChatScreen> {
       listenable: viewModel,
       builder: (context, _) {
         return Scaffold(
-            appBar: AppBar(
-              title: const Text('Requests'),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      viewModel.loadConfirmedNotificationsAndProfiles();
-                    },
-                    child: const Text('Confirmed'),
-                  ),
-                ),
-              ],
-            ),
-            body: viewModel.state.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : viewModel.state.errorMessage != null
-                    ? Center(
-                        child: Text('Error: ${viewModel.state.errorMessage}'))
-                    : viewModel.state.notification.isEmpty
-                        ? const Center(child: Text('No requests found.'))
-                        : FeedWidget());
+          appBar: AppBar(title: const Text('Requests')),
+          drawer: const AppDrawer(),
+          body: FeedWidget(),
+          // viewModel.state.isLoading
+          //     ? const Center(child: CircularProgressIndicator())
+          //     : viewModel.state.errorMessage != null
+          //     ? Center(
+          //       child: Text('Error: ${viewModel.state.errorMessage}'),
+          //     )
+          //     : viewModel.state.notification.isEmpty
+          //     ? const Center(child: Text('No requests found.'))
+          //     : FeedWidget(),
+        );
       },
     );
   }

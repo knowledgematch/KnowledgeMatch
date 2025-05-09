@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/domain/models/reachability.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 
 import '../../core/themes/app_colors.dart';
+import '../../core/ui/decorations.dart';
+import '../../core/ui/info_card.dart';
 
 class ProfileCard extends StatelessWidget {
   final Userprofile profile;
@@ -25,7 +28,7 @@ class ProfileCard extends StatelessWidget {
         height: height,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.whiteLight,
+          color: AppColors.grey2Light,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -35,123 +38,97 @@ class ProfileCard extends StatelessWidget {
             ),
           ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Profile Image
-                Center(
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: profilePicture != null
-                        ? MemoryImage(profilePicture)
-                        : const AssetImage('assets/images/profile.png')
-                            as ImageProvider,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+                CircleAvatar(
+                  radius: 90,
+                  backgroundImage: profilePicture != null
+                      ? MemoryImage(profilePicture)
+                      : const AssetImage('assets/images/profile.png')
+                  as ImageProvider,
+                ),
+
+              const SizedBox(height: 16),
+              Text(
+                profile.name,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'FHNW',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: Colors.grey[700]),
+              ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.location_on,
+                      size: 16, color: Colors.grey),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Switzerland',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: Colors.grey[700]),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              InfoCard(
+                title: 'Meeting Preference',
+                value: profile.reachability!.description,
+                icon: Icons.people,
+                iconColor: AppColors.primary,
+              ),
+              const SizedBox(height: 16),
+              InfoCard(
+                title: 'Semester',
+                value: profile.seniority == -1
+                    ? 'Professor'
+                    : 'Semester ${profile.seniority}',
+                icon: Icons.school,
+                iconColor: AppColors.primary,
+              ),
+              const SizedBox(height: 16),
+              InfoCard(
+                title: 'Expert in',
+                value: profile.expertise.join(', '),
+                icon: Icons.label,
+                iconColor: AppColors.primary,
+              ),
+              const SizedBox(height: 24),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'About ${profile.name}',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: Decorations.container,
+                  child: Text(
+                    profile.description.isEmpty
+                        ? 'No description added yet.'
+                        : profile.description,
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
-                SizedBox(height: 20),
-
-                // Name Field
-                _profileInfoField(
-                  label: 'Name',
-                  value: profile.name,
-                ),
-                SizedBox(height: 10),
-
-                // Location Field
-                _profileInfoField(
-                  label: 'Location',
-                  value: profile.location,
-                ),
-                SizedBox(height: 10),
-
-                // Expertise Field
-                _profileInfoField(
-                  label: 'Expert in',
-                  value: profile.expertise.join(', '),
-                ),
-                SizedBox(height: 10),
-
-                // Availability Field
-                _profileInfoField(
-                  label: 'Availability',
-                  value: profile.availability,
-                ),
-                SizedBox(height: 10),
-
-                // Language Field
-                _profileInfoField(
-                  label: 'Languages',
-                  value: profile.languages.join(', '),
-                ),
-                SizedBox(height: 10),
-
-                // Reachability Field
-                _profileInfoField(
-                  label: 'Reachability',
-                  value: profile.reachability.toString(),
-                ),
-                SizedBox(height: 10),
-
-                // Description Field
-                _profileInfoField(
-                  label: 'Description',
-                  value: profile.description,
-                ),
-
-                SizedBox(height: 10),
-
-                // Seniority Field
-                _profileInfoField(
-                  label: 'Seniority',
-                  value: profile.seniority.toString(),
-                ),
-
-                SizedBox(height: 20),
-
-                // Email Field
-                _profileInfoField(
-                  label: 'Email',
-                  value: profile.email,
-                ),
-
-                SizedBox(height: 20),
-              ],
-            ),
+            ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _profileInfoField({required String label, required String value}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16,
-            color: AppColors.blackLight,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 5),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: AppColors.grey3Light,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            value,
-            style: const TextStyle(fontSize: 16),
-          ),
-        ),
-      ],
     );
   }
 }

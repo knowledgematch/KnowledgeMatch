@@ -10,6 +10,12 @@ class AppColors {
   static const Color blue = Color(0xFF0055CC);
   static const Color background = white;
 
+  static const Color gr1 = Color(0xFFEAF1FC);
+  static const Color gr2 = Color(0xFFE0F0FF);
+  static const Color gr3 = Color(0xFFD0E8FF);
+  static const Color gr4 = Color(0xFF6BB2F8);
+
+
   // Light Theme Colors
   static const Color primaryLight = Color(0xFFbcb9b0);
   static const Color blackLight = Colors.black;
@@ -21,6 +27,7 @@ class AppColors {
   static Color greyShadow3Light = Colors.grey.withOpacity(0.3);
   static Color grey2Light = Colors.grey[200]!;
   static Color grey3Light = Colors.grey[300]!;
+  static Color grey6Light = Colors.grey[600]!;
   static Color grey7Light = Colors.grey[700]!;
   static const Color greenLight = Colors.green;
   static const Color redLight = Colors.red;
