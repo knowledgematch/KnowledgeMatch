@@ -16,10 +16,6 @@ class CreateProfileState {
   CreateProfileState copyWith({
     bool? isValid,
     bool? success,
-    String? name,
-    String? surname,
-    String? email,
-    String? password,
     String? reachability,
     File? selectedImage,
   }) {
