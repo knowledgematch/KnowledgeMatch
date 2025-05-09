@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:knowledgematch/data/services/matching_algorithm.dart';
+import 'package:swipable_stack/swipable_stack.dart';
 
 import '../../../data/services/notification_service.dart';
 import '../../../domain/models/notification_data.dart';
 import '../../../domain/models/search_criteria.dart';
 import '../../../domain/models/user.dart';
 import '../../../domain/models/userprofile.dart';
-import 'package:swipable_stack/swipable_stack.dart';
-
 import '../swipe_state.dart';
 
 class SwipeViewModel extends ChangeNotifier {
@@ -82,7 +81,7 @@ class SwipeViewModel extends ChangeNotifier {
   }
 
   void checkSwipeDirection(double swipeDistance) {
-    bool newShouldShowGlow = swipeDistance > 0.8;
+    bool newShouldShowGlow = swipeDistance > 0.3;
     if (_state.shouldShowGlow != newShouldShowGlow) {
       _state = state.copyWith(shouldShowGlow: newShouldShowGlow);
       SchedulerBinding.instance.addPostFrameCallback((_) {

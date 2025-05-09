@@ -5,6 +5,7 @@ import 'package:knowledgematch/ui/swipe/view_model/swipe_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
+import '../../core/themes/app_colors.dart';
 import 'flip_card.dart';
 
 class SwipeScreen extends StatefulWidget {
@@ -59,10 +60,13 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
         return Expanded(
           child: Scrollbar(
             controller: _scrollController,
-            thumbVisibility: true, // always show the thumb
-            thickness: 6, // makes the thumb a bit more obvious
+            thumbVisibility: true,
+            // always show the thumb
+            thickness: 6,
+            // makes the thumb a bit more obvious
             radius: Radius.circular(3),
             child: Scaffold(
+              backgroundColor: AppColors.primary,
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 title: Text(viewModel.state.title ?? "Matches (0)"),
@@ -94,11 +98,10 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                                 boxShadow: [
                                   if (viewModel.state.shouldShowGlow)
                                     BoxShadow(
-                                      color:
-                                          properties.direction ==
-                                                  SwipeDirection.right
-                                              ? Colors.green.withOpacity(0.9)
-                                              : properties.direction ==
+                                      color: properties.direction ==
+                                              SwipeDirection.right
+                                          ? Colors.green.withOpacity(0.9)
+                                          : properties.direction ==
                                                   SwipeDirection.left
                                               ? Colors.red.withOpacity(0.9)
                                               : Colors.transparent,
@@ -110,9 +113,8 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                               child: ClipRRect(
                                 borderRadius: AppConstants.borderRadiusLarge,
                                 child: FlipCard(
-                                  profile:
-                                      viewModel.profiles[properties.index %
-                                          viewModel.profiles.length],
+                                  profile: viewModel.profiles[properties.index %
+                                      viewModel.profiles.length],
                                 ),
                               ),
                             );
@@ -125,7 +127,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(24),
                                   child: Text(
-                                    'ACCEPT',
+                                    'SEND',
                                     style: const TextStyle(
                                       color: Colors.green,
                                       fontSize: 50,
@@ -142,7 +144,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(24),
                                   child: Text(
-                                    'DECLINE',
+                                    'SKIP',
                                     style: const TextStyle(
                                       color: Colors.red,
                                       fontSize: 50,
