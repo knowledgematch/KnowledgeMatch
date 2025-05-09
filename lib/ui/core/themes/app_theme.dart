@@ -7,7 +7,8 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       listTileTheme: ListTileThemeData(
-        textColor: AppColors.black,
+        textColor: AppColors.primary,
+        iconColor: AppColors.primary,
         contentPadding: EdgeInsets.symmetric(horizontal: 16),
         titleTextStyle: TextStyle(
           color: AppColors.primary,
@@ -134,7 +135,9 @@ class AppTheme {
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.whiteLight,
       ),
-      drawerTheme: DrawerThemeData(backgroundColor: AppColors.background),
+      drawerTheme: DrawerThemeData(
+        backgroundColor: AppColors.background,
+      ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.grey2Light,
