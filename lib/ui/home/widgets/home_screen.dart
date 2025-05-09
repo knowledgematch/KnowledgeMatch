@@ -7,7 +7,6 @@ import 'package:knowledgematch/ui/home/view_model/home_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/notification_data.dart';
-import '../../../domain/models/user.dart';
 import '../../../domain/models/userprofile.dart';
 import '../../core/themes/app_colors.dart';
 import '../../profile/widget/profile_screen.dart';
@@ -23,6 +22,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  bool _showIncompleteProfileBanner = false;
+
   @override
   void initState() {
     super.initState();
@@ -30,13 +31,6 @@ class HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       context.read<HomeViewModel>().refresh();
     });
-  }
-
-  bool _showIncompleteProfileBanner = false;
-
-  @override
-  void initState() {
-    super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = User.instance;
@@ -52,6 +46,7 @@ class HomeScreenState extends State<HomeScreen> {
       }
     });
   }
+
 
   void _navigateToEditProfile() {
     Navigator.push(
@@ -118,7 +113,7 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
 
                       Text(
-                        "${_formatName(User.instance.name ?? '')}",
+                        _formatName(User.instance.name ?? ''),
 
                         style: TextStyle(
                           fontSize: 28,
@@ -131,8 +126,9 @@ class HomeScreenState extends State<HomeScreen> {
                   const Spacer(),
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: viewModel.state.profilePicture != null
-                        ? MemoryImage(viewModel.state.profilePicture!)
+                    backgroundImage:
+                    User.instance.getDecodedPicture() != null
+                        ? MemoryImage(User.instance.getDecodedPicture()!)
                         : const AssetImage('assets/images/profile.png')
                     as ImageProvider,
                   ),
