@@ -51,18 +51,33 @@ class MainScreenState extends State<MainScreen> {
             type: BottomNavigationBarType.fixed,
             currentIndex: viewModel.state.currentIndex,
             onTap: viewModel.updateIndex,
+            selectedItemColor: AppColors.blue,
             unselectedItemColor: AppColors.grey6Light,
-
+            selectedLabelStyle: TextStyle(color: AppColors.blue,
+              fontSize: 12,),
+            unselectedLabelStyle: TextStyle(color: AppColors.grey6Light,
+              fontSize: 12,),
             items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-              BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
-              BottomNavigationBarItem(icon: Icon(Icons.checklist), label: ''),
-              BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'HOME',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.search),
+                label: 'FIND',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.checklist),
+                label: 'REQUESTS',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'PROFILE',
+              ),
             ],
           ),
         ));
   }
-
   // Initialize Firebase Messaging
   void _initializeFCM() {
     final navigatorKey = context.read<GlobalKey<NavigatorState>>();
@@ -120,7 +135,7 @@ class MainScreenState extends State<MainScreen> {
     required GlobalKey<NavigatorState> navigatorKey,
   }) async {
     RemoteMessage? message =
-        await FirebaseMessaging.instance.getInitialMessage();
+    await FirebaseMessaging.instance.getInitialMessage();
     if (message != null) {
       print(
         'App opened from terminated state by a message: ${message.notification}',

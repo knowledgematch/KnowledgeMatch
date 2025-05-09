@@ -80,10 +80,13 @@ class AppDrawer extends StatelessWidget {
                         Flexible(
                           child: Padding(
                             padding: const EdgeInsets.all(6.0),
-                            child: Image.asset(
-                              'assets/images/Logo_NoBackground.png',
-                              height: 90,
-                              fit: BoxFit.contain,
+                            child: ClipOval(
+                              child: Image.asset(
+                                'assets/images/Logo_App_Drawer.png',
+                                height: 90,
+                                width: 90,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
@@ -99,6 +102,7 @@ class AppDrawer extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 ...drawerItems.map((item) => _buildDrawerItem(
                   icon: item['icon'] as IconData,
                   title: item['title'] as String,

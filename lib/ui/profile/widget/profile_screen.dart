@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/reachability.dart';
+import 'package:knowledgematch/ui/core/themes/app_colors.dart';
 import 'package:knowledgematch/ui/keyword_selection/view_model/keyword_selection_view_model.dart';
 import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
 import 'package:provider/provider.dart';
@@ -41,22 +42,30 @@ class ProfileScreenState extends State<ProfileScreen> {
 
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(right: 20),
-        child: ClipOval(
-          child: Builder(
-            builder: (context) {
-              return FloatingActionButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    viewModel.saveProfile(context);
-                  }
-                },
-                child: Icon(
-                  Icons.save,
-                ),
-              );
-            },
+        child: Container(
+          decoration: BoxDecoration(
+
+            border: Border.all(
+              color: AppColors.white,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(50),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(50),
+            child: FloatingActionButton(
+
+              elevation: 0,
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  viewModel.saveProfile(context);
+                }
+              },
+              child: const Icon(Icons.save),
+            ),
           ),
         ),
+
       ),
       body: SingleChildScrollView(
         child: Padding(

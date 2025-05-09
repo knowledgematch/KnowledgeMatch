@@ -51,23 +51,44 @@ class HomeScreenState extends State<HomeScreen> {
             child: Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    AppColors.blue.withOpacity(0.2),
+                    AppColors.primary.withOpacity(0.8),
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(20),
               ),
+
               child: Row(
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Welcome back,",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.primary.withOpacity(0.8),
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "Welcome back ",
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: AppColors.primary.withOpacity(0.8),
+                              ),
+                            ),
+                            TextSpan(
+                              text: "👋",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+
                       Text(
-                        "${_formatName(User.instance.name ?? '')} 👋",
+                        "${_formatName(User.instance.name ?? '')}",
 
                         style: TextStyle(
                           fontSize: 28,
@@ -176,7 +197,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   String _formatName(String name) {
-    const int maxLength = 15;
+    const int maxLength = 17;
     if (name.length > maxLength) {
       return '${name.substring(0, maxLength)}...';
     }

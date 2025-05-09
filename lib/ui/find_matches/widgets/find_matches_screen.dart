@@ -96,10 +96,6 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                     );
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                  textStyle: const TextStyle(fontSize: 18),
-                ),
                 child: const Text('Search helpers'),
               ),
             ],
