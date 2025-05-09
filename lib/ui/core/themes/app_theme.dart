@@ -136,9 +136,16 @@ class AppTheme {
       ),
       drawerTheme: DrawerThemeData(backgroundColor: AppColors.background),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: AppColors.grey,
-        selectedItemColor: AppColors.blue,
-        unselectedItemColor: AppColors.grey2,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: AppColors.grey2Light,
+        unselectedItemColor: AppColors.grey6Light,
+        selectedLabelStyle: TextStyle(
+          fontSize: 12,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontSize: 12,
+        ),
+        backgroundColor: AppColors.primary,
       ),
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(

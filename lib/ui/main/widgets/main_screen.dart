@@ -1,6 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/ui/core/themes/app_colors.dart';
 import 'package:knowledgematch/ui/profile/widget/profile_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -48,15 +47,8 @@ class MainScreenState extends State<MainScreen> {
             topRight: Radius.circular(12),
           ),
           child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
             currentIndex: viewModel.state.currentIndex,
             onTap: viewModel.updateIndex,
-            selectedItemColor: AppColors.blue,
-            unselectedItemColor: AppColors.grey6Light,
-            selectedLabelStyle: TextStyle(color: AppColors.blue,
-              fontSize: 12,),
-            unselectedLabelStyle: TextStyle(color: AppColors.grey6Light,
-              fontSize: 12,),
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -78,6 +70,7 @@ class MainScreenState extends State<MainScreen> {
           ),
         ));
   }
+
   // Initialize Firebase Messaging
   void _initializeFCM() {
     final navigatorKey = context.read<GlobalKey<NavigatorState>>();
@@ -135,7 +128,7 @@ class MainScreenState extends State<MainScreen> {
     required GlobalKey<NavigatorState> navigatorKey,
   }) async {
     RemoteMessage? message =
-    await FirebaseMessaging.instance.getInitialMessage();
+        await FirebaseMessaging.instance.getInitialMessage();
     if (message != null) {
       print(
         'App opened from terminated state by a message: ${message.notification}',
