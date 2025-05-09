@@ -27,7 +27,7 @@ class FeedCard extends StatelessWidget {
     final timeStamp =
         notification.timestamp != null
             ? DateFormat(
-              'HH:mm dd/MM',
+              'dd/MM HH:mm',
             ).format(notification.timestamp!.toLocal()).toString()
             : 'Unknown time';
 
