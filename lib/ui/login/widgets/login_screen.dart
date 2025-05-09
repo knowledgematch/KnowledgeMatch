@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/ui/create_profile/create_profile_screen.dart';
 import 'package:knowledgematch/ui/login/view_model/login_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/themes/app_colors.dart';
+import '../../create_profile/widgets/create_profile_screen.dart';
 import '../../forgot_pw/view_model/forgot_pw_view_model.dart';
 import '../../forgot_pw/widgets/forgot_pw_screen.dart';
 import '../../two_fa/view_model/two_fa_view_model.dart';
