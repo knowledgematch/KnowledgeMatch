@@ -5,9 +5,9 @@ import '../../../data/services/api_db_connection.dart';
 import '../../../domain/models/user.dart';
 import '../../about/widgets/about_screen.dart';
 import '../../contact_information/contact_screen.dart';
-import '../../login/widgets/login_screen.dart';
 import '../../settings_screen.dart';
 import '../../admin/widgets/admin_screen.dart';
+import '../../splash/widgets/splash_screen.dart';
 import '../themes/app_colors.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -31,9 +31,9 @@ class AppDrawer extends StatelessWidget {
     await prefs.clear();
     User.instance.reset();
     if (context.mounted) {
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (context) => const SplashScreen()),
       );
     }
   }
