@@ -3,13 +3,11 @@ import 'dart:io';
 class CreateProfileState {
   final bool isValid;
   final bool success;
-  final String reachability;
   final File? selectedImage;
 
   CreateProfileState({
     this.isValid = false,
     this.success = false,
-    this.reachability = '',
     this.selectedImage,
   });
 
@@ -22,7 +20,6 @@ class CreateProfileState {
     return CreateProfileState(
       isValid: isValid ?? this.isValid,
       success: success ?? this.success,
-      reachability: reachability ?? this.reachability,
       selectedImage: selectedImage ?? this.selectedImage,
     );
   }

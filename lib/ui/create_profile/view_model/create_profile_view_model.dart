@@ -21,6 +21,7 @@ class CreateProfileViewModel extends ChangeNotifier {
   final TextEditingController surnameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   /// Opens the gallery to pick an image and updates the selected image.
   ///
@@ -63,7 +64,7 @@ class CreateProfileViewModel extends ChangeNotifier {
         surnameController.text,
         emailController.text,
         passwordController.text,
-        state.reachability,
+        Reachability.onlineOrInPerson.value.toString(),
         state.selectedImage,
       );
 
@@ -73,12 +74,6 @@ class CreateProfileViewModel extends ChangeNotifier {
       }
     }
   }
-
-  void updateReachability(String value) {
-    _state = state.copyWith(reachability: value);
-    notifyListeners();
-  }
-
   void initReachability() {
     _state =
         state.copyWith(reachability: Reachability.inPerson.value.toString());

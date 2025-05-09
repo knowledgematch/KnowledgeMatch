@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:knowledgematch/domain/models/reachability.dart';
 import 'package:knowledgematch/ui/create_profile/view_model/create_profile_view_model.dart';
 import 'package:knowledgematch/ui/splash/widgets/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/themes/app_colors.dart';
-import '../../core/ui/custom_drop_down.dart';
 import '../../core/ui/custom_page.dart';
 
 class CreateProfileScreen extends StatefulWidget {
@@ -46,19 +44,10 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
             key: viewModel.formKey,
             child: Column(
               children: <Widget>[
-                GestureDetector(
-                  onTap: viewModel.pickImage,
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: AppColors.grey2Light,
-                    backgroundImage: viewModel.state.selectedImage != null
-                        ? FileImage(viewModel.state.selectedImage!)
-                        : AssetImage('assets/images/profile.png')
-                            as ImageProvider,
-                    child: viewModel.state.selectedImage == null
-                        ? Icon(Icons.camera_alt,
-                            size: 50, color: AppColors.greyLight)
-                        : null,
+                Flexible(
+                  child: Image.asset(
+                    "assets/images/create_profile.png",
+                    fit: BoxFit.contain,
                   ),
                 ),
                 SizedBox(height: 16),
@@ -107,81 +96,100 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                   },
                 ),
                 SizedBox(height: 16),
-                CustomDropdown<Reachability>(
-                  items: Reachability.values.map((Reachability reachability) {
-                    return reachability;
-                  }).toList(),
-                  selectedItem: ReachabilityValue.fromValue(
-                      int.parse(viewModel.state.reachability)),
-                  labelText: 'Reachability',
-                  onChanged: (Reachability? newValue) {
-                    viewModel.updateReachability(newValue!.value.toString());
+                TextFormField(
+                  controller: viewModel.confirmPasswordController,
+                  decoration: InputDecoration(labelText: 'Confirm Password'),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password';
+                    }
+                    return null;
                   },
                 ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (viewModel.formKey.currentState!.validate()) {
-                      await viewModel.createAccount();
+                SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (viewModel.formKey.currentState!.validate()) {
+                        await viewModel.createAccount();
 
-                      if (!context.mounted) return;
-
-                      if (!viewModel.state.isValid) {
-                        showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: Text('Invalid Email Domain'),
-                            content: Text(
-                                'The email domain does not match any valid organisation domains.'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(ctx).pop();
-                                },
-                                child: Text('OK'),
-                              ),
-                            ],
-                          ),
-                        );
-                        return;
-                      } else if (viewModel.state.success) {
-                        showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: Text('Success'),
-                            content: Text('Account created successfully!'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(ctx).pop();
-                                  Navigator.pop(context);
-                                },
-                                child: Text('OK'),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: Text('Error'),
-                            content: Text('An error occurred'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(ctx).pop();
-                                },
-                                child: Text('OK'),
-                              ),
-                            ],
-                          ),
-                        );
+                        if (!context.mounted) return;
+                        if (viewModel.passwordController.text != viewModel.confirmPasswordController.text){
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: Text("Passwords don't match"),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                        }
+                        if (!viewModel.state.isValid) {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: Text('Invalid Email Domain'),
+                              content: Text(
+                                  'The email domain does not match any valid organisation domains.'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                        } else if (viewModel.state.success) {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: Text('Success'),
+                              content: Text('Account created successfully!'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: Text('Error'),
+                              content: Text('An error occurred'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                       }
-                    }
-                  },
-                  child: Text('Create Account',
-                      style: TextStyle(color: AppColors.whiteLight)),
+                    },
+                    child: Text('Create Account',
+                        style: TextStyle(color: AppColors.whiteLight)),
+                  ),
                 ),
                 SizedBox(height: 20),
                 TextButton(
