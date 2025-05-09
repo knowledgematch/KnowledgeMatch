@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/ui/splash/view_model/splash_view_model.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../data/services/api_db_connection.dart';
 
@@ -30,10 +32,15 @@ class AppDrawer extends StatelessWidget {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     User.instance.reset();
+    if  (context.mounted){
+      final splashViewModel = context.read<SplashViewModel>();
+      await splashViewModel.init();
+    }
     if (context.mounted) {
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const SplashScreen()),
+        MaterialPageRoute(builder: (_) => const SplashScreen()),
+            (route) => false,
       );
     }
   }
