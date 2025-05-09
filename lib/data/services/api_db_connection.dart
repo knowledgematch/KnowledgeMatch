@@ -12,15 +12,17 @@ class ApiDbConnection {
   String host = "";
   var port = 3000;
 
-  Uri get baseUri => Uri.parse('$host:$port');
+  Uri get baseUri => Uri.parse('https://$host:$port');
 
   ApiDbConnection() {
     if (kReleaseMode) {
       // Live server
-      host = 'http://86.119.47.241';
+      host = 'fl-15-241.zhdk.cloud.switch.ch';
     } else {
+      //TODO Create second notification Method on firebase
       // Test server
-      host = 'https://fl-13-105.zhdk.cloud.switch.ch';
+      //host = 'https://fl-13-105.zhdk.cloud.switch.ch';
+      host = 'fl-15-241.zhdk.cloud.switch.ch';
     }
   }
 
