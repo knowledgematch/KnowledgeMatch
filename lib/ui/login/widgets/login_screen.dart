@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/create_profile/view_model/create_profile_view_model.dart';
+import 'package:knowledgematch/ui/forgot_pw/view_model/forgot_pw_view_model.dart';
+import 'package:knowledgematch/ui/forgot_pw/widgets/forgot_pw_screen.dart';
 import 'package:knowledgematch/ui/login/view_model/login_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +10,6 @@ import '../../core/ui/custom_page.dart';
 import '../../create_profile/widgets/create_profile_screen.dart';
 import '../../two_fa/view_model/two_fa_view_model.dart';
 import '../../two_fa/widgets/two_fa_screen.dart';
-import '../reset_password_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -55,7 +56,10 @@ class LoginScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ResetPasswordScreen(),
+                            builder: (_) => ChangeNotifierProvider(
+                              create: (_) => ForgotPwViewModel(),
+                              child: ForgotPwScreen(),
+                            ),
                           ),
                         );
                       },
