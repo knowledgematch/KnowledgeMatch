@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/themes/app_colors.dart';
 import '../../core/ui/custom_drop_down.dart';
+import '../../core/ui/custom_page.dart';
 
 class CreateProfileScreen extends StatefulWidget {
   const CreateProfileScreen({super.key});
@@ -33,17 +34,16 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<CreateProfileViewModel>();
-
+    var viewModel = context.watch<CreateProfileViewModel>();
     return Scaffold(
       appBar: AppBar(
         title: Text('Create Account'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: viewModel.formKey,
-          child: SingleChildScrollView(
+      body: CustomPage(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: viewModel.formKey,
             child: Column(
               children: <Widget>[
                 GestureDetector(
