@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/themes/app_colors.dart';
 import '../create_profile/create_profile_screen.dart';
+import '../forgot_pw/view_model/forgot_pw_view_model.dart';
+import '../forgot_pw/widgets/forgot_pw_screen.dart';
 import '../two_fa/view_model/two_fa_view_model.dart';
 import '../two_fa/widgets/two_fa_screen.dart';
 
