@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'decorations.dart';
 
 class InfoCard extends StatelessWidget {
   final String title;
@@ -40,11 +41,7 @@ class InfoCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         width: double.infinity,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300),
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white,
-        ),
+        decoration: Decorations.container,
         child: content,
       ),
     );
