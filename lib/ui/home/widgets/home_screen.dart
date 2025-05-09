@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
-import 'package:knowledgematch/ui/core/ui/decorations.dart';
 import 'package:knowledgematch/ui/home/view_model/home_view_model.dart';
 import 'package:provider/provider.dart';
 
