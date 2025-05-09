@@ -61,12 +61,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Home',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        elevation: 0,
+        title: const Text('Home'),
       ),
       drawer: const AppDrawer(),
       body: ListView(
@@ -76,17 +71,24 @@ class HomeScreenState extends State<HomeScreen> {
             child: Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.blue.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
                 gradient: LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                   colors: [
-                    AppColors.blue.withOpacity(0.2),
-                    AppColors.primary.withOpacity(0.8),
+                    AppColors.blue.withOpacity(0.1),
+                    AppColors.primary.withOpacity(0.6),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(20),
               ),
-
               child: Row(
                 children: [
                   Column(
@@ -111,10 +113,8 @@ class HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-
                       Text(
                         _formatName(User.instance.name ?? ''),
-
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -222,13 +222,13 @@ class HomeScreenState extends State<HomeScreen> {
                   MaterialPageRoute(
                     builder:
                         (context) => ChangeNotifierProvider<RequestViewModel>(
-                      create:
-                          (_) => RequestViewModel(
-                        notificationData: entry.key,
-                        userprofile: entry.value,
-                      ),
-                      child: RequestScreen(),
-                    ),
+                          create:
+                              (_) => RequestViewModel(
+                                notificationData: entry.key,
+                                userprofile: entry.value,
+                              ),
+                          child: RequestScreen(),
+                        ),
                   ),
                 );
               },
@@ -256,4 +256,3 @@ class HomeScreenState extends State<HomeScreen> {
     return name;
   }
 }
-

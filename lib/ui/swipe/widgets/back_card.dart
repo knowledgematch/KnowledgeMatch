@@ -22,9 +22,9 @@ class BackCard extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      // padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.grey2Light,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -34,20 +34,19 @@ class BackCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            height: 450,
-            width: 380,
-            decoration: BoxDecoration(
-              color: AppColors.greyShadowLight,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.greyShadowLight, width: 2),
-            ),
-            child: ClipRRect(
-              borderRadius: AppConstants.borderRadiusLarge,
-              child: Flexible(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              height: 450,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: AppColors.greyShadowLight,
+                borderRadius: AppConstants.borderRadiusLarge,
+              ),
+              child: ClipRRect(
+                borderRadius: AppConstants.borderRadiusLarge,
                 child:
                     profilePicture != null
                         ? Image.memory(profilePicture, fit: BoxFit.cover)
@@ -57,40 +56,32 @@ class BackCard extends StatelessWidget {
                         ),
               ),
             ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Name
-          Text(
-            profile.name,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppColors.black87Light,
+            Text(
+              profile.name,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.black87Light,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-
-          Expanded(
-            child: Text(
+            const SizedBox(height: 8),
+            Text(
               profile.description == "null"
                   ? "No information available."
                   : profile.description,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16, color: AppColors.greyLight),
             ),
-          ),
-
-          const Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: Text(
-              "Click anywhere on the page to find out more!",
-              style: TextStyle(fontSize: 12, color: AppColors.greyLight),
-              textAlign: TextAlign.center,
+            const Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Text(
+                "Click anywhere on the page to find out more!",
+                style: TextStyle(fontSize: 12, color: AppColors.greyLight),
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

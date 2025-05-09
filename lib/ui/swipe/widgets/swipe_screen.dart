@@ -15,6 +15,20 @@ class SwipeScreen extends StatefulWidget {
 }
 
 class ProfileSwipeScreenState extends State<SwipeScreen> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<SwipeViewModel>();
@@ -42,99 +56,114 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
           );
         }
 
-        return Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: Text(viewModel.state.title ?? "Matches (0)"),
-            centerTitle: true,
-          ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: SwipableStack(
-                      controller: viewModel.controller,
-                      itemCount: viewModel.profiles.length,
-                      horizontalSwipeThreshold: 0.8,
-                      onSwipeCompleted: (index, direction) {
-                        viewModel.handleSwipe(direction, context);
-                      },
-                      builder: (context, properties) {
-                        viewModel.checkSwipeDirection(properties.swipeProgress);
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: AppConstants.borderRadiusLarge,
-                            boxShadow: [
-                              if (viewModel.state.shouldShowGlow)
-                                BoxShadow(
-                                  color:
-                                      properties.direction ==
-                                              SwipeDirection.right
-                                          ? Colors.green.withOpacity(0.9)
-                                          : properties.direction ==
-                                              SwipeDirection.left
-                                          ? Colors.red.withOpacity(0.9)
-                                          : Colors.transparent,
-                                  blurRadius: 40,
-                                  spreadRadius: 5,
-                                ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: AppConstants.borderRadiusLarge,
-                            child: FlipCard(
-                              profile:
-                                  viewModel.profiles[properties.index %
-                                      viewModel.profiles.length],
-                            ),
-                          ),
-                        );
-                      },
-                      overlayBuilder: (context, properties) {
-                        if (properties.direction == SwipeDirection.right &&
-                            viewModel.state.shouldShowGlow) {
-                          return Align(
-                            alignment: Alignment.topLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: Text(
-                                'ACCEPT',
-                                style: const TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 50,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          );
-                        } else if (properties.direction ==
-                                SwipeDirection.left &&
-                            viewModel.state.shouldShowGlow) {
-                          return Align(
-                            alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: Text(
-                                'DECLINE',
-                                style: const TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 50,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                      swipeAssistDuration: const Duration(milliseconds: 200),
-                      stackClipBehaviour: Clip.hardEdge,
-                      allowVerticalSwipe: false,
-                    ),
+        return Expanded(
+          child: Scrollbar(
+            controller: _scrollController,
+            thumbVisibility: true, // always show the thumb
+            thickness: 6, // makes the thumb a bit more obvious
+            radius: Radius.circular(3),
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: AppBar(
+                title: Text(viewModel.state.title ?? "Matches (0)"),
+                centerTitle: true,
+              ),
+              body: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
                   ),
-                ],
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: SwipableStack(
+                          controller: viewModel.controller,
+                          itemCount: viewModel.profiles.length,
+                          horizontalSwipeThreshold: 0.8,
+                          onSwipeCompleted: (index, direction) {
+                            viewModel.handleSwipe(direction, context);
+                          },
+                          builder: (context, properties) {
+                            viewModel.checkSwipeDirection(
+                              properties.swipeProgress,
+                            );
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: AppConstants.borderRadiusLarge,
+                                boxShadow: [
+                                  if (viewModel.state.shouldShowGlow)
+                                    BoxShadow(
+                                      color:
+                                          properties.direction ==
+                                                  SwipeDirection.right
+                                              ? Colors.green.withOpacity(0.9)
+                                              : properties.direction ==
+                                                  SwipeDirection.left
+                                              ? Colors.red.withOpacity(0.9)
+                                              : Colors.transparent,
+                                      blurRadius: 40,
+                                      spreadRadius: 5,
+                                    ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: AppConstants.borderRadiusLarge,
+                                child: FlipCard(
+                                  profile:
+                                      viewModel.profiles[properties.index %
+                                          viewModel.profiles.length],
+                                ),
+                              ),
+                            );
+                          },
+                          overlayBuilder: (context, properties) {
+                            if (properties.direction == SwipeDirection.right &&
+                                viewModel.state.shouldShowGlow) {
+                              return Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: Text(
+                                    'ACCEPT',
+                                    style: const TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 50,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else if (properties.direction ==
+                                    SwipeDirection.left &&
+                                viewModel.state.shouldShowGlow) {
+                              return Align(
+                                alignment: Alignment.topRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: Text(
+                                    'DECLINE',
+                                    style: const TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 50,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                          swipeAssistDuration: const Duration(
+                            milliseconds: 200,
+                          ),
+                          stackClipBehaviour: Clip.hardEdge,
+                          allowVerticalSwipe: false,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
