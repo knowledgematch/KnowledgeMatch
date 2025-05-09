@@ -24,6 +24,7 @@ class SplashViewModel extends ChangeNotifier {
     await _checkLoggedInStatus();
     // Request push notification permissions (especially relevant for iOS).
     await _requestPermissions();
+    notifyListeners();
   }
 
   /// Checks whether the user is already logged in based on local storage.
@@ -44,10 +45,8 @@ class SplashViewModel extends ChangeNotifier {
       ApiDbConnection().updateFcmToken(User.instance.id.toString());
 
       _state = _state.copyWith(isLoggedIn: true);
-      notifyListeners();
     } else {
       _state = _state.copyWith(isLoggedIn: false);
-      notifyListeners();
     }
   }
 

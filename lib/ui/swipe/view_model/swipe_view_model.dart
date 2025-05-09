@@ -23,18 +23,18 @@ class SwipeViewModel extends ChangeNotifier {
 
   List<Userprofile> profiles = [];
 
-  SwipeViewModel({
-    required this.searchCriteria,
-  }){
-    profilesFuture = MatchingAlgorithm().getMatchingUserProfiles(searchCriteria);
+  SwipeViewModel({required this.searchCriteria}) {
+    profilesFuture = MatchingAlgorithm().getMatchingUserProfiles(
+      searchCriteria,
+    );
     profilesFuture.then((loadedProfiles) {
       profiles = loadedProfiles;
       updateTitle();
     });
   }
 
-  void updateTitle(){
-    _state = _state.copyWith(title:"Matches (${profiles.length})" );
+  void updateTitle() {
+    _state = _state.copyWith(title: "Matches (${profiles.length})");
     notifyListeners();
   }
 
@@ -51,18 +51,19 @@ class SwipeViewModel extends ChangeNotifier {
     var notificationData = NotificationData(
       type: NotificationType.knowledgeRequest,
       title: "Your knowledge has been requested!",
-      body:
-      "From: ${User.instance.name} ${User.instance.surname}, Topic: $topic",
+      body: "From: ${User.instance.name},on Topic: $topic",
       payload: searchCriteria.toJSON(),
       targetUserId: profile.id,
       sourceUserId: User.instance.id ?? 0,
     );
     profiles.removeAt(controller.currentIndex);
-    await NotificationService()
-        .sendMessageToDevice(notificationData, profile.tokens ?? []);
+    await NotificationService().sendMessageToDevice(
+      notificationData,
+      profile.tokens ?? [],
+    );
   }
 
-  void handleSwipe(SwipeDirection direction, BuildContext context){
+  void handleSwipe(SwipeDirection direction, BuildContext context) {
     if (direction == SwipeDirection.right) {
       //send request
       final snackBar = SnackBar(

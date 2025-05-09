@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:knowledgematch/ui/chat/chat_state.dart';
@@ -11,123 +13,80 @@ import '../../../domain/models/userprofile.dart';
 class ChatViewModel extends ChangeNotifier {
   final FirestoreService _firestoreService = FirestoreService();
 
+  StreamSubscription? _notificationSub;
+
   ChatState _state;
 
   ChatState get state => _state;
 
-  ChatViewModel() : _state = ChatState();
-
-  /// Loads notifications and user profiles asynchronously.
-  ///
-  /// This method fetches notifications of type [NotificationType.knowledgeRequest]
-  /// for the current user using the [firestoreService]. It limits the notifications
-  /// to the first 20 and then retrieves the user profile for each request's
-  /// source user. The notifications and user profiles are stored in local variables
-  /// and the UI is updated accordingly.
-  ///
-  /// If an error occurs during the process, the error message is captured and the
-  /// loading state is updated.
-  ///
-  /// Returns:
-  /// - A [Future] that completes when notifications and user profiles have been
-  ///   loaded and the UI state has been updated.
-  // Future<void> loadNotificationsAndProfiles() async {
-  //   try {
-  //     final notifications = await _firestoreService.fetchNotifications(
-  //       userID: User.instance.id ?? 0,
-  //       type: NotificationType.knowledgeRequest,
-  //     );
-  //
-  //     final limitedNotifications = notifications.take(20).toList();
-  //
-  //     Map<int, Userprofile?> userProfiles = {};
-  //     for (final notification in limitedNotifications) {
-  //       final userProfile = await MatchingAlgorithm()
-  //           .getUserProfileById(notification.sourceUserId);
-  //       userProfiles[notification.sourceUserId] = userProfile;
-  //     }
-  //     _state = state.copyWith(
-  //       userProfiles: userProfiles,
-  //       notification: limitedNotifications,
-  //     );
-  //   } catch (error) {
-  //     _state = state.copyWith(errorMessage: error.toString());
-  //   } finally {
-  //     _state = state.copyWith(isLoading: false);
-  //     notifyListeners();
-  //   }
-  // }
-
-  Future<void> loadNotificationsPerRequestID() async {
-    try {
-      final notifications = await _firestoreService.fetchAllNotifications(
-        userID: User.instance.id ?? 0,
-      );
-
-      final Map<String, List<NotificationData>> feedMap = {};
-      for (var n in notifications) {
-        feedMap
-            .putIfAbsent(n.requestID ?? "", () => <NotificationData>[])
-            .add(n);
-      }
-      Map<int, Userprofile?> userProfiles = {};
-      for (final notification in notifications) {
-        final userProfile = await MatchingAlgorithm()
-            .getUserProfileById(notification.sourceUserId);
-        userProfiles[notification.sourceUserId] = userProfile;
-      }
-      _state = state.copyWith(
-        userProfiles: userProfiles,
-        notification: feedMap,
-      );
-    } catch (error) {
-      _state = state.copyWith(errorMessage: error.toString());
-    } finally {
-      _state = state.copyWith(isLoading: false);
-      notifyListeners();
-    }
+  ChatViewModel() : _state = ChatState() {
+    _loadData();
   }
 
-  /// Loads notifications and user profiles asynchronously.
-  ///
-  /// This method fetches notifications of type [NotificationType.knowledgeRequest]
-  /// for the current user using the [firestoreService]. It limits the notifications
-  /// to the first 20 and then retrieves the user profile for each request's
-  /// source user. The notifications and user profiles are stored in local variables
-  /// and the UI is updated accordingly.
-  ///
-  /// If an error occurs during the process, the error message is captured and the
-  /// loading state is updated.
-  ///
-  /// Returns:
-  /// - A [Future] that completes when notifications and user profiles have been
-  ///   loaded and the UI state has been updated.
-  Future<void> loadConfirmedNotificationsAndProfiles() async {
-    _state = state.copyWith(isLoading: true);
+  /// Loads open and planned requests for current user
+  Future<void> _loadData() async {
+    loadNotificationsPerRequestID();
     notifyListeners();
+  }
 
-    try {
-      final notifications = await _firestoreService.fetchConfirmed(
-        userID: User.instance.id ?? 0,
-      );
+  /// Cancel the StreamSubscription
+  ///
+  /// Manually close [_openRequestSub] and [_plannedRequestSub] StreamSubscription
+  /// To prevent memory leaks.
+  @override
+  void dispose() {
+    _notificationSub?.cancel();
+    super.dispose();
+  }
 
-      final limitedNotifications = notifications.take(20).toList();
+  /// Subscribes to the Firestore notifications stream, grouping notifications by request ID,
+  /// fetching and caching user profiles in parallel, and throttling UI updates to every five new items.
+  ///
+  /// This method:
+  /// 1. Listens to a stream of `NotificationData` for the current user.
+  /// 2. Groups incoming notifications into a `Map<String, List<NotificationData>>` keyed by `requestID`.
+  /// 3. Extracts unique source user IDs and fetches their profiles in parallel,
+  ///    caching each `Future<Userprofile?>` to avoid redundant network calls.
+  /// 4. Tracks the total notification count (`lastNotifiedCount`) and only invokes
+  ///    `notifyListeners()` when at least five new notifications have arrived since the last update,
+  ///    thereby reducing unnecessary UI rebuilds.
+  ///
+  /// After five or more new notifications are detected, the view model's state is updated with
+  /// the latest notification groups and user profiles, and all listeners are notified.
+  ///
+  void loadNotificationsPerRequestID() {
+    int lastNotifiedCount = 0;
+    final Map<int, Future<Userprofile?>> profileCache = {};
+    _notificationSub = _firestoreService
+        .allNotificationsStream(userID: User.instance.id ?? 0)
+        .listen((list) async {
+          final feedMap = <String, List<NotificationData>>{};
+          for (final n in list) {
+            feedMap.putIfAbsent(n.requestID ?? '', () => []).add(n);
+          }
 
-      Map<int, Userprofile?> userProfiles = {};
-      for (final notification in limitedNotifications) {
-        final userProfile = await MatchingAlgorithm()
-            .getUserProfileById(notification.sourceUserId);
-        userProfiles[notification.sourceUserId] = userProfile;
-      }
-      _state = state.copyWith(
-        userProfiles: userProfiles,
-        //TODO: notification: limitedNotifications,
-      );
-    } catch (error) {
-      _state = state.copyWith(errorMessage: error.toString());
-    } finally {
-      _state = state.copyWith(isLoading: false);
-      notifyListeners();
-    }
+          final ids = list.map((n) => n.sourceUserId).toSet();
+          final futures =
+              ids
+                  .map(
+                    (id) =>
+                        profileCache[id] ??= MatchingAlgorithm()
+                            .getUserProfileById(id),
+                  )
+                  .toList();
+          final profiles = await Future.wait(futures);
+          final userProfiles = Map.fromIterables(ids, profiles);
+
+          final currentCount = list.length;
+          if (currentCount - lastNotifiedCount >= 5) {
+            lastNotifiedCount = currentCount;
+
+            _state = state.copyWith(
+              notification: feedMap,
+              userProfiles: userProfiles,
+            );
+            notifyListeners();
+          }
+        });
   }
 }

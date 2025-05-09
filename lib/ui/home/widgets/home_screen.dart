@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
 import 'package:knowledgematch/ui/home/view_model/home_view_model.dart';
 import 'package:provider/provider.dart';
@@ -9,8 +10,8 @@ import '../../../domain/models/notification_data.dart';
 import '../../../domain/models/userprofile.dart';
 import '../../core/themes/app_colors.dart';
 import '../../request/view_model/request_view_model.dart';
-import '../../request/widgets/notification_card.dart';
 import '../../request/widgets/request_screen.dart';
+import '../../request/widgets/widget/notification_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +21,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (!mounted) return;
+      context.read<HomeViewModel>().refresh();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final HomeViewModel viewModel = context.watch<HomeViewModel>();
@@ -41,23 +51,45 @@ class HomeScreenState extends State<HomeScreen> {
             child: Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    AppColors.blue.withOpacity(0.2),
+                    AppColors.primary.withOpacity(0.8),
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(20),
               ),
+
               child: Row(
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Welcome back,",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.primary.withOpacity(0.8),
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "Welcome back ",
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: AppColors.primary.withOpacity(0.8),
+                              ),
+                            ),
+                            TextSpan(
+                              text: "👋",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+
                       Text(
-                        "${viewModel.state.userName} 👋",
+                        "${_formatName(User.instance.name ?? '')}",
+
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -69,11 +101,11 @@ class HomeScreenState extends State<HomeScreen> {
                   const Spacer(),
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: viewModel.state.profilePicture !=
-                            null //TODO check if profile picture is shown correctly
-                        ? MemoryImage(viewModel.state.profilePicture!)
+                    backgroundImage:
+                    User.instance.getDecodedPicture() != null
+                        ? MemoryImage(User.instance.getDecodedPicture()!)
                         : const AssetImage('assets/images/profile.png')
-                            as ImageProvider,
+                    as ImageProvider,
                     // User.instance.picture ?? 'assets/images/profile.png'),
                   ),
                 ],
@@ -136,9 +168,10 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        ChangeNotifierProvider<RequestViewModel>(
-                      create: (_) => RequestViewModel(
+                    builder:
+                        (context) => ChangeNotifierProvider<RequestViewModel>(
+                      create:
+                          (_) => RequestViewModel(
                         notificationData: entry.key,
                         userprofile: entry.value,
                       ),
@@ -162,4 +195,13 @@ class HomeScreenState extends State<HomeScreen> {
       );
     }
   }
+
+  String _formatName(String name) {
+    const int maxLength = 17;
+    if (name.length > maxLength) {
+      return '${name.substring(0, maxLength)}...';
+    }
+    return name;
+  }
 }
+

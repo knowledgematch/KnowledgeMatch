@@ -1,26 +1,88 @@
 import 'dart:convert';
-import 'dart:typed_data'; // Import for Uint8List
+import 'dart:typed_data';
 
-class User {
+import 'package:flutter/widgets.dart';
+
+class User extends ChangeNotifier {
   // Singleton instance
   static final User _instance = User._privateConstructor();
 
-  // Private constructor
   User._privateConstructor();
 
-  // Getter for the singleton instance
   static User get instance => _instance;
 
-  // Properties
-  int? id;
-  String? name;
-  String? surname;
-  int? reachability;
-  String? email;
-  String? picture;
-  int? seniority;
-  String? description;
-  bool? isAdmin = false;
+  int? _id;
+  String? _name;
+  String? _surname;
+  int? _reachability;
+  String? _email;
+  String? _picture;
+  int? _seniority;
+  String? _description;
+  bool? _isAdmin = false;
+
+  int? get id => _id;
+
+  String? get name => _name;
+
+  String? get surname => _surname;
+
+  int? get reachability => _reachability;
+
+  String? get email => _email;
+
+  String? get picture => _picture;
+
+  int? get seniority => _seniority;
+
+  String? get description => _description;
+
+  bool? get isAdmin => _isAdmin;
+
+  set id(int? value) {
+    _id = value;
+    notifyListeners();
+  }
+
+  set name(String? value) {
+    _name = value;
+    notifyListeners();
+  }
+
+  set surname(String? value) {
+    _surname = value;
+    notifyListeners();
+  }
+
+  set reachability(int? value) {
+    _reachability = value;
+    notifyListeners();
+  }
+
+  set email(String? value) {
+    _email = value;
+    notifyListeners();
+  }
+
+  set picture(String? value) {
+    _picture = value;
+    notifyListeners();
+  }
+
+  set seniority(int? value) {
+    _seniority = value;
+    notifyListeners();
+  }
+
+  set description(String? value) {
+    _description = value;
+    notifyListeners();
+  }
+
+  set isAdmin(bool? value) {
+    _isAdmin = value;
+    notifyListeners();
+  }
 
   /// Populates the [User] instance's fields using data from a JSON map.
   ///
@@ -48,14 +110,17 @@ class User {
     email = json['Email'] as String?;
 
     picture = json['Picture'] != null
-        ? base64Encode((json['Picture']['data'] as List<dynamic>).cast<int>())
+        ? base64Encode(
+            (json['Picture']['data'] as List<dynamic>).cast<int>(),
+          )
         : null;
 
     seniority = json['Seniority'] as int?;
     description = json['Description'] as String?;
-    if(json['isAdmin'] > 0){
+    if (json['isAdmin'] > 0) {
       isAdmin = true;
     }
+    notifyListeners();
   }
 
   /// Returns the decoded [Uint8List] of the [picture] if available
@@ -73,6 +138,7 @@ class User {
     } else {
       picture = null;
     }
+    notifyListeners();
   }
 
   /// Removes all data from the user
@@ -86,6 +152,7 @@ class User {
     seniority = null;
     description = null;
     isAdmin = null;
+    notifyListeners();
   }
 
   @override

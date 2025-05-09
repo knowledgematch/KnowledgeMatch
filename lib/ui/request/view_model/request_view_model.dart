@@ -20,32 +20,41 @@ class RequestViewModel extends ChangeNotifier {
   RequestState get state => _state;
 
   RequestViewModel({required this.notificationData, required this.userprofile})
-      : _state = RequestState(
-            searchCriteria: notificationData.payload['search_criteria'] ==
+    : _state = RequestState(
+        searchCriteria:
+            notificationData.payload['search_criteria'] ==
                         Null || //for both formats being used
                     notificationData.payload['search_criteria'] is Map
                 ? SearchCriteria.fromJSON(
-                    notificationData.payload['search_criteria'])
-                : SearchCriteria.fromJSON(notificationData.payload)
+                  notificationData.payload['search_criteria'],
+                )
+                : SearchCriteria.fromJSON(notificationData.payload),
       );
 
   void acceptRequest() async {
+    notificationData.isOpen = false;
     var notification = NotificationData(
-        type: NotificationType.requestAccepted,
-        title: "Accepted request",
-        body:
-            "Your request has been accepted by ${User.instance.name} ${User.instance.surname}",
-        payload: state.searchCriteria.toJSON(),
-        targetUserId: userprofile.id,
-        sourceUserId: User.instance.id!,
-        requestID: notificationData.requestID);
-    FirestoreService()
-        .notificationStatusUpdate(false, notificationData.documentID);
-    await NotificationService()
-        .sendMessageToDevice(notification, userprofile.tokens ?? []);
+      type: NotificationType.requestAccepted,
+      title: "Accepted request",
+      body:
+          "Your request has been accepted by ${User.instance.name} ${User.instance.surname}",
+      payload: state.searchCriteria.toJSON(),
+      targetUserId: userprofile.id,
+      sourceUserId: User.instance.id!,
+      requestID: notificationData.requestID,
+    );
+    await FirestoreService().notificationStatusUpdate(
+      false,
+      notificationData.documentID,
+    );
+    await NotificationService().sendMessageToDevice(
+      notification,
+      userprofile.tokens ?? [],
+    );
   }
 
   void declineRequest() async {
+    notificationData.isOpen = false;
     var notification = NotificationData(
       type: NotificationType.requestDeclined,
       title: "Declined request",
@@ -56,12 +65,16 @@ class RequestViewModel extends ChangeNotifier {
       sourceUserId: userprofile.id,
       requestID: notificationData.requestID,
     );
-    await NotificationService()
-        .sendMessageToDevice(notification, userprofile.tokens ?? []);
+    await NotificationService().sendMessageToDevice(
+      notification,
+      userprofile.tokens ?? [],
+    );
     FirestoreService().closeRequest(notificationData.requestID);
   }
 
   void proposeSelectedDates() async {
+    notificationData.isOpen = false;
+
     var dates = RequestDateData.buildDatesMap(state.selectedDates);
     Map<String, dynamic> combineJson = {
       "dates": dates,
@@ -79,11 +92,16 @@ class RequestViewModel extends ChangeNotifier {
     );
 
     //Update Status of the previous request
-    FirestoreService()
-        .notificationStatusUpdate(false, notificationData.documentID);
+    FirestoreService().notificationStatusUpdate(
+      false,
+      notificationData.documentID,
+    );
 
-    await NotificationService()
-        .sendMessageToDevice(notification, userprofile.tokens ?? []);
+    await NotificationService().sendMessageToDevice(
+      notification,
+      userprofile.tokens ?? [],
+    );
+    notifyListeners();
   }
 
   void parseIncomingDates() {
@@ -98,9 +116,10 @@ class RequestViewModel extends ChangeNotifier {
           List<dynamic> meetups = datesData['meetupsRequested'];
 
           //Parse each meetup entry
-          var incomingDates = meetups.map((item) {
-            return RequestDateData.fromJson(item);
-          }).toList();
+          var incomingDates =
+              meetups.map((item) {
+                return RequestDateData.fromJson(item);
+              }).toList();
           _state = state.copyWith(incomingDates: incomingDates);
         }
       }
@@ -110,6 +129,7 @@ class RequestViewModel extends ChangeNotifier {
   }
 
   void confirmDate() async {
+    notificationData.isOpen = false;
     Map<String, dynamic> combineJson = {
       "dates": state.selectedDate?.toJson(),
       "search_criteria": state.searchCriteria.toJSON(),
@@ -126,8 +146,10 @@ class RequestViewModel extends ChangeNotifier {
       sourceUserId: User.instance.id!,
     );
 
-    await NotificationService()
-        .sendMessageToDevice(notification, userprofile.tokens ?? []);
+    await NotificationService().sendMessageToDevice(
+      notification,
+      userprofile.tokens ?? [],
+    );
 
     FirestoreService().addConfirmationToFirestore(notification);
 

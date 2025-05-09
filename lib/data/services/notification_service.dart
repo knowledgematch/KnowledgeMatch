@@ -39,9 +39,9 @@ class NotificationService {
   /// Initialization settings for both platforms
   late final InitializationSettings initializationSettings =
       InitializationSettings(
-    android: initializationSettingsAndroid,
-    iOS: initializationSettingsIOS,
-  );
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS,
+      );
 
   /// Create the request channel for Android
   Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
@@ -65,7 +65,8 @@ class NotificationService {
 
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(channel);
   }
 
@@ -79,39 +80,45 @@ class NotificationService {
   /// Parameters:
   /// - [notificationResponse]: The response object containing the request data.
   Future<void> onSelectNotification(
-      NotificationResponse notificationResponse) async {
+    NotificationResponse notificationResponse,
+  ) async {
     if (notificationResponse.payload != null) {
       final Map<String, dynamic> data = Map<String, dynamic>.from(
         jsonDecode(notificationResponse.payload!),
       );
       navigatorKey?.currentState?.push(
         MaterialPageRoute(
-          builder: (context) => FutureBuilder<Userprofile>(
-            future: MatchingAlgorithm().getUserProfileById(
-              int.parse(data['source_user_id'] ?? "0"),
-            ),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Scaffold(
-                  appBar: AppBar(title: Text('Loading...')),
-                  body: Center(child: CircularProgressIndicator()),
-                );
-              } else if (snapshot.hasError) {
-                return Scaffold(
-                  appBar: AppBar(title: Text('Error')),
-                  body: Center(child: Text('Error: ${snapshot.error}')),
-                );
-              } else {
-                return ChangeNotifierProvider<RequestViewModel>(
-                  create: (_) => RequestViewModel(
-                      userprofile: snapshot.data!,
-                      notificationData:
-                          NotificationData.fromFirestoreData(data)),
-                  child: RequestScreen(),
-                );
-              }
-            },
-          ),
+          builder:
+              (context) => FutureBuilder<Userprofile>(
+                future: MatchingAlgorithm().getUserProfileById(
+                  int.parse(data['source_user_id'] ?? "0"),
+                ),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Loading...')),
+                      body: Center(child: CircularProgressIndicator()),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Error')),
+                      body: Center(child: Text('Error: ${snapshot.error}')),
+                    );
+                  } else {
+                    return ChangeNotifierProvider<RequestViewModel>(
+                      create:
+                          (_) => RequestViewModel(
+                            userprofile: snapshot.data!,
+                            notificationData:
+                                NotificationData.fromFirestoreData(
+                                  jsonMap: data,
+                                ),
+                          ),
+                      child: RequestScreen(),
+                    );
+                  }
+                },
+              ),
         ),
       );
     }
@@ -140,13 +147,13 @@ class NotificationService {
   }) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'default_channel',
-      'Default Notifications',
-      channelDescription: 'This channel is used for default notifications.',
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
+          'default_channel',
+          'Default Notifications',
+          channelDescription: 'This channel is used for default notifications.',
+          importance: Importance.max,
+          priority: Priority.high,
+          ticker: 'ticker',
+        );
 
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
         DarwinNotificationDetails();
@@ -159,11 +166,12 @@ class NotificationService {
     var data = NotificationData.fromMessage(message);
 
     await flutterLocalNotificationsPlugin.show(
-        DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        data.title,
-        data.body,
-        platformChannelSpecifics,
-        payload: jsonEncode(data.toJson()));
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      data.title,
+      data.body,
+      platformChannelSpecifics,
+      payload: jsonEncode(data.toJson()),
+    );
   }
 
   /// Sends a message to the specified devices using Firebase Cloud Functions.
@@ -177,23 +185,24 @@ class NotificationService {
   /// - [notificationData]: The request data to send to the devices.
   /// - [tokens]: The list of device tokens to which the request will be sent.
   Future<void> sendMessageToDevice(
-      NotificationData notificationData, List<String> tokens) async {
-    final result =
-        await FirebaseFunctions.instance.httpsCallable('sendToDevice').call(
-      {
-        'tokens': tokens,
-        'title': notificationData.title,
-        'body': notificationData.body,
-        'payload': notificationData.payload,
-        'target_user_id': notificationData.targetUserId.toString(),
-        'source_user_id': User.instance.id,
-        'notification_type': notificationData.type.toShortString(),
-        'timestamp': notificationData.timestamp.toString(),
-        'request_id': notificationData.requestID,
-        'is_open': notificationData.isOpen,
-        'document_id': notificationData.documentID,
-      },
-    );
+    NotificationData notificationData,
+    List<String> tokens,
+  ) async {
+    final result = await FirebaseFunctions.instance
+        .httpsCallable('sendToDevice')
+        .call({
+          'tokens': tokens,
+          'title': notificationData.title,
+          'body': notificationData.body,
+          'payload': notificationData.payload,
+          'target_user_id': notificationData.targetUserId.toString(),
+          'source_user_id': User.instance.id,
+          'notification_type': notificationData.type.toShortString(),
+          'timestamp': notificationData.timestamp.toString(),
+          'request_id': notificationData.requestID,
+          'is_open': notificationData.isOpen,
+          'document_id': notificationData.documentID,
+        });
     if (result.data['success']) {
       print('Message sent successfully');
     } else {

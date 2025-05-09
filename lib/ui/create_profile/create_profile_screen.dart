@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/data/services/api_db_connection.dart';
 import 'package:knowledgematch/domain/models/reachability.dart';
+import 'package:knowledgematch/ui/core/ui/custom_page.dart';
 
 import '../core/themes/app_colors.dart';
 import '../core/ui/custom_drop_down.dart';
@@ -120,11 +121,11 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
       appBar: AppBar(
         title: Text('Create Account'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
+      body: CustomPage(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
             child: Column(
               children: <Widget>[
                 GestureDetector(

@@ -39,9 +39,10 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            create: (_) => ThemeProvider(
-                  isDarkMode: prefs.getBool('isDark') ?? false,
-                )),
+          create:
+              (_) =>
+                  ThemeProvider(isDarkMode: prefs.getBool('isDark') ?? false),
+        ),
         ChangeNotifierProvider(create: (_) => MainScreenViewModel()),
         ChangeNotifierProvider(create: (_) => ChatViewModel()),
         ChangeNotifierProvider(create: (_) => FindMatchesViewModel()),
@@ -65,10 +66,10 @@ class KnowledgeMatchApp extends StatelessWidget {
     final themeProvider = context.watch<ThemeProvider>();
     NotificationService().init(navigatorKey);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       title: 'KnowledgeMatch',
       theme: themeProvider.getTheme(),
-      //AppTheme.lightTheme, //ThemeData(primarySwatch: Colors.blue),`
       home: SplashScreen(),
     );
   }
