@@ -15,7 +15,6 @@ class AdminViewModel extends ChangeNotifier {
   final TextEditingController topicDescController = TextEditingController();
   final TextEditingController organisationController = TextEditingController();
   final TextEditingController domainController = TextEditingController();
-  final ApiDbConnection api = ApiDbConnection();
   final api = ApiDbConnection();
   final keywordTopicService = KeywordTopicService();
   AdminState _state = AdminState(
@@ -51,7 +50,6 @@ class AdminViewModel extends ChangeNotifier {
   Future<void> loadKeyword2Topic() async {
     var keyword2topics = await keywordTopicService.fetchKeyword2Topic(
         keywords: _state.keywords, topics: _state.topics);
-
 
     _state = _state.copyWith(keyword2topic: keyword2topics);
     notifyListeners();
