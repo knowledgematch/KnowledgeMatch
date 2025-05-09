@@ -22,12 +22,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> {
-  final List<Widget> _screens = [
-    HomeScreen(),
-    FindMatchesScreen(),
-    ChatScreen(),
-    ProfileScreen()
-  ];
 
   @override
   void initState() {
@@ -38,7 +32,12 @@ class MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<MainScreenViewModel>();
-
+    final List<Widget> _screens = [
+      HomeScreen(mainViewModel: viewModel),
+      FindMatchesScreen(),
+      ChatScreen(),
+      ProfileScreen()
+    ];
     return Scaffold(
         body: _screens[viewModel.state.currentIndex],
         bottomNavigationBar: ClipRRect(

@@ -10,13 +10,14 @@ import '../../../domain/models/notification_data.dart';
 import '../../../domain/models/userprofile.dart';
 import '../../core/themes/app_colors.dart';
 import '../../core/ui/decorations.dart';
-import '../../profile/widget/profile_screen.dart';
+import '../../main/view_model/main_view_model.dart';
 import '../../request/view_model/request_view_model.dart';
 import '../../request/widgets/request_screen.dart';
 import '../../request/widgets/widget/notification_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final MainScreenViewModel mainViewModel;
+  const HomeScreen({required this.mainViewModel, super.key});
 
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -46,13 +47,6 @@ class HomeScreenState extends State<HomeScreen> {
         });
       }
     });
-  }
-
-  void _navigateToEditProfile() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ProfileScreen()),
-    );
   }
 
   @override
@@ -138,7 +132,9 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(width: 12),
                   TextButton(
-                    onPressed: _navigateToEditProfile,
+                    onPressed: () =>{
+                      widget.mainViewModel.updateIndex(3),
+                    },
                     child: const Text("Edit"),
                   ),
                 ],
