@@ -32,17 +32,17 @@ class ProfileViewModel extends ChangeNotifier {
             description: "");
 
   void updateSemester(int semester) {
-    _state = _state.copyWith(semester: semester);
+    _state = _state.copyWith(semester: semester, unsaved: true);
     notifyListeners();
   }
 
   void updateReachability(Reachability reachability) {
-    _state = _state.copyWith(reachability: reachability);
+    _state = _state.copyWith(reachability: reachability, unsaved: true);
     notifyListeners();
   }
 
   void updateDescription(String description) {
-    _state = _state.copyWith(description: description);
+    _state = _state.copyWith(description: description, unsaved: true);
     notifyListeners();
   }
 
@@ -191,6 +191,7 @@ class ProfileViewModel extends ChangeNotifier {
         );
       }
     }
+    _state = _state.copyWith(unsaved: false);
     notifyListeners();
   }
 

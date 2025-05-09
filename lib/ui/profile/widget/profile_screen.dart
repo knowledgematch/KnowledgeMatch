@@ -137,35 +137,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: KeywordSelectionScreen())));
                     },
                   ),
-                  const SizedBox(height: 24),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'About me',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  GestureDetector(
+                  const SizedBox(height: 16),
+                  InfoCard(
+                    title: 'About me',
+                    value: viewModel.state.description.isEmpty
+                        ? 'No description added yet.'
+                        : viewModel.state.description,
+                    icon: Icons.description,
+                    iconColor: AppColors.primary,
                     onTap: () => _showEditDescriptionSheet(context, viewModel),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: Text(
-                        viewModel.state.description.isEmpty
-                            ? 'No bio added yet.'
-                            : viewModel.state.description,
-                        maxLines: 5,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
+                  ),
+                  const SizedBox(height: 16),
+                  if (viewModel.state.unsaved)
+                    Text(
+                      'You have unsaved changes',
+                      style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
                     ),
-                  )
                 ],
               ),
             ),
