@@ -114,12 +114,12 @@ class NotificationCard extends StatelessWidget {
         from = name;
         descriptor1 = "Keyword: ";
         text1 = notification.payload["keyword"];
-        text2 = "Your request has been declined";
+        text2 = "Request declined";
       case NotificationType.requestAccepted:
         from = name;
         descriptor1 = "Keyword: ";
         text1 = notification.payload["keyword"];
-        text2 = "Your request was accepted";
+        text2 = "Request accepted";
       case NotificationType.meetupRequest:
         from = name;
         text2 = "New meetup suggestions!";
