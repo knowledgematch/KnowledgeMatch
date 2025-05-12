@@ -14,6 +14,16 @@ class CreateProfileScreen extends StatefulWidget {
 }
 
 class CreateProfileScreenState extends State<CreateProfileScreen> {
+  final List<String> sliderImages = [
+    "assets/images/create_0.png",
+    "assets/images/create_1.png",
+    "assets/images/create_2.png",
+    "assets/images/create_3.png",
+    "assets/images/create_4.png",
+  ];
+
+  int _currentIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -22,14 +32,12 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
     });
   }
 
-  /// Function to go back to the login screen
   void _goToLoginScreen() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SplashScreen()),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     var viewModel = context.watch<CreateProfileViewModel>();
@@ -45,9 +53,37 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
             child: Column(
               children: <Widget>[
                 Flexible(
-                  child: Image.asset(
-                    "assets/images/create_profile.png",
-                    fit: BoxFit.contain,
+                  child: PageView.builder(
+                    itemCount: sliderImages.length,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                    itemBuilder: (context, index) {
+                      return Image.asset(
+                        sliderImages[index],
+                        fit: BoxFit.contain,
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    sliderImages.length,
+                        (index) => Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      width: _currentIndex == index ? 12 : 8,
+                      height: _currentIndex == index ? 12 : 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _currentIndex == index
+                            ? AppColors.primary
+                            : Colors.grey,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 16),
@@ -114,18 +150,15 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                     onPressed: () async {
                       if (viewModel.formKey.currentState!.validate()) {
                         await viewModel.createAccount();
-
                         if (!context.mounted) return;
-                        if (viewModel.passwordController.text != viewModel.confirmPasswordController.text){
+                        if (viewModel.passwordController.text != viewModel.confirmPasswordController.text) {
                           showDialog(
                             context: context,
                             builder: (ctx) => AlertDialog(
                               title: Text("Passwords don't match"),
                               actions: <Widget>[
                                 TextButton(
-                                  onPressed: () {
-                                    Navigator.of(ctx).pop();
-                                  },
+                                  onPressed: () => Navigator.of(ctx).pop(),
                                   child: Text('OK'),
                                 ),
                               ],
@@ -142,9 +175,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                                   'The email domain does not match any valid organisation domains.'),
                               actions: <Widget>[
                                 TextButton(
-                                  onPressed: () {
-                                    Navigator.of(ctx).pop();
-                                  },
+                                  onPressed: () => Navigator.of(ctx).pop(),
                                   child: Text('OK'),
                                 ),
                               ],
@@ -176,9 +207,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                               content: Text('An error occurred'),
                               actions: <Widget>[
                                 TextButton(
-                                  onPressed: () {
-                                    Navigator.of(ctx).pop();
-                                  },
+                                  onPressed: () => Navigator.of(ctx).pop(),
                                   child: Text('OK'),
                                 ),
                               ],
