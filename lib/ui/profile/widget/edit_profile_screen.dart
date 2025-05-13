@@ -56,17 +56,20 @@ class EditProfileScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ChangeNotifierProvider(
-                          create: (_) => ChangePwViewModel(),
-                          child: ChangePasswordScreen())),
-                );
-              },
-              child: const Text('Change Password'),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider(
+                            create: (_) => ChangePwViewModel(),
+                            child: ChangePasswordScreen())),
+                  );
+                },
+                child: const Text('Change Password'),
+              ),
             ),
 
           ],
