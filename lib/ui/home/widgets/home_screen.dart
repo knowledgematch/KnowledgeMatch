@@ -226,7 +226,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   String _formatName(String name) {
-    const int maxLength = 17;
+    const int maxLength = 14;
     if (name.length > maxLength) {
       return '${name.substring(0, maxLength)}...';
     }

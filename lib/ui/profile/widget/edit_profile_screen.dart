@@ -33,11 +33,13 @@ class EditProfileScreen extends StatelessWidget {
           children: [
             TextField(
               controller: nameController,
+              maxLength: 20,
               decoration: const InputDecoration(labelText: 'First Name'),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: surnameController,
+              maxLength: 20,
               decoration: const InputDecoration(labelText: 'Last Name'),
             ),
             const SizedBox(height: 16),
