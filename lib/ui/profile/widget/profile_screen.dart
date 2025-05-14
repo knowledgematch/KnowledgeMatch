@@ -162,9 +162,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _showEditDescriptionSheet(
       BuildContext context, ProfileViewModel viewModel) {
+
     final TextEditingController controller = TextEditingController(
       text: viewModel.state.description,
     );
+    const int maxChars = 200;
 
     showModalBottomSheet(
       context: context,
@@ -173,35 +175,65 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            top: 24,
-            left: 16,
-            right: 16,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: controller,
-                maxLines: 6,
-                decoration: const InputDecoration(
-                  labelText: 'About me',
-                  border: OutlineInputBorder(),
-                ),
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                top: 24,
+                left: 16,
+                right: 16,
               ),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () {
-                  viewModel.updateDescription(controller.text);
-                  Navigator.pop(context);
-                },
-                child: const Text('Save'),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: controller,
+                    maxLines: 6,
+                    maxLength: maxChars,
+                    decoration: const InputDecoration(
+                      labelText: 'About me',
+                      border: OutlineInputBorder(),
+                      counterText: '',
+                    ),
+                    onChanged: (value) {
+                      if (value.length <= maxChars) {
+                        setModalState(() {});
+                      } else {
+                        controller.text = value.substring(0, maxChars);
+                        controller.selection = TextSelection.fromPosition(
+                          TextPosition(offset: controller.text.length),
+                        );
+                        setModalState(() {});
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      '${maxChars - controller.text.length} characters remaining',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: controller.text.length >= maxChars
+                            ? Colors.red
+                            : Colors.grey[600],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () {
+                      viewModel.updateDescription(controller.text);
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Back to Profile'),
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
-              const SizedBox(height: 16),
-            ],
-          ),
+            );
+          },
         );
       },
     );
