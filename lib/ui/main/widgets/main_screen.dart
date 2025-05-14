@@ -31,17 +31,29 @@ class MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List items = [{"name": "HOME","icon":Icons.home, "index": 0}, {"name": "FIND","icon":Icons.search, "index": 1}, {"name": "REQUESTS","icon":Icons.checklist, "index": 2},{"name": "PROFILE","icon":Icons.person, "index": 3}];
+    List items = [
+      {"name": "HOME", "icon": Icons.home, "index": 0},
+      {"name": "FIND", "icon": Icons.search, "index": 1},
+      {"name": "REQUESTS", "icon": Icons.checklist, "index": 2},
+      {"name": "PROFILE", "icon": Icons.person, "index": 3},
+    ];
 
-    BottomNavigationBarItem _barItem(bool isActive,IconData icon, String label){
+    BottomNavigationBarItem barItem(
+      bool isActive,
+      IconData icon,
+      String label,
+    ) {
       return BottomNavigationBarItem(
         icon: Container(
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: isActive ? AppColors.white : AppColors.primary,
-            shape: BoxShape.circle
+            shape: BoxShape.circle,
           ),
-          child: Icon(icon,color: isActive ? AppColors.primary : AppColors.white),
+          child: Icon(
+            icon,
+            color: isActive ? AppColors.primary : AppColors.white,
+          ),
         ),
         label: label,
       );
@@ -64,7 +76,16 @@ class MainScreenState extends State<MainScreen> {
         child: BottomNavigationBar(
           currentIndex: viewModel.state.currentIndex,
           onTap: viewModel.updateIndex,
-          items: items.map((i) => _barItem(viewModel.state.currentIndex == i["index"], i["icon"],i["name"])).toList(),
+          items:
+              items
+                  .map(
+                    (i) => barItem(
+                      viewModel.state.currentIndex == i["index"],
+                      i["icon"],
+                      i["name"],
+                    ),
+                  )
+                  .toList(),
         ),
       ),
     );
