@@ -36,7 +36,8 @@ class HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = User.instance;
-      final isProfileIncomplete = user.description == null ||
+      final isProfileIncomplete =
+          user.description == null ||
           user.description!.trim().isEmpty ||
           user.seniority == null ||
           user.picture == null;
@@ -54,16 +55,14 @@ class HomeScreenState extends State<HomeScreen> {
     final HomeViewModel viewModel = context.watch<HomeViewModel>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-      ),
+      appBar: AppBar(title: const Text('Home')),
       drawer: const AppDrawer(),
       body: ListView(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(20),
               decoration: Decorations.container,
               child: Row(
                 children: [
@@ -82,9 +81,7 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                             TextSpan(
                               text: "👋",
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
+                              style: TextStyle(fontSize: 20),
                             ),
                           ],
                         ),
@@ -92,20 +89,25 @@ class HomeScreenState extends State<HomeScreen> {
                       Text(
                         _formatName(User.instance.name ?? ''),
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary,
                         ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                       ),
                     ],
                   ),
                   const Spacer(),
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: User.instance.getDecodedPicture() != null
-                        ? MemoryImage(User.instance.getDecodedPicture()!)
-                        : const AssetImage('assets/images/profile.png')
-                            as ImageProvider,
+                  SafeArea(
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundImage:
+                          User.instance.getDecodedPicture() != null
+                              ? MemoryImage(User.instance.getDecodedPicture()!)
+                              : const AssetImage('assets/images/profile.png')
+                                  as ImageProvider,
+                    ),
                   ),
                 ],
               ),
@@ -132,9 +134,7 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(width: 12),
                   TextButton(
-                    onPressed: () =>{
-                      widget.mainViewModel.updateIndex(3),
-                    },
+                    onPressed: () => {widget.mainViewModel.updateIndex(3)},
                     child: const Text("Edit"),
                   ),
                 ],
@@ -197,14 +197,15 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        ChangeNotifierProvider<RequestViewModel>(
-                      create: (_) => RequestViewModel(
-                        notificationData: entry.key,
-                        userprofile: entry.value,
-                      ),
-                      child: RequestScreen(),
-                    ),
+                    builder:
+                        (context) => ChangeNotifierProvider<RequestViewModel>(
+                          create:
+                              (_) => RequestViewModel(
+                                notificationData: entry.key,
+                                userprofile: entry.value,
+                              ),
+                          child: RequestScreen(),
+                        ),
                   ),
                 );
               },
