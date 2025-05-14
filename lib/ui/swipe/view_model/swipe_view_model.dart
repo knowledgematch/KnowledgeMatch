@@ -22,10 +22,12 @@ class SwipeViewModel extends ChangeNotifier {
 
   List<Userprofile> profiles = [];
 
-  SwipeViewModel({required this.searchCriteria}) {
-    profilesFuture = MatchingAlgorithm().getMatchingUserProfiles(
-      searchCriteria,
-    );
+  SwipeViewModel({required this.searchCriteria, bool skipMatching = false}) {
+    if (!skipMatching) {
+      profilesFuture = MatchingAlgorithm().getMatchingUserProfiles(
+        searchCriteria,
+      );
+    }
     profilesFuture.then((loadedProfiles) {
       profiles = loadedProfiles;
       updateTitle();
@@ -62,14 +64,10 @@ class SwipeViewModel extends ChangeNotifier {
     );
   }
 
-  void handleSwipe(SwipeDirection direction, BuildContext context) {
+  void handleSwipe(SwipeDirection direction, {VoidCallback? onRightSwipe}) {
     if (direction == SwipeDirection.right) {
       //send request
-      final snackBar = SnackBar(
-        content: const Text('Request sent'),
-        duration: Duration(milliseconds: 500),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      onRightSwipe?.call();
       sendSwipeRightNotification();
       controller.currentIndex--;
       updateTitle();
@@ -80,13 +78,17 @@ class SwipeViewModel extends ChangeNotifier {
     }
   }
 
-  void checkSwipeDirection(double swipeDistance) {
+  void checkSwipeDirection(double swipeDistance, {bool skipScheduler = false}) {
     bool newShouldShowGlow = swipeDistance > 0.3;
     if (_state.shouldShowGlow != newShouldShowGlow) {
       _state = state.copyWith(shouldShowGlow: newShouldShowGlow);
-      SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (skipScheduler) {
         notifyListeners();
-      });
+      } else {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          notifyListeners();
+        });
+      }
     }
   }
 }

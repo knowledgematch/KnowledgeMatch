@@ -28,6 +28,7 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
             body: Center(child: CircularProgressIndicator()),
           );
         } else if (snapshot.hasError) {
+          print("Error: ${snapshot.error}");
           return Scaffold(
             appBar: AppBar(title: const Text("Error")),
             body: Center(child: Text("Error: ${snapshot.error}")),
@@ -43,6 +44,10 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
             ),
           );
         }
+        final snackBar = SnackBar(
+          content: const Text('Request sent'),
+          duration: Duration(milliseconds: 500),
+        );
 
         return Column(children: [
           Expanded(
@@ -67,7 +72,10 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                           itemCount: viewModel.profiles.length,
                           horizontalSwipeThreshold: 0.8,
                           onSwipeCompleted: (index, direction) {
-                            viewModel.handleSwipe(direction, context);
+                            viewModel.handleSwipe(direction,
+                              onRightSwipe: () {
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            },);
                           },
                           builder: (context, properties) {
                             viewModel.checkSwipeDirection(
