@@ -9,6 +9,7 @@ import '../../core/ui/info_card.dart';
 import '../../keyword_selection/view_model/keyword_selection_view_model.dart';
 import '../../keyword_selection/widgets/keyword_selection_screen.dart';
 import 'edit_profile_screen.dart';
+import 'package:flutter/services.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -58,105 +59,105 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: viewModel.state.uId.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: viewModel.pickImage,
-                    child: CircleAvatar(
-                      radius: 90,
-                      backgroundImage: viewModel.state.pictureData != null
-                          ? MemoryImage(viewModel.state.pictureData!)
-                          : const AssetImage('assets/images/profile.png')
-                              as ImageProvider,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    '${viewModel.nameController.text} ${viewModel.surnameController.text}',
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'FHNW',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: Colors.grey[700]),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.location_on,
-                          size: 16, color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Switzerland',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: Colors.grey[700]),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  InfoCard(
-                    title: 'Meeting Preference',
-                    value: viewModel.state.reachability.description,
-                    icon: Icons.people,
-                    iconColor: AppColors.primary,
-                    onTap: () =>
-                        _showMeetingPreferenceSheet(context, viewModel),
-                  ),
-                  const SizedBox(height: 16),
-                  InfoCard(
-                    title: 'Semester',
-                    value: viewModel.state.semester == -1
-                        ? 'Professor'
-                        : 'Semester ${viewModel.state.semester}',
-                    icon: Icons.school,
-                    iconColor: AppColors.primary,
-                    onTap: () =>
-                        _showSemesterSelectionSheet(context, viewModel),
-                  ),
-                  const SizedBox(height: 16),
-                  InfoCard(
-                    title: 'Keywords',
-                    value: 'Click to view/edit',
-                    icon: Icons.label,
-                    iconColor: AppColors.primary,
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ChangeNotifierProvider(
-                                  create: (BuildContext context) =>
-                                      KeywordSelectionViewModel(),
-                                  child: KeywordSelectionScreen())));
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  InfoCard(
-                    title: 'About me',
-                    value: viewModel.state.description.isEmpty
-                        ? 'No description added yet.'
-                        : viewModel.state.description,
-                    icon: Icons.description,
-                    iconColor: AppColors.primary,
-                    onTap: () => _showEditDescriptionSheet(context, viewModel),
-                  ),
-                  const SizedBox(height: 16),
-                  if (viewModel.state.unsaved)
-                    Text(
-                      'You have unsaved changes',
-                      style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
-                    ),
-                ],
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: viewModel.pickImage,
+              child: CircleAvatar(
+                radius: 90,
+                backgroundImage: viewModel.state.pictureData != null
+                    ? MemoryImage(viewModel.state.pictureData!)
+                    : const AssetImage('assets/images/profile.png')
+                as ImageProvider,
               ),
             ),
+            const SizedBox(height: 16),
+            Text(
+              '${viewModel.nameController.text} ${viewModel.surnameController.text}',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'FHNW',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.grey[700]),
+            ),
+            const SizedBox(height: 4),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.location_on,
+                    size: 16, color: Colors.grey),
+                const SizedBox(width: 4),
+                Text(
+                  'Switzerland',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.grey[700]),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            InfoCard(
+              title: 'Meeting Preference',
+              value: viewModel.state.reachability.description,
+              icon: Icons.people,
+              iconColor: AppColors.primary,
+              onTap: () =>
+                  _showMeetingPreferenceSheet(context, viewModel),
+            ),
+            const SizedBox(height: 16),
+            InfoCard(
+              title: 'Semester',
+              value: viewModel.state.semester == -1
+                  ? 'Professor'
+                  : 'Semester ${viewModel.state.semester}',
+              icon: Icons.school,
+              iconColor: AppColors.primary,
+              onTap: () =>
+                  _showSemesterSelectionSheet(context, viewModel),
+            ),
+            const SizedBox(height: 16),
+            InfoCard(
+              title: 'Keywords',
+              value: 'Click to view/edit',
+              icon: Icons.label,
+              iconColor: AppColors.primary,
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider(
+                            create: (BuildContext context) =>
+                                KeywordSelectionViewModel(),
+                            child: KeywordSelectionScreen())));
+              },
+            ),
+            const SizedBox(height: 16),
+            InfoCard(
+              title: 'About me',
+              value: viewModel.state.description.isEmpty
+                  ? 'No description added yet.'
+                  : viewModel.state.description,
+              icon: Icons.description,
+              iconColor: AppColors.primary,
+              onTap: () => _showEditDescriptionSheet(context, viewModel),
+            ),
+            const SizedBox(height: 16),
+            if (viewModel.state.unsaved)
+              Text(
+                'You have unsaved changes',
+                style:
+                TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+              ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -189,13 +190,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   TextField(
                     controller: controller,
-                    maxLines: 6,
+                    maxLines: 5,
                     maxLength: maxChars,
                     decoration: const InputDecoration(
                       labelText: 'About me',
                       border: OutlineInputBorder(),
                       counterText: '',
                     ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.deny(RegExp(r'\n')),
+                    ],
                     onChanged: (value) {
                       if (value.length <= maxChars) {
                         setModalState(() {});
@@ -221,6 +225,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () {
