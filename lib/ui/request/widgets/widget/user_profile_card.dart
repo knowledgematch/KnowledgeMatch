@@ -20,10 +20,11 @@ class UserProfileCard extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundImage: profilePicture != null
-                  ? MemoryImage(profilePicture)
-                  : const AssetImage('assets/images/profile.png')
-                      as ImageProvider,
+              backgroundImage:
+                  profilePicture != null
+                      ? MemoryImage(profilePicture)
+                      : const AssetImage('assets/images/profile.png')
+                          as ImageProvider,
             ),
             SizedBox(width: 16),
             Expanded(
@@ -33,11 +34,14 @@ class UserProfileCard extends StatelessWidget {
                   Text(
                     userprofile.name,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 4),
                   Text(
                     userprofile.description,
                     style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 4),
                   Text(

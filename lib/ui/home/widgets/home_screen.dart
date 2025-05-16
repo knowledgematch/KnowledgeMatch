@@ -113,7 +113,6 @@ class HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          // Show profile completion banner conditionally
           if (_showIncompleteProfileBanner)
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -140,7 +139,6 @@ class HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-
           const SizedBox(height: 18),
           _buildSectionTitle("Open Requests", Icons.pending_actions),
           const SizedBox(height: 8),
@@ -178,16 +176,15 @@ class HomeScreenState extends State<HomeScreen> {
     if (requests.isEmpty) {
       return const Center(
         child: Text(
-          "No requests available",
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+          "You have no requests currently",
+          style: TextStyle(fontSize: 18, color: Colors.grey),
         ),
       );
     } else {
       final notifications = requests.entries.toList();
       return SizedBox(
-        height: 180,
+        height: 138,
         child: ListView.builder(
-          padding: EdgeInsets.all(8),
           scrollDirection: Axis.horizontal,
           itemCount: notifications.length,
           itemBuilder: (context, index) {

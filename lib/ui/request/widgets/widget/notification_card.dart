@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
+import 'package:knowledgematch/domain/models/request_date_data.dart';
+import 'package:knowledgematch/domain/models/search_criteria.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/ui/core/themes/app_colors.dart';
 import 'package:knowledgematch/ui/core/ui/decorations.dart';
@@ -35,23 +37,25 @@ class NotificationCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: Decorations.container,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+        padding: const EdgeInsets.fromLTRB(12, 6, 12, 3),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(width: 20),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(radius: 50, backgroundImage: avatarImage),
-                SizedBox(width: 20),
+                Padding(
+                  padding: EdgeInsets.only(right: 12),
+                  child: CircleAvatar(radius: 50, backgroundImage: avatarImage),
+                ),
                 Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildTitle(notification.type, context),
                       _buildSubtitle(notification.type, notification.title),
@@ -62,7 +66,6 @@ class NotificationCard extends StatelessWidget {
                 _buildTrailingWidget(notification.type),
               ],
             ),
-            SizedBox(width: 30),
             Align(
               alignment: Alignment.bottomRight,
               child: Text(
@@ -101,38 +104,43 @@ class NotificationCard extends StatelessWidget {
     final String name = userprofile.name.split(" ")[0];
     String descriptor0 = "From: ";
     String from = "";
-    String descriptor1 = "";
-    String text1 = "";
+    String descriptor1 = "About: ";
     String descriptor2 = "";
+    String text1 = "";
     String text2 = "";
     switch (type) {
-      case NotificationType.knowledgeRequest:
+      case NotificationType.knowledgeRequest ||
+          NotificationType.requestDeclined ||
+          NotificationType.requestAccepted:
+        var searchCriteria = SearchCriteria.fromJSON(notification.payload);
         from = name;
-        descriptor1 = "Keyword: ";
-        text1 = notification.payload["keyword"];
-      case NotificationType.requestDeclined:
-        from = name;
-        descriptor1 = "Keyword: ";
-        text1 = notification.payload["keyword"];
-        text2 = "Request declined";
-      case NotificationType.requestAccepted:
-        from = name;
-        descriptor1 = "Keyword: ";
-        text1 = notification.payload["keyword"];
-        text2 = "Request accepted";
+        text1 = searchCriteria.keyword;
+        descriptor2 = "Description: ";
+        text2 = searchCriteria.issue;
       case NotificationType.meetupRequest:
+        var dates =
+            RequestDateData.datesFromMeetupRequest(notification.payload) ?? [];
         from = name;
-        text2 = "New meetup suggestions!";
+        descriptor1 = "Date: ";
+        text1 =
+            dates.isNotEmpty
+                ? "${dates[0].getFormattedDate()}, ..."
+                : "No dates to display";
+        descriptor2 = "Time: ";
+        text2 = "${dates[0].getFormattedTime()}, ...";
       case NotificationType.meetupConfirmation:
         var str = notification.body.split(" ");
         descriptor0 = "With: ";
         from = name;
-        descriptor1 = str[2];
-        text1 = "";
-        descriptor2 = "";
-        text2 = str[0] + str[1];
+        descriptor1 = "${str[1]}, ";
+        text1 = str[0];
+        descriptor2 = "Time: ";
+        text2 = str[2];
     }
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
@@ -152,7 +160,7 @@ class NotificationCard extends StatelessWidget {
             Text(style: TextStyle(fontWeight: FontWeight.bold), descriptor1),
             Expanded(
               child: Text(
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.start,
                 softWrap: false,
@@ -161,26 +169,27 @@ class NotificationCard extends StatelessWidget {
             ),
           ],
         ),
-        Row(
-          children: [
-            Text(style: TextStyle(fontWeight: FontWeight.bold), descriptor2),
-            Expanded(
-              child: Text(
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.start,
-                softWrap: false,
-                text2,
+        if (descriptor2.isNotEmpty)
+          Row(
+            children: [
+              Text(style: TextStyle(fontWeight: FontWeight.bold), descriptor2),
+              Expanded(
+                child: Text(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.start,
+                  softWrap: false,
+                  text2,
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
       ],
     );
   }
 
   Widget _buildTrailingWidget(NotificationType type) {
-    double iconSize = 25.0;
+    double iconSize = 28.0;
     switch (type) {
       case NotificationType.knowledgeRequest:
         return Icon(
