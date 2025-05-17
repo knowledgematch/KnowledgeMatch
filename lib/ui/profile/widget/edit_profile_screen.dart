@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:knowledgematch/ui/profile/view_model/profile_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../../change_pw/view_model/change_pw_view_model.dart';
 import '../../change_pw/widgets/change_pw_screen.dart';
@@ -68,7 +68,46 @@ class EditProfileScreen extends StatelessWidget {
               },
               child: const Text('Change Password'),
             ),
-
+            const Spacer(),
+            TextButton(
+              onPressed: viewModel.state.isDeleting
+                  ? null
+                  : () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text("Delete Account"),
+                          content: const Text(
+                              "Are you sure you want to delete your account? This action cannot be undone."),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("Cancel"),
+                            ),
+                            TextButton(
+                              onPressed: viewModel.state.isDeleting
+                                  ? null
+                                  : () async {
+                                      Navigator.pop(context);
+                                      await viewModel.deleteAccount(context);
+                                    },
+                              style: TextButton.styleFrom(
+                                  foregroundColor: Colors.red),
+                              child: viewModel.state.isDeleting
+                                  ? const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2),
+                                    )
+                                  : const Text("Delete"),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+              child: const Text("Delete Account"),
+            ),
           ],
         ),
       ),
