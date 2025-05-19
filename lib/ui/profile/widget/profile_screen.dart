@@ -153,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 'You have unsaved changes',
                 style:
-                TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                TextStyle(color: AppColors.redLight, fontWeight: FontWeight.w600),
               ),
           ],
         ),
@@ -220,8 +220,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         color: controller.text.length >= maxChars
-                            ? Colors.red
-                            : Colors.grey[600],
+                            ? AppColors.redLight
+                            : AppColors.grey6Light,
                       ),
                     ),
                   ),
