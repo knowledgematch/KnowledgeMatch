@@ -139,14 +139,18 @@ class HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 8),
           _buildSectionTitle("Open Requests", Icons.pending_actions),
           const SizedBox(height: 8),
           _buildHorizontalList(viewModel.state.openRequests),
-          const SizedBox(height: 18),
+          const SizedBox(height: 8),
           _buildSectionTitle("Planned meetings", Icons.event_available),
           const SizedBox(height: 8),
           _buildHorizontalList(viewModel.state.plannedRequests),
+          _buildSectionTitle("Pending requests", Icons.question_answer),
+          const SizedBox(height: 8),
+          _buildHorizontalList(viewModel.state.pendingRequests),
+          const SizedBox(height: 8),
         ],
       ),
     );
@@ -172,7 +176,7 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHorizontalList(HashMap<NotificationData, Userprofile> requests) {
+  Widget _buildHorizontalList(Map<NotificationData, Userprofile> requests) {
     if (requests.isEmpty) {
       return const Center(
         child: Text(

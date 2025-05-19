@@ -112,6 +112,41 @@ class FirestoreService {
         });
   }
 
+  /// Opens a Stream of open Notifications from Firestore
+  ///
+  /// Listens to Firestore documents in the `notifications` collection where:
+  /// - `source_user_id` matches the provided [userID]
+  /// - `is_open` matches the provided [isOpen] flag
+  ///
+  /// Maps Documents to [NotificationData] -> (see[NotificationData.fromFirestoreData])
+  ///
+  /// Returns:
+  /// A stream of lists of [NotificationData].
+  Stream<List<NotificationData>> pendingNotificationsStream({
+    required int userID,
+    required bool isOpen,
+  }) {
+    return FirebaseFirestore.instance
+        .collection('notifications')
+        .where(
+          Filter.and(
+            Filter('source_user_id', isEqualTo: userID.toString()),
+            Filter('is_open', isEqualTo: isOpen.toString()),
+          ),
+        )
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            return NotificationData.fromFirestoreData(
+              jsonMap: data,
+              documentID: doc.id,
+            );
+          }).toList();
+        });
+  }
+
   Stream<List<NotificationData>> allNotificationsStream({required int userID}) {
     return FirebaseFirestore.instance
         .collection('notifications')

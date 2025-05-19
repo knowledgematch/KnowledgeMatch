@@ -14,14 +14,16 @@ import '../home_state.dart';
 
 class HomeViewModel extends ChangeNotifier {
   HomeState _state = HomeState(
-    openRequests: HashMap(),
-    plannedRequests: HashMap(),
+    openRequests: LinkedHashMap(),
+    plannedRequests: LinkedHashMap(),
+    pendingRequests: LinkedHashMap(),
   );
 
   get state => _state;
 
   StreamSubscription? _openRequestSub;
   StreamSubscription? _plannedRequestSub;
+  StreamSubscription? _pendingRequestSub;
 
   /// Creates a [HomeViewModel] and begins loading the [NotificationData] for the request
   //
@@ -41,7 +43,7 @@ class HomeViewModel extends ChangeNotifier {
   Future<void> _loadData() async {
     await getAndListenForOpenRequests();
     await getAndListenForPlannedRequests();
-    notifyListeners();
+    await getAndListenForPendingRequests();
   }
 
   /// Cancel the StreamSubscription
@@ -52,6 +54,8 @@ class HomeViewModel extends ChangeNotifier {
   void dispose() {
     _openRequestSub?.cancel();
     _plannedRequestSub?.cancel();
+    _pendingRequestSub?.cancel();
+
     super.dispose();
   }
 
@@ -60,12 +64,13 @@ class HomeViewModel extends ChangeNotifier {
   /// Opens a [FirestoreService.openNotificationsStream] to retrieve all open
   /// [NotificationData] and listen for updates on Firestore. Looks up each source user via
   /// [ApiDbConnection.fetchUserByInput], and updates [_state]. Then nofies the listeners;
+  /// [LinkedHashMap] to store [NotificationData], [Userprofile] to preserve the order.
   getAndListenForOpenRequests() async {
     _openRequestSub = FirestoreService()
         .openNotificationsStream(userID: User.instance.id ?? 0, isOpen: true)
         .listen((list) async {
-          final HashMap<NotificationData, Userprofile> notifications =
-              HashMap();
+          final LinkedHashMap<NotificationData, Userprofile> notifications =
+              LinkedHashMap();
 
           for (var notification in list) {
             final usersList = await ApiDbConnection().fetchUserByInput(
@@ -86,11 +91,13 @@ class HomeViewModel extends ChangeNotifier {
   /// [NotificationData], filters out future [RequestDateData], then
   /// looks up each source user via [ApiDbConnection.fetchUserByInput],
   /// and updates [_state].
+  /// [LinkedHashMap] to store [NotificationData], [Userprofile] to preserve the order.
   getAndListenForPlannedRequests() async {
     _plannedRequestSub = FirestoreService()
         .confirmedNotificationsStream(userID: User.instance.id ?? 0)
         .listen((list) async {
-          HashMap<NotificationData, Userprofile> notifications = HashMap();
+          LinkedHashMap<NotificationData, Userprofile> notifications =
+              LinkedHashMap();
           if (list.isNotEmpty) {
             list.removeWhere(
               (element) => DateTime.now().isAfter(
@@ -109,6 +116,32 @@ class HomeViewModel extends ChangeNotifier {
           }
 
           _state = state.copyWith(plannedRequests: notifications);
+          notifyListeners();
+        });
+  }
+
+  /// Loads all open requests for the current user.
+  ///
+  /// Opens a [FirestoreService.openNotificationsStream] to retrieve all open
+  /// [NotificationData] and listen for updates on Firestore. Looks up each source user via
+  /// [ApiDbConnection.fetchUserByInput], and updates [_state]. Then nofies the listeners;
+  /// [LinkedHashMap] to store [NotificationData], [Userprofile] to preserve the order.
+  getAndListenForPendingRequests() async {
+    _pendingRequestSub = FirestoreService()
+        .pendingNotificationsStream(userID: User.instance.id ?? 0, isOpen: true)
+        .listen((list) async {
+          final LinkedHashMap<NotificationData, Userprofile> notifications =
+              LinkedHashMap();
+
+          for (var notification in list) {
+            final usersList = await ApiDbConnection().fetchUserByInput(
+              uId: notification.sourceUserId.toString(),
+            );
+            final userJson = usersList.first;
+            Userprofile source = Userprofile.fromJson(userJson);
+            notifications.putIfAbsent(notification, () => source);
+          }
+          _state = _state.copyWith(pendingRequests: notifications);
           notifyListeners();
         });
   }
