@@ -137,6 +137,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                     );
                   }
                 },
+
                 child: const Text('Search experts'),
               ),
             ],
