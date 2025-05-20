@@ -51,7 +51,13 @@ class NotificationCard extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.only(right: 12),
-                  child: CircleAvatar(radius: 50, backgroundImage: avatarImage),
+                  child:
+                      !sentByMe
+                          ? CircleAvatar(
+                            radius: 50,
+                            backgroundImage: avatarImage,
+                          )
+                          : _buildTrailingWidget(notification.type),
                 ),
                 Expanded(
                   child: Column(
@@ -66,7 +72,9 @@ class NotificationCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 12),
-                _buildTrailingWidget(notification.type),
+                !sentByMe
+                    ? _buildTrailingWidget(notification.type)
+                    : CircleAvatar(radius: 50, backgroundImage: avatarImage),
               ],
             ),
             Align(
