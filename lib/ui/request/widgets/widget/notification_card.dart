@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/request_date_data.dart';
 import 'package:knowledgematch/domain/models/search_criteria.dart';
+import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/ui/core/themes/app_colors.dart';
 import 'package:knowledgematch/ui/core/ui/decorations.dart';
@@ -20,6 +21,8 @@ class NotificationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var profilePicture = userprofile.getPicture();
+
+    bool sentByMe = notification.sourceUserId == User.instance.id;
 
     final avatarImage =
         (profilePicture != null && profilePicture.isNotEmpty)

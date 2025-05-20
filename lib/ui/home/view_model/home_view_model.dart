@@ -134,8 +134,12 @@ class HomeViewModel extends ChangeNotifier {
               LinkedHashMap();
 
           for (var notification in list) {
+            var userID =
+                User.instance.id == notification.sourceUserId
+                    ? notification.targetUserId
+                    : notification.sourceUserId;
             final usersList = await ApiDbConnection().fetchUserByInput(
-              uId: notification.sourceUserId.toString(),
+              uId: userID.toString(),
             );
             final userJson = usersList.first;
             Userprofile source = Userprofile.fromJson(userJson);
