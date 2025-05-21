@@ -5,8 +5,30 @@ import 'package:provider/provider.dart';
 
 import '../widget/multi_date_time_picker.dart';
 
-class OnMeetupRequestBottom extends StatelessWidget {
+// class OnMeetupRequestBottom extends StatelessWidget {
+//   const OnMeetupRequestBottom({super.key});
+
+class OnMeetupRequestBottom extends StatefulWidget {
   const OnMeetupRequestBottom({super.key});
+
+  @override
+  OnMeetupRequestBottomState createState() => OnMeetupRequestBottomState();
+}
+
+class OnMeetupRequestBottomState extends State<OnMeetupRequestBottom> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,11 +82,12 @@ class OnMeetupRequestBottom extends StatelessWidget {
                                       children: [
                                         Expanded(
                                           child: Scrollbar(
-                                            controller: ScrollController(),
+                                            controller: _scrollController,
                                             thumbVisibility: true,
                                             thickness: 6,
                                             radius: Radius.circular(3),
                                             child: SingleChildScrollView(
+                                              controller: _scrollController,
                                               padding: EdgeInsets.all(16),
                                               child: MultiDateTimePicker(),
                                             ),

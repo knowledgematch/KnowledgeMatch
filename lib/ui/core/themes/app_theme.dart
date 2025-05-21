@@ -150,11 +150,11 @@ class AppTheme {
           backgroundColor: MaterialStateProperty.all(AppColors.transparent),
         ),
       ),
-      // cardTheme: CardTheme(
-      //   color: AppColors.white,
-      //   elevation: 2,
-      //   shape: RoundedRectangleBorder(borderRadius: AppConstants.borderRadius),
-      // ),
+      cardTheme: CardThemeData(
+        color: AppColors.white,
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: AppConstants.borderRadius),
+      ),
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.all(Color(0xFF0055CC)),
         trackColor: MaterialStateProperty.all(Color(0xFFDCE1E4)),
