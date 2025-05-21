@@ -29,13 +29,6 @@ class NotificationCard extends StatelessWidget {
             ? MemoryImage(profilePicture)
             : const AssetImage('assets/images/profile.png') as ImageProvider;
 
-    final timeStamp =
-        notification.timestamp != null
-            ? DateFormat(
-              'dd/MM HH:mm',
-            ).format(notification.timestamp!.toLocal()).toString()
-            : 'Unknown time';
-
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: Decorations.container,
@@ -49,45 +42,50 @@ class NotificationCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(right: 12),
-                  child:
-                      !sentByMe
-                          ? CircleAvatar(
-                            radius: 50,
-                            backgroundImage: avatarImage,
-                          )
-                          : _buildTrailingWidget(notification.type),
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildTitle(notification.type, context),
-                      _buildSubtitle(notification.type, notification.title),
-                    ],
+                if (sentByMe)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: _buildText(notification, context),
+                    ),
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: _buildPicture(avatarImage),
                   ),
-                ),
-                SizedBox(width: 12),
-                !sentByMe
-                    ? _buildTrailingWidget(notification.type)
-                    : CircleAvatar(radius: 50, backgroundImage: avatarImage),
+                if (sentByMe)
+                  _buildPicture(avatarImage)
+                else
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: _buildText(notification, context),
+                    ),
+                  ),
+                const SizedBox(width: 12),
+                _buildTrailingWidget(notification.type),
               ],
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Text(
-                timeStamp,
-                style: TextStyle(fontSize: 15, color: AppColors.greyLight),
-                textAlign: TextAlign.end,
-              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildPicture(ImageProvider<Object> image) {
+    return CircleAvatar(radius: 50, backgroundImage: image);
+  }
+
+  Widget _buildText(NotificationData notification, BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildTitle(notification.type, context),
+        _buildSubtitle(notification.type, notification.title),
+      ],
     );
   }
 

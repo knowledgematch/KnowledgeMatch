@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +10,8 @@ class OnAcceptBottom extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<RequestViewModel>();
     final isOpen = viewModel.notificationData.isOpen == true;
+    bool isSentByMe =
+        viewModel.notificationData.sourceUserId == User.instance.id;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -17,7 +20,7 @@ class OnAcceptBottom extends StatelessWidget {
           message: 'Send meetup request',
           child: Semantics(
             button: true,
-            enabled: isOpen,
+            enabled: isOpen && !isSentByMe,
             label: 'Send meetup request',
             hint:
                 isOpen
@@ -25,7 +28,7 @@ class OnAcceptBottom extends StatelessWidget {
                     : 'Disabled until you pick at least one date',
             child: ElevatedButton(
               onPressed:
-                  isOpen
+                  isOpen && !isSentByMe
                       ? () async {
                         if (viewModel.state.selectedDates.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
