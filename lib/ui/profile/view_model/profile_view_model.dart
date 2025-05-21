@@ -150,6 +150,7 @@ class ProfileViewModel extends ChangeNotifier {
           _state.semester.toString(),
           _state.description,
           _state.pictureData);
+      print("============= response: $response");
       if (response == 204) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -194,7 +195,27 @@ class ProfileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteAccount(BuildContext context) async {}
+  Future<void> deleteAccount() async {
+    state.isDeleting = true;
+    notifyListeners();
+
+    try {
+      final uId = User.instance.id;
+      final apiKey = await ApiDbConnection().getApiKey();
+
+      if (uId != null) {
+        await ApiDbConnection().deleteFcmToken(uId);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.clear();
+        User.instance.reset();
+        await ApiDbConnection().deleteAccount(uId, apiKey);
+      }
+    } catch (e) {
+      print("Error deleting account: $e");
+    } finally {
+      state.isDeleting = false;
+    }
+  }
 
   /// Logs out the user by clearing the session data and navigating to the login screen.
   ///

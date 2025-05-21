@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../change_pw/view_model/change_pw_view_model.dart';
 import '../../change_pw/widgets/change_pw_screen.dart';
 import '../../core/themes/app_colors.dart';
+import '../../splash/widgets/splash_screen.dart';
 
 class EditProfileScreen extends StatelessWidget {
   const EditProfileScreen({super.key});
@@ -19,6 +20,15 @@ class EditProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Profile'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.save),
+              onPressed: () => {
+                    viewModel.saveProfile(context),
+                    Navigator.pop(context),
+                  }),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
@@ -80,7 +90,7 @@ class EditProfileScreen extends StatelessWidget {
                   : () {
                       showDialog(
                         context: context,
-                        builder: (context) => AlertDialog(
+                        builder: (_) => AlertDialog(
                           title: const Text("Delete Account"),
                           content: const Text(
                               "Are you sure you want to delete your account? This action cannot be undone."),
@@ -94,7 +104,17 @@ class EditProfileScreen extends StatelessWidget {
                                   ? null
                                   : () async {
                                       Navigator.pop(context);
-                                      await viewModel.deleteAccount(context);
+                                      await viewModel.deleteAccount();
+                                      if (context.mounted) {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  const SplashScreen()),
+                                          (route) => false,
+                                        );
+                                      }
                                     },
                               style: TextButton.styleFrom(
                                   foregroundColor: Colors.red),
