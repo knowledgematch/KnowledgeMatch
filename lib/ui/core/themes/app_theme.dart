@@ -63,20 +63,20 @@ class AppTheme {
       ),
       textTheme: TextTheme(
         headlineLarge: TextStyle(
-            color: AppColors.primary,
-            fontSize: 25,
-            fontWeight: FontWeight.bold),
+          color: AppColors.primary,
+          fontSize: 25,
+          fontWeight: FontWeight.bold,
+        ),
         headlineMedium: TextStyle(color: AppColors.primary),
         headlineSmall: TextStyle(color: AppColors.primary),
         bodyLarge: TextStyle(color: AppColors.primary),
         bodyMedium: TextStyle(color: AppColors.primary),
         bodySmall: TextStyle(color: AppColors.primary),
-        titleLarge:
-            TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
-        titleMedium: TextStyle(
+        titleLarge: TextStyle(
           color: AppColors.primary,
-          fontSize: 20,
+          fontWeight: FontWeight.bold,
         ),
+        titleMedium: TextStyle(color: AppColors.primary, fontSize: 20),
         titleSmall: TextStyle(
           color: AppColors.primary,
           fontSize: 17,
@@ -107,9 +107,10 @@ class AppTheme {
       ),
       appBarTheme: AppBarTheme(
         titleTextStyle: TextStyle(
-            color: AppColors.grey2Light,
-            fontSize: 25,
-            fontWeight: FontWeight.bold),
+          color: AppColors.grey2Light,
+          fontSize: 25,
+          fontWeight: FontWeight.bold,
+        ),
         //backgroundColor: AppColors.primary,
         color: AppColors.primary,
         iconTheme: IconThemeData(color: AppColors.grey2Light),
@@ -135,19 +136,13 @@ class AppTheme {
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.whiteLight,
       ),
-      drawerTheme: DrawerThemeData(
-        backgroundColor: AppColors.background,
-      ),
+      drawerTheme: DrawerThemeData(backgroundColor: AppColors.background),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.grey2Light,
         unselectedItemColor: AppColors.grey6Light,
-        selectedLabelStyle: TextStyle(
-          fontSize: 12,
-        ),
-        unselectedLabelStyle: TextStyle(
-          fontSize: 12,
-        ),
+        selectedLabelStyle: TextStyle(fontSize: 12),
+        unselectedLabelStyle: TextStyle(fontSize: 12),
         backgroundColor: AppColors.primary,
       ),
       iconButtonTheme: IconButtonThemeData(
@@ -155,11 +150,11 @@ class AppTheme {
           backgroundColor: MaterialStateProperty.all(AppColors.transparent),
         ),
       ),
-      cardTheme: CardTheme(
-        color: AppColors.white,
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: AppConstants.borderRadius),
-      ),
+      // cardTheme: CardTheme(
+      //   color: AppColors.white,
+      //   elevation: 2,
+      //   shape: RoundedRectangleBorder(borderRadius: AppConstants.borderRadius),
+      // ),
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.all(Color(0xFF0055CC)),
         trackColor: MaterialStateProperty.all(Color(0xFFDCE1E4)),
@@ -186,9 +181,7 @@ class AppTheme {
           fontWeight: FontWeight.bold,
         ),
         elevation: 6.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         behavior: SnackBarBehavior.floating,
       ),
     );

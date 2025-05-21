@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 import 'package:knowledgematch/domain/models/request_date_data.dart';
 import 'package:knowledgematch/domain/models/search_criteria.dart';
@@ -27,6 +28,13 @@ class NotificationCard extends StatelessWidget {
         (profilePicture != null && profilePicture.isNotEmpty)
             ? MemoryImage(profilePicture)
             : const AssetImage('assets/images/profile.png') as ImageProvider;
+
+    final timeStamp =
+        notification.timestamp != null
+            ? DateFormat(
+              'dd/MM HH:mm',
+            ).format(notification.timestamp!.toLocal()).toString()
+            : 'Unknown time';
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -65,6 +73,14 @@ class NotificationCard extends StatelessWidget {
                 const SizedBox(width: 12),
                 _buildTrailingWidget(notification.type),
               ],
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                timeStamp,
+                style: TextStyle(fontSize: 15, color: AppColors.greyLight),
+                textAlign: TextAlign.end,
+              ),
             ),
           ],
         ),
