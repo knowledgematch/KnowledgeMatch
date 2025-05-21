@@ -5,9 +5,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/models/organisation.dart';
+import '../../domain/models/user.dart';
 
 class ApiDbConnection {
   String host = "";
@@ -63,7 +63,7 @@ class ApiDbConnection {
     var finalUri = baseUri.replace(
       path: '/keywords',
     );
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
     final headers = {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
@@ -88,7 +88,7 @@ class ApiDbConnection {
       required String keyword,
       required String description}) async {
     var finalUri = Uri.parse('$baseUri/keywords/$id');
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
     final headers = {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
@@ -114,7 +114,7 @@ class ApiDbConnection {
 
   Future<bool> removeKeywordEntry(int id) async {
     var finalUri = Uri.parse('$baseUri/keywords/$id');
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
 
     try {
       final response = await http.delete(
@@ -138,7 +138,7 @@ class ApiDbConnection {
 
   Future<bool> removeTopicEntry(int id) async {
     var finalUri = Uri.parse('$baseUri/topics/$id');
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
 
     try {
       final response = await http.delete(
@@ -166,7 +166,7 @@ class ApiDbConnection {
       required String topic,
       required String description}) async {
     var finalUri = Uri.parse('$baseUri/topics/$id');
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
     final headers = {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
@@ -197,7 +197,7 @@ class ApiDbConnection {
     var finalUri = baseUri.replace(
       path: '/topics',
     );
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
     final headers = {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
@@ -218,7 +218,7 @@ class ApiDbConnection {
 
   Future<bool> addKeyword2TopicsEntry(int kid, int tid) async {
     var finalUri = Uri.parse('$baseUri/topics/$kid/$tid');
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
 
     try {
       final response = await http.post(
@@ -258,7 +258,7 @@ class ApiDbConnection {
 
   Future<List<dynamic>?> initUser(int userId) async {
     var finalUri = Uri.parse('$baseUri/users/$userId');
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
 
     try {
       final response = await http.get(
@@ -267,8 +267,6 @@ class ApiDbConnection {
           'x-api-key': apiKey,
         },
       );
-
-      print("response: $response");
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       }
@@ -327,7 +325,7 @@ class ApiDbConnection {
   /// - A [Future] that completes with a boolean indicating whether the association was successful.
   Future<bool> addUser2KeywordEntry(int uid, int kid) async {
     var finalUri = Uri.parse('$baseUri/keywords/$uid/$kid');
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
 
     try {
       final response = await http.post(
@@ -362,7 +360,7 @@ class ApiDbConnection {
   /// - A [Future] that completes with a boolean indicating whether the removal was successful.
   Future<bool> removeUser2KeywordEntry(int uid, int kid) async {
     var finalUri = Uri.parse('$baseUri/keywords/$uid/$kid');
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
 
     try {
       final response = await http.delete(
@@ -442,7 +440,7 @@ class ApiDbConnection {
     var finalUri = baseUri.replace(
       path: '/change-password',
     );
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
     final headers = {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
@@ -534,7 +532,7 @@ class ApiDbConnection {
     var finalUri = baseUri.replace(
       path: '/users/$uId',
     );
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
     final request = http.MultipartRequest('PUT', finalUri);
 
     print("========= key: $apiKey");
@@ -627,7 +625,7 @@ class ApiDbConnection {
   /// - A [Future] that completes when the FCM token update process is finished, with no value returned.
   Future<void> updateFcmToken(String userId) async {
     final token = await FirebaseMessaging.instance.getToken();
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
 
     if (token == null) {
       print('FCM token is null.');
@@ -668,7 +666,7 @@ class ApiDbConnection {
   /// Returns:
   /// - A [Future] that completes when the FCM token deletion process is finished, with no value returned.
   Future<void> deleteFcmToken(int id) async {
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
     final token = await FirebaseMessaging.instance.getToken();
     var finalUri = Uri.parse('$baseUri/deleteToken');
 
@@ -711,7 +709,7 @@ class ApiDbConnection {
   /// - A [Future] that completes with a list of maps containing the fetched data or an empty list if the fetch fails.
   Future<List<Map<String, dynamic>>> _fetcher(Uri uri) async {
     try {
-      final apiKey = await getApiKey();
+      final apiKey = getApiKey();
       final response = await http.get(uri, headers: {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
@@ -760,7 +758,7 @@ class ApiDbConnection {
     required String domain,
   }) async {
     final finalUri = baseUri.replace(path: '/organisations');
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
     final headers = {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
@@ -789,7 +787,7 @@ class ApiDbConnection {
     required String domain,
   }) async {
     final finalUri = baseUri.replace(path: '/organisations/$id');
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
     final headers = {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
@@ -810,7 +808,7 @@ class ApiDbConnection {
 
   Future<bool> deleteOrganisation(int id) async {
     final finalUri = baseUri.replace(path: '/organisations/$id');
-    final apiKey = await getApiKey();
+    final apiKey = getApiKey();
 
     try {
       final response = await http.delete(
@@ -864,20 +862,8 @@ class ApiDbConnection {
     }
   }
 
-  Future<String> getApiKey() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final userDataString = prefs.getString('userData');
-      print("===userdata: $userDataString");
-      if (userDataString != null) {
-        final userData = jsonDecode(userDataString);
-        return userData['ApiKey'].toString();
-      }
-      return "No Key";
-    } catch (e) {
-      print("Error fetching API key: $e");
-      return "Error fetching Key";
-    }
+  String getApiKey(){
+    return User.instance.apiKey.toString();
   }
 
   Future<void> deleteAccount(int id, String apiKey) async {
