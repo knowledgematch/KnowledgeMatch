@@ -4,7 +4,6 @@ import 'package:knowledgematch/domain/models/search_criteria.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/ui/swipe/view_model/swipe_view_model.dart';
-import 'package:swipable_stack/swipable_stack.dart';
 
 class TestSwipeViewModel extends SwipeViewModel {
   TestSwipeViewModel({required super.searchCriteria});
