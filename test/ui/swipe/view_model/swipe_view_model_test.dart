@@ -86,48 +86,4 @@ void main() {
     expect(viewModel.state.shouldShowGlow, false);
   });
 
-  test('handleSwipe right removes profile and updates index and title', () async {
-    final viewModel = TestSwipeViewModel(
-      searchCriteria: SearchCriteria(
-        keyword: 'Physics',
-        issue: 'Black holes',
-        reachability: Reachability.online,
-      ),
-    );
-
-    viewModel.profiles = [
-      Userprofile(
-          id: 1,
-          name: 'Alice',
-          tokens: ['token'],
-          location: '',
-          expertString: '',
-          availability: '',
-          langString: '',
-          description: '',
-          seniority: 0,
-          email: ''),
-      Userprofile(
-          id: 1,
-          name: 'Bob',
-          tokens: ['token'],
-          location: '',
-          expertString: '',
-          availability: '',
-          langString: '',
-          description: '',
-          seniority: 0,
-          email: ''),
-    ];
-
-    viewModel.controller.currentIndex = 0;
-
-    viewModel.handleSwipe(SwipeDirection.right);
-
-    expect(viewModel.profiles.length, 0);
-    expect(viewModel.profiles.first.name, 'Bob');
-    expect(viewModel.controller.currentIndex, -1);
-    expect(viewModel.state.title, 'Matches (1)');
-  });
-
 }

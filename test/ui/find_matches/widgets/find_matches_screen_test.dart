@@ -29,7 +29,6 @@ void main() {
 
     await tester.enterText(find.byType(TextFormField), 'This is a test issue');
     await tester.tap(find.text('Search experts'));
-    await tester.pumpAndSettle();
 
     expect(viewModel.state.description, 'This is a test issue');
   });

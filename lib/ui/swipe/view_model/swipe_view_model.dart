@@ -51,11 +51,11 @@ class SwipeViewModel extends ChangeNotifier {
       likedProfiles.add(currentProfile);
       sendSwipeRightNotification();
       onRightSwipe?.call();
-      profiles.removeAt(controller.currentIndex);
-      controller.currentIndex--;
     } else if (direction == SwipeDirection.left) {
       skippedProfiles.add(currentProfile);
     }
+    profiles.removeAt(controller.currentIndex);
+    controller.currentIndex--;
     if (profiles.isEmpty) {
       controller.currentIndex = -1;
       hasFinishedNotifier.value = true;
