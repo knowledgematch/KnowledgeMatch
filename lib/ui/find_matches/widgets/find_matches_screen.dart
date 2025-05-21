@@ -22,7 +22,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
 
 
   final TextEditingController _descriptionController = TextEditingController();
-  static const int _maxChars = 250;
+  static const int _maxChars = 1000;
 
 
   @override
@@ -69,9 +69,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                           border: OutlineInputBorder(),
                           counterText: '',
                         ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.deny(RegExp(r'\n')),
-                        ],
+
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please describe your issue';
