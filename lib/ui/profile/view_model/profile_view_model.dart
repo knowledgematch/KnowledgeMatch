@@ -201,7 +201,7 @@ class ProfileViewModel extends ChangeNotifier {
 
     try {
       final uId = User.instance.id;
-      final apiKey = await ApiDbConnection().getApiKey();
+      final apiKey = ApiDbConnection().getApiKey();
 
       if (uId != null) {
         await ApiDbConnection().deleteFcmToken(uId);
