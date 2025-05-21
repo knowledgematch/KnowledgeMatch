@@ -47,6 +47,11 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
             ),
           );
         }
+        final snackBar = SnackBar(
+          content: const Text('Request sent'),
+          duration: Duration(milliseconds: 500),
+        );
+
         return ValueListenableBuilder<bool>(
           valueListenable: viewModel.hasFinishedNotifier,
           builder: (context, hasFinished, _) {
@@ -116,7 +121,10 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                               itemCount: viewModel.profiles.length,
                               horizontalSwipeThreshold: 0.8,
                               onSwipeCompleted: (index, direction) {
-                                viewModel.handleSwipe(direction, context);
+                                viewModel.handleSwipe(direction,
+                                    onRightSwipe: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                }
                               },
                               builder: (context, properties) {
                                 viewModel.checkSwipeDirection(

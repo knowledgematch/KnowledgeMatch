@@ -1,7 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 
 class FirestoreService {
+  String firestoreCollection = "";
+
+  FirestoreService(){
+    if (kReleaseMode){
+      firestoreCollection = "notifications";
+    } else {
+      firestoreCollection = "test_notifications";
+    }
+  }
   /// Fetches notifications for a specific user with an optional filter for request type.
   ///
   /// Queries the `notifications` collection for notifications where the
@@ -21,7 +31,7 @@ class FirestoreService {
     try {
       QuerySnapshot targetSnapshot =
           await FirebaseFirestore.instance
-              .collection('notifications')
+              .collection(firestoreCollection)
               .where(
                 isOpen == true
                     ? Filter.and(
@@ -55,7 +65,7 @@ class FirestoreService {
     required bool isOpen,
   }) {
     return FirebaseFirestore.instance
-        .collection('notifications')
+        .collection(firestoreCollection)
         .where(
           Filter.and(
             Filter('target_user_id', isEqualTo: userID.toString()),
@@ -89,7 +99,7 @@ class FirestoreService {
     required int userID,
   }) {
     return FirebaseFirestore.instance
-        .collection('notifications')
+        .collection(firestoreCollection)
         .where(
           Filter.and(
             Filter('target_user_id', isEqualTo: userID.toString()),
@@ -114,7 +124,7 @@ class FirestoreService {
 
   Stream<List<NotificationData>> allNotificationsStream({required int userID}) {
     return FirebaseFirestore.instance
-        .collection('notifications')
+        .collection(firestoreCollection)
         .where(
           Filter.or(
             Filter('target_user_id', isEqualTo: userID.toString()),
@@ -151,7 +161,7 @@ class FirestoreService {
     try {
       QuerySnapshot targetSnapshot =
           await FirebaseFirestore.instance
-              .collection('notifications')
+              .collection(firestoreCollection)
               .where(
                 Filter.or(
                   Filter('target_user_id', isEqualTo: userID.toString()),
@@ -183,7 +193,7 @@ class FirestoreService {
     try {
       QuerySnapshot targetSnapshot =
           await FirebaseFirestore.instance
-              .collection('notifications')
+              .collection(firestoreCollection)
               .where(
                 Filter.and(
                   Filter('target_user_id', isEqualTo: userID.toString()),
@@ -284,7 +294,7 @@ class FirestoreService {
     };
 
     try {
-      await FirebaseFirestore.instance.collection('notifications').add(data);
+      await FirebaseFirestore.instance.collection(firestoreCollection).add(data);
       print("Confirmation document was successfully added to Firestore");
     } catch (e) {
       print("Error while inserting document: $e");

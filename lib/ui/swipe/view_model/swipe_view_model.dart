@@ -24,8 +24,12 @@ class SwipeViewModel extends ChangeNotifier {
   List<Userprofile> likedProfiles = [];
   List<Userprofile> skippedProfiles = [];
 
-  SwipeViewModel({required this.searchCriteria}) {
-    profilesFuture = MatchingAlgorithm().getMatchingUserProfiles(searchCriteria);
+  SwipeViewModel({required this.searchCriteria, bool skipMatching = false}) {
+    if (!skipMatching) {
+      profilesFuture = MatchingAlgorithm().getMatchingUserProfiles(
+        searchCriteria,
+      );
+    }
     profilesFuture.then((loadedProfiles) {
       profiles = [...loadedProfiles];
 
@@ -76,13 +80,32 @@ class SwipeViewModel extends ChangeNotifier {
     );
     await NotificationService().sendMessageToDevice(notificationData, profile.tokens ?? []);
   }
-  void checkSwipeDirection(double swipeDistance) {
+
+  void handleSwipe(SwipeDirection direction, {VoidCallback? onRightSwipe}) {
+    if (direction == SwipeDirection.right) {
+      //send request
+      onRightSwipe?.call();
+      sendSwipeRightNotification();
+      controller.currentIndex--;
+      updateTitle();
+      notifyListeners();
+    }
+    if (controller.currentIndex == profiles.length - 1) {
+      controller.currentIndex = -1;
+    }
+  }
+
+  void checkSwipeDirection(double swipeDistance, {bool skipScheduler = false}) {
     bool newShouldShowGlow = swipeDistance > 0.3;
     if (_state.shouldShowGlow != newShouldShowGlow) {
       _state = state.copyWith(shouldShowGlow: newShouldShowGlow);
-      SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (skipScheduler) {
         notifyListeners();
-      });
+      } else {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          notifyListeners();
+        });
+      }
     }
   }
 
