@@ -53,11 +53,15 @@ class AppDrawer extends StatelessWidget {
         'title': 'Contact',
         'screen': const ContactScreen(),
       },
+      //Settings in the app drawer has been removed in
+      // case Dark Mode is added later
+    /*
       {
         'icon': Icons.settings,
         'title': 'Settings',
         'screen': SettingsScreen(),
       },
+     */
       {
         'icon': Icons.info,
         'title': 'About',

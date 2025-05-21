@@ -33,11 +33,13 @@ class EditProfileScreen extends StatelessWidget {
           children: [
             TextField(
               controller: nameController,
+              maxLength: 20,
               decoration: const InputDecoration(labelText: 'First Name'),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: surnameController,
+              maxLength: 20,
               decoration: const InputDecoration(labelText: 'Last Name'),
             ),
             const SizedBox(height: 16),
@@ -56,17 +58,20 @@ class EditProfileScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ChangeNotifierProvider(
-                          create: (_) => ChangePwViewModel(),
-                          child: ChangePasswordScreen())),
-                );
-              },
-              child: const Text('Change Password'),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider(
+                            create: (_) => ChangePwViewModel(),
+                            child: ChangePasswordScreen())),
+                  );
+                },
+                child: const Text('Change Password'),
+              ),
             ),
             const Spacer(),
             TextButton(

@@ -27,18 +27,18 @@ class HomeViewModel extends ChangeNotifier {
   //
   /// Registers a Listener on the ChangeNotifier[User.instance] to rebuild the HomeScreen.
   HomeViewModel() {
-    _loadData();
+    loadData();
     User.instance.addListener(() => notifyListeners());
   }
 
   /// Loads the data and rebuilds HomeScreen
   void refresh() {
-    _loadData();
+    loadData();
     notifyListeners();
   }
 
   /// Loads open and planned requests for current user
-  Future<void> _loadData() async {
+  Future<void> loadData() async {
     await getAndListenForOpenRequests();
     await getAndListenForPlannedRequests();
     notifyListeners();

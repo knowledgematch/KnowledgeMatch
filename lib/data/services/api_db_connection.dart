@@ -18,13 +18,10 @@ class ApiDbConnection {
   ApiDbConnection() {
     if (kReleaseMode) {
       // Live server
-      host = 'fl-13-105.zhdk.cloud.switch.ch';
-      // host = 'fl-15-241.zhdk.cloud.switch.ch';
+      host = 'fl-15-241.zhdk.cloud.switch.ch';
     } else {
-      //TODO Create second notification Method on firebase
       // Test server
       host = 'fl-13-105.zhdk.cloud.switch.ch';
-      // host = 'fl-15-241.zhdk.cloud.switch.ch';
     }
   }
 

@@ -15,15 +15,6 @@ class AboutScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-              child: Text(
-                'About',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-        ),
               const SizedBox(height: 16),
               Image.asset(
                 'assets/images/fhnw_logo.png',
