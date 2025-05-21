@@ -167,7 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final TextEditingController controller = TextEditingController(
       text: viewModel.state.description,
     );
-    const int maxChars = 200;
+    const int maxChars = 500;
 
     showModalBottomSheet(
       context: context,
