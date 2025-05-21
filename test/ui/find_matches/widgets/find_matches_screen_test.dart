@@ -28,7 +28,7 @@ void main() {
     expect(find.byType(ChoiceChip), findsNWidgets(3));
 
     await tester.enterText(find.byType(TextFormField), 'This is a test issue');
-    await tester.tap(find.text('Search helpers'));
+    await tester.tap(find.text('Search experts'));
     await tester.pumpAndSettle();
 
     expect(viewModel.state.description, 'This is a test issue');

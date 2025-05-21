@@ -121,10 +121,12 @@ class ProfileSwipeScreenState extends State<SwipeScreen> {
                               itemCount: viewModel.profiles.length,
                               horizontalSwipeThreshold: 0.8,
                               onSwipeCompleted: (index, direction) {
-                                viewModel.handleSwipe(direction,
+                                viewModel.handleSwipe(
+                                    direction,
                                     onRightSwipe: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                }
+                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                },);
                               },
                               builder: (context, properties) {
                                 viewModel.checkSwipeDirection(

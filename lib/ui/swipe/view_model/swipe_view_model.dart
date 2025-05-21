@@ -42,7 +42,7 @@ class SwipeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void handleSwipe(SwipeDirection direction, BuildContext context) {
+  void handleSwipe(SwipeDirection direction, {VoidCallback? onRightSwipe}) {
     if (controller.currentIndex < 0 || controller.currentIndex >= profiles.length) return;
 
     final currentProfile = profiles[controller.currentIndex];
@@ -50,14 +50,12 @@ class SwipeViewModel extends ChangeNotifier {
     if (direction == SwipeDirection.right) {
       likedProfiles.add(currentProfile);
       sendSwipeRightNotification();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Request sent'), duration: Duration(milliseconds: 500)),
-      );
+      onRightSwipe?.call();
+      profiles.removeAt(controller.currentIndex);
+      controller.currentIndex--;
     } else if (direction == SwipeDirection.left) {
       skippedProfiles.add(currentProfile);
     }
-    profiles.removeAt(controller.currentIndex);
-    controller.currentIndex--;
     if (profiles.isEmpty) {
       controller.currentIndex = -1;
       hasFinishedNotifier.value = true;
@@ -81,19 +79,6 @@ class SwipeViewModel extends ChangeNotifier {
     await NotificationService().sendMessageToDevice(notificationData, profile.tokens ?? []);
   }
 
-  void handleSwipe(SwipeDirection direction, {VoidCallback? onRightSwipe}) {
-    if (direction == SwipeDirection.right) {
-      //send request
-      onRightSwipe?.call();
-      sendSwipeRightNotification();
-      controller.currentIndex--;
-      updateTitle();
-      notifyListeners();
-    }
-    if (controller.currentIndex == profiles.length - 1) {
-      controller.currentIndex = -1;
-    }
-  }
 
   void checkSwipeDirection(double swipeDistance, {bool skipScheduler = false}) {
     bool newShouldShowGlow = swipeDistance > 0.3;

@@ -124,7 +124,7 @@ void main() {
 
     viewModel.handleSwipe(SwipeDirection.right);
 
-    expect(viewModel.profiles.length, 1);
+    expect(viewModel.profiles.length, 0);
     expect(viewModel.profiles.first.name, 'Bob');
     expect(viewModel.controller.currentIndex, -1);
     expect(viewModel.state.title, 'Matches (1)');
