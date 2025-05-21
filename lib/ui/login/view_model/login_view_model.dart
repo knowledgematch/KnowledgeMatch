@@ -4,11 +4,14 @@ import 'package:knowledgematch/ui/login/login_state.dart';
 
 class LoginViewModel extends ChangeNotifier {
   LoginState _state = const LoginState();
+  final ApiDbConnection api;
 
   LoginState get state => _state;
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  LoginViewModel({ApiDbConnection? api}) : api = api ?? ApiDbConnection();
 
   Future<void> login() async {
     final email = emailController.text;
@@ -18,11 +21,11 @@ class LoginViewModel extends ChangeNotifier {
 
     _setLoading(true);
 
-    final data = await ApiDbConnection().login(email, password);
+    final data = await api.login(email, password);
 
     if (data.toString().contains(';')) {
+      _state = _state.clearError();
       _state = _state.copyWith(
-        errorMessage: null,
         loginSuccess: true,
       );
       notifyListeners();

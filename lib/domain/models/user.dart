@@ -20,6 +20,7 @@ class User extends ChangeNotifier {
   int? _seniority;
   String? _description;
   bool? _isAdmin = false;
+  String? _apiKey;
 
   int? get id => _id;
 
@@ -38,6 +39,8 @@ class User extends ChangeNotifier {
   String? get description => _description;
 
   bool? get isAdmin => _isAdmin;
+
+  String? get apiKey => _apiKey;
 
   set id(int? value) {
     _id = value;
@@ -84,6 +87,11 @@ class User extends ChangeNotifier {
     notifyListeners();
   }
 
+  set apiKey(String? value) {
+    _apiKey = value;
+    notifyListeners();
+  }
+
   /// Populates the [User] instance's fields using data from a JSON map.
   ///
   /// Extracts values from the provided [json] map and assigns them to the
@@ -120,6 +128,7 @@ class User extends ChangeNotifier {
     if (json['isAdmin'] > 0) {
       isAdmin = true;
     }
+    apiKey = json['ApiKey'] as String?;
     notifyListeners();
   }
 
@@ -152,6 +161,7 @@ class User extends ChangeNotifier {
     seniority = null;
     description = null;
     isAdmin = null;
+    apiKey = null;
     notifyListeners();
   }
 
@@ -167,6 +177,7 @@ User:
   Picture: $picture
   Seniority: $seniority
   Description: $description
+  ApiKey: $apiKey
     ''';
   }
 }

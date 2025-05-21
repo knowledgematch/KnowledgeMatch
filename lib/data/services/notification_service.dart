@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
@@ -18,11 +19,19 @@ class NotificationService {
   static final NotificationService _notificationService =
       NotificationService._internal();
 
+  String cloudFunction = "";
+
   factory NotificationService() {
     return _notificationService;
   }
 
-  NotificationService._internal();
+  NotificationService._internal(){
+    if (kReleaseMode){
+      cloudFunction = "sendToDevice";
+    } else {
+      cloudFunction = "sendToDevice_test";
+    }
+  }
 
   /// Instance of FlutterLocalNotificationsPlugin
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -189,7 +198,7 @@ class NotificationService {
     List<String> tokens,
   ) async {
     final result = await FirebaseFunctions.instance
-        .httpsCallable('sendToDevice')
+        .httpsCallable(cloudFunction)
         .call({
           'tokens': tokens,
           'title': notificationData.title,
