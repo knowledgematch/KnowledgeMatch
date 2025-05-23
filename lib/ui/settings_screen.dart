@@ -1,3 +1,7 @@
+/* Since Settings was removed from the app_drawer.dart,
+this code no longer has any function.
+For Settings to work again, this code should not be commented out.
+
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/core/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -35,3 +39,4 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 }
+*/

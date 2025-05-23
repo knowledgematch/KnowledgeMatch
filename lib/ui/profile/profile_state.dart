@@ -9,14 +9,16 @@ class ProfileState {
   int semester = 1;
   String description = '';
   bool unsaved;
+  bool isDeleting;
 
   ProfileState({
-      this.pictureData,
-      required this.uId,
-      required this.reachability,
-      required this.semester,
-      required this.description,
-      this.unsaved = false,
+    this.pictureData,
+    required this.uId,
+    required this.reachability,
+    required this.semester,
+    required this.description,
+    this.unsaved = false,
+    this.isDeleting = false,
   });
 
   ProfileState copyWith({
@@ -25,7 +27,8 @@ class ProfileState {
     Reachability? reachability,
     int? semester,
     String? description,
-    bool? unsaved
+    bool? unsaved,
+    bool? isDeleting,
   }) {
     return ProfileState(
       pictureData: pictureData ?? this.pictureData,
@@ -34,6 +37,7 @@ class ProfileState {
       semester: semester ?? this.semester,
       description: description ?? this.description,
       unsaved: unsaved ?? this.unsaved,
+      isDeleting: isDeleting ?? this.isDeleting,
     );
   }
 }

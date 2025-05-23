@@ -16,10 +16,10 @@ class CreateProfileScreen extends StatefulWidget {
 class CreateProfileScreenState extends State<CreateProfileScreen> {
   final List<String> sliderImages = [
     "assets/images/create_0.png",
-    "assets/images/create_1.png",
-    "assets/images/create_2.png",
-    "assets/images/create_3.png",
-    "assets/images/create_4.png",
+    "assets/images/createdescription1.png",
+    "assets/images/createdescription2.png",
+    "assets/images/createdescription3.png",
+    "assets/images/createdescription4.png",
   ];
 
   int _currentIndex = 0;
@@ -57,6 +57,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
           controller: _scrollController,
           thumbVisibility: true,
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Form(
@@ -74,11 +75,15 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                           });
                         },
                         itemBuilder: (context, index) {
-                          return Image.asset(
-                            sliderImages[index],
-                            fit: BoxFit.contain,
-                            width: double.infinity,
+                          return Transform.scale(
+                            scale: (index == 0) ? 1.0 : 1.20,
+                            child: Image.asset(
+                              sliderImages[index],
+                              fit: BoxFit.contain,
+                              width: double.infinity,
+                            ),
                           );
+
                         },
                       ),
                     ),

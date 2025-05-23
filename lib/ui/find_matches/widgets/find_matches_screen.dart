@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/ui/core/themes/app_colors.dart';
 import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_model.dart';
 import 'package:knowledgematch/ui/find_matches/widgets/keyword_selector.dart';
 import 'package:provider/provider.dart';
@@ -9,9 +10,7 @@ import '../../swipe/view_model/swipe_view_model.dart';
 import '../../swipe/widgets/swipe_screen.dart';
 
 class FindMatchesScreen extends StatefulWidget {
-  const FindMatchesScreen({
-    super.key,
-  });
+  const FindMatchesScreen({super.key});
 
   @override
   FindMatchesScreenState createState() => FindMatchesScreenState();
@@ -19,6 +18,17 @@ class FindMatchesScreen extends StatefulWidget {
 
 class FindMatchesScreenState extends State<FindMatchesScreen> {
   final _formKey = GlobalKey<FormState>();
+
+
+  final TextEditingController _descriptionController = TextEditingController();
+  static const int _maxChars = 1000;
+
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,33 +46,68 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
-              // Topics dropdown
               const Text("What is the topic you are having problems with?"),
               KeywordSelector(),
-
               const SizedBox(height: 24),
 
-              // Issue field
               const Text("Please describe your issue:"),
-              TextFormField(
-                maxLines: 7,
-                decoration: const InputDecoration(
-                  hintText:
-                      'For example: How does one proceed in a curve discussion?',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please describe your issue';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  viewModel.updateDescription(value);
+
+
+              StatefulBuilder(
+                builder: (context, setState) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      TextFormField(
+                        controller: _descriptionController,
+                        maxLines: 7,
+                        maxLength: _maxChars,
+                        decoration: const InputDecoration(
+                          hintText:
+                          'For example: How does one proceed in a curve discussion?',
+                          border: OutlineInputBorder(),
+                          counterText: '',
+                        ),
+
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please describe your issue';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          if (value.length > _maxChars) {
+                            _descriptionController.text =
+                                value.substring(0, _maxChars);
+                            _descriptionController.selection =
+                                TextSelection.fromPosition(
+                                  TextPosition(
+                                      offset: _descriptionController.text.length),
+                                );
+                          }
+                          setState(() {});
+                        },
+                        onSaved: (value) {
+                          viewModel.updateDescription(value);
+                        },
+                      ),
+
+                      const SizedBox(height: 4),
+                      Text(
+                        '${_maxChars - _descriptionController.text.length} characters remaining',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: _descriptionController.text.length >= _maxChars
+                              ? AppColors.redLight
+                              : AppColors.grey6Light,
+                        ),
+                      ),
+                    ],
+                  );
                 },
               ),
-              const SizedBox(height: 24),
 
+              const SizedBox(height: 24),
               _locationSelection(context),
               const SizedBox(height: 24),
 
@@ -89,7 +134,8 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                     );
                   }
                 },
-                child: const Text('Search helpers'),
+
+                child: const Text('Search experts'),
               ),
             ],
           ),
@@ -106,35 +152,32 @@ Column _locationSelection(BuildContext context) {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       const Text("How do you want to connect?"),
-      // const SizedBox(height: 8),
       Center(
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-            spacing: 8,
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               for (var choice in FindMatchesViewModel.choices)
-                ChoiceChip(
-                  showCheckmark: false,
-                  label: Text(choice["text"]!),
-                  selected: viewModel.state.reachability == choice["value"],
-                  onSelected: (bool selected) {
-                    viewModel.updateReachability(choice["value"]);
-                  },
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: ChoiceChip(
+                    showCheckmark: false,
+                    label: Text(choice["text"]!),
+                    selected: viewModel.state.reachability == choice["value"],
+                    onSelected: (bool selected) {
+                      viewModel.updateReachability(choice["value"]);
+                    },
+                  ),
                 )
             ],
           ),
         ),
       ),
-      // Display error text if validation fails.
       if (viewModel.state.reachability == null)
         Text(
           "Please select a location option",
-          style: const TextStyle(
-            color: Colors.red,
+          style: TextStyle(
+            color: AppColors.redLight,
             fontSize: 13,
           ),
         ),

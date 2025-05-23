@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/data/services/api_db_connection.dart';
+import 'package:knowledgematch/data/services/keyword_import_service.dart';
 import 'package:knowledgematch/data/services/keyword_topic_service.dart';
 import 'package:knowledgematch/domain/models/keyword2topic.dart';
 
@@ -29,10 +30,18 @@ class AdminViewModel extends ChangeNotifier {
   AdminState get state => _state;
 
   AdminViewModel() {
-    loadKeywords();
-    loadTopics();
-    loadKeyword2Topic();
-    loadOrganisations();
+    init();
+  }
+
+  Future<void> init() async {
+    await loadKeywords();
+    await loadTopics();
+    await loadKeyword2Topic();
+    await loadOrganisations();
+  }
+
+  void openKeywordImport(){
+    KeywordImportService().importFromExcel();
   }
 
   Future<void> loadKeywords() async {
