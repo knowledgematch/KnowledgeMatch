@@ -48,6 +48,10 @@ class AdminScreenState extends State<AdminScreen> {
                     child: Icon(Icons.refresh)),
               ],
             ),
+            ElevatedButton(
+              onPressed: viewModel.openKeywordImport,
+              child: Text('Import from Excel'),
+            ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(

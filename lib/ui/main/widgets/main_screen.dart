@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/ui/core/themes/app_colors.dart';
 import 'package:knowledgematch/ui/profile/widget/profile_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +31,34 @@ class MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List items = [
+      {"name": "HOME", "icon": Icons.home, "index": 0},
+      {"name": "FIND", "icon": Icons.search, "index": 1},
+      {"name": "REQUESTS", "icon": Icons.checklist, "index": 2},
+      {"name": "PROFILE", "icon": Icons.person, "index": 3},
+    ];
+
+    BottomNavigationBarItem barItem(
+      bool isActive,
+      IconData icon,
+      String label,
+    ) {
+      return BottomNavigationBarItem(
+        icon: Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: isActive ? AppColors.white : AppColors.primary,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            icon,
+            color: isActive ? AppColors.primary : AppColors.white,
+          ),
+        ),
+        label: label,
+      );
+    }
+
     final viewModel = context.watch<MainScreenViewModel>();
     final List<Widget> screens = [
       HomeScreen(mainViewModel: viewModel),
@@ -47,15 +76,16 @@ class MainScreenState extends State<MainScreen> {
         child: BottomNavigationBar(
           currentIndex: viewModel.state.currentIndex,
           onTap: viewModel.updateIndex,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'HOME'),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'FIND'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.checklist),
-              label: 'REQUESTS',
-            ),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'PROFILE'),
-          ],
+          items:
+              items
+                  .map(
+                    (i) => barItem(
+                      viewModel.state.currentIndex == i["index"],
+                      i["icon"],
+                      i["name"],
+                    ),
+                  )
+                  .toList(),
         ),
       ),
     );

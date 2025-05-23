@@ -77,9 +77,9 @@ class RequestDateData {
         '${dates['date']}T${dates['time']}',
       ), // Combine date and time
       reachability:
-          json['type'] == null || json['type'] == 'null'
+          dates['type'] == null || dates['type'] == 'null'
               ? Reachability.onlineOrInPerson
-              : Reachability.fromString(json['type']),
+              : Reachability.fromString(dates['type']),
     );
   }
 
@@ -112,5 +112,23 @@ class RequestDateData {
 
     // Convert to JSON string
     return jsonObject;
+  }
+
+  static List<RequestDateData>? datesFromMeetupRequest(
+    Map<String, dynamic> json,
+  ) {
+    List<RequestDateData>? incomingDates;
+    if (json['dates'] is Map) {
+      var datesData = json['dates'];
+      if (datesData['meetupsRequested'] is List) {
+        List<dynamic> meetups = datesData['meetupsRequested'];
+
+        incomingDates =
+            meetups.map((item) {
+              return RequestDateData.fromJson(item);
+            }).toList();
+      }
+    }
+    return incomingDates;
   }
 }

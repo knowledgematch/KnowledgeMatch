@@ -1,7 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 
 class FirestoreService {
+  String firestoreCollection = "";
+
+  FirestoreService(){
+    if (kReleaseMode){
+      firestoreCollection = "notifications";
+    } else {
+      firestoreCollection = "test_notifications";
+    }
+  }
   /// Fetches notifications for a specific user with an optional filter for request type.
   ///
   /// Queries the `notifications` collection for notifications where the
@@ -21,7 +31,7 @@ class FirestoreService {
     try {
       QuerySnapshot targetSnapshot =
           await FirebaseFirestore.instance
-              .collection('notifications')
+              .collection(firestoreCollection)
               .where(
                 isOpen == true
                     ? Filter.and(
@@ -55,7 +65,7 @@ class FirestoreService {
     required bool isOpen,
   }) {
     return FirebaseFirestore.instance
-        .collection('notifications')
+        .collection(firestoreCollection)
         .where(
           Filter.and(
             Filter('target_user_id', isEqualTo: userID.toString()),
@@ -89,7 +99,7 @@ class FirestoreService {
     required int userID,
   }) {
     return FirebaseFirestore.instance
-        .collection('notifications')
+        .collection(firestoreCollection)
         .where(
           Filter.and(
             Filter('target_user_id', isEqualTo: userID.toString()),
@@ -112,9 +122,44 @@ class FirestoreService {
         });
   }
 
-  Stream<List<NotificationData>> allNotificationsStream({required int userID}) {
+  /// Opens a Stream of open Notifications from Firestore
+  ///
+  /// Listens to Firestore documents in the `notifications` collection where:
+  /// - `source_user_id` matches the provided [userID]
+  /// - `is_open` matches the provided [isOpen] flag
+  ///
+  /// Maps Documents to [NotificationData] -> (see[NotificationData.fromFirestoreData])
+  ///
+  /// Returns:
+  /// A stream of lists of [NotificationData].
+  Stream<List<NotificationData>> pendingNotificationsStream({
+    required int userID,
+    required bool isOpen,
+  }) {
     return FirebaseFirestore.instance
         .collection('notifications')
+        .where(
+          Filter.and(
+            Filter('source_user_id', isEqualTo: userID.toString()),
+            Filter('is_open', isEqualTo: isOpen.toString()),
+          ),
+        )
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            return NotificationData.fromFirestoreData(
+              jsonMap: data,
+              documentID: doc.id,
+            );
+          }).toList();
+        });
+  }
+
+  Stream<List<NotificationData>> allNotificationsStream({required int userID}) {
+    return FirebaseFirestore.instance
+        .collection(firestoreCollection)
         .where(
           Filter.or(
             Filter('target_user_id', isEqualTo: userID.toString()),
@@ -151,7 +196,7 @@ class FirestoreService {
     try {
       QuerySnapshot targetSnapshot =
           await FirebaseFirestore.instance
-              .collection('notifications')
+              .collection(firestoreCollection)
               .where(
                 Filter.or(
                   Filter('target_user_id', isEqualTo: userID.toString()),
@@ -183,7 +228,7 @@ class FirestoreService {
     try {
       QuerySnapshot targetSnapshot =
           await FirebaseFirestore.instance
-              .collection('notifications')
+              .collection(firestoreCollection)
               .where(
                 Filter.and(
                   Filter('target_user_id', isEqualTo: userID.toString()),
@@ -284,7 +329,7 @@ class FirestoreService {
     };
 
     try {
-      await FirebaseFirestore.instance.collection('notifications').add(data);
+      await FirebaseFirestore.instance.collection(firestoreCollection).add(data);
       print("Confirmation document was successfully added to Firestore");
     } catch (e) {
       print("Error while inserting document: $e");

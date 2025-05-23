@@ -1,15 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../widget/multi_date_time_picker.dart';
 
-class OnMeetupRequestBottom extends StatelessWidget {
+// class OnMeetupRequestBottom extends StatelessWidget {
+//   const OnMeetupRequestBottom({super.key});
+
+class OnMeetupRequestBottom extends StatefulWidget {
   const OnMeetupRequestBottom({super.key});
+
+  @override
+  OnMeetupRequestBottomState createState() => OnMeetupRequestBottomState();
+}
+
+class OnMeetupRequestBottomState extends State<OnMeetupRequestBottom> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<RequestViewModel>();
+    bool isSentByMe =
+        viewModel.notificationData.sourceUserId == User.instance.id;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -17,7 +42,8 @@ class OnMeetupRequestBottom extends StatelessWidget {
         ElevatedButton(
           onPressed:
               viewModel.state.selectedDate == null ||
-                      viewModel.notificationData.isOpen == false
+                      viewModel.notificationData.isOpen == false ||
+                      isSentByMe
                   ? null
                   : () async {
                     if (context.mounted) {
@@ -32,7 +58,7 @@ class OnMeetupRequestBottom extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed:
-              viewModel.notificationData.isOpen == true
+              viewModel.notificationData.isOpen == true || !isSentByMe
                   ? () {
                     showDialog(
                       context: context,
@@ -56,11 +82,12 @@ class OnMeetupRequestBottom extends StatelessWidget {
                                       children: [
                                         Expanded(
                                           child: Scrollbar(
-                                            controller: ScrollController(),
+                                            controller: _scrollController,
                                             thumbVisibility: true,
                                             thickness: 6,
                                             radius: Radius.circular(3),
                                             child: SingleChildScrollView(
+                                              controller: _scrollController,
                                               padding: EdgeInsets.all(16),
                                               child: MultiDateTimePicker(),
                                             ),
@@ -81,7 +108,8 @@ class OnMeetupRequestBottom extends StatelessWidget {
                                                             viewModelWatch
                                                                     .notificationData
                                                                     .isOpen ==
-                                                                false
+                                                                false ||
+                                                            isSentByMe
                                                         ? null
                                                         : () async {
                                                           if (context.mounted) {

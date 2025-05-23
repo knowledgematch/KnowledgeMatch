@@ -45,9 +45,12 @@ class OnMeetupRequestBodyState extends State<OnMeetupRequestBody> {
             ),
             SizedBox(height: 8),
             if (viewModel.state.incomingDates.isNotEmpty)
-              Text(
-                'Select a proposed date and time:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Padding(
+                padding: const EdgeInsets.only(left: 11.0),
+                child: Text(
+                  'Select a proposed date and time:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             SizedBox(height: 8),
             if (viewModel.state.incomingDates.isNotEmpty)

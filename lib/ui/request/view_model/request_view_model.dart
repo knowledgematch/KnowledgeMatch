@@ -108,14 +108,11 @@ class RequestViewModel extends ChangeNotifier {
     try {
       var jsonData = notificationData.payload;
 
-      print("JsonData: $jsonData}");
-      //Extract the list of requested meetups
       if (jsonData['dates'] is Map) {
         var datesData = jsonData['dates'];
         if (datesData['meetupsRequested'] is List) {
           List<dynamic> meetups = datesData['meetupsRequested'];
 
-          //Parse each meetup entry
           var incomingDates =
               meetups.map((item) {
                 return RequestDateData.fromJson(item);

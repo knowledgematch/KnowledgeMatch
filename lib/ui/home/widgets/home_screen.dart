@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
@@ -36,7 +34,8 @@ class HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = User.instance;
-      final isProfileIncomplete = user.description == null ||
+      final isProfileIncomplete =
+          user.description == null ||
           user.description!.trim().isEmpty ||
           user.seniority == null ||
           user.picture == null;
@@ -54,16 +53,14 @@ class HomeScreenState extends State<HomeScreen> {
     final HomeViewModel viewModel = context.watch<HomeViewModel>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-      ),
+      appBar: AppBar(title: const Text('Home')),
       drawer: const AppDrawer(),
       body: ListView(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(20),
               decoration: Decorations.container,
               child: Row(
                 children: [
@@ -82,9 +79,7 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                             TextSpan(
                               text: "👋",
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
+                              style: TextStyle(fontSize: 20),
                             ),
                           ],
                         ),
@@ -92,26 +87,30 @@ class HomeScreenState extends State<HomeScreen> {
                       Text(
                         _formatName(User.instance.name ?? ''),
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary,
                         ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                       ),
                     ],
                   ),
                   const Spacer(),
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: User.instance.getDecodedPicture() != null
-                        ? MemoryImage(User.instance.getDecodedPicture()!)
-                        : const AssetImage('assets/images/profile.png')
-                            as ImageProvider,
+                  SafeArea(
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundImage:
+                          User.instance.getDecodedPicture() != null
+                              ? MemoryImage(User.instance.getDecodedPicture()!)
+                              : const AssetImage('assets/images/profile.png')
+                                  as ImageProvider,
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-          // Show profile completion banner conditionally
           if (_showIncompleteProfileBanner)
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -132,23 +131,24 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(width: 12),
                   TextButton(
-                    onPressed: () =>{
-                      widget.mainViewModel.updateIndex(3),
-                    },
+                    onPressed: () => {widget.mainViewModel.updateIndex(3)},
                     child: const Text("Edit"),
                   ),
                 ],
               ),
             ),
-
-          const SizedBox(height: 18),
+          const SizedBox(height: 8),
           _buildSectionTitle("Open Requests", Icons.pending_actions),
           const SizedBox(height: 8),
           _buildHorizontalList(viewModel.state.openRequests),
-          const SizedBox(height: 18),
+          const SizedBox(height: 8),
           _buildSectionTitle("Planned meetings", Icons.event_available),
           const SizedBox(height: 8),
           _buildHorizontalList(viewModel.state.plannedRequests),
+          _buildSectionTitle("Pending requests", Icons.question_answer),
+          const SizedBox(height: 8),
+          _buildHorizontalList(viewModel.state.pendingRequests),
+          const SizedBox(height: 8),
         ],
       ),
     );
@@ -174,20 +174,19 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHorizontalList(HashMap<NotificationData, Userprofile> requests) {
+  Widget _buildHorizontalList(Map<NotificationData, Userprofile> requests) {
     if (requests.isEmpty) {
       return const Center(
         child: Text(
-          "No requests available",
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+          "You have no requests currently",
+          style: TextStyle(fontSize: 18, color: Colors.grey),
         ),
       );
     } else {
       final notifications = requests.entries.toList();
       return SizedBox(
-        height: 180,
+        height: 138,
         child: ListView.builder(
-          padding: EdgeInsets.all(8),
           scrollDirection: Axis.horizontal,
           itemCount: notifications.length,
           itemBuilder: (context, index) {
@@ -197,14 +196,15 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        ChangeNotifierProvider<RequestViewModel>(
-                      create: (_) => RequestViewModel(
-                        notificationData: entry.key,
-                        userprofile: entry.value,
-                      ),
-                      child: RequestScreen(),
-                    ),
+                    builder:
+                        (context) => ChangeNotifierProvider<RequestViewModel>(
+                          create:
+                              (_) => RequestViewModel(
+                                notificationData: entry.key,
+                                userprofile: entry.value,
+                              ),
+                          child: RequestScreen(),
+                        ),
                   ),
                 );
               },
@@ -225,7 +225,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   String _formatName(String name) {
-    const int maxLength = 17;
+    const int maxLength = 14;
     if (name.length > maxLength) {
       return '${name.substring(0, maxLength)}...';
     }
