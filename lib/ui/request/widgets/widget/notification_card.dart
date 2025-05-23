@@ -105,6 +105,7 @@ class NotificationCard extends StatelessWidget {
   }
 
   Widget _buildTitle(NotificationType type, BuildContext context) {
+    bool sentByMe = notification.sourceUserId == User.instance.id;
     String title = "";
     switch (type) {
       case NotificationType.knowledgeRequest:
@@ -120,11 +121,25 @@ class NotificationCard extends StatelessWidget {
     }
     return Padding(
       padding: EdgeInsets.only(bottom: 4),
-      child: Text(title, style: Theme.of(context).textTheme.titleSmall),
+      child:
+          sentByMe
+              ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Your message:",
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  Text(title, style: Theme.of(context).textTheme.bodyMedium),
+                ],
+              )
+              : Text(title, style: Theme.of(context).textTheme.titleSmall),
     );
   }
 
   Widget _buildSubtitle(NotificationType type, String body) {
+    bool sentByMe = notification.sourceUserId == User.instance.id;
     final String name = userprofile.name.split(" ")[0];
     String descriptor0 = "From: ";
     String from = "";
@@ -132,34 +147,41 @@ class NotificationCard extends StatelessWidget {
     String descriptor2 = "";
     String text1 = "";
     String text2 = "";
-    switch (type) {
-      case NotificationType.knowledgeRequest ||
-          NotificationType.requestDeclined ||
-          NotificationType.requestAccepted:
-        var searchCriteria = SearchCriteria.fromJSON(notification.payload);
-        from = name;
-        text1 = searchCriteria.keyword;
-        descriptor2 = "Description: ";
-        text2 = searchCriteria.issue;
-      case NotificationType.meetupRequest:
-        var dates =
-            RequestDateData.datesFromMeetupRequest(notification.payload) ?? [];
-        from = name;
-        descriptor1 = "Date: ";
-        text1 =
-            dates.isNotEmpty
-                ? "${dates[0].getFormattedDate()}, ..."
-                : "No dates to display";
-        descriptor2 = "Time: ";
-        text2 = "${dates[0].getFormattedTime()}, ...";
-      case NotificationType.meetupConfirmation:
-        var str = notification.body.split(" ");
-        descriptor0 = "With: ";
-        from = name;
-        descriptor1 = "${str[1]}, ";
-        text1 = str[0];
-        descriptor2 = "Time: ";
-        text2 = str[2];
+    if (sentByMe) {
+      descriptor0 = "To: ";
+      descriptor1 = "";
+      from = name;
+    } else {
+      switch (type) {
+        case NotificationType.knowledgeRequest ||
+            NotificationType.requestDeclined ||
+            NotificationType.requestAccepted:
+          var searchCriteria = SearchCriteria.fromJSON(notification.payload);
+          from = name;
+          text1 = searchCriteria.keyword;
+          descriptor2 = "Description: ";
+          text2 = searchCriteria.issue;
+        case NotificationType.meetupRequest:
+          var dates =
+              RequestDateData.datesFromMeetupRequest(notification.payload) ??
+              [];
+          from = name;
+          descriptor1 = "Date: ";
+          text1 =
+              dates.isNotEmpty
+                  ? "${dates[0].getFormattedDate()}, ..."
+                  : "No dates to display";
+          descriptor2 = "Time: ";
+          text2 = "${dates[0].getFormattedTime()}, ...";
+        case NotificationType.meetupConfirmation:
+          var str = notification.body.split(" ");
+          descriptor0 = "With: ";
+          from = name;
+          descriptor1 = "${str[1]}, ";
+          text1 = str[0];
+          descriptor2 = "Time: ";
+          text2 = str[2];
+      }
     }
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
