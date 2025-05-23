@@ -9,7 +9,6 @@ import '../../core/ui/info_card.dart';
 import '../../keyword_selection/view_model/keyword_selection_view_model.dart';
 import '../../keyword_selection/widgets/keyword_selection_screen.dart';
 import 'edit_profile_screen.dart';
-import 'package:flutter/services.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
