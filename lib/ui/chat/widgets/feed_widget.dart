@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/user.dart';
+import 'package:knowledgematch/ui/core/ui/decorations.dart';
 import 'package:knowledgematch/ui/request/widgets/widget/feed_card.dart';
 import 'package:provider/provider.dart';
 
@@ -29,45 +30,51 @@ class FeedWidgetState extends State<FeedWidget> {
                   ? viewModel.state.userProfiles[latest.targetUserId] ??
                       viewModel.state.userProfiles[User.instance.id]!
                   : viewModel.state.userProfiles[latest.sourceUserId]!;
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: ExpansionTile(
-              initiallyExpanded: false,
-              title: FeedCard(notification: latest, userprofile: profile),
-              children:
-                  feed.map((n) {
-                    final userProfile =
-                        viewModel.state.userProfiles[n.sourceUserId]!;
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    ChangeNotifierProvider<RequestViewModel>(
-                                      create:
-                                          (_) => RequestViewModel(
-                                            notificationData: n,
-                                            userprofile: userProfile,
-                                          ),
-                                      child: RequestScreen(),
-                                    ),
+          return Container(
+            decoration: Decorations.container,
+            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            child: Theme(
+              data: Theme.of(
+                context,
+              ).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                initiallyExpanded: false,
+                title: FeedCard(notification: latest, userprofile: profile),
+                children:
+                    feed.map((n) {
+                      final userProfile =
+                          viewModel.state.userProfiles[n.sourceUserId]!;
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      ChangeNotifierProvider<RequestViewModel>(
+                                        create:
+                                            (_) => RequestViewModel(
+                                              notificationData: n,
+                                              userprofile: userProfile,
+                                            ),
+                                        child: RequestScreen(),
+                                      ),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 2,
+                            vertical: 0,
                           ),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                          child: NotificationCard(
+                            notification: n,
+                            userprofile: userProfile,
+                          ),
                         ),
-                        child: NotificationCard(
-                          notification: n,
-                          userprofile: userProfile,
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    }).toList(),
+              ),
             ),
           );
         }).toList();

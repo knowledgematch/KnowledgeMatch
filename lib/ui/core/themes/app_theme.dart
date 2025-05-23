@@ -155,7 +155,7 @@ class AppTheme {
           backgroundColor: MaterialStateProperty.all(AppColors.transparent),
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.white,
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: AppConstants.borderRadius),

@@ -38,7 +38,7 @@ class FeedCard extends StatelessWidget {
         borderRadius: AppConstants.borderRadiusLarge,
         boxShadow: [
           BoxShadow(
-            color: AppColors.blueLight,
+            color: AppColors.primary,
             spreadRadius: 1,
             blurRadius: 4,
             offset: const Offset(0, 4),
@@ -59,6 +59,7 @@ class FeedCard extends StatelessWidget {
                 Text(
                   userprofile.name,
                   style: Theme.of(context).textTheme.titleSmall,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

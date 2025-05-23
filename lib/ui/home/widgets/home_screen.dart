@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/ui/core/ui/app_drawer.dart';
@@ -113,7 +111,6 @@ class HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          // Show profile completion banner conditionally
           if (_showIncompleteProfileBanner)
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -140,15 +137,18 @@ class HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-
-          const SizedBox(height: 18),
+          const SizedBox(height: 8),
           _buildSectionTitle("Open Requests", Icons.pending_actions),
           const SizedBox(height: 8),
           _buildHorizontalList(viewModel.state.openRequests),
-          const SizedBox(height: 18),
+          const SizedBox(height: 8),
           _buildSectionTitle("Planned meetings", Icons.event_available),
           const SizedBox(height: 8),
           _buildHorizontalList(viewModel.state.plannedRequests),
+          _buildSectionTitle("Pending requests", Icons.question_answer),
+          const SizedBox(height: 8),
+          _buildHorizontalList(viewModel.state.pendingRequests),
+          const SizedBox(height: 8),
         ],
       ),
     );
@@ -174,20 +174,19 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHorizontalList(HashMap<NotificationData, Userprofile> requests) {
+  Widget _buildHorizontalList(Map<NotificationData, Userprofile> requests) {
     if (requests.isEmpty) {
       return const Center(
         child: Text(
-          "No requests available",
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+          "You have no requests currently",
+          style: TextStyle(fontSize: 18, color: Colors.grey),
         ),
       );
     } else {
       final notifications = requests.entries.toList();
       return SizedBox(
-        height: 180,
+        height: 138,
         child: ListView.builder(
-          padding: EdgeInsets.all(8),
           scrollDirection: Axis.horizontal,
           itemCount: notifications.length,
           itemBuilder: (context, index) {

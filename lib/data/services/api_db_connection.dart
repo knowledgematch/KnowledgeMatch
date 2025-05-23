@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 import '../../domain/models/organisation.dart';
+import '../../domain/models/user.dart';
 
 class ApiDbConnection {
   String host = "";
@@ -62,7 +63,11 @@ class ApiDbConnection {
     var finalUri = baseUri.replace(
       path: '/keywords',
     );
-    final headers = {'Content-Type': 'application/json'};
+    final apiKey = getApiKey();
+    final headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+    };
     final body = jsonEncode({
       'Levels': levels,
       'Keyword': keyword,
@@ -83,7 +88,11 @@ class ApiDbConnection {
       required String keyword,
       required String description}) async {
     var finalUri = Uri.parse('$baseUri/keywords/$id');
-    final headers = {'Content-Type': 'application/json'};
+    final apiKey = getApiKey();
+    final headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+    };
     final body = jsonEncode({
       'Levels': levels,
       'Keyword': keyword,
@@ -105,8 +114,15 @@ class ApiDbConnection {
 
   Future<bool> removeKeywordEntry(int id) async {
     var finalUri = Uri.parse('$baseUri/keywords/$id');
+    final apiKey = getApiKey();
+
     try {
-      final response = await http.delete(finalUri);
+      final response = await http.delete(
+        finalUri,
+        headers: {
+          'x-api-key': apiKey,
+        },
+      );
 
       if (response.statusCode == 204) {
         return true;
@@ -122,8 +138,15 @@ class ApiDbConnection {
 
   Future<bool> removeTopicEntry(int id) async {
     var finalUri = Uri.parse('$baseUri/topics/$id');
+    final apiKey = getApiKey();
+
     try {
-      final response = await http.delete(finalUri);
+      final response = await http.delete(
+        finalUri,
+        headers: {
+          'x-api-key': apiKey,
+        },
+      );
 
       if (response.statusCode == 204) {
         return true;
@@ -143,7 +166,11 @@ class ApiDbConnection {
       required String topic,
       required String description}) async {
     var finalUri = Uri.parse('$baseUri/topics/$id');
-    final headers = {'Content-Type': 'application/json'};
+    final apiKey = getApiKey();
+    final headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+    };
     final body = jsonEncode({
       'Levels': levels,
       'Topic': topic,
@@ -170,7 +197,11 @@ class ApiDbConnection {
     var finalUri = baseUri.replace(
       path: '/topics',
     );
-    final headers = {'Content-Type': 'application/json'};
+    final apiKey = getApiKey();
+    final headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+    };
     final body = jsonEncode({
       'Levels': levels,
       'Topic': topic,
@@ -187,8 +218,13 @@ class ApiDbConnection {
 
   Future<bool> addKeyword2TopicsEntry(int kid, int tid) async {
     var finalUri = Uri.parse('$baseUri/topics/$kid/$tid');
+    final apiKey = getApiKey();
+
     try {
-      final response = await http.post(finalUri);
+      final response = await http.post(
+        finalUri,
+        headers: {'x-api-key': apiKey},
+      );
 
       if (response.statusCode == 201) {
         return true;
@@ -222,9 +258,15 @@ class ApiDbConnection {
 
   Future<List<dynamic>?> initUser(int userId) async {
     var finalUri = Uri.parse('$baseUri/users/$userId');
+    final apiKey = getApiKey();
 
     try {
-      final response = await http.get(finalUri);
+      final response = await http.get(
+        finalUri,
+        headers: {
+          'x-api-key': apiKey,
+        },
+      );
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       }
@@ -283,8 +325,13 @@ class ApiDbConnection {
   /// - A [Future] that completes with a boolean indicating whether the association was successful.
   Future<bool> addUser2KeywordEntry(int uid, int kid) async {
     var finalUri = Uri.parse('$baseUri/keywords/$uid/$kid');
+    final apiKey = getApiKey();
+
     try {
-      final response = await http.post(finalUri);
+      final response = await http.post(
+        finalUri,
+        headers: {'x-api-key': apiKey},
+      );
 
       if (response.statusCode == 201) {
         return true;
@@ -313,8 +360,13 @@ class ApiDbConnection {
   /// - A [Future] that completes with a boolean indicating whether the removal was successful.
   Future<bool> removeUser2KeywordEntry(int uid, int kid) async {
     var finalUri = Uri.parse('$baseUri/keywords/$uid/$kid');
+    final apiKey = getApiKey();
+
     try {
-      final response = await http.delete(finalUri);
+      final response = await http.delete(
+        finalUri,
+        headers: {'x-api-key': apiKey},
+      );
 
       if (response.statusCode == 204) {
         return true;
@@ -388,7 +440,11 @@ class ApiDbConnection {
     var finalUri = baseUri.replace(
       path: '/change-password',
     );
-    final headers = {'Content-Type': 'application/json'};
+    final apiKey = getApiKey();
+    final headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+    };
     final body = jsonEncode({
       'email': email,
       'oldPassword': oldPassword,
@@ -476,7 +532,11 @@ class ApiDbConnection {
     var finalUri = baseUri.replace(
       path: '/users/$uId',
     );
+    final apiKey = getApiKey();
     final request = http.MultipartRequest('PUT', finalUri);
+
+    print("========= key: $apiKey");
+    request.headers['x-api-key'] = apiKey;
 
     request.fields['Name'] = name;
     request.fields['Surname'] = surname;
@@ -492,9 +552,9 @@ class ApiDbConnection {
         contentType: MediaType('image', 'jpeg'),
       ));
     }
-
     try {
       final response = await request.send();
+      print("response: ${response.statusCode}");
       return response.statusCode;
     } catch (error) {
       return -1;
@@ -507,7 +567,9 @@ class ApiDbConnection {
     try {
       final response = await http.post(
         finalUri,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({'email': email, 'password': password}),
       );
 
@@ -531,7 +593,9 @@ class ApiDbConnection {
     try {
       final response = await http.post(
         finalUri,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({'email': email, 'code': code}),
       );
 
@@ -539,7 +603,7 @@ class ApiDbConnection {
         final data = jsonDecode(response.body);
         final token = data['token'];
         final Map<String, dynamic> user = data['user'];
-
+        print(user);
         return {'token': token, 'user': user};
       }
     } catch (e) {
@@ -561,6 +625,8 @@ class ApiDbConnection {
   /// - A [Future] that completes when the FCM token update process is finished, with no value returned.
   Future<void> updateFcmToken(String userId) async {
     final token = await FirebaseMessaging.instance.getToken();
+    final apiKey = getApiKey();
+
     if (token == null) {
       print('FCM token is null.');
       return;
@@ -571,7 +637,10 @@ class ApiDbConnection {
     try {
       final response = await http.post(
         finalUri,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+        },
         body: jsonEncode(payload),
       );
 
@@ -597,8 +666,10 @@ class ApiDbConnection {
   /// Returns:
   /// - A [Future] that completes when the FCM token deletion process is finished, with no value returned.
   Future<void> deleteFcmToken(int id) async {
+    final apiKey = getApiKey();
     final token = await FirebaseMessaging.instance.getToken();
     var finalUri = Uri.parse('$baseUri/deleteToken');
+
     if (token == null) {
       print('FCM token is null.');
       return;
@@ -608,7 +679,10 @@ class ApiDbConnection {
     try {
       final response = await http.delete(
         finalUri,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+        },
         body: jsonEncode(payload),
       );
 
@@ -635,7 +709,11 @@ class ApiDbConnection {
   /// - A [Future] that completes with a list of maps containing the fetched data or an empty list if the fetch fails.
   Future<List<Map<String, dynamic>>> _fetcher(Uri uri) async {
     try {
-      final response = await http.get(uri);
+      final apiKey = getApiKey();
+      final response = await http.get(uri, headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+      });
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data is List) {
@@ -680,7 +758,11 @@ class ApiDbConnection {
     required String domain,
   }) async {
     final finalUri = baseUri.replace(path: '/organisations');
-    final headers = {'Content-Type': 'application/json'};
+    final apiKey = getApiKey();
+    final headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+    };
     final body = jsonEncode({
       'organisation': organisation,
       'domain': domain,
@@ -705,7 +787,11 @@ class ApiDbConnection {
     required String domain,
   }) async {
     final finalUri = baseUri.replace(path: '/organisations/$id');
-    final headers = {'Content-Type': 'application/json'};
+    final apiKey = getApiKey();
+    final headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+    };
     final body = jsonEncode({
       'organisation': organisation,
       'domain': domain,
@@ -722,9 +808,13 @@ class ApiDbConnection {
 
   Future<bool> deleteOrganisation(int id) async {
     final finalUri = baseUri.replace(path: '/organisations/$id');
+    final apiKey = getApiKey();
 
     try {
-      final response = await http.delete(finalUri);
+      final response = await http.delete(
+        finalUri,
+        headers: {'x-api-key': apiKey},
+      );
       return response.statusCode == 204;
     } catch (e) {
       print('Error deleting organisation: $e');
@@ -734,9 +824,10 @@ class ApiDbConnection {
 
   Future<List<Organisation>> getAllOrganisations() async {
     final finalUri = baseUri.replace(path: '/organisations');
-
     try {
-      final response = await http.get(finalUri);
+      final response = await http.get(
+        finalUri,
+      );
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         return data.map((item) => Organisation.fromJson(item)).toList();
@@ -768,6 +859,24 @@ class ApiDbConnection {
     } catch (e) {
       print('Error validating email domain: $e');
       return false;
+    }
+  }
+
+  String getApiKey(){
+    return User.instance.apiKey.toString();
+  }
+
+  Future<void> deleteAccount(int id, String apiKey) async {
+    final finalUri = baseUri.replace(path: '/users/$id');
+
+    try {
+      final response = await http.delete(
+        finalUri,
+        headers: {'x-api-key': apiKey},
+      );
+      print(response.statusCode);
+    } catch (e) {
+      print('Error deleting account: $e');
     }
   }
 }

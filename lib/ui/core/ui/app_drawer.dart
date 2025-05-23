@@ -7,7 +7,6 @@ import '../../../data/services/api_db_connection.dart';
 import '../../../domain/models/user.dart';
 import '../../about/widgets/about_screen.dart';
 import '../../contact_information/contact_screen.dart';
-import '../../settings_screen.dart';
 import '../../admin/widgets/admin_screen.dart';
 import '../../splash/widgets/splash_screen.dart';
 import '../themes/app_colors.dart';

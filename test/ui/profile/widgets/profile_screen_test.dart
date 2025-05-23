@@ -72,6 +72,11 @@ class MockProfileViewModel extends ChangeNotifier implements ProfileViewModel {
   Future<void> saveProfile(BuildContext context) {
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> deleteAccount() {
+    throw UnimplementedError();
+  }
 }
 
 void main() {

@@ -122,8 +122,7 @@ class ProfileViewModel extends ChangeNotifier {
           reachability: ReachabilityValue.fromValue(user.reachability ?? 0),
           semester: user.seniority,
           description: user.description,
-          pictureData: user.getDecodedPicture()
-      );
+          pictureData: user.getDecodedPicture());
       emailController.text = user.email!;
       notifyListeners();
     }
@@ -151,6 +150,7 @@ class ProfileViewModel extends ChangeNotifier {
           _state.semester.toString(),
           _state.description,
           _state.pictureData);
+      print("============= response: $response");
       if (response == 204) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -193,6 +193,28 @@ class ProfileViewModel extends ChangeNotifier {
     }
     _state = _state.copyWith(unsaved: false);
     notifyListeners();
+  }
+
+  Future<void> deleteAccount() async {
+    state.isDeleting = true;
+    notifyListeners();
+
+    try {
+      final uId = User.instance.id;
+      final apiKey = ApiDbConnection().getApiKey();
+
+      if (uId != null) {
+        await ApiDbConnection().deleteFcmToken(uId);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.clear();
+        User.instance.reset();
+        await ApiDbConnection().deleteAccount(uId, apiKey);
+      }
+    } catch (e) {
+      print("Error deleting account: $e");
+    } finally {
+      state.isDeleting = false;
+    }
   }
 
   /// Logs out the user by clearing the session data and navigating to the login screen.

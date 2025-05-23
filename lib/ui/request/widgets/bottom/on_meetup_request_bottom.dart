@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/ui/request/view_model/request_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +11,8 @@ class OnMeetupRequestBottom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<RequestViewModel>();
+    bool isSentByMe =
+        viewModel.notificationData.sourceUserId == User.instance.id;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -17,7 +20,8 @@ class OnMeetupRequestBottom extends StatelessWidget {
         ElevatedButton(
           onPressed:
               viewModel.state.selectedDate == null ||
-                      viewModel.notificationData.isOpen == false
+                      viewModel.notificationData.isOpen == false ||
+                      isSentByMe
                   ? null
                   : () async {
                     if (context.mounted) {
@@ -32,7 +36,7 @@ class OnMeetupRequestBottom extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed:
-              viewModel.notificationData.isOpen == true
+              viewModel.notificationData.isOpen == true || !isSentByMe
                   ? () {
                     showDialog(
                       context: context,
@@ -81,7 +85,8 @@ class OnMeetupRequestBottom extends StatelessWidget {
                                                             viewModelWatch
                                                                     .notificationData
                                                                     .isOpen ==
-                                                                false
+                                                                false ||
+                                                            isSentByMe
                                                         ? null
                                                         : () async {
                                                           if (context.mounted) {

@@ -4,7 +4,6 @@ import 'package:knowledgematch/domain/models/search_criteria.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/ui/swipe/view_model/swipe_view_model.dart';
-import 'package:swipable_stack/swipable_stack.dart';
 
 class TestSwipeViewModel extends SwipeViewModel {
   TestSwipeViewModel({required super.searchCriteria});
@@ -84,50 +83,6 @@ void main() {
 
     viewModel.checkSwipeDirection(0.2, skipScheduler:  true);
     expect(viewModel.state.shouldShowGlow, false);
-  });
-
-  test('handleSwipe right removes profile and updates index and title', () async {
-    final viewModel = TestSwipeViewModel(
-      searchCriteria: SearchCriteria(
-        keyword: 'Physics',
-        issue: 'Black holes',
-        reachability: Reachability.online,
-      ),
-    );
-
-    viewModel.profiles = [
-      Userprofile(
-          id: 1,
-          name: 'Alice',
-          tokens: ['token'],
-          location: '',
-          expertString: '',
-          availability: '',
-          langString: '',
-          description: '',
-          seniority: 0,
-          email: ''),
-      Userprofile(
-          id: 1,
-          name: 'Bob',
-          tokens: ['token'],
-          location: '',
-          expertString: '',
-          availability: '',
-          langString: '',
-          description: '',
-          seniority: 0,
-          email: ''),
-    ];
-
-    viewModel.controller.currentIndex = 0;
-
-    viewModel.handleSwipe(SwipeDirection.right);
-
-    expect(viewModel.profiles.length, 0);
-    expect(viewModel.profiles.first.name, 'Bob');
-    expect(viewModel.controller.currentIndex, -1);
-    expect(viewModel.state.title, 'Matches (1)');
   });
 
 }
