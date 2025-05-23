@@ -197,9 +197,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       border: OutlineInputBorder(),
                       counterText: '',
                     ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.deny(RegExp(r'\n')),
-                    ],
                     onChanged: (value) {
                       if (value.length <= maxChars) {
                         setModalState(() {});
