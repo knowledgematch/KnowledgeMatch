@@ -83,7 +83,7 @@ class EditProfileScreen extends StatelessWidget {
                 child: const Text('Change Password'),
               ),
             ),
-            const Spacer(),
+            const SizedBox(height: 35),
             TextButton(
               onPressed: viewModel.state.isDeleting
                   ? null
