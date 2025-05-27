@@ -716,8 +716,25 @@ class ApiDbConnection {
       });
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        if (data is List) {
+        if (data is List && data.isNotEmpty) {
           return data.map((item) => Map<String, dynamic>.from(item)).toList();
+        } else {
+          return [
+            {
+              'id': -1,
+              'name': 'Account Not Found',
+              'location': '',
+              'expertise': '',
+              'availability': '',
+              'languages': '',
+              'reachability': null,
+              'description': '',
+              'seniority': 0,
+              'email': '',
+              'picture': 'assets/images/profile.png',
+              'tokens': [],
+            }
+          ];
         }
       }
       print('Failed to fetch from $uri. Status Code: ${response.statusCode}');
@@ -862,7 +879,7 @@ class ApiDbConnection {
     }
   }
 
-  String getApiKey(){
+  String getApiKey() {
     return User.instance.apiKey.toString();
   }
 
