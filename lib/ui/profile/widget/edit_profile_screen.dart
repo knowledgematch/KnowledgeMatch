@@ -83,10 +83,11 @@ class EditProfileScreen extends StatelessWidget {
                 child: const Text('Change Password'),
               ),
             ),
-            const SizedBox(height: 35),
-            TextButton(
-              onPressed: viewModel.state.isDeleting
-                  ? null
+        const SizedBox(height: 35),
+        SafeArea(
+          child: TextButton(
+            onPressed: viewModel.state.isDeleting
+                ? null
                   : () {
                       showDialog(
                         context: context,
@@ -133,6 +134,7 @@ class EditProfileScreen extends StatelessWidget {
                     },
               child: const Text("Delete Account"),
             ),
+           ),
           ],
         ),
       ),
