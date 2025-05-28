@@ -29,9 +29,6 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CreateProfileViewModel>().initReachability();
-    });
   }
 
   @override

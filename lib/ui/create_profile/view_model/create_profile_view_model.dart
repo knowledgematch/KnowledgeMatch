@@ -9,10 +9,13 @@ import '../../../domain/models/reachability.dart';
 
 class CreateProfileViewModel extends ChangeNotifier {
   CreateProfileState _state;
+  final ApiDbConnection api;
 
   CreateProfileState get state => _state;
 
-  CreateProfileViewModel() : _state = CreateProfileState();
+  CreateProfileViewModel({ApiDbConnection? api})
+      : api = api ?? ApiDbConnection(),
+        _state = CreateProfileState();
 
   final ImagePicker picker = ImagePicker();
   final formKey = GlobalKey<FormState>();
@@ -21,7 +24,8 @@ class CreateProfileViewModel extends ChangeNotifier {
   final TextEditingController surnameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   /// Opens the gallery to pick an image and updates the selected image.
   ///
@@ -38,8 +42,6 @@ class CreateProfileViewModel extends ChangeNotifier {
     if (pickedFile != null) {
       _state = state.copyWith(selectedImage: File(pickedFile.path));
       notifyListeners();
-    } else {
-      print('No image selected.');
     }
   }
 
@@ -54,12 +56,12 @@ class CreateProfileViewModel extends ChangeNotifier {
       success: false,
     );
     final valid =
-        await ApiDbConnection().isEmailDomainValid(emailController.text);
+        await api.isEmailDomainValid(emailController.text);
     _state = state.copyWith(isValid: valid);
     notifyListeners();
 
     if (valid) {
-      final response = await ApiDbConnection().createAccount(
+      final response = await api.createAccount(
         nameController.text,
         surnameController.text,
         emailController.text,
@@ -73,10 +75,5 @@ class CreateProfileViewModel extends ChangeNotifier {
         notifyListeners();
       }
     }
-  }
-  void initReachability() {
-    _state =
-        state.copyWith(reachability: Reachability.inPerson.value.toString());
-    notifyListeners();
   }
 }

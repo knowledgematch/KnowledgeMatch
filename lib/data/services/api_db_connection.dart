@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:knowledgematch/data/services/firestore_service.dart';
+import 'package:knowledgematch/core/log.dart';
 
 import '../../domain/models/organisation.dart';
 import '../../domain/models/user.dart';
@@ -104,11 +105,11 @@ class ApiDbConnection {
       if (response.statusCode == 204) {
         return true;
       } else {
-        print('Failed to delete Keyword entry: ${response.body}');
+        logger.e('Failed to delete Keyword entry: ${response.body}');
         return false;
       }
     } catch (e) {
-      print('Error updating Keyword: $e');
+      logger.e('Error updating Keyword: $e');
       return false;
     }
   }
@@ -128,11 +129,11 @@ class ApiDbConnection {
       if (response.statusCode == 204) {
         return true;
       } else {
-        print('Failed to delete Keyword entry: ${response.body}');
+        logger.e('Failed to delete Keyword entry: ${response.body}');
         return false;
       }
     } catch (e) {
-      print('Error during DELETE request: $e');
+      logger.e('Error during DELETE request: $e');
       return false;
     }
   }
@@ -152,11 +153,11 @@ class ApiDbConnection {
       if (response.statusCode == 204) {
         return true;
       } else {
-        print('Failed to delete Topic entry: ${response.body}');
+        logger.e('Failed to delete Topic entry: ${response.body}');
         return false;
       }
     } catch (e) {
-      print('Error during DELETE request: $e');
+      logger.e('Error during DELETE request: $e');
       return false;
     }
   }
@@ -182,11 +183,11 @@ class ApiDbConnection {
       if (response.statusCode == 204) {
         return true;
       } else {
-        print('Failed to delete Topic entry: ${response.body}');
+        logger.e('Failed to delete Topic entry: ${response.body}');
         return false;
       }
     } catch (e) {
-      print('Error updating Topic: $e');
+      logger.e('Error updating Topic: $e');
       return false;
     }
   }
@@ -230,12 +231,12 @@ class ApiDbConnection {
       if (response.statusCode == 201) {
         return true;
       } else {
-        print(
+        logger.e(
             'Failed to add Keyword2Topics entry. Status: ${response.statusCode}, Body: ${response.body}');
         return false;
       }
     } catch (e) {
-      print('Error during POST request: $e');
+      logger.e('Error during POST request: $e');
       return false;
     }
   }
@@ -248,11 +249,11 @@ class ApiDbConnection {
       if (response.statusCode == 204) {
         return true;
       } else {
-        print('Failed to delete Keyword2Topic entry: ${response.body}');
+        logger.e('Failed to delete Keyword2Topic entry: ${response.body}');
         return false;
       }
     } catch (e) {
-      print('Error during DELETE request: $e');
+      logger.e('Error during DELETE request: $e');
       return false;
     }
   }
@@ -337,12 +338,12 @@ class ApiDbConnection {
       if (response.statusCode == 201) {
         return true;
       } else {
-        print(
+        logger.e(
             'Failed to add User2Keyword entry. Status: ${response.statusCode}, Body: ${response.body}');
         return false;
       }
     } catch (e) {
-      print('Error during POST request: $e');
+      logger.e('Error during POST request: $e');
       return false;
     }
   }
@@ -372,11 +373,11 @@ class ApiDbConnection {
       if (response.statusCode == 204) {
         return true;
       } else {
-        print('Failed to delete User2Keyword entry: ${response.body}');
+        logger.e('Failed to delete User2Keyword entry: ${response.body}');
         return false;
       }
     } catch (e) {
-      print('Error during DELETE request: $e');
+      logger.e('Error during DELETE request: $e');
       return false;
     }
   }
@@ -536,7 +537,6 @@ class ApiDbConnection {
     final apiKey = getApiKey();
     final request = http.MultipartRequest('PUT', finalUri);
 
-    print("========= key: $apiKey");
     request.headers['x-api-key'] = apiKey;
 
     request.fields['Name'] = name;
@@ -555,7 +555,6 @@ class ApiDbConnection {
     }
     try {
       final response = await request.send();
-      print("response: ${response.statusCode}");
       return response.statusCode;
     } catch (error) {
       return -1;
@@ -604,7 +603,6 @@ class ApiDbConnection {
         final data = jsonDecode(response.body);
         final token = data['token'];
         final Map<String, dynamic> user = data['user'];
-        print(user);
         return {'token': token, 'user': user};
       }
     } catch (e) {
@@ -629,7 +627,7 @@ class ApiDbConnection {
     final apiKey = getApiKey();
 
     if (token == null) {
-      print('FCM token is null.');
+      logger.e('FCM token is null.');
       return;
     }
     var finalUri = Uri.parse('$baseUri/updateToken');
@@ -646,12 +644,12 @@ class ApiDbConnection {
       );
 
       if (response.statusCode == 200) {
-        print('FCM token updated successfully.');
+        logger.d('FCM token updated successfully.');
       } else {
-        print('Failed to update FCM token: ${response.body}');
+        logger.e('Failed to update FCM token: ${response.body}');
       }
     } catch (e) {
-      print('Error updating FCM token: $e');
+      logger.e('Error updating FCM token: $e');
     }
   }
 
@@ -672,11 +670,10 @@ class ApiDbConnection {
     var finalUri = Uri.parse('$baseUri/deleteToken');
 
     if (token == null) {
-      print('FCM token is null.');
+      logger.e('FCM token is null.');
       return;
     }
     final Map<String, String> payload = {'token': token, 'uId': id.toString()};
-    print(payload);
     try {
       final response = await http.delete(
         finalUri,
@@ -688,12 +685,12 @@ class ApiDbConnection {
       );
 
       if (response.statusCode == 204) {
-        print('FCM token deleted successfully.');
+        logger.d('FCM token deleted successfully.');
       } else {
-        print('Failed to delete FCM token: ${response.body}');
+        logger.e('Failed to delete FCM token: ${response.body}');
       }
     } catch (e) {
-      print('Error deleting FCM token: $e');
+      logger.e('Error deleting FCM token: $e');
     }
   }
 
@@ -721,10 +718,11 @@ class ApiDbConnection {
           return data.map((item) => Map<String, dynamic>.from(item)).toList();
         }
       }
-      print('Failed to fetch from $uri. Status Code: ${response.statusCode}');
+      logger
+          .e('Failed to fetch from $uri. Status Code: ${response.statusCode}');
       return [];
     } catch (e) {
-      print('Error with: $e');
+      logger.e('Error with: $e');
       return [];
     }
   }
@@ -749,7 +747,7 @@ class ApiDbConnection {
       final response = await http.post(finalUri, headers: headers, body: body);
       return response.statusCode == 200;
     } catch (e) {
-      print('Error during password reset request: $e');
+      logger.e('Error during password reset request: $e');
       return false;
     }
   }
@@ -774,10 +772,10 @@ class ApiDbConnection {
       if (response.statusCode == 201) {
         return jsonDecode(response.body);
       }
-      print('Failed to create organisation: ${response.body}');
+      logger.e('Failed to create organisation: ${response.body}');
       return null;
     } catch (e) {
-      print('Error creating organisation: $e');
+      logger.e('Error creating organisation: $e');
       return null;
     }
   }
@@ -802,7 +800,7 @@ class ApiDbConnection {
       final response = await http.put(finalUri, headers: headers, body: body);
       return response.statusCode == 200;
     } catch (e) {
-      print('Error updating organisation: $e');
+      logger.e('Error updating organisation: $e');
       return false;
     }
   }
@@ -818,7 +816,7 @@ class ApiDbConnection {
       );
       return response.statusCode == 204;
     } catch (e) {
-      print('Error deleting organisation: $e');
+      logger.e('Error deleting organisation: $e');
       return false;
     }
   }
@@ -833,11 +831,11 @@ class ApiDbConnection {
         final List<dynamic> data = jsonDecode(response.body);
         return data.map((item) => Organisation.fromJson(item)).toList();
       } else {
-        print('Failed to fetch organisations: ${response.body}');
+        logger.e('Failed to fetch organisations: ${response.body}');
         return [];
       }
     } catch (e) {
-      print('Error fetching organisations: $e');
+      logger.e('Error fetching organisations: $e');
       return [];
     }
   }
@@ -849,16 +847,10 @@ class ApiDbConnection {
       final emailDomain = email.split('@').last.trim().toLowerCase();
       final organisationDomains =
           organisations.map((org) => org.domain.trim().toLowerCase()).toList();
-
-      print('Email domain: $emailDomain');
-      print('Organisation domains: $organisationDomains');
-
       final isValid = organisationDomains.contains(emailDomain);
-      print('Is email domain valid? $isValid');
-
       return isValid;
     } catch (e) {
-      print('Error validating email domain: $e');
+      logger.e('Error validating email domain: $e');
       return false;
     }
   }
@@ -878,10 +870,38 @@ class ApiDbConnection {
       if (response.statusCode == 204) {
         await FirestoreService().closeRequestsOnDeletion(id.toString());
       }
-
-      print(response.statusCode);
     } catch (e) {
-      print('Error deleting account: $e');
+      logger.e('Error deleting account: $e');
+    }
+  }
+
+  Future<bool> sendFeedback({required String message}) async {
+    final finalUri = Uri.parse('$baseUri/send-feedback');
+
+    final body = jsonEncode({
+      'message': message,
+    });
+    try {
+      final apiKey = getApiKey();
+      final response = await http.post(
+        finalUri,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+        },
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        logger.e(
+            'Failed to send feedback: ${response.statusCode} ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      logger.e('Error sending feedback: $e');
+      return false;
     }
   }
 }

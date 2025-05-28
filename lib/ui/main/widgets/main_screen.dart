@@ -4,6 +4,7 @@ import 'package:knowledgematch/ui/core/themes/app_colors.dart';
 import 'package:knowledgematch/ui/profile/widget/profile_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/log.dart';
 import '../../../data/services/matching_algorithm.dart';
 import '../../../data/services/notification_service.dart';
 import '../../../domain/models/notification_data.dart';
@@ -97,7 +98,6 @@ class MainScreenState extends State<MainScreen> {
     // Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
-        print(message);
         NotificationService().showNotification(message: message);
       }
     });
@@ -106,9 +106,7 @@ class MainScreenState extends State<MainScreen> {
 
     // Handle messages when the app is brought to foreground from background
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print(
-        'App opened from terminated state by a message: ${message.notification}',
-      );
+      logger.d('App opened from terminated state by a message: ${message.notification}');
       navigatorKey.currentState?.push(
         MaterialPageRoute(
           builder:
@@ -152,9 +150,7 @@ class MainScreenState extends State<MainScreen> {
     RemoteMessage? message =
         await FirebaseMessaging.instance.getInitialMessage();
     if (message != null) {
-      print(
-        'App opened from terminated state by a message: ${message.notification}',
-      );
+      logger.d('App opened from terminated state by a message: ${message.notification}');
       navigatorKey.currentState?.push(
         MaterialPageRoute(
           builder:

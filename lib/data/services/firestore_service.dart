@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 
+import '../../core/log.dart';
+
 class FirestoreService {
   String firestoreCollection = "";
 
@@ -45,7 +47,7 @@ class FirestoreService {
 
       return _buildList(targetSnapshot: targetSnapshot);
     } catch (error) {
-      print('Error fetching notifications: $error');
+      logger.e('Error fetching notifications: $error');
       rethrow;
     }
   }
@@ -207,7 +209,7 @@ class FirestoreService {
 
       return _buildList(targetSnapshot: targetSnapshot);
     } catch (error) {
-      print('Error fetching notifications: $error');
+      logger.e('Error fetching notifications: $error');
       rethrow;
     }
   }
@@ -241,7 +243,7 @@ class FirestoreService {
 
       return _buildList(targetSnapshot: targetSnapshot);
     } catch (error) {
-      print('Error fetching notifications: $error');
+      logger.e('Error fetching notifications: $error');
       rethrow;
     }
   }
@@ -341,9 +343,9 @@ class FirestoreService {
       await FirebaseFirestore.instance
           .collection(firestoreCollection)
           .add(data);
-      print("Confirmation document was successfully added to Firestore");
+      logger.d("Confirmation document was successfully added to Firestore");
     } catch (e) {
-      print("Error while inserting document: $e");
+      logger.e("Error while inserting document: $e");
     }
   }
 }

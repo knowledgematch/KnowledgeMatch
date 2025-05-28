@@ -10,6 +10,7 @@ import 'package:knowledgematch/domain/models/user.dart';
 import 'package:knowledgematch/domain/models/userprofile.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/log.dart';
 import '../../ui/request/view_model/request_view_model.dart';
 import '../../ui/request/widgets/request_screen.dart';
 import 'matching_algorithm.dart';
@@ -213,9 +214,9 @@ class NotificationService {
           'document_id': notificationData.documentID,
         });
     if (result.data['success']) {
-      print('Message sent successfully');
+      logger.d('Message sent successfully');
     } else {
-      print('Failed to send message: ${result.data['error']}');
+      logger.e('Failed to send message: ${result.data['error']}');
     }
   }
 }

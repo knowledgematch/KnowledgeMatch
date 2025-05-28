@@ -4,7 +4,7 @@ import 'package:knowledgematch/data/services/api_db_connection.dart';
 
 class ForgotPwViewModel extends ChangeNotifier {
   ForgotPwState state = ForgotPwState();
-  final ApiDbConnection _api = ApiDbConnection(); // Or inject it
+  final ApiDbConnection _api = ApiDbConnection();
 
   Future<bool> requestNewPassword() async {
     final email = state.emailController.text.trim();
