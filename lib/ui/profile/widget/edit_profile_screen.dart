@@ -30,13 +30,6 @@ class EditProfileScreen extends StatelessWidget {
                   }),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => {
-          viewModel.saveProfile(context),
-          Navigator.pop(context),
-        },
-        child: const Icon(Icons.save),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
