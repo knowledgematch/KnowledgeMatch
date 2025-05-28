@@ -78,8 +78,6 @@ class FeedWidgetState extends State<FeedWidget> {
             ),
           );
         }).toList();
-    print(conversationList);
-
     return ListView(children: conversationList);
   }
 }

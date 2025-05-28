@@ -42,8 +42,6 @@ class CreateProfileViewModel extends ChangeNotifier {
     if (pickedFile != null) {
       _state = state.copyWith(selectedImage: File(pickedFile.path));
       notifyListeners();
-    } else {
-      print('No image selected.');
     }
   }
 

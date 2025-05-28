@@ -150,7 +150,6 @@ class ProfileViewModel extends ChangeNotifier {
           _state.semester.toString(),
           _state.description,
           _state.pictureData);
-      print("============= response: $response");
       if (response == 204) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

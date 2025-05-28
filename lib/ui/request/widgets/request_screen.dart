@@ -34,7 +34,6 @@ class _RequestScreenState extends State<RequestScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<RequestViewModel>();
-    print('UserProfile ID: ${viewModel.userprofile.name}');
 
     return ChangeNotifierProvider.value(
       value: viewModel,

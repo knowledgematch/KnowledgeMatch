@@ -25,7 +25,6 @@ class TwoFAViewModel extends ChangeNotifier {
       if (response != null) {
         final String token = response['token'];
         final Map<String, dynamic> user = response['user'];
-        print("2fa: user: $user");
         // Save the logged-in user persistently
         await storeLoggedInUser(token, user);
         //update fcmToken

@@ -7,7 +7,6 @@ import '../../../domain/models/user.dart';
 class KeywordSelectionViewModel extends ChangeNotifier {
   KeywordSelectionState _state = KeywordSelectionState(isSaving: false, selectedKeywordIds: {}, initialKeywordIds: {});
   final ApiDbConnection _apiDbConnection = ApiDbConnection();
-  //TODO FIX ERROR MESSAGES
   KeywordSelectionState get state => _state;
 
   KeywordSelectionViewModel() {
