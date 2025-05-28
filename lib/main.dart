@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:knowledgematch/firebase_options.dart';
 import 'package:knowledgematch/ui/admin/view_model/admin_view_model.dart';
 import 'package:knowledgematch/ui/chat/view_model/chat_view_model.dart';
+import 'package:knowledgematch/ui/contact_information/view_model/contact_view_model.dart';
 import 'package:knowledgematch/ui/core/themes/theme_provider.dart';
 import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_model.dart';
 import 'package:knowledgematch/ui/home/view_model/home_view_model.dart';
@@ -50,6 +51,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => AdminViewModel()),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => ContactViewModel()),
         Provider(create: (_) => GlobalKey<NavigatorState>()),
         ChangeNotifierProvider(create: (_) => SplashViewModel()..init()),
       ],
