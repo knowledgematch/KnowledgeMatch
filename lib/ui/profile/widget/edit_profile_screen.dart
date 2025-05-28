@@ -30,6 +30,7 @@ class EditProfileScreen extends StatelessWidget {
                   }),
         ],
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
