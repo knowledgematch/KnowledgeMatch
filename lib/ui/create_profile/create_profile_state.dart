@@ -14,7 +14,6 @@ class CreateProfileState {
   CreateProfileState copyWith({
     bool? isValid,
     bool? success,
-    String? reachability,
     File? selectedImage,
   }) {
     return CreateProfileState(

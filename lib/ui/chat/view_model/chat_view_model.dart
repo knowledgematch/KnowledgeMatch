@@ -42,21 +42,15 @@ class ChatViewModel extends ChangeNotifier {
   /// Subscribes to the Firestore notifications stream, grouping notifications by request ID,
   /// fetching and caching user profiles in parallel, and throttling UI updates to every five new items.
   ///
-  /// This method:
-  /// 1. Listens to a stream of `NotificationData` for the current user.
-  /// 2. Groups incoming notifications into a `Map<String, List<NotificationData>>` keyed by `requestID`.
-  /// 3. Extracts unique source user IDs and fetches their profiles in parallel,
-  ///    caching each `Future<Userprofile?>` to avoid redundant network calls.
-  /// 4. Tracks the total notification count (`lastNotifiedCount`) and only invokes
-  ///    `notifyListeners()` when at least five new notifications have arrived since the last update,
-  ///    thereby reducing unnecessary UI rebuilds.
-  ///
-  /// After five or more new notifications are detected, the view model's state is updated with
-  /// the latest notification groups and user profiles, and all listeners are notified.
+  /// - Listens to a stream of `NotificationData` for the current user.
+  /// - Groups incoming notifications into a `Map<String, List<NotificationData>>` keyed by `requestID`.
+  /// - Extracts unique source user IDs and fetches their profiles in parallel,
+  /// 	caching each `Future<Userprofile?>` to avoid redundant network calls.
+  /// - Tracks the total notification count (`lastNotifiedCount`) and notifies the listeners
   ///
   void loadNotificationsPerRequestID() {
-    int lastNotifiedCount = 0;
     final Map<int, Future<Userprofile?>> profileCache = {};
+
     _notificationSub = _firestoreService
         .allNotificationsStream(userID: User.instance.id ?? 0)
         .listen((list) async {
@@ -66,27 +60,20 @@ class ChatViewModel extends ChangeNotifier {
           }
 
           final ids = list.map((n) => n.sourceUserId).toSet();
+
           final futures =
-              ids
-                  .map(
-                    (id) =>
-                        profileCache[id] ??= MatchingAlgorithm()
-                            .getUserProfileById(id),
-                  )
-                  .toList();
+              ids.map((id) {
+                return profileCache[id] ??= MatchingAlgorithm()
+                    .getUserProfileById(id);
+              }).toList();
           final profiles = await Future.wait(futures);
           final userProfiles = Map.fromIterables(ids, profiles);
 
-          final currentCount = list.length;
-          if (currentCount - lastNotifiedCount >= 5) {
-            lastNotifiedCount = currentCount;
-
-            _state = state.copyWith(
-              notification: feedMap,
-              userProfiles: userProfiles,
-            );
-            notifyListeners();
-          }
+          _state = state.copyWith(
+            notification: feedMap,
+            userProfiles: userProfiles,
+          );
+          notifyListeners();
         });
   }
 }

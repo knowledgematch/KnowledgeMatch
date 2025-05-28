@@ -178,7 +178,7 @@ class HomeScreenState extends State<HomeScreen> {
     if (requests.isEmpty) {
       return const Center(
         child: Text(
-          "You have no requests currently",
+          "No requests currently",
           style: TextStyle(fontSize: 18, color: Colors.grey),
         ),
       );

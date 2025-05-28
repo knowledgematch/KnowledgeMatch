@@ -2,16 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:knowledgematch/domain/models/notification_data.dart';
 
+import '../../core/log.dart';
+
 class FirestoreService {
   String firestoreCollection = "";
 
-  FirestoreService(){
-    if (kReleaseMode){
+  FirestoreService() {
+    if (kReleaseMode) {
       firestoreCollection = "notifications";
     } else {
       firestoreCollection = "test_notifications";
     }
   }
+
   /// Fetches notifications for a specific user with an optional filter for request type.
   ///
   /// Queries the `notifications` collection for notifications where the
@@ -29,23 +32,22 @@ class FirestoreService {
     bool? isOpen,
   }) async {
     try {
-      QuerySnapshot targetSnapshot =
-          await FirebaseFirestore.instance
-              .collection(firestoreCollection)
-              .where(
-                isOpen == true
-                    ? Filter.and(
-                      Filter('target_user_id', isEqualTo: userID.toString()),
-                      Filter('is_open', isEqualTo: true.toString()),
-                    )
-                    : Filter('target_user_id', isEqualTo: userID.toString()),
-              )
-              .orderBy('timestamp', descending: true)
-              .get();
+      QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
+          .collection(firestoreCollection)
+          .where(
+            isOpen == true
+                ? Filter.and(
+                    Filter('target_user_id', isEqualTo: userID.toString()),
+                    Filter('is_open', isEqualTo: true.toString()),
+                  )
+                : Filter('target_user_id', isEqualTo: userID.toString()),
+          )
+          .orderBy('timestamp', descending: true)
+          .get();
 
       return _buildList(targetSnapshot: targetSnapshot);
     } catch (error) {
-      print('Error fetching notifications: $error');
+      logger.e('Error fetching notifications: $error');
       rethrow;
     }
   }
@@ -75,14 +77,14 @@ class FirestoreService {
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) {
-          return snapshot.docs.map((doc) {
-            final data = doc.data();
-            return NotificationData.fromFirestoreData(
-              jsonMap: data,
-              documentID: doc.id,
-            );
-          }).toList();
-        });
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        return NotificationData.fromFirestoreData(
+          jsonMap: data,
+          documentID: doc.id,
+        );
+      }).toList();
+    });
   }
 
   /// Opens a Stream of confirmed Notifications from Firestore
@@ -112,14 +114,14 @@ class FirestoreService {
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) {
-          return snapshot.docs.map((doc) {
-            final data = doc.data();
-            return NotificationData.fromFirestoreData(
-              jsonMap: data,
-              documentID: doc.id,
-            );
-          }).toList();
-        });
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        return NotificationData.fromFirestoreData(
+          jsonMap: data,
+          documentID: doc.id,
+        );
+      }).toList();
+    });
   }
 
   /// Opens a Stream of open Notifications from Firestore
@@ -137,7 +139,7 @@ class FirestoreService {
     required bool isOpen,
   }) {
     return FirebaseFirestore.instance
-        .collection('notifications')
+        .collection(firestoreCollection)
         .where(
           Filter.and(
             Filter('source_user_id', isEqualTo: userID.toString()),
@@ -147,14 +149,14 @@ class FirestoreService {
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) {
-          return snapshot.docs.map((doc) {
-            final data = doc.data();
-            return NotificationData.fromFirestoreData(
-              jsonMap: data,
-              documentID: doc.id,
-            );
-          }).toList();
-        });
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        return NotificationData.fromFirestoreData(
+          jsonMap: data,
+          documentID: doc.id,
+        );
+      }).toList();
+    });
   }
 
   Stream<List<NotificationData>> allNotificationsStream({required int userID}) {
@@ -169,14 +171,14 @@ class FirestoreService {
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) {
-          return snapshot.docs.map((doc) {
-            final data = doc.data();
-            return NotificationData.fromFirestoreData(
-              jsonMap: data,
-              documentID: doc.id,
-            );
-          }).toList();
-        });
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        return NotificationData.fromFirestoreData(
+          jsonMap: data,
+          documentID: doc.id,
+        );
+      }).toList();
+    });
   }
 
   /// Fetches notifications for a specific user with an optional filter for request type.
@@ -194,21 +196,20 @@ class FirestoreService {
     required int userID,
   }) async {
     try {
-      QuerySnapshot targetSnapshot =
-          await FirebaseFirestore.instance
-              .collection(firestoreCollection)
-              .where(
-                Filter.or(
-                  Filter('target_user_id', isEqualTo: userID.toString()),
-                  Filter('source_user_id', isEqualTo: userID.toString()),
-                ),
-              )
-              .orderBy('timestamp', descending: true)
-              .get();
+      QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
+          .collection(firestoreCollection)
+          .where(
+            Filter.or(
+              Filter('target_user_id', isEqualTo: userID.toString()),
+              Filter('source_user_id', isEqualTo: userID.toString()),
+            ),
+          )
+          .orderBy('timestamp', descending: true)
+          .get();
 
       return _buildList(targetSnapshot: targetSnapshot);
     } catch (error) {
-      print('Error fetching notifications: $error');
+      logger.e('Error fetching notifications: $error');
       rethrow;
     }
   }
@@ -226,25 +227,23 @@ class FirestoreService {
   /// A future that resolves to a list of `NotificationData` objects.
   Future<List<NotificationData>> fetchConfirmed({required int userID}) async {
     try {
-      QuerySnapshot targetSnapshot =
-          await FirebaseFirestore.instance
-              .collection(firestoreCollection)
-              .where(
-                Filter.and(
-                  Filter('target_user_id', isEqualTo: userID.toString()),
-                  Filter(
-                    'notification_type',
-                    isEqualTo:
-                        NotificationType.meetupConfirmation.toShortString(),
-                  ),
-                ),
-              )
-              .orderBy('timestamp', descending: true)
-              .get();
+      QuerySnapshot targetSnapshot = await FirebaseFirestore.instance
+          .collection(firestoreCollection)
+          .where(
+            Filter.and(
+              Filter('target_user_id', isEqualTo: userID.toString()),
+              Filter(
+                'notification_type',
+                isEqualTo: NotificationType.meetupConfirmation.toShortString(),
+              ),
+            ),
+          )
+          .orderBy('timestamp', descending: true)
+          .get();
 
       return _buildList(targetSnapshot: targetSnapshot);
     } catch (error) {
-      print('Error fetching notifications: $error');
+      logger.e('Error fetching notifications: $error');
       rethrow;
     }
   }
@@ -264,15 +263,13 @@ class FirestoreService {
     required QuerySnapshot targetSnapshot,
   }) async {
     List<QueryDocumentSnapshot> allDocs = [...targetSnapshot.docs];
-    List<Map<String, dynamic>> firestoreData =
-        allDocs.map((doc) {
-          return {'id': doc.id, ...doc.data() as Map<String, dynamic>};
-        }).toList();
+    List<Map<String, dynamic>> firestoreData = allDocs.map((doc) {
+      return {'id': doc.id, ...doc.data() as Map<String, dynamic>};
+    }).toList();
 
-    List<NotificationData> notifications =
-        firestoreData.map((map) {
-          return NotificationData.fromFirestoreData(jsonMap: map);
-        }).toList();
+    List<NotificationData> notifications = firestoreData.map((map) {
+      return NotificationData.fromFirestoreData(jsonMap: map);
+    }).toList();
 
     return notifications;
   }
@@ -283,11 +280,26 @@ class FirestoreService {
   ///
   /// [requestID] : request_id field of documents to close
   Future<void> closeRequest(String? requestID) async {
-    final querySnapshot =
-        await FirebaseFirestore.instance
-            .collection('notifications')
-            .where('request_id', isEqualTo: requestID)
-            .get();
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection(firestoreCollection)
+        .where('request_id', isEqualTo: requestID)
+        .get();
+
+    for (final doc in querySnapshot.docs) {
+      await doc.reference.update({'is_open': false.toString()});
+    }
+  }
+
+  Future<void> closeRequestsOnDeletion(String? deletedId) async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection(firestoreCollection)
+        .where(
+          Filter.or(
+            Filter('target_user_id', isEqualTo: deletedId),
+            Filter('source_user_id', isEqualTo: deletedId),
+          ),
+        )
+        .get();
 
     for (final doc in querySnapshot.docs) {
       await doc.reference.update({'is_open': false.toString()});
@@ -302,7 +314,7 @@ class FirestoreService {
   Future<void> notificationStatusUpdate(bool isOpen, String? documentID) async {
     if (documentID == null) return;
     await FirebaseFirestore.instance
-        .collection('notifications')
+        .collection(firestoreCollection)
         .doc(documentID)
         .update({'is_open': isOpen.toString()});
   }
@@ -320,19 +332,20 @@ class FirestoreService {
       'notification_type': notificationData.type.toShortString(),
       'payload': notificationData.payload,
       'request_id': notificationData.requestID.toString(),
-      'target_user_id':
-          notificationData.sourceUserId
-              .toString(), //Swap source and target user intentionally
+      'target_user_id': notificationData.sourceUserId
+          .toString(), //Swap source and target user intentionally
       'source_user_id': notificationData.targetUserId.toString(), //Swap target
       'title': notificationData.title,
       'timestamp': DateTime.now().toUtc().toIso8601String(),
     };
 
     try {
-      await FirebaseFirestore.instance.collection(firestoreCollection).add(data);
-      print("Confirmation document was successfully added to Firestore");
+      await FirebaseFirestore.instance
+          .collection(firestoreCollection)
+          .add(data);
+      logger.d("Confirmation document was successfully added to Firestore");
     } catch (e) {
-      print("Error while inserting document: $e");
+      logger.e("Error while inserting document: $e");
     }
   }
 }

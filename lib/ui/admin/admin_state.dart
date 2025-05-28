@@ -15,6 +15,7 @@ class AdminState {
   Topic? selectedTopic;
   Organisation? editingOrganisation;
   Organisation? selectedOrganisation;
+  bool? isDeleting;
 
   AdminState({
     required this.keywords,
@@ -27,6 +28,7 @@ class AdminState {
     this.selectedTopic,
     this.editingOrganisation,
     this.selectedOrganisation,
+    this.isDeleting,
   });
 
   AdminState copyWith({
@@ -40,6 +42,7 @@ class AdminState {
     Topic? selectedTopic,
     Organisation? editingOrganisation,
     Organisation? selectedOrganisation,
+    bool? isDeleting,
   }) {
     return AdminState(
       keywords: keywords ?? this.keywords,
@@ -52,6 +55,7 @@ class AdminState {
       selectedTopic: selectedTopic ?? this.selectedTopic,
       editingOrganisation: editingOrganisation,
       selectedOrganisation: selectedOrganisation,
+      isDeleting: isDeleting ?? this.isDeleting,
     );
   }
 }

@@ -43,8 +43,6 @@ class SplashScreenState extends State<SplashScreen> {
         );
       }
     });
-
-    //TODO import flutter_native_splash to create the standard android splash loading screen with logo
     // Display a loading indicator while waiting.
     return const Scaffold(
       body: Center(
