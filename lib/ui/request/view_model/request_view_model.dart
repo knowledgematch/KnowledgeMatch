@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:knowledgematch/domain/models/search_criteria.dart';
 
+import '../../../core/log.dart';
 import '../../../data/services/firestore_service.dart';
 import '../../../data/services/forward_to_external.dart';
 import '../../../data/services/notification_service.dart';
@@ -121,7 +122,7 @@ class RequestViewModel extends ChangeNotifier {
         }
       }
     } catch (e) {
-      print('Error parsing JSON: $e');
+      logger.e('Error parsing JSON: $e');
     }
   }
 

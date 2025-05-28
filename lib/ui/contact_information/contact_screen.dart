@@ -5,6 +5,7 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/log.dart';
 import '../core/themes/app_colors.dart';
 import '../thank/widget/thank_screen.dart';
 
@@ -64,7 +65,7 @@ class _ContactScreenState extends State<ContactScreen> {
       });
 
       final sendReport = await send(message, smtpServer);
-      print('Message sent: $sendReport');
+      logger.d('Message sent: $sendReport');
 
       _messageController.clear();
 
@@ -78,7 +79,7 @@ class _ContactScreenState extends State<ContactScreen> {
         );
       }
     } on MailerException catch (e) {
-      print('Message not sent. Error: $e');
+      logger.e('Message not sent. Error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -88,7 +89,7 @@ class _ContactScreenState extends State<ContactScreen> {
         );
       }
     } catch (e) {
-      print('Error: $e');
+      logger.e('Error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

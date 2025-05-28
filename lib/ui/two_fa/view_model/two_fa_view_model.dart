@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/two_fa/two_fa_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/log.dart';
 import '../../../data/services/api_db_connection.dart';
 import '../../../data/services/user_service.dart';
 import '../../../domain/models/user.dart';
@@ -34,7 +35,7 @@ class TwoFAViewModel extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      print('Error during 2FA verification.');
+      logger.e('Error during 2FA verification.');
       return false;
     }
   }

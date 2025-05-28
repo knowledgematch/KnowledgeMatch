@@ -14,6 +14,7 @@ import 'package:knowledgematch/ui/splash/widgets/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/log.dart';
 import 'data/services/notification_service.dart';
 
 Future<void> main() async {
@@ -29,9 +30,9 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('Firebase is working');
+    logger.d('Firebase is working');
   } catch (e) {
-    print('Firebase initialization error: $e');
+    logger.e('Firebase initialization error: $e');
   }
   final prefs = await SharedPreferences.getInstance();
 

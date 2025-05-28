@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knowledgematch/ui/keyword_selection/keyword_selection_state.dart';
 
+import '../../../core/log.dart';
 import '../../../data/services/api_db_connection.dart';
 import '../../../domain/models/user.dart';
 
@@ -34,7 +35,7 @@ class KeywordSelectionViewModel extends ChangeNotifier {
           initialKeywordIds:
               Set<int>.from(_state.selectedKeywordIds as Iterable));
     }).catchError((error) {
-      print('Error fetching user keywords: $error');
+      logger.e('Error fetching user keywords: $error');
     });
   }
 
@@ -77,7 +78,7 @@ class KeywordSelectionViewModel extends ChangeNotifier {
     for (final kid in addedKeywords) {
       if (!await _apiDbConnection.addUser2KeywordEntry(userId, kid)) {
         allSuccess = false;
-        print('Failed to add keyword with ID: $kid');
+        logger.e('Failed to add keyword with ID: $kid');
       }
     }
 
@@ -85,7 +86,7 @@ class KeywordSelectionViewModel extends ChangeNotifier {
     for (final kid in removedKeywords) {
       if (!await _apiDbConnection.removeUser2KeywordEntry(userId, kid)) {
         allSuccess = false;
-        print('Failed to remove keyword with ID: $kid');
+        logger.e('Failed to remove keyword with ID: $kid');
       }
     }
     _changeIsSaving(false);

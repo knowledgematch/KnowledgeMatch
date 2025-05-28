@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:knowledgematch/ui/splash/widgets/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/log.dart';
 import '../../../data/services/api_db_connection.dart';
 import '../../../domain/models/reachability.dart';
 import '../../../domain/models/user.dart';
@@ -210,7 +211,7 @@ class ProfileViewModel extends ChangeNotifier {
         await ApiDbConnection().deleteAccount(uId, apiKey);
       }
     } catch (e) {
-      print("Error deleting account: $e");
+      logger.e("Error deleting account: $e");
     } finally {
       state.isDeleting = false;
     }

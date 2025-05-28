@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/log.dart';
 import '../../../data/services/api_db_connection.dart';
 import '../../../data/services/user_service.dart';
 import '../../../domain/models/user.dart';
@@ -22,7 +23,7 @@ class SplashViewModel extends ChangeNotifier {
   Future<void> init() async {
     // Check if we have a valid session token.
     await _checkLoggedInStatus();
-    // Request push notification permissions (especially relevant for iOS).
+    // Request push notification permissions.
     await _requestPermissions();
     notifyListeners();
   }
@@ -59,10 +60,9 @@ class SplashViewModel extends ChangeNotifier {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      debugPrint('User granted push notification permission.');
+      logger.d('User granted push notification permission.');
     } else if (settings.authorizationStatus == AuthorizationStatus.denied) {
-      debugPrint('User denied push notification permission.');
+      logger.d('User denied push notification permission.');
     }
-    // If needed, handle other status cases (e.g., provisional)
   }
 }
