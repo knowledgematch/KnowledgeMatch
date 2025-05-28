@@ -5,13 +5,14 @@ import 'package:knowledgematch/domain/models/notification_data.dart';
 class FirestoreService {
   String firestoreCollection = "";
 
-  FirestoreService(){
-    if (kReleaseMode){
+  FirestoreService() {
+    if (kReleaseMode) {
       firestoreCollection = "notifications";
     } else {
       firestoreCollection = "test_notifications";
     }
   }
+
   /// Fetches notifications for a specific user with an optional filter for request type.
   ///
   /// Queries the `notifications` collection for notifications where the
@@ -137,7 +138,7 @@ class FirestoreService {
     required bool isOpen,
   }) {
     return FirebaseFirestore.instance
-        .collection('notifications')
+        .collection(firestoreCollection)
         .where(
           Filter.and(
             Filter('source_user_id', isEqualTo: userID.toString()),
@@ -285,7 +286,7 @@ class FirestoreService {
   Future<void> closeRequest(String? requestID) async {
     final querySnapshot =
         await FirebaseFirestore.instance
-            .collection('notifications')
+            .collection(firestoreCollection)
             .where('request_id', isEqualTo: requestID)
             .get();
 
@@ -302,7 +303,7 @@ class FirestoreService {
   Future<void> notificationStatusUpdate(bool isOpen, String? documentID) async {
     if (documentID == null) return;
     await FirebaseFirestore.instance
-        .collection('notifications')
+        .collection(firestoreCollection)
         .doc(documentID)
         .update({'is_open': isOpen.toString()});
   }
@@ -329,7 +330,9 @@ class FirestoreService {
     };
 
     try {
-      await FirebaseFirestore.instance.collection(firestoreCollection).add(data);
+      await FirebaseFirestore.instance
+          .collection(firestoreCollection)
+          .add(data);
       print("Confirmation document was successfully added to Firestore");
     } catch (e) {
       print("Error while inserting document: $e");
