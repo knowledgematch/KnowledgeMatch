@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:knowledgematch/data/services/firestore_service.dart';
 
 import '../../domain/models/organisation.dart';
 import '../../domain/models/user.dart';
@@ -716,25 +717,8 @@ class ApiDbConnection {
       });
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        if (data is List && data.isNotEmpty) {
+        if (data is List) {
           return data.map((item) => Map<String, dynamic>.from(item)).toList();
-        } else {
-          return [
-            {
-              'id': -1,
-              'name': 'Account Not Found',
-              'location': '',
-              'expertise': '',
-              'availability': '',
-              'languages': '',
-              'reachability': null,
-              'description': '',
-              'seniority': 0,
-              'email': '',
-              'picture': 'assets/images/profile.png',
-              'tokens': [],
-            }
-          ];
         }
       }
       print('Failed to fetch from $uri. Status Code: ${response.statusCode}');
@@ -891,6 +875,10 @@ class ApiDbConnection {
         finalUri,
         headers: {'x-api-key': apiKey},
       );
+      if (response.statusCode == 204) {
+        await FirestoreService().closeRequestsOnDeletion(id.toString());
+      }
+
       print(response.statusCode);
     } catch (e) {
       print('Error deleting account: $e');

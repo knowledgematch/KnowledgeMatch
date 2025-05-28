@@ -48,7 +48,7 @@ class MatchingAlgorithm {
   Future<List<Userprofile>> getMatchingUserProfiles(
       SearchCriteria searchCriteria) async {
     Future<List<Userprofile>> matchingProfiles =
-    MatchingAlgorithm().matchingAlgorithm(searchCriteria);
+        MatchingAlgorithm().matchingAlgorithm(searchCriteria);
     List<Userprofile> profiles = await matchingProfiles;
     profiles.sort((a, b) {
       if (a.seniority == 0) {
@@ -104,6 +104,9 @@ class MatchingAlgorithm {
   /// - A [Future] that completes with the [Userprofile] object corresponding to the given user ID.
   Future<Userprofile> getUserProfileById(int id) async {
     var data = await ApiDbConnection().fetchUserByInput(uId: id.toString());
+    if (data.isEmpty) {
+      return Userprofile.defaultProfile();
+    }
     return _createUserFromJson(data.elementAt(0));
   }
 
@@ -127,19 +130,18 @@ class MatchingAlgorithm {
           .toList();
     }
     Userprofile userprofile = Userprofile(
-      id: int.parse(user['U_ID'].toString()),
-      seniority: int.parse(user['Seniority'].toString()),
-      name: user['FullName'].toString(),
-      location: 'Placeholder',
-      expertString: user['Keywords'].toString(),
-      availability: 'Placeholder',
-      langString: 'Placeholder',
-      reachability: ReachabilityValue.fromValue(
-          int.parse(user['Reachability'].toString())),
-      description: user['Description'].toString(),
-      tokens: tokenList,
-      email: user['Email'].toString()
-    );
+        id: int.parse(user['U_ID'].toString()),
+        seniority: int.parse(user['Seniority'].toString()),
+        name: user['FullName'].toString(),
+        location: 'Placeholder',
+        expertString: user['Keywords'].toString(),
+        availability: 'Placeholder',
+        langString: 'Placeholder',
+        reachability: ReachabilityValue.fromValue(
+            int.parse(user['Reachability'].toString())),
+        description: user['Description'].toString(),
+        tokens: tokenList,
+        email: user['Email'].toString());
 
     if (user['Picture'] != null) {
       userprofile.setPicture(
