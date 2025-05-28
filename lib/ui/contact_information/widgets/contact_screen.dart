@@ -71,15 +71,6 @@ class _ContactScreenState extends State<ContactScreen> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Failed to send message. Please try again later.'),
-                                backgroundColor: AppColors.redLight,
-                              ),
-                            );
-                          },
-                          onError: () async {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('An error occurred. Please try again later.'),
-                                backgroundColor: AppColors.redLight,
                               ),
                             );
                           },

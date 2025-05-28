@@ -877,12 +877,13 @@ class ApiDbConnection {
     final body = jsonEncode({
       'message': message,
     });
-
     try {
+      final apiKey = getApiKey();
       final response = await http.post(
         finalUri,
         headers: {
           'Content-Type': 'application/json',
+          'x-api-key': apiKey,
         },
         body: body,
       );

@@ -1,15 +1,13 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server/gmail.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:knowledgematch/data/services/api_db_connection.dart';
 import '../../../core/log.dart';
+import '../../../domain/models/user.dart';
 import '../contact_state.dart';
 
 class ContactViewModel extends ChangeNotifier {
   final formKey = GlobalKey<FormState>();
   final messageController = TextEditingController();
+  final api = ApiDbConnection();
 
   ContactState _state = ContactState();
 
@@ -24,56 +22,30 @@ class ContactViewModel extends ChangeNotifier {
   Future<void> sendEmail({
     required Future<void> Function() onSuccess,
     required Future<void> Function() onFailure,
-    required Future<void> Function() onError,
   }) async {
     if (formKey.currentState!.validate()) {
-      String username = 'sender.knowledge.app@gmail.com';
-      String password = "plwl drkb ymfa smpn";
-      String name = "KnowledgeMatch Contact Form";
-      String email = username;
-
-      final prefs = await SharedPreferences.getInstance();
-      final userDataString = prefs.getString('userData');
-
-      if (userDataString != null) {
-        final userData = jsonDecode(userDataString);
-        name = userData['Name'];
-        email = userData['Email'];
-      }
-
-      final smtpServer = gmail(username, password);
-
-      final message = Message()
-        ..from = Address(username, 'KnowledgeMatch Contact Form')
-        ..recipients.add('fhnw.knowledge.match@gmail.com')
-        ..subject = 'New Contact Form Submission from $name'
-        ..text = '''
-        Name: $name
-        Email: $email
+      _state = _state.copyWith(isSending: true);
+      notifyListeners();
+      final message ='''
+        Name: ${User.instance.name}
+        Email: ${User.instance.email}
 
         Message:
         ${messageController.text}
         ''';
 
-      try {
-        _state = _state.copyWith(isSending: true);
-        notifyListeners();
-
-        final sendReport = await send(message, smtpServer);
-        logger.d('Message sent: $sendReport');
-
+      bool response = await api.sendFeedback(message: message);
+      if(response){
+        logger.d('Message sent: $message');
         messageController.clear();
         onSuccess();
-      } on MailerException catch (e) {
-        logger.e('Message not sent. Error: $e');
+      } else{
+        logger.e('Message not sent. Error');
         onFailure();
-      } catch (e) {
-        logger.e('Error: $e');
-        onError();
-      } finally {
-        _state = _state.copyWith(isSending: false);
-        notifyListeners();
       }
+      _state = _state.copyWith(isSending: false);
+      notifyListeners();
+
     }
   }
 }
