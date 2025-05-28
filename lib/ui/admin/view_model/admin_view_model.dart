@@ -16,6 +16,7 @@ class AdminViewModel extends ChangeNotifier {
   final TextEditingController topicDescController = TextEditingController();
   final TextEditingController organisationController = TextEditingController();
   final TextEditingController domainController = TextEditingController();
+  final TextEditingController deleteEmailController = TextEditingController();
   final api = ApiDbConnection();
   final keywordTopicService = KeywordTopicService();
   AdminState _state = AdminState(
@@ -40,7 +41,7 @@ class AdminViewModel extends ChangeNotifier {
     await loadOrganisations();
   }
 
-  void openKeywordImport(){
+  void openKeywordImport() {
     KeywordImportService().importFromExcel();
   }
 
@@ -228,5 +229,22 @@ class AdminViewModel extends ChangeNotifier {
     organisationController.text = org.organisation;
     domainController.text = org.domain;
     notifyListeners();
+  }
+
+  Future<void> deleteUserByEmail() async {
+    _state = _state.copyWith(isDeleting: true);
+    final email = deleteEmailController.text.trim();
+    if (email.isEmpty) {
+      _state = _state.copyWith(isDeleting: false);
+      return;
+    }
+
+    final response = await api.fetchUserByInput(email: email);
+    final user = response.first;
+    final apiKey = api.getApiKey();
+    int id = int.parse(user['U_ID'].toString());
+    await api.deleteAccount(id, apiKey);
+    deleteEmailController.clear();
+    _state = _state.copyWith(isDeleting: false);
   }
 }
