@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:knowledgematch/data/services/firestore_service.dart';
 
 import '../../domain/models/organisation.dart';
 import '../../domain/models/user.dart';
@@ -862,7 +863,7 @@ class ApiDbConnection {
     }
   }
 
-  String getApiKey(){
+  String getApiKey() {
     return User.instance.apiKey.toString();
   }
 
@@ -874,6 +875,10 @@ class ApiDbConnection {
         finalUri,
         headers: {'x-api-key': apiKey},
       );
+      if (response.statusCode == 204) {
+        await FirestoreService().closeRequestsOnDeletion(id.toString());
+      }
+
       print(response.statusCode);
     } catch (e) {
       print('Error deleting account: $e');
