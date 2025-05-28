@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:knowledgematch/core/log.dart';
+
 import '../../domain/models/organisation.dart';
 import '../../domain/models/user.dart';
 
@@ -867,6 +868,35 @@ class ApiDbConnection {
       );
     } catch (e) {
       logger.e('Error deleting account: $e');
+    }
+  }
+
+  Future<bool> sendFeedback({required String message}) async {
+    final finalUri = Uri.parse('$baseUri/send-feedback');
+
+    final body = jsonEncode({
+      'message': message,
+    });
+
+    try {
+      final response = await http.post(
+        finalUri,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        logger.e(
+            'Failed to send feedback: ${response.statusCode} ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      logger.e('Error sending feedback: $e');
+      return false;
     }
   }
 }
