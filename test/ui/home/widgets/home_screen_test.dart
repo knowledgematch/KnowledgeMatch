@@ -51,7 +51,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text("Your profile’s incomplete—add info to stand out."), findsOneWidget);
+    expect(find.text("Your profile is incomplete—add info to stand out."), findsOneWidget);
 
     await tester.tap(find.text("Edit"));
     await tester.pumpAndSettle();
@@ -104,6 +104,6 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text("Your profile’s incomplete—add info to stand out."), findsNothing);
+    expect(find.text("Your profile is incomplete—add info to stand out."), findsNothing);
   });
 }
