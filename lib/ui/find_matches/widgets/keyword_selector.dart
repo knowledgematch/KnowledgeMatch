@@ -149,7 +149,12 @@ class KeywordSelectionDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => {Navigator.pop(context), viewModel.cancelKeyword()},
-          child: Text("Cancel", style: Theme.of(context).textTheme.labelMedium),
+          style: TextButton.styleFrom(
+            textStyle: Theme.of(context).textTheme.labelMedium,
+            foregroundColor: Theme.of(context).textTheme.labelMedium?.color,
+            disabledForegroundColor: Colors.grey,
+          ),
+          child: Text("Cancel"),
         ),
         TextButton(
           onPressed:
@@ -159,9 +164,8 @@ class KeywordSelectionDialog extends StatelessWidget {
                   }
                   : null,
           style: TextButton.styleFrom(
-            // color when enabled:
+            textStyle: Theme.of(context).textTheme.labelMedium,
             foregroundColor: Theme.of(context).textTheme.labelMedium?.color,
-            // color when disabled:
             disabledForegroundColor: Colors.grey,
           ),
           child: Text("Confirm"),
