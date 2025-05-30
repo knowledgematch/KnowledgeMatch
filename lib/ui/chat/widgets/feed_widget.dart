@@ -21,6 +21,15 @@ class FeedWidgetState extends State<FeedWidget> {
   Widget build(BuildContext context) {
     final viewModel = context.watch<ChatViewModel>();
 
+    if (viewModel.state.notification.isEmpty) {
+      return Center(
+        child: Text(
+          "You have no requests to be shown",
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+      );
+    }
+
     final conversationList =
         viewModel.state.notification.entries.map((entry) {
           final feed = entry.value;
@@ -30,31 +39,28 @@ class FeedWidgetState extends State<FeedWidget> {
                   ? viewModel.state.userProfiles[latest.targetUserId] ??
                       viewModel.state.userProfiles[User.instance.id]!
                   : viewModel.state.userProfiles[latest.sourceUserId]!;
-          return viewModel.state.notification.isEmpty
-              ? Text("You have no requests to be shown")
-              : Container(
-                decoration: Decorations.container,
-                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                child: Theme(
-                  data: Theme.of(
-                    context,
-                  ).copyWith(dividerColor: Colors.transparent),
-                  child: ExpansionTile(
-                    initiallyExpanded: false,
-                    title: FeedCard(notification: latest, userprofile: profile),
-                    children:
-                        feed.map((n) {
-                          final userProfile =
-                              viewModel.state.userProfiles[n.sourceUserId]!;
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => ChangeNotifierProvider<
-                                        RequestViewModel
-                                      >(
+          return Container(
+            decoration: Decorations.container,
+            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            child: Theme(
+              data: Theme.of(
+                context,
+              ).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                initiallyExpanded: false,
+                title: FeedCard(notification: latest, userprofile: profile),
+                children:
+                    feed.map((n) {
+                      final userProfile =
+                          viewModel.state.userProfiles[n.sourceUserId]!;
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      ChangeNotifierProvider<RequestViewModel>(
                                         create:
                                             (_) => RequestViewModel(
                                               notificationData: n,
@@ -62,24 +68,24 @@ class FeedWidgetState extends State<FeedWidget> {
                                             ),
                                         child: RequestScreen(),
                                       ),
-                                ),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 2,
-                                vertical: 0,
-                              ),
-                              child: NotificationCard(
-                                notification: n,
-                                userprofile: userProfile,
-                              ),
                             ),
                           );
-                        }).toList(),
-                  ),
-                ),
-              );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 2,
+                            vertical: 0,
+                          ),
+                          child: NotificationCard(
+                            notification: n,
+                            userprofile: userProfile,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
+          );
         }).toList();
     return ListView(children: conversationList);
   }
