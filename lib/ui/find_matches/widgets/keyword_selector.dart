@@ -21,19 +21,18 @@ class _KeywordSelectorState extends State<KeywordSelector> {
           onPressed: () {
             showDialog(
               context: context,
-              builder: (_) => ChangeNotifierProvider.value(
-                value: viewModel,
-                child: const KeywordSelectionDialog(),
-              ),
+              builder:
+                  (_) => ChangeNotifierProvider.value(
+                    value: viewModel,
+                    child: const KeywordSelectionDialog(),
+                  ),
             );
           },
           style: ElevatedButton.styleFrom(
             minimumSize: const Size(double.infinity, 50),
             textStyle: const TextStyle(fontSize: 18),
           ),
-          child: Text(
-            viewModel.state.keyword?.name ?? "Select Keyword",
-          ),
+          child: Text(viewModel.state.keyword?.name ?? "Select Keyword"),
         ),
       ],
     );
@@ -50,96 +49,122 @@ class KeywordSelectionDialog extends StatelessWidget {
     final searchQuery = viewModel.searchController.text.trim().toLowerCase();
     final allTopics = viewModel.state.topics;
     final selectedTopic = viewModel.state.selectedTopic;
-    final keywordMatches = keyword2Topics
-        .where((e) =>
-            e.keyword.name.toLowerCase().contains(searchQuery) ||
-            e.keyword.description.toLowerCase().contains(searchQuery))
-        .toList();
+    final keywordMatches =
+        keyword2Topics
+            .where(
+              (e) =>
+                  e.keyword.name.toLowerCase().contains(searchQuery) ||
+                  e.keyword.description.toLowerCase().contains(searchQuery),
+            )
+            .toList();
     final keywordMatchTopics = keywordMatches.map((e) => e.topic).toSet();
 
-    final filteredTopics = allTopics.where((topic) {
-      final topicMatch = topic.name.toLowerCase().contains(searchQuery);
-      final keywordMatch = keywordMatchTopics.contains(topic);
-      return topicMatch || keywordMatch;
-    }).toList();
-    final isSearchMatchingTopic = selectedTopic != null &&
+    final filteredTopics =
+        allTopics.where((topic) {
+          final topicMatch = topic.name.toLowerCase().contains(searchQuery);
+          final keywordMatch = keywordMatchTopics.contains(topic);
+          return topicMatch || keywordMatch;
+        }).toList();
+    final isSearchMatchingTopic =
+        selectedTopic != null &&
         selectedTopic.name.toLowerCase().contains(searchQuery);
 
     final showAllKeywords = searchQuery.isEmpty || isSearchMatchingTopic;
 
-    final keywordsInTopic = keyword2Topics
-        .where((e) => e.topic == selectedTopic)
-        .map((e) => e.keyword)
-        .toSet()
-        .toList();
-
-    final filteredKeywords = showAllKeywords
-        ? keywordsInTopic
-        : keywordsInTopic
-            .where((kw) =>
-                kw.name.toLowerCase().contains(searchQuery) ||
-                kw.description.toLowerCase().contains(searchQuery))
+    final keywordsInTopic =
+        keyword2Topics
+            .where((e) => e.topic == selectedTopic)
+            .map((e) => e.keyword)
+            .toSet()
             .toList();
 
+    final filteredKeywords =
+        showAllKeywords
+            ? keywordsInTopic
+            : keywordsInTopic
+                .where(
+                  (kw) =>
+                      kw.name.toLowerCase().contains(searchQuery) ||
+                      kw.description.toLowerCase().contains(searchQuery),
+                )
+                .toList();
+
     return AlertDialog(
+      scrollable: true,
+      actionsAlignment: MainAxisAlignment.center,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16.0),
       title: Text("Select a keyword"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextField(
-            controller: viewModel.searchController,
-            decoration: const InputDecoration(
-              labelText: 'Search keywords...',
-              border: OutlineInputBorder(),
+      content: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.9,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: viewModel.searchController,
+              decoration: const InputDecoration(
+                labelText: 'Search keywords...',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (_) => viewModel.notify(),
             ),
-            onChanged: (_) => viewModel.notify(),
-          ),
-          const SizedBox(height: 8),
-          Text("Topics:"),
-          Wrap(
-            spacing: 8.0,
-            runSpacing: 4.0,
-            children: filteredTopics.map((topic) {
-              return ChoiceChip(
-                showCheckmark: false,
-                label: Text(topic.name),
-                selected: topic == selectedTopic,
-                onSelected: (_) {
-                  viewModel.updateSelectedTopic(topic);
-                },
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 8),
-          Text("Keywords:"),
-          Wrap(
-            spacing: 8.0,
-            runSpacing: 4.0,
-            children: filteredKeywords.map((keyword) {
-              return ChoiceChip(
-                showCheckmark: false,
-                label: Text(keyword.name),
-                selected: viewModel.state.keyword == keyword,
-                onSelected: (_) {
-                  viewModel.updateKeyword(keyword);
-                },
-              );
-            }).toList(),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text("Topics:"),
+            Wrap(
+              spacing: 6.0,
+              alignment: WrapAlignment.start,
+              children:
+                  filteredTopics.map((topic) {
+                    return ChoiceChip(
+                      padding: EdgeInsets.all(4.0),
+                      showCheckmark: false,
+                      label: Text(topic.name),
+                      selected: topic == selectedTopic,
+                      onSelected: (_) {
+                        viewModel.updateSelectedTopic(topic);
+                      },
+                    );
+                  }).toList(),
+            ),
+            const SizedBox(height: 8),
+            Text("Keywords:"),
+            Wrap(
+              spacing: 6.0,
+              alignment: WrapAlignment.start,
+              children:
+                  filteredKeywords.map((keyword) {
+                    return ChoiceChip(
+                      showCheckmark: false,
+                      label: Text(keyword.name),
+                      selected: viewModel.state.keyword == keyword,
+                      onSelected: (_) {
+                        viewModel.updateKeyword(keyword);
+                      },
+                    );
+                  }).toList(),
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(
-          onPressed: () => {
-            Navigator.pop(context),
-            viewModel.cancelKeyword(),
-          },
-          child: const Text("Cancel"),
+          onPressed: () => {Navigator.pop(context), viewModel.cancelKeyword()},
+          child: Text("Cancel", style: Theme.of(context).textTheme.labelMedium),
         ),
         TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text("Confirm"),
+          onPressed:
+              viewModel.state.keyword != null
+                  ? () {
+                    Navigator.pop(context);
+                  }
+                  : null,
+          style: TextButton.styleFrom(
+            // color when enabled:
+            foregroundColor: Theme.of(context).textTheme.labelMedium?.color,
+            // color when disabled:
+            disabledForegroundColor: Colors.grey,
+          ),
+          child: Text("Confirm"),
         ),
       ],
     );

@@ -82,7 +82,7 @@ class AppTheme {
           fontSize: 17,
           fontWeight: FontWeight.bold,
         ),
-        labelMedium: TextStyle(color: AppColors.primary),
+        labelMedium: TextStyle(color: AppColors.primary, fontSize: 16),
         labelLarge: TextStyle(color: AppColors.primary),
         labelSmall: TextStyle(color: AppColors.primary),
       ),
