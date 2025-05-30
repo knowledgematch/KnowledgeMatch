@@ -54,7 +54,7 @@ void main() {
 
 
     expect(find.text('Please enter your name'), findsOneWidget);
-    expect(find.text('Please enter your surname'), findsOneWidget);
+    expect(find.text('Please enter your last name'), findsOneWidget);
     expect(find.text('Please enter your email'), findsOneWidget);
     expect(find.text('Please enter your password'), findsOneWidget);
     expect(find.text('Please confirm your password'), findsOneWidget);
