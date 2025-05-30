@@ -105,7 +105,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                     SizedBox(height: 16),
                     TextFormField(
                       controller: viewModel.nameController,
-                      decoration: InputDecoration(labelText: 'Firstname'),
+                      decoration: InputDecoration(labelText: 'First name'),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your name';
@@ -116,7 +116,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                     SizedBox(height: 16),
                     TextFormField(
                       controller: viewModel.surnameController,
-                      decoration: InputDecoration(labelText: 'Lastname'),
+                      decoration: InputDecoration(labelText: 'Last name'),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your last name';
