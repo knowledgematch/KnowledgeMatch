@@ -80,7 +80,6 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                               width: double.infinity,
                             ),
                           );
-
                         },
                       ),
                     ),
@@ -106,7 +105,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                     SizedBox(height: 16),
                     TextFormField(
                       controller: viewModel.nameController,
-                      decoration: InputDecoration(labelText: 'Name'),
+                      decoration: InputDecoration(labelText: 'Firstname'),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your name';
@@ -117,10 +116,10 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                     SizedBox(height: 16),
                     TextFormField(
                       controller: viewModel.surnameController,
-                      decoration: InputDecoration(labelText: 'Surname'),
+                      decoration: InputDecoration(labelText: 'Lastname'),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your surname';
+                          return 'Please enter your last name';
                         }
                         return null;
                       },
