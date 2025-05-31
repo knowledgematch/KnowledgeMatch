@@ -30,8 +30,8 @@ class Userprofile {
     required this.seniority,
     required this.email,
     this.picture,
-  }) : expertise = expertString.split(" "),
-       languages = langString.split(" ");
+  })  : expertise = expertString.split(" "),
+        languages = langString.split(" ");
 
   /// Returns a [List] of [String] tokens
   List<String>? getTokensList() {
@@ -61,12 +61,11 @@ class Userprofile {
   factory Userprofile.fromJson(Map<String, dynamic> user) {
     List<String> tokenList = [];
     if (user['Tokens'] != null && user['Tokens'].toString().trim().isNotEmpty) {
-      tokenList =
-          user['Tokens']
-              .toString()
-              .split(',')
-              .map<String>((token) => token.trim())
-              .toList();
+      tokenList = user['Tokens']
+          .toString()
+          .split(',')
+          .map<String>((token) => token.trim())
+          .toList();
     }
 
     Uint8List? pic;
@@ -90,6 +89,20 @@ class Userprofile {
       tokens: tokenList,
       email: user['Email'].toString(),
       picture: pic,
+    );
+  }
+
+  factory Userprofile.defaultProfile() {
+    return Userprofile(
+      id: -1,
+      name: 'Account not available',
+      location: 'Unavailable',
+      expertString: '',
+      availability: '',
+      langString: '',
+      description: 'This account has been removed',
+      seniority: 0,
+      email: '',
     );
   }
 }

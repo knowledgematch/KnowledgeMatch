@@ -29,9 +29,6 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CreateProfileViewModel>().initReachability();
-    });
   }
 
   @override
@@ -83,7 +80,6 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                               width: double.infinity,
                             ),
                           );
-
                         },
                       ),
                     ),
@@ -109,7 +105,7 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                     SizedBox(height: 16),
                     TextFormField(
                       controller: viewModel.nameController,
-                      decoration: InputDecoration(labelText: 'Name'),
+                      decoration: InputDecoration(labelText: 'First name'),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your name';
@@ -120,10 +116,10 @@ class CreateProfileScreenState extends State<CreateProfileScreen> {
                     SizedBox(height: 16),
                     TextFormField(
                       controller: viewModel.surnameController,
-                      decoration: InputDecoration(labelText: 'Surname'),
+                      decoration: InputDecoration(labelText: 'Last name'),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your surname';
+                          return 'Please enter your last name';
                         }
                         return null;
                       },

@@ -263,6 +263,44 @@ class AdminScreenState extends State<AdminScreen> {
                 }).toList(),
               ),
             ),
+            SizedBox(
+              height: 20,
+            ),
+            Text('Delete User by Email',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Stack(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: viewModel.deleteEmailController,
+                      decoration: InputDecoration(
+                        labelText: 'Enter Email to Delete',
+                        hintText: 'example@domain.com',
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    SizedBox(height: 12),
+                    ElevatedButton.icon(
+                      icon: Icon(Icons.delete),
+                      label: Text('Delete User'),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      onPressed: viewModel.state.isDeleting == true
+                          ? null
+                          : viewModel.deleteUserByEmail,
+                    ),
+                  ],
+                ),
+                if (viewModel.state.isDeleting == true)
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.black.withOpacity(0.2),
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                  ),
+              ],
+            ),
           ],
         ),
       ),

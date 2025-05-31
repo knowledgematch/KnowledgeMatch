@@ -6,18 +6,22 @@ import 'package:knowledgematch/ui/find_matches/view_model/find_matches_view_mode
 import 'package:knowledgematch/ui/find_matches/widgets/find_matches_screen.dart';
 import 'package:provider/provider.dart';
 
-
+class FakeFindMatchesViewModel extends FindMatchesViewModel{
+ @override
+ Future<void> loadData() async{
+ }
+}
 
 void main() {
   testWidgets('FindMatchesScreen renders and submits correctly', (WidgetTester tester) async {
-    final viewModel = FindMatchesViewModel();
+    final viewModel = FakeFindMatchesViewModel();
 
     viewModel.updateKeyword(Keyword(id: 1, levels: 0, name: 'Test Keyword', description: "Test Keyword"));
     viewModel.updateReachability(Reachability.online);
 
     await tester.pumpWidget(
       MaterialApp(
-        home: ChangeNotifierProvider.value(
+        home: ChangeNotifierProvider<FindMatchesViewModel>.value(
           value: viewModel,
           child: const FindMatchesScreen(),
         ),

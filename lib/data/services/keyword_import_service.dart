@@ -31,7 +31,6 @@ class KeywordImportService {
 
       final keyword = _parseKeyword(keywordRaw);
       if (keyword.isEmpty) continue;
-      print('$keyword | $keywordDescription');
       api.addKeywordEntry(levels: 0, keyword: keyword, description: keywordDescription);
     }
   }

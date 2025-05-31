@@ -30,13 +30,7 @@ class EditProfileScreen extends StatelessWidget {
                   }),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => {
-          viewModel.saveProfile(context),
-          Navigator.pop(context),
-        },
-        child: const Icon(Icons.save),
-      ),
+
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -83,10 +77,11 @@ class EditProfileScreen extends StatelessWidget {
                 child: const Text('Change Password'),
               ),
             ),
-            const Spacer(),
-            TextButton(
-              onPressed: viewModel.state.isDeleting
-                  ? null
+        const SizedBox(height: 35),
+        SafeArea(
+          child: TextButton(
+            onPressed: viewModel.state.isDeleting
+                ? null
                   : () {
                       showDialog(
                         context: context,
@@ -133,6 +128,7 @@ class EditProfileScreen extends StatelessWidget {
                     },
               child: const Text("Delete Account"),
             ),
+           ),
           ],
         ),
       ),

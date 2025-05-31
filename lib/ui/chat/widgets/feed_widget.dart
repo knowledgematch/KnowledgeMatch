@@ -21,6 +21,15 @@ class FeedWidgetState extends State<FeedWidget> {
   Widget build(BuildContext context) {
     final viewModel = context.watch<ChatViewModel>();
 
+    if (viewModel.state.notification.isEmpty) {
+      return Center(
+        child: Text(
+          "You have no requests to be shown",
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+      );
+    }
+
     final conversationList =
         viewModel.state.notification.entries.map((entry) {
           final feed = entry.value;
@@ -78,8 +87,6 @@ class FeedWidgetState extends State<FeedWidget> {
             ),
           );
         }).toList();
-    print(conversationList);
-
     return ListView(children: conversationList);
   }
 }

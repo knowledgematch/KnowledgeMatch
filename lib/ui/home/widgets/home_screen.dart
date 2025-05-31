@@ -126,7 +126,7 @@ class HomeScreenState extends State<HomeScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      "Your profile’s incomplete—add info to stand out.",
+                      "Your profile is incomplete—add info to stand out.",
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -138,7 +138,7 @@ class HomeScreenState extends State<HomeScreen> {
               ),
             ),
           const SizedBox(height: 8),
-          _buildSectionTitle("Open Requests", Icons.pending_actions),
+          _buildSectionTitle("Open requests", Icons.pending_actions),
           const SizedBox(height: 8),
           _buildHorizontalList(viewModel.state.openRequests),
           const SizedBox(height: 8),
@@ -178,7 +178,7 @@ class HomeScreenState extends State<HomeScreen> {
     if (requests.isEmpty) {
       return const Center(
         child: Text(
-          "You have no requests currently",
+          "No requests currently",
           style: TextStyle(fontSize: 18, color: Colors.grey),
         ),
       );

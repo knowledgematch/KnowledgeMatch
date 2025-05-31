@@ -30,15 +30,6 @@ class ChatScreenState extends State<ChatScreen> {
           appBar: AppBar(title: const Text('Requests')),
           drawer: const AppDrawer(),
           body: FeedWidget(),
-          // viewModel.state.isLoading
-          //     ? const Center(child: CircularProgressIndicator())
-          //     : viewModel.state.errorMessage != null
-          //     ? Center(
-          //       child: Text('Error: ${viewModel.state.errorMessage}'),
-          //     )
-          //     : viewModel.state.notification.isEmpty
-          //     ? const Center(child: Text('No requests found.'))
-          //     : FeedWidget(),
         );
       },
     );

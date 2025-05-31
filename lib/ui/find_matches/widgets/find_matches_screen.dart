@@ -19,10 +19,8 @@ class FindMatchesScreen extends StatefulWidget {
 class FindMatchesScreenState extends State<FindMatchesScreen> {
   final _formKey = GlobalKey<FormState>();
 
-
   final TextEditingController _descriptionController = TextEditingController();
   static const int _maxChars = 1000;
-
 
   @override
   void dispose() {
@@ -35,10 +33,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
     final viewModel = context.watch<FindMatchesViewModel>();
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('KnowledgeMatch'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('KnowledgeMatch'), centerTitle: true),
       drawer: const AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -49,10 +44,7 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
               const Text("What is the topic you are having problems with?"),
               KeywordSelector(),
               const SizedBox(height: 24),
-
               const Text("Please describe your issue:"),
-
-
               StatefulBuilder(
                 builder: (context, setState) {
                   return Column(
@@ -64,11 +56,10 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                         maxLength: _maxChars,
                         decoration: const InputDecoration(
                           hintText:
-                          'For example: How does one proceed in a curve discussion?',
+                              'For example: \nHow does one proceed in a curve discussion?',
                           border: OutlineInputBorder(),
                           counterText: '',
                         ),
-
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please describe your issue';
@@ -77,13 +68,16 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                         },
                         onChanged: (value) {
                           if (value.length > _maxChars) {
-                            _descriptionController.text =
-                                value.substring(0, _maxChars);
-                            _descriptionController.selection =
-                                TextSelection.fromPosition(
-                                  TextPosition(
-                                      offset: _descriptionController.text.length),
-                                );
+                            _descriptionController.text = value.substring(
+                              0,
+                              _maxChars,
+                            );
+                            _descriptionController
+                                .selection = TextSelection.fromPosition(
+                              TextPosition(
+                                offset: _descriptionController.text.length,
+                              ),
+                            );
                           }
                           setState(() {});
                         },
@@ -91,26 +85,24 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                           viewModel.updateDescription(value);
                         },
                       ),
-
                       const SizedBox(height: 4),
                       Text(
                         '${_maxChars - _descriptionController.text.length} characters remaining',
                         style: TextStyle(
                           fontSize: 12,
-                          color: _descriptionController.text.length >= _maxChars
-                              ? AppColors.redLight
-                              : AppColors.grey6Light,
+                          color:
+                              _descriptionController.text.length >= _maxChars
+                                  ? AppColors.redLight
+                                  : AppColors.grey6Light,
                         ),
                       ),
                     ],
                   );
                 },
               ),
-
               const SizedBox(height: 24),
               _locationSelection(context),
               const SizedBox(height: 24),
-
               ElevatedButton(
                 onPressed: () {
                   FocusScope.of(context).unfocus();
@@ -125,16 +117,18 @@ class FindMatchesScreenState extends State<FindMatchesScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ChangeNotifierProvider(
-                          create: (context) =>
-                              SwipeViewModel(searchCriteria: searchCriteria),
-                          child: SwipeScreen(),
-                        ),
+                        builder:
+                            (context) => ChangeNotifierProvider(
+                              create:
+                                  (context) => SwipeViewModel(
+                                    searchCriteria: searchCriteria,
+                                  ),
+                              child: SwipeScreen(),
+                            ),
                       ),
                     );
                   }
                 },
-
                 child: const Text('Search experts'),
               ),
             ],
@@ -168,7 +162,7 @@ Column _locationSelection(BuildContext context) {
                       viewModel.updateReachability(choice["value"]);
                     },
                   ),
-                )
+                ),
             ],
           ),
         ),
@@ -176,10 +170,7 @@ Column _locationSelection(BuildContext context) {
       if (viewModel.state.reachability == null)
         Text(
           "Please select a location option",
-          style: TextStyle(
-            color: AppColors.redLight,
-            fontSize: 13,
-          ),
+          style: TextStyle(color: AppColors.redLight, fontSize: 13),
         ),
     ],
   );
