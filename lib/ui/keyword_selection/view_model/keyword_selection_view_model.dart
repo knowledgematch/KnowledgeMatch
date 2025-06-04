@@ -6,7 +6,7 @@ import '../../../data/services/api_db_connection.dart';
 import '../../../domain/models/user.dart';
 
 class KeywordSelectionViewModel extends ChangeNotifier {
-  KeywordSelectionState _state = KeywordSelectionState(isSaving: false, selectedKeywordIds: {}, initialKeywordIds: {});
+  KeywordSelectionState _state = KeywordSelectionState(isSaving: false, selectedKeywordIds: {}, initialKeywordIds: {}, groupedKeywordsByTopic: {});
   final ApiDbConnection _apiDbConnection = ApiDbConnection();
   KeywordSelectionState get state => _state;
 
@@ -19,24 +19,47 @@ class KeywordSelectionViewModel extends ChangeNotifier {
   /// This method fetches the list of all available keywords and the list of keywords associated
   /// with the current user (based on [User.instance.id]). The user's selected keyword IDs are
   /// then updated in the local state. The initial selection is stored in [_initialKeywordIds].
-  void loadKeywords() {
+  void loadKeywords() async {
     final userId = User.instance.id!;
-    _state =
-        state.copyWith(allKeywordsFuture: _apiDbConnection.fetchKeywords());
-    _state = state.copyWith(
-        userKeywordsFuture: _apiDbConnection.fetchKeywordsByUser(userId));
 
-    _state.userKeywordsFuture?.then((userKeywords) {
-      _state = _state.copyWith(
-          selectedKeywordIds: userKeywords
-              .map<int>((keyword) => keyword['K_ID'] as int)
-              .toSet());
-      _state = _state.copyWith(
-          initialKeywordIds:
-              Set<int>.from(_state.selectedKeywordIds as Iterable));
-    }).catchError((error) {
-      logger.e('Error fetching user keywords: $error');
-    });
+    final allKeywords = await _apiDbConnection.fetchKeywords();
+    final userKeywords = await _apiDbConnection.fetchKeywordsByUser(userId);
+    final topics = await _apiDbConnection.fetchTopics();
+    final keywordTopicLinks = await _apiDbConnection.fetchKeyword2Topic();
+
+    final selectedIds = userKeywords.map<int>((k) => k['K_ID'] as int).toSet();
+
+    final Map<int, String> topicIdToName = {
+      for (final t in topics) t['T_ID'] as int: t['Topic'] as String
+    };
+
+    final Map<int, List<int>> topicToKeywordIds = {};
+
+    for (final link in keywordTopicLinks) {
+      final kid = link['K_ID'] as int;
+      final tid = link['T_ID'] as int;
+      topicToKeywordIds.putIfAbsent(tid, () => []).add(kid);
+    }
+
+    final Map<String, List<Map<String, dynamic>>> grouped = {};
+
+    for (final entry in topicToKeywordIds.entries) {
+      final tid = entry.key;
+      final topicName = topicIdToName[tid] ?? 'Other';
+      final keywordIds = entry.value;
+      final keywordsForTopic = allKeywords.where((k) => keywordIds.contains(k['K_ID'])).toList();
+
+      grouped[topicName] = keywordsForTopic;
+    }
+
+    _state = _state.copyWith(
+      allKeywordsFuture: Future.value(allKeywords),
+      userKeywordsFuture: Future.value(userKeywords),
+      selectedKeywordIds: selectedIds,
+      initialKeywordIds: Set<int>.from(selectedIds),
+      groupedKeywordsByTopic: grouped,
+    );
+    notifyListeners();
   }
 
   /// Toggles the selection state of a keyword locally.
