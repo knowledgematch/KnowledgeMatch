@@ -111,13 +111,13 @@ class NotificationCard extends StatelessWidget {
       case NotificationType.knowledgeRequest:
         title = "New Request";
       case NotificationType.requestDeclined:
-        title = "Declined Request";
+        title = "Declined";
       case NotificationType.requestAccepted:
-        title = "Accepted Request";
+        title = "Accepted";
       case NotificationType.meetupRequest:
         title = "Meetup Request";
       case NotificationType.meetupConfirmation:
-        title = "Meetup Confirmed";
+        title = "Confirmed";
     }
     return Padding(
       padding: EdgeInsets.only(bottom: 4),
