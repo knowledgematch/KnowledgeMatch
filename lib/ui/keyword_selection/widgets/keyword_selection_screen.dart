@@ -65,7 +65,7 @@ class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
                 return Center(
                     child: Text('Error: ${userKeywordsSnapshot.error}'));
               }
-              return _buildGroupedKeywordList(viewModel.state.groupedKeywordsByTopic, viewModel);
+              return _buildKeywordList(allKeywordsSnapshot.data!,viewModel);
             },
           );
         },
@@ -78,35 +78,32 @@ class KeywordSelectionScreenState extends State<KeywordSelectionScreen> {
   /// This widget displays a [ListView] of keywords with a [Checkbox] next to each.
   ///
   /// Parameter:
-  /// - [groupedKeywords]: A list of maps representing all available keywords mapped to their topic.
+  /// - [allKeywords]: A list of maps representing all available keywords.
   ///
   /// Returns a [Widget] displaying the keyword list.
-  Widget _buildGroupedKeywordList(Map<String, List<Map<String, dynamic>>> groupedKeywords, KeywordSelectionViewModel viewModel) {
-    return ListView(
-      children: groupedKeywords.entries.map((entry) {
-        final topic = entry.key;
-        final keywords = entry.value;
+  Widget _buildKeywordList(List<Map<String, dynamic>> allKeywords, KeywordSelectionViewModel viewModel) {
+    return ListView.builder(
+      itemCount: allKeywords.length,
+      itemBuilder: (context, index) {
+        final keyword = allKeywords[index];
+        final keywordId = keyword['K_ID'] as int;
+        final keywordName = keyword['Keyword'] as String;
+        final isSelected = viewModel.state.selectedKeywordIds.contains(keywordId);
 
-        return ExpansionTile(
-          title: Text(topic),
-          children: keywords.map((keyword) {
-            final kid = keyword['K_ID'] as int;
-            final name = keyword['Keyword'] as String;
-            final isSelected = viewModel.state.selectedKeywordIds.contains(kid);
-
-            return CheckboxListTile(
-              title: Text(name),
-              value: isSelected,
-              onChanged: (value) {
-                if (value != null) {
-                  viewModel.toggleKeywordSelection(kid);
-                }
-              },
-            );
-          }).toList(),
+        return ListTile(
+          title: Text(keywordName),
+          trailing: Checkbox(
+            value: isSelected,
+            onChanged: (value) {
+              if (value != null) {
+                viewModel.toggleKeywordSelection(keywordId);
+              }
+            },
+          ),
         );
-      }).toList(),
+      },
     );
   }
+
 
 }
