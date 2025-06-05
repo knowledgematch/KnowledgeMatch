@@ -70,7 +70,7 @@ void main() {
         'Keywords': 'Backend SQL',
         'Reachability': 1,
         'Description': 'Backend engineer',
-        'Tokens': 'token1, token2',
+        'Tokens': 'token1 token2',
         'Email': 'dave@example.com',
         'Picture': {'data': [10, 20, 30]}
       };
