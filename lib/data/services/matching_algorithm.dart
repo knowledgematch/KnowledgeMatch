@@ -125,7 +125,7 @@ class MatchingAlgorithm {
     if (user['Tokens'] != null && user['Tokens'].toString().trim().isNotEmpty) {
       tokenList = user['Tokens']
           .toString()
-          .split(',')
+          .split(' ')
           .map<String>((token) => token.trim())
           .toList();
     }
