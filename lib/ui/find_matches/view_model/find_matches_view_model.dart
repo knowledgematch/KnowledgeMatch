@@ -58,7 +58,7 @@ class FindMatchesViewModel extends ChangeNotifier {
   }
 
   Future<void> loadData() async {
-    var keywords = await keywordTopicService.fetchKeywords();
+    var keywords = await keywordTopicService.fetchUsedKeywords();
     var topics = await keywordTopicService.fetchTopics();
     _state = _state.copyWith(
         keywords: keywords,

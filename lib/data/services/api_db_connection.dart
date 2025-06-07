@@ -58,6 +58,21 @@ class ApiDbConnection {
     return await _fetcher(finalUri);
   }
 
+  /// Fetches a list of keywords that are used by users from the server.
+  ///
+  /// This method constructs a URI for the keywords endpoint and calls the [_fetcher] method to retrieve
+  /// the keywords data from the server. It returns the data as a list of maps if successful.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with a list of maps containing the fetched keywords.
+  Future<List<Map<String, dynamic>>> fetchUsedKeywords() async {
+    var finalUri = Uri.parse('$baseUri/usedKeywords');
+    return await _fetcher(finalUri);
+  }
+
   Future<int> addKeywordEntry(
       {required int levels,
       required String keyword,
