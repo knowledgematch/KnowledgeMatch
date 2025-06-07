@@ -23,7 +23,7 @@ Once the installation is complete, you can open the app and start using it.
 - Frontend: Flutter
 - Backend: Javascript, Firebase, Fastlane
 - Database: Firestore, MariaDB
-- Deployment Platform: Android, iOs
+- Deployment Platform: Android, iOS
 
 ### 🛠️ Administration
 The app includes a dedicated admin screen accessible only to users with administrative privileges. 
