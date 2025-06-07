@@ -58,6 +58,33 @@ class ApiDbConnection {
     return await _fetcher(finalUri);
   }
 
+  /// Fetches a list of keywords that are used by users from the server.
+  ///
+  /// This method constructs a URI for the keywords endpoint and calls the [_fetcher] method to retrieve
+  /// the keywords data from the server. It returns the data as a list of maps if successful.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with a list of maps containing the fetched keywords.
+  Future<List<Map<String, dynamic>>> fetchUsedKeywords() async {
+    var finalUri = Uri.parse('$baseUri/usedKeywords');
+    return await _fetcher(finalUri);
+  }
+
+  /// Adds a new keyword entry to the server.
+  ///
+  /// This method constructs a URI for the keywords endpoint and sends a POST request
+  /// with the provided keyword information in JSON format.
+  ///
+  /// Parameters:
+  /// - [levels]: The proficiency level associated with the keyword.
+  /// - [keyword]: The keyword to be added.
+  /// - [description]: A textual description of the keyword.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with an integer representing the status code of the response.
   Future<int> addKeywordEntry(
       {required int levels,
       required String keyword,
@@ -84,6 +111,19 @@ class ApiDbConnection {
     }
   }
 
+  /// Updates an existing keyword entry on the server.
+  ///
+  /// This method sends a PUT request to update the keyword entry identified by the given [id]
+  /// with the new [levels], [keyword], and [description] data.
+  ///
+  /// Parameters:
+  /// - [id]: The unique identifier of the keyword entry to update.
+  /// - [levels]: The updated proficiency level for the keyword.
+  /// - [keyword]: The updated keyword text.
+  /// - [description]: The updated description for the keyword.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with `true` if the update was successful, otherwise `false`.
   Future<bool> updateKeywordEntry(
       {required int id,
       required int levels,
@@ -114,6 +154,15 @@ class ApiDbConnection {
     }
   }
 
+  /// Removes a keyword entry from the server.
+  ///
+  /// This method sends a DELETE request to remove the keyword entry identified by the given [id].
+  ///
+  /// Parameters:
+  /// - [id]: The unique identifier of the keyword entry to delete.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with `true` if the deletion was successful, otherwise `false`.
   Future<bool> removeKeywordEntry(int id) async {
     var finalUri = Uri.parse('$baseUri/keywords/$id');
     final apiKey = getApiKey();
@@ -138,6 +187,15 @@ class ApiDbConnection {
     }
   }
 
+  /// Removes a topic entry from the server.
+  ///
+  /// This method sends a DELETE request to remove the topic entry identified by the given [id].
+  ///
+  /// Parameters:
+  /// - [id]: The unique identifier of the topic entry to delete.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with `true` if the deletion was successful, otherwise `false`.
   Future<bool> removeTopicEntry(int id) async {
     var finalUri = Uri.parse('$baseUri/topics/$id');
     final apiKey = getApiKey();
@@ -162,6 +220,19 @@ class ApiDbConnection {
     }
   }
 
+  /// Updates an existing topic entry on the server.
+  ///
+  /// This method sends a PUT request to update the topic entry identified by the given [id]
+  /// with the new [levels], [topic], and [description] data.
+  ///
+  /// Parameters:
+  /// - [id]: The unique identifier of the topic entry to update.
+  /// - [levels]: The updated proficiency level for the topic.
+  /// - [topic]: The updated topic text.
+  /// - [description]: The updated description for the topic.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with `true` if the update was successful, otherwise `false`.
   Future<bool> updateTopicEntry(
       {required int id,
       required int levels,
@@ -192,6 +263,18 @@ class ApiDbConnection {
     }
   }
 
+  /// Adds a new topic entry to the server.
+  ///
+  /// This method sends a POST request to the topics endpoint with the provided topic data
+  /// including [levels], [topic], and [description] in JSON format.
+  ///
+  /// Parameters:
+  /// - [levels]: The proficiency level associated with the topic.
+  /// - [topic]: The topic to be added.
+  /// - [description]: A textual description of the topic.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with the HTTP status code of the response, or `-1` if an error occurs.
   Future<int> addTopicEntry(
       {required int levels,
       required String topic,
@@ -218,6 +301,17 @@ class ApiDbConnection {
     }
   }
 
+  /// Adds a relationship between a keyword and a topic on the server.
+  ///
+  /// This method sends a POST request to associate the keyword identified by [kid]
+  /// with the topic identified by [tid].
+  ///
+  /// Parameters:
+  /// - [kid]: The unique identifier of the keyword.
+  /// - [tid]: The unique identifier of the topic.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with `true` if the association was successfully created, otherwise `false`.
   Future<bool> addKeyword2TopicsEntry(int kid, int tid) async {
     var finalUri = Uri.parse('$baseUri/topics/$kid/$tid');
     final apiKey = getApiKey();
@@ -241,6 +335,17 @@ class ApiDbConnection {
     }
   }
 
+  /// Removes a relationship between a keyword and a topic on the server.
+  ///
+  /// This method sends a DELETE request to remove the association between the keyword identified by [kid]
+  /// and the topic identified by [tid].
+  ///
+  /// Parameters:
+  /// - [kid]: The unique identifier of the keyword.
+  /// - [tid]: The unique identifier of the topic.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with `true` if the association was successfully removed, otherwise `false`.
   Future<bool> removeKeyword2TopicEntry(int kid, int tid) async {
     var finalUri = Uri.parse('$baseUri/topics/$kid/$tid');
     try {
@@ -258,6 +363,15 @@ class ApiDbConnection {
     }
   }
 
+  /// Initializes a user by fetching their data from the server.
+  ///
+  /// This method sends a GET request to retrieve user data for the user identified by [userId].
+  ///
+  /// Parameters:
+  /// - [userId]: The unique identifier of the user to initialize.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with a list of dynamic data if successful, otherwise `null`.
   Future<List<dynamic>?> initUser(int userId) async {
     var finalUri = Uri.parse('$baseUri/users/$userId');
     final apiKey = getApiKey();
@@ -278,6 +392,15 @@ class ApiDbConnection {
     }
   }
 
+  /// Fetches all keyword-to-topic relationships from the server.
+  ///
+  /// This method sends a request to retrieve the list of existing associations between keywords and topics.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with a list of maps containing keyword-to-topic relationship data.
   Future<List<Map<String, dynamic>>> fetchKeyword2Topic() async {
     var finalUri = Uri.parse('$baseUri/keyword2topic');
     return await _fetcher(finalUri);
@@ -561,6 +684,17 @@ class ApiDbConnection {
     }
   }
 
+  /// Logs a user into the system using their email and password.
+  ///
+  /// This method sends a POST request to the login endpoint with the provided credentials.
+  ///
+  /// Parameters:
+  /// - [email]: The user's email address.
+  /// - [password]: The user's password.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with a semicolon-separated string containing the token and user data if successful,
+  ///   or an error message if the login fails.
   Future<String> login(String email, String password) async {
     var finalUri = Uri.parse('$baseUri/login');
 
@@ -587,6 +721,17 @@ class ApiDbConnection {
     }
   }
 
+  /// Verifies a user's identity using two-factor authentication (2FA).
+  ///
+  /// This method sends a POST request with the user's [email] and 2FA [code] to verify their identity.
+  ///
+  /// Parameters:
+  /// - [email]: The user's email address.
+  /// - [code]: The 2FA code provided by the user.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with a map containing the authentication token and user data if successful,
+  ///   or `null` if the verification fails.
   Future<Map<String, dynamic>?> twoFA(String email, String code) async {
     var finalUri = Uri.parse('$baseUri/verify-2fa');
 
@@ -752,6 +897,17 @@ class ApiDbConnection {
     }
   }
 
+  /// Creates a new organisation entry on the server.
+  ///
+  /// This method sends a POST request with the organisation's name and domain to create a new organisation.
+  ///
+  /// Parameters:
+  /// - [organisation]: The name of the organisation to create.
+  /// - [domain]: The domain associated with the organisation.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with a map containing the newly created organisation data if successful,
+  ///   or `null` if creation fails.
   Future<Map<String, dynamic>?> createOrganisation({
     required String organisation,
     required String domain,
@@ -780,6 +936,18 @@ class ApiDbConnection {
     }
   }
 
+  /// Updates an existing organisation entry on the server.
+  ///
+  /// This method sends a PUT request to update the organisation identified by [id]
+  /// with the new [organisation] name and [domain].
+  ///
+  /// Parameters:
+  /// - [id]: The unique identifier of the organisation to update.
+  /// - [organisation]: The updated name of the organisation.
+  /// - [domain]: The updated domain of the organisation.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with `true` if the update was successful, otherwise `false`.
   Future<bool> updateOrganisation({
     required int id,
     required String organisation,
@@ -805,6 +973,15 @@ class ApiDbConnection {
     }
   }
 
+  /// Deletes an organisation entry from the server.
+  ///
+  /// This method sends a DELETE request to remove the organisation identified by [id].
+  ///
+  /// Parameters:
+  /// - [id]: The unique identifier of the organisation to delete.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with `true` if the deletion was successful, otherwise `false`.
   Future<bool> deleteOrganisation(int id) async {
     final finalUri = baseUri.replace(path: '/organisations/$id');
     final apiKey = getApiKey();
@@ -821,6 +998,15 @@ class ApiDbConnection {
     }
   }
 
+  /// Retrieves all organisation entries from the server.
+  ///
+  /// This method sends a GET request to fetch a list of all organisations and parses them into [Organisation] objects.
+  ///
+  /// Parameters:
+  /// - This method does not take any parameters.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with a list of [Organisation] objects if successful, or an empty list if an error occurs.
   Future<List<Organisation>> getAllOrganisations() async {
     final finalUri = baseUri.replace(path: '/organisations');
     try {
@@ -840,6 +1026,16 @@ class ApiDbConnection {
     }
   }
 
+  /// Validates whether the domain of the given email belongs to a known organisation.
+  ///
+  /// This method extracts the domain from the [email] and checks if it matches any domain
+  /// from the list of existing organisations.
+  ///
+  /// Parameters:
+  /// - [email]: The email address to validate.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with `true` if the email domain is valid, otherwise `false`.
   Future<bool> isEmailDomainValid(String email) async {
     try {
       final organisations = await getAllOrganisations();
@@ -855,10 +1051,27 @@ class ApiDbConnection {
     }
   }
 
+  /// Retrieves the current user's API key.
+  ///
+  /// This method accesses the singleton [User] instance to return the API key as a string.
+  ///
+  /// Returns:
+  /// - The API key as a [String].
   String getApiKey() {
     return User.instance.apiKey.toString();
   }
 
+  /// Deletes a user account from the server.
+  ///
+  /// This method sends a DELETE request to remove the user identified by [id].
+  /// If successful, it also triggers cleanup of related Firestore requests.
+  ///
+  /// Parameters:
+  /// - [id]: The unique identifier of the user account to delete.
+  /// - [apiKey]: The API key for authorization.
+  ///
+  /// Returns:
+  /// - A [Future] that completes when the deletion and cleanup process is finished.
   Future<void> deleteAccount(int id, String apiKey) async {
     final finalUri = baseUri.replace(path: '/users/$id');
 
@@ -875,6 +1088,15 @@ class ApiDbConnection {
     }
   }
 
+  /// Sends user feedback to the server.
+  ///
+  /// This method sends a POST request with the feedback [message] in JSON format.
+  ///
+  /// Parameters:
+  /// - [message]: The feedback message to be sent.
+  ///
+  /// Returns:
+  /// - A [Future] that completes with `true` if the feedback was sent successfully, otherwise `false`.
   Future<bool> sendFeedback({required String message}) async {
     final finalUri = Uri.parse('$baseUri/send-feedback');
 

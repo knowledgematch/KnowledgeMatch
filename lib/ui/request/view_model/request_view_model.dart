@@ -92,7 +92,6 @@ class RequestViewModel extends ChangeNotifier {
       sourceUserId: User.instance.id!,
     );
 
-    //Update Status of the previous request
     FirestoreService().notificationStatusUpdate(
       false,
       notificationData.documentID,
@@ -132,7 +131,6 @@ class RequestViewModel extends ChangeNotifier {
       "dates": state.selectedDate?.toJson(),
       "search_criteria": state.searchCriteria.toJSON(),
     };
-    //Confirm the selected date
     var notification = NotificationData(
       type: NotificationType.meetupConfirmation,
       title: "Meetup Confirmation",
@@ -142,6 +140,7 @@ class RequestViewModel extends ChangeNotifier {
       requestID: notificationData.requestID,
       targetUserId: userprofile.id,
       sourceUserId: User.instance.id!,
+      isOpen: false,
     );
 
     await NotificationService().sendMessageToDevice(
@@ -151,7 +150,6 @@ class RequestViewModel extends ChangeNotifier {
 
     FirestoreService().addConfirmationToFirestore(notification);
 
-    //Close all notifications associated with the request
     FirestoreService().closeRequest(notificationData.requestID);
   }
 
